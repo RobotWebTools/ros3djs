@@ -1,11 +1,3 @@
-(function (root, factory) {
-  if(typeof define ==='function' && define.amd) {
-    define(['three_bundle','threeinteraction'],factory);
-  }
-  else {
-    root.Viewer3D = factory(root.THREE,root.ThreeInteraction);
-  }
-}(this, function(THREE,ThreeInteraction) {
   var Viewer3D = function(container) {
 
     var viewer3d = this;
@@ -27,7 +19,7 @@
 
       // setup camera mouse control
       cameraControls = new THREE.RosOrbitControls(scene,camera);
-//      cameraControls.userZoomSpeed = 0.5;
+// cameraControls.userZoomSpeed = 0.5;
 
       // add node to host selectable objects
       selectableObjs = new THREE.Object3D();
@@ -56,7 +48,7 @@
       });
       renderer.setClearColorHex(0x333333,1.0);
       renderer.sortObjects = false;
-//      renderer.setSize(window.innerWidth, window.innerHeight);
+// renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMapEnabled = false;
       renderer.autoClear = false;
       container.appendChild(renderer.domElement);
@@ -90,10 +82,9 @@
 
     viewer3d.addObject = function(obj)
     {
-//      selectableObjs.add(obj);
+// selectableObjs.add(obj);
       scene.add(obj);
     };
   };
   return Viewer3D;
-}));
 
