@@ -5,6 +5,194 @@
 var ROS3D = ROS3D || {
   REVISION : '1'
 };
+ROS3D.UrdfModel = function(options) {
+  
+};
+
+var UrdfModel = function() {
+  var urdf = this;
+
+  // members
+  this.name_ = '';
+  this.links_ = {};
+  this.joints_ = {};
+  this.materials_ = {};
+
+  this.clear = function() {
+    this.name_ = '';
+    this.links_ = {};
+    this.joints_ = {};
+    this.materials_ = {};
+  };
+
+  this.initFile = function(src, callback) {
+    var xhr = new XMLHttpRequest();
+    var that = this;
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
+        window.setTimeout(function() {
+          var xml = xhr.responseXML;
+          xml.getElementById = function(id) {
+            return xpathGetElementById(xml, id);
+          };
+          that.initXml(xml);
+
+          if (callback) {
+            callback(that);
+          }
+
+        }, 0);
+      }
+    };
+
+    xhr.open("GET", src, true);
+    xhr.overrideMimeType("text/xml");
+    xhr.setRequestHeader("Content-type", "text/xml");
+    xhr.send(null);
+  };
+
+  this.initXml = function(xml_doc) {
+    function nsResolver(prefix) {
+      var ns = {
+        'c' : 'http://www.collada.org/2005/11/COLLADASchema'
+      };
+      return ns[prefix] || null;
+    };
+
+    function getNode(xpathexpr, ctxNode) {
+      if (ctxNode == null)
+        ctxNode = xml_doc;
+      return xml_doc.evaluate(xpathexpr, ctxNode, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    }
+
+    var robot_xml = getNode('//robot');
+    if (!robot_xml) {
+      console.error("Could not find the 'robot' element in the xml file");
+      return false;
+    }
+
+    this.clear();
+    // console.log('Parsing robot xml');
+
+    // Get robot name
+    var name = robot_xml.getAttribute('name');
+    if (!name) {
+      console.error("No name given for the robot.");
+      return false;
+    }
+    this.name_ = name;
+
+    // Get all Material elements
+    for (n in robot_xml.childNodes) {
+      var node = robot_xml.childNodes[n];
+      if (node.tagName != "material")
+        continue;
+      var material_xml = node;
+      var material = new UrdfMaterial();
+
+      if (material.initXml(material_xml)) {
+        if (this.getMaterial(material.name)) {
+          console.error("material " + material.name + "is not unique.");
+          return false;
+        } else {
+          this.materials_[material.name] = material;
+          // console.log('Succesfully added a new material ' + material.name);
+        }
+      } else {
+        console.error('material xml is not initialized correctly');
+        return false;
+      }
+    }
+
+    for (n in robot_xml.childNodes) {
+      var node = robot_xml.childNodes[n];
+      if (node.tagName != "link")
+        continue;
+      var link_xml = node;
+      var link = new UrdfLink();
+
+      if (link.initXml(link_xml)) {
+        if (this.getLink(link.name)) {
+          console.error("link " + link.name + " is not unique. ");
+          return false;
+        } else {
+          // console.log("setting link " + link.name + " material");
+          if (link.visual) {
+            if (link.visual.material_name.length > 0) {
+              if (this.getMaterial(link.visual.material_name)) {
+                // console.log("Setting link " + link.name + " material to " +
+                // link.visual.material_name);
+                link.visual.material = this.getMaterial(link.visual.material_name);
+              } else {
+                if (link.visual.material) {
+                  // console.log("link " + link.name + " material " + link.visual.material_name + "
+                  // define in Visual.");
+                  this.links_[link.visual.material.name] = link.visual.material;
+                } else {
+                  console.error("link " + link.name + " material " + link.visual.material_name
+                      + " undefined.");
+                  return false;
+                }
+              }
+            }
+          }
+
+          this.links_[link.name] = link;
+          // console.log('successfully added a new link ' + link.name);
+        }
+      } else {
+        console.error('link xml is not initialied correctly');
+        return false;
+      }
+
+      if (this.links_.length == 0) {
+        console.error('No link elements found in urdf file');
+        return false;
+      }
+    }
+
+    // Get all Joint elements
+    for (n in robot_xml.childNodes) {
+      var node = robot_xml.childNodes[n];
+      if (node.tagName != 'joint')
+        continue;
+      var joint_xml = node;
+      var joint = new UrdfJoint();
+
+      if (joint.initXml(joint_xml)) {
+        if (this.getJoint(joint.name)) {
+          console.error('joint ' + joint.name + ' is not unique.');
+          return false;
+        } else {
+          this.joints_[joint.name] = joint;
+          // console.log('successfully added a new joint ' + joint.name);
+        }
+      } else {
+        console.error('joint xml is not initialized correctly');
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  this.getMaterial = function(name) {
+    return this.materials_[name];
+  };
+
+  this.getLink = function(name) {
+    return this.links_[name];
+  };
+
+  this.getLinks = function(name) {
+    return this.links_;
+  };
+
+  this.getJoint = function(name) {
+    return this.joints_[name];
+  };
+
+};
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
@@ -31,8 +219,12 @@ ROS3D.Axes = function(options) {
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
   this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
-  // adds an axis marker to this axes object
-  var addAxis = function(axis) {
+  /**
+   * Adds an axis marker to this axes object.
+   * 
+   * @param axis - the 3D vector representing the axis to add
+   */
+  function addAxis(axis) {
     // set the color of the axis
     var color = new THREE.Color;
     color.setRGB(axis.x, axis.y, axis.z);
@@ -127,18 +319,33 @@ ROS3D.OrbitControls = function(scene, object) {
   };
   var state = STATE.NONE;
 
-  // get the default, auto rotation angle
-  var getAutoRotationAngle = function() {
+  /**
+   * Get the default, auto rotation angle.
+   * 
+   * @returns the default, auto rotation angle
+   */
+  function getAutoRotationAngle() {
     return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
   };
 
-  // get the default, auto zoom scale
-  var getZoomScale = function() {
+  /**
+   * Get the default, auto zoom scale.
+   * 
+   * @returns the default, auto zoom scale
+   */
+  function getZoomScale() {
     return Math.pow(0.95, scope.userZoomSpeed);
   };
 
-  // intersect the main view plane based on the given information
-  var intersectViewPlane = function(mouseRay, planeOrigin, planeNormal) {
+  /**
+   * Intersect the main view plane based on the given information.
+   * 
+   * @param mouseRay - the ray from the mouse
+   * @param planeOrigin - the origin of the plane
+   * @param planeNormal - the normal of the plane
+   * @returns the intersection
+   */
+  function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
     var vector = new THREE.Vector3();
     var intersection = new THREE.Vector3();
 
@@ -192,8 +399,12 @@ ROS3D.OrbitControls = function(scene, object) {
     type : 'change'
   };
 
-  // handle the mousedown 3D event
-  var onMouseDown = function(event3D) {
+  /**
+   * Handle the mousedown 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseDown(event3D) {
     var event = event3D.domEvent;
     event.preventDefault();
 
@@ -224,8 +435,12 @@ ROS3D.OrbitControls = function(scene, object) {
     this.showAxes();
   };
 
-  // handle the mouse move 3D event
-  var onMouseMove = function(event3D) {
+  /**
+   * Handle the movemove 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseMove(event3D) {
     var event = event3D.domEvent;
     if (state === STATE.ROTATE) {
 
@@ -268,8 +483,12 @@ ROS3D.OrbitControls = function(scene, object) {
     }
   };
 
-  // handle the mouse up 3D event
-  var onMouseUp = function(event3D) {
+  /**
+   * Handle the mouseup 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseUp(event3D) {
     if (!scope.userRotate) {
       return;
     }
@@ -277,8 +496,12 @@ ROS3D.OrbitControls = function(scene, object) {
     state = STATE.NONE;
   };
 
-  // handle the mouse wheel 3D event
-  var onMouseWheel = function(event3D) {
+  /**
+   * Handle the mousewheel 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseWheel(event3D) {
     if (!scope.userZoom) {
       return;
     }
@@ -299,14 +522,22 @@ ROS3D.OrbitControls = function(scene, object) {
     this.showAxes();
   };
 
-  // handle the touch down event
-  var onTouchDown = function(event) {
+  /**
+   * Handle the touchdown 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onTouchDown(event) {
     onMouseDown(event);
     event.preventDefault();
   };
 
-  // handle the touch move event
-  var onTouchMove = function(event) {
+  /**
+   * Handle the touchmove 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onTouchMove(event) {
     onMouseMove(event);
     event.preventDefault();
   };
@@ -442,6 +673,66 @@ ROS3D.OrbitControls = function(scene, object) {
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);
 };
+ROS3D.UrdfLoader = function(options) {
+  var options = options || {};
+  this.ros = options.ros;
+  this.xmlParam = options.xmlParam || 'robot_description';
+  this.xmlFile = options.xmlFile;
+
+  // check for what type of XML we are getting
+  if (this.xmlFile) {
+
+  } else {
+    // get the value from ROS
+    //ros.
+  }
+};
+
+var UrdfLoader = {};
+
+UrdfLoader.load = function(objroot, meshLoader, tfClient, urdf_src) {
+
+  var urdf_model = new UrdfModel();
+  var that = this;
+  var scene_handlers = {};
+
+  urdf_model.initFile(urdf_src, urdfReady);
+
+  function urdfReady() {
+    // load all models
+    var links = urdf_model.getLinks();
+    for ( var l in links) {
+      var link = links[l];
+      if (!link.visual)
+        continue;
+      if (!link.visual.geometry)
+        continue;
+      if (link.visual.geometry.type == link.visual.geometry.GeometryTypes.MESH) {
+        var frame_id = new String("/" + link.name);
+        var uri = link.visual.geometry.filename;
+        var uriends = uri.substr(-4).toLowerCase();
+
+        // ignore mesh files which are not in collada format
+        if (uriends == ".dae") {
+          var material_name = link.visual.material_name;
+          var material = urdf_model.getMaterial(material_name);
+
+          var collada_model = meshLoader.load(uri, material);
+
+          var scene_node = new SceneNode({
+            frame_id : frame_id,
+            tfclient : tfClient,
+            pose : link.visual.origin,
+            model : collada_model
+          });
+          objroot.add(scene_node);
+        } else {
+          console.log("Not Supported format : ", uri);
+        }
+      }
+    }
+  }
+};
 /**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
@@ -521,8 +812,10 @@ ROS3D.Viewer = function(options) {
   // highlights the receiver of mouse events
   this.highlighter = new ROS3D.Highlighter(mouseHandler);
 
-  // renders the associated scene to the viewer
-  var draw = function() {
+  /**
+   * Renders the associated scene to the viewer.
+   */
+  function draw() {
     // update the controls
     viewer.cameraControls.update();
 
@@ -759,7 +1052,7 @@ ROS3D.MouseHandler = function(renderer, camera, rootObj, fallbackTarget) {
    * @param target - the target of the event
    * @param type - the type of event that occurred 
    * @param event3D - the 3D mouse even information
-   * @return if an event was canceled
+   * @returns if an event was canceled
    */
   this.notify = function(target, type, event3D) {
     // ensure the type is set

@@ -24,8 +24,12 @@ ROS3D.Axes = function(options) {
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
   this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
-  // adds an axis marker to this axes object
-  var addAxis = function(axis) {
+  /**
+   * Adds an axis marker to this axes object.
+   * 
+   * @param axis - the 3D vector representing the axis to add
+   */
+  function addAxis(axis) {
     // set the color of the axis
     var color = new THREE.Color;
     color.setRGB(axis.x, axis.y, axis.z);

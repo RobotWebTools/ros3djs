@@ -120,7 +120,7 @@ ROS3D.MouseHandler = function(renderer, camera, rootObj, fallbackTarget) {
    * @param target - the target of the event
    * @param type - the type of event that occurred 
    * @param event3D - the 3D mouse even information
-   * @return if an event was canceled
+   * @returns if an event was canceled
    */
   this.notify = function(target, type, event3D) {
     // ensure the type is set

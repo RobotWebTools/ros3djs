@@ -54,18 +54,33 @@ ROS3D.OrbitControls = function(scene, object) {
   };
   var state = STATE.NONE;
 
-  // get the default, auto rotation angle
-  var getAutoRotationAngle = function() {
+  /**
+   * Get the default, auto rotation angle.
+   * 
+   * @returns the default, auto rotation angle
+   */
+  function getAutoRotationAngle() {
     return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
   };
 
-  // get the default, auto zoom scale
-  var getZoomScale = function() {
+  /**
+   * Get the default, auto zoom scale.
+   * 
+   * @returns the default, auto zoom scale
+   */
+  function getZoomScale() {
     return Math.pow(0.95, scope.userZoomSpeed);
   };
 
-  // intersect the main view plane based on the given information
-  var intersectViewPlane = function(mouseRay, planeOrigin, planeNormal) {
+  /**
+   * Intersect the main view plane based on the given information.
+   * 
+   * @param mouseRay - the ray from the mouse
+   * @param planeOrigin - the origin of the plane
+   * @param planeNormal - the normal of the plane
+   * @returns the intersection
+   */
+  function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
     var vector = new THREE.Vector3();
     var intersection = new THREE.Vector3();
 
@@ -119,8 +134,12 @@ ROS3D.OrbitControls = function(scene, object) {
     type : 'change'
   };
 
-  // handle the mousedown 3D event
-  var onMouseDown = function(event3D) {
+  /**
+   * Handle the mousedown 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseDown(event3D) {
     var event = event3D.domEvent;
     event.preventDefault();
 
@@ -151,8 +170,12 @@ ROS3D.OrbitControls = function(scene, object) {
     this.showAxes();
   };
 
-  // handle the mouse move 3D event
-  var onMouseMove = function(event3D) {
+  /**
+   * Handle the movemove 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseMove(event3D) {
     var event = event3D.domEvent;
     if (state === STATE.ROTATE) {
 
@@ -195,8 +218,12 @@ ROS3D.OrbitControls = function(scene, object) {
     }
   };
 
-  // handle the mouse up 3D event
-  var onMouseUp = function(event3D) {
+  /**
+   * Handle the mouseup 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseUp(event3D) {
     if (!scope.userRotate) {
       return;
     }
@@ -204,8 +231,12 @@ ROS3D.OrbitControls = function(scene, object) {
     state = STATE.NONE;
   };
 
-  // handle the mouse wheel 3D event
-  var onMouseWheel = function(event3D) {
+  /**
+   * Handle the mousewheel 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onMouseWheel(event3D) {
     if (!scope.userZoom) {
       return;
     }
@@ -226,14 +257,22 @@ ROS3D.OrbitControls = function(scene, object) {
     this.showAxes();
   };
 
-  // handle the touch down event
-  var onTouchDown = function(event) {
+  /**
+   * Handle the touchdown 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onTouchDown(event) {
     onMouseDown(event);
     event.preventDefault();
   };
 
-  // handle the touch move event
-  var onTouchMove = function(event) {
+  /**
+   * Handle the touchmove 3D event.
+   * 
+   * @param event3D - the 3D event to handle
+   */
+  function onTouchMove(event) {
     onMouseMove(event);
     event.preventDefault();
   };
