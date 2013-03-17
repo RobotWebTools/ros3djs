@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script type="text/javascript" src="../include/threejs/three.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
+<script type="text/javascript" src="../build/ros3d.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  /**
+   * Setup all visualization elements when the page is loaded.
+   */
+  function init() {
+    // Let's see what the main ROS3D Viewer does.
+    var viewer = ROS3D.Viewer({
+      divID : 'viewer',
+      width : 640,
+      height : 480,
+      antialias : true
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1>Simple ros3djs Example</h1>
+  <div id="viewer"></div>
+</body>
+</html>
