@@ -1,16 +1,24 @@
 ROS3D.UrdfLoader = function(options) {
+  var urdfLoader = this;
   var options = options || {};
   this.ros = options.ros;
   this.xmlParam = options.xmlParam || 'robot_description';
-  this.xmlFile = options.xmlFile;
+  this.urdf = new ROS3D.UrdfModel();
 
-  // check for what type of XML we are getting
-  if (this.xmlFile) {
-
-  } else {
-    // get the value from ROS
-    //ros.
-  }
+  // wait for the model to load
+  this.urdf.on('ready', function() {
+    console.log("OKAY");
+  });
+  
+  // get the value from ROS
+  var param = new ROSLIB.Param({
+    ros : this.ros,
+    name : this.xmlParam
+  });
+  param.get(function(xml) {
+    // hand off the XML to the URDF model
+    urdfLoader.urdf.initXml(xml);
+  });
 };
 
 var UrdfLoader = {};

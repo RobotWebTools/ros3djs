@@ -5,194 +5,320 @@
 var ROS3D = ROS3D || {
   REVISION : '1'
 };
-ROS3D.UrdfModel = function(options) {
-  
+/**
+ * Class to handle color for urdf
+ * @class
+ * @augments Class
+ */
+ROS3D.UrdfColor = function(r, g, b, a) {
+  this.r = r;
+  this.g = g;
+  this.b = b;
+  this.a = a;
 };
-
-var UrdfModel = function() {
-  var urdf = this;
-
+/**
+ * Class to handle urdf joints
+ * @class
+ * @augments Class
+ */
+ROS3D.UrdfJoint = function() {
   // members
-  this.name_ = '';
-  this.links_ = {};
-  this.joints_ = {};
-  this.materials_ = {};
+  this.name = "";
+  this.JointTypes = {
+    "unknown" : 0,
+    "revolute" : 1,
+    "continuous" : 3,
+    "prismatic" : 4,
+    "floating" : 5,
+    "planar" : 6,
+    "fixed" : 7
+  };
+  this.type = this.JointTypes.unknown;
+  this.axis = new UrdfVector3();
+  this.child_link_name = "";
+  this.parent_link_name = "";
+  this.parent_to_joint_origin_transform = new UrdfPose();
+  this.dynamics = null;
+  this.limits = null;
+  this.safety = null;
+  this.calibration = null;
+  this.mimic = null;
 
+  // methods
   this.clear = function() {
-    this.name_ = '';
-    this.links_ = {};
-    this.joints_ = {};
-    this.materials_ = {};
+    this.name = "";
+    this.axis.clear();
+    this.child_link_name = "";
+    this.parent_link_name = "";
+    this.parent_to_joint_origin_transform.clear();
+    this.dynamics = null;
+    this.limits = null;
+    this.safety = null;
+    this.calibration = null;
+    this.mimic = null;
+    this.type = this.JointTypes.unknown;
   };
 
-  this.initFile = function(src, callback) {
-    var xhr = new XMLHttpRequest();
-    var that = this;
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
-        window.setTimeout(function() {
-          var xml = xhr.responseXML;
-          xml.getElementById = function(id) {
-            return xpathGetElementById(xml, id);
-          };
-          that.initXml(xml);
-
-          if (callback) {
-            callback(that);
-          }
-
-        }, 0);
-      }
-    };
-
-    xhr.open("GET", src, true);
-    xhr.overrideMimeType("text/xml");
-    xhr.setRequestHeader("Content-type", "text/xml");
-    xhr.send(null);
-  };
-
-  this.initXml = function(xml_doc) {
-    function nsResolver(prefix) {
-      var ns = {
-        'c' : 'http://www.collada.org/2005/11/COLLADASchema'
-      };
-      return ns[prefix] || null;
-    };
-
-    function getNode(xpathexpr, ctxNode) {
-      if (ctxNode == null)
-        ctxNode = xml_doc;
-      return xml_doc.evaluate(xpathexpr, ctxNode, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    }
-
-    var robot_xml = getNode('//robot');
-    if (!robot_xml) {
-      console.error("Could not find the 'robot' element in the xml file");
-      return false;
-    }
-
+  this.init = function(xml) {
     this.clear();
-    // console.log('Parsing robot xml');
 
-    // Get robot name
-    var name = robot_xml.getAttribute('name');
+    // Get Joint Name
+    var name = xml.getAttribute("name");
     if (!name) {
-      console.error("No name given for the robot.");
+      console.error("unnamed joint found");
       return false;
     }
-    this.name_ = name;
+    this.name = name;
 
-    // Get all Material elements
-    for (n in robot_xml.childNodes) {
-      var node = robot_xml.childNodes[n];
-      if (node.tagName != "material")
-        continue;
-      var material_xml = node;
-      var material = new UrdfMaterial();
-
-      if (material.initXml(material_xml)) {
-        if (this.getMaterial(material.name)) {
-          console.error("material " + material.name + "is not unique.");
-          return false;
-        } else {
-          this.materials_[material.name] = material;
-          // console.log('Succesfully added a new material ' + material.name);
-        }
-      } else {
-        console.error('material xml is not initialized correctly');
+    // Get transform from Parent Link to Joint Frame
+    var origins = xml.getElementsByTagName("origin");
+    if (origins.length == 0) {
+      // console.log("Joint " + this.name + " missing origin tag under parent describing transform
+      // from Parent Link to Joint Frame, (using Identity transform).");
+      this.parent_to_joint_origin_transform.clear();
+    } else {
+      origin_xml = origins[0];
+      if (!this.parent_to_joint_origin_transform.initXml(origin_xml)) {
+        console.error("Malformed parent origin element for joint " + this.name);
+        this.parent_to_joint_origin_transform.clear();
         return false;
       }
     }
 
-    for (n in robot_xml.childNodes) {
-      var node = robot_xml.childNodes[n];
-      if (node.tagName != "link")
-        continue;
-      var link_xml = node;
-      var link = new UrdfLink();
+    // Get Parent Link
+    var parents = xml.getElementsByTagName("parent");
+    if (parents.length > 0) {
+      var parent_xml = parents[0];
+      var pname = parent_xml.getAttribute("link");
+      if (!pname)
+        ros_info("no parent link name specified for Joint link " + this.name
+            + ". this might be the root?");
+      else {
+        this.parent_link_name = pname;
+      }
+    }
 
-      if (link.initXml(link_xml)) {
-        if (this.getLink(link.name)) {
-          console.error("link " + link.name + " is not unique. ");
-          return false;
+    // Get Child Link
+    var children = xml.getElementsByTagName("child");
+    if (children.length > 0) {
+      var child_xml = children[0];
+      var pname = child_xml.getAttribute("link");
+      if (!pname)
+        ros_info("no child link name specified for Joint link " + this.name);
+      else {
+        this.child_link_name = pname;
+      }
+    }
+
+    // Get Joint type
+    var type_char = xml.getAttribute("type");
+    if (!type_char) {
+      console.error("joint " + this.name + " has no type, check to see if it's a reference.");
+      return false;
+    }
+    var type_str = type_char;
+    if (type_str == "planar")
+      this.type = this.JointTypes.planar;
+    else if (type_str == "floating")
+      this.type = this.JointTypes.floating;
+    else if (type_str == "revolute")
+      this.type = this.JointTypes.revolute;
+    else if (type_str == "continuous")
+      this.type = this.JointTypes.continuous;
+    else if (type_str == "prismatic")
+      this.type = this.JointTypes.prismatic;
+    else if (type_str == "fixed")
+      this.type = this.JointTypes.fixed;
+    else {
+      console.error("Joint " + this.name + " has no known type " + type_str);
+      return false;
+    }
+
+    // Get Joint Axis
+    if (this.type != this.JointTypes.floating && this.type != this.JointTypes.fixed) {
+      // axis
+      var axis = xml.getElementsByTagName("axis");
+      if (axis.length == 0) {
+        // console.log("no axis elemement for Joint link " + this.name + ", defaulting to (1,0,0)
+        // axis");
+        this.axis = new Vector3(1.0, 0.0, 0.0);
+      } else {
+        var axis_xml = axis[0];
+        if (!axis_xml.getAttribute("xyz")) {
+          console.error("no xyz attribute for axis element for Joint link " + this.name);
         } else {
-          // console.log("setting link " + link.name + " material");
-          if (link.visual) {
-            if (link.visual.material_name.length > 0) {
-              if (this.getMaterial(link.visual.material_name)) {
-                // console.log("Setting link " + link.name + " material to " +
-                // link.visual.material_name);
-                link.visual.material = this.getMaterial(link.visual.material_name);
-              } else {
-                if (link.visual.material) {
-                  // console.log("link " + link.name + " material " + link.visual.material_name + "
-                  // define in Visual.");
-                  this.links_[link.visual.material.name] = link.visual.material;
-                } else {
-                  console.error("link " + link.name + " material " + link.visual.material_name
-                      + " undefined.");
-                  return false;
-                }
-              }
-            }
+          if (!this.axis.initString(axis_xml.getAttribute("xyz"))) {
+            console.error("Malformed axis element for joint " + this.name);
+            this.axis.clear();
+            return false;
           }
-
-          this.links_[link.name] = link;
-          // console.log('successfully added a new link ' + link.name);
         }
-      } else {
-        console.error('link xml is not initialied correctly');
-        return false;
-      }
-
-      if (this.links_.length == 0) {
-        console.error('No link elements found in urdf file');
-        return false;
-      }
-    }
-
-    // Get all Joint elements
-    for (n in robot_xml.childNodes) {
-      var node = robot_xml.childNodes[n];
-      if (node.tagName != 'joint')
-        continue;
-      var joint_xml = node;
-      var joint = new UrdfJoint();
-
-      if (joint.initXml(joint_xml)) {
-        if (this.getJoint(joint.name)) {
-          console.error('joint ' + joint.name + ' is not unique.');
-          return false;
-        } else {
-          this.joints_[joint.name] = joint;
-          // console.log('successfully added a new joint ' + joint.name);
-        }
-      } else {
-        console.error('joint xml is not initialized correctly');
-        return false;
       }
     }
 
     return true;
   };
-
-  this.getMaterial = function(name) {
-    return this.materials_[name];
-  };
-
-  this.getLink = function(name) {
-    return this.links_[name];
-  };
-
-  this.getLinks = function(name) {
-    return this.links_;
-  };
-
-  this.getJoint = function(name) {
-    return this.joints_[name];
-  };
-
 };
+/**
+ * Handles material information for the URDF
+ * @class
+ * @augments Class
+ */
+ROS3D.UrdfMaterial = function() {
+  var urdfMaterial = this;
+  this.name;
+  this.textureFilename;
+  this.color;
+
+  this.init = function(xmlNode) {
+    var hasRgba = false;
+    var hasFilename = false;
+
+    // check for the name
+    if (!(urdfMaterial.name = xmlNode.getAttribute('name'))) {
+      console.error('URDF Material must contain a name attribute.');
+      return false;
+    }
+
+    // texture
+    var textures = xmlNode.getElementsByTagName('texture');
+    if (textures.length > 0) {
+      var texture = textures[0];
+      if ((urdfMaterial.textureFilename = texture.getAttribute('filename'))) {
+        hasFilename = true;
+      } else {
+        console.error('URDF texture has no filename for material ' + urdfMaterial.name + '.');
+      }
+    }
+
+    // color
+    var colors = xmlNode.getElementsByTagName('color');
+    if (colors.length > 0) {
+      var c = colors[0];
+      if (c.getAttribute('rgba')) {
+        // parse the RBGA string
+        var rgba = c.getAttribute('rgba').split(' ');
+        urdfMaterial.color = new ROS3D.UrdfColor(parseInt(rgba[0], rgba[1], rgba[2], rgba[3]));
+        hasRgba = true;
+      } else {
+        console.error('Material ' + this.name + ' color has no rgba.');
+      }
+    }
+
+    // check if we have a texture or color
+    if (hasRgba || hasFilename) {
+      return true;
+    } else {
+      console.error('Material ' + this.name + ' has no color or texture.');
+      return false;
+    }
+  };
+};
+ROS3D.UrdfModel = function() {
+  var urdfModel = this;
+  this.name;
+  this.materials = [];
+
+  this.initXml = function(xml) {
+    // parse the string
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(xml, 'text/xml');
+
+    // check for the robot tag
+    var robotXml = xmlDoc.evaluate('//robot', xmlDoc, null, XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null).singleNodeValue;
+    if (!robotXml) {
+      console.error('Could not find the "robot" element in the URDF XML file.');
+      return false;
+    }
+
+    // get the robot name
+    if (!(urdfModel.name = robotXml.getAttribute('name'))) {
+      console.error("No name given for the robot.");
+      return false;
+    }
+
+    // parse all the elements we need
+    for (n in robotXml.childNodes) {
+      var node = robotXml.childNodes[n];
+      if (node.tagName === 'material') {
+        var material = new ROS3D.UrdfMaterial();
+        if (material.init(node)) {
+          // make sure this is unique
+          if (urdfModel.materials[material.name]) {
+            console.error('Material ' + material.name + 'is not unique.');
+            return false;
+          } else {
+            urdfModel.materials[material.name] = material;
+          }
+        } else {
+          return false;
+        }
+      } else if (node.tagName === 'link') {
+        continue;
+        var link_xml = node;
+        var link = new UrdfLink();
+
+        if (link.initXml(link_xml)) {
+          if (urdfModel.getLink(link.name)) {
+            console.error("link " + link.name + " is not unique. ");
+            return false;
+          } else {
+            // console.log("setting link " + link.name + " material");
+            if (link.visual) {
+              if (link.visual.material_name.length > 0) {
+                if (urdfModel.getMaterial(link.visual.material_name)) {
+                  // console.log("Setting link " + link.name + " material to " +
+                  // link.visual.material_name);
+                  link.visual.material = urdfModel.getMaterial(link.visual.material_name);
+                } else {
+                  if (link.visual.material) {
+                    // console.log("link " + link.name + " material " + link.visual.material_name +
+                    // "
+                    // define in Visual.");
+                    urdfModel.links_[link.visual.material.name] = link.visual.material;
+                  } else {
+                    console.error("link " + link.name + " material " + link.visual.material_name
+                        + " undefined.");
+                    return false;
+                  }
+                }
+              }
+            }
+
+            urdfModel.links_[link.name] = link;
+            // console.log('successfully added a new link ' + link.name);
+          }
+        } else {
+          return false;
+        }
+
+        if (urdfModel.links_.length == 0) {
+          console.error('No link elements found in urdf file');
+          return false;
+        }
+      } else if (node.tagName === 'joint') {
+        // parse the joint
+        var joint = new ROS3D.UrdfJoint();
+        if (joint.init(node)) {
+          if (urdfModel.joints[joint.name]) {
+            console.error('Joint ' + joint.name + ' is not unique.');
+            return false;
+          } else {
+            urdfModel.joints[joint.name] = joint;
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+
+    this.emit('ready');
+
+    return true;
+  };
+};
+ROS3D.UrdfModel.prototype.__proto__ = EventEmitter2.prototype;
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
@@ -674,18 +800,26 @@ ROS3D.OrbitControls = function(scene, object) {
   this.addEventListener('DOMMouseScroll', onMouseWheel);
 };
 ROS3D.UrdfLoader = function(options) {
+  var urdfLoader = this;
   var options = options || {};
   this.ros = options.ros;
   this.xmlParam = options.xmlParam || 'robot_description';
-  this.xmlFile = options.xmlFile;
+  this.urdf = new ROS3D.UrdfModel();
 
-  // check for what type of XML we are getting
-  if (this.xmlFile) {
-
-  } else {
-    // get the value from ROS
-    //ros.
-  }
+  // wait for the model to load
+  this.urdf.on('ready', function() {
+    console.log("OKAY");
+  });
+  
+  // get the value from ROS
+  var param = new ROSLIB.Param({
+    ros : this.ros,
+    name : this.xmlParam
+  });
+  param.get(function(xml) {
+    // hand off the XML to the URDF model
+    urdfLoader.urdf.initXml(xml);
+  });
 };
 
 var UrdfLoader = {};
