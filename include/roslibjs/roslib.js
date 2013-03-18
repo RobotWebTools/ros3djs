@@ -1167,9 +1167,9 @@ ROSLIB.Transform = function(translation, rotation) {
    * @param transform the transform to copy
    * @returns a pointer to this transform
    */
-  this.copy = function(transform) {
-    transform.translation.copy(transform.translation);
-    transform.rotation.copy(transform.rotation);
-    return transform;
+  this.copy = function(tf) {
+    transform.translation.copy(tf.translation);
+    transform.rotation.copy(tf.rotation);
+    return tf;
   };
 };
