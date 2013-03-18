@@ -15,7 +15,7 @@
   var UrdfCylinder = function() {
 		// members
 		this.type = 0;
-		this.GeometryTypes = {"SPHERE" : 0, "BOX" : 1, "CYLINDER" : 3, "MESH" : 4};
+		this.GeometryTypes 
 		this.length = 0;
 		this.radius = 0;
 
