@@ -1,6 +1,7 @@
 /**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
+ * @author Jihoon Lee (jihoonlee.in@gmail.com)
  */
 
 /**
@@ -97,6 +98,15 @@ ROS3D.Viewer = function(options) {
 
     // draw the frame
     requestAnimationFrame(draw);
+  };
+  
+  /**
+   * Add the given THREE Object3D to the global scene in the viewer.
+   * 
+   * @param object - the THREE Object3D to add
+   */
+  this.addObject = function(object) {
+    viewer.scene.add(object);
   };
 
   // add the renderer to the page
