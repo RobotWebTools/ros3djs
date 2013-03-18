@@ -3,92 +3,53 @@
  * @class
  * @augments Class
  */
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define(['./urdfutils','./urdfcolor'],factory);
-  }
-  else {
-    root.UrdfVector3 = factory(root.UrdfUtils,root.UrdfColor);
-  }
-}(this, function(UrdfUtils,UrdfColor) {
+ROS3D.UrdfMaterial = function() {
+  var urdfMaterial = this;
+  this.name;
+  this.textureFilename;
+  this.color;
 
-  var UrdfMaterial = function() {
-    // members
-    this.name = "";
-    this.texture_filename = "";
-    this.color = new UrdfColor();
+  this.init = function(xmlNode) {
+    var hasRgba = false;
+    var hasFilename = false;
 
-    // methods
-    this.clear = function () 
-    {
-      this.name = "";
-      this.texture_filename = "";
-      this.color.clear();
-    };
+    // check for the name
+    if (!(urdfMaterial.name = xmlNode.getAttribute('name'))) {
+      console.error('URDF Material must contain a name attribute.');
+      return false;
+    }
 
-    this.initXml = function (xml) {
-      var has_rgb = false;
-      var has_filename = false;
-
-      this.clear();
-
-      if (!xml.getAttribute("name"))
-      {
-        console.error("Material must contain a name attribute");
-        return false;
+    // texture
+    var textures = xmlNode.getElementsByTagName('texture');
+    if (textures.length > 0) {
+      var texture = textures[0];
+      if ((urdfMaterial.textureFilename = texture.getAttribute('filename'))) {
+        hasFilename = true;
+      } else {
+        console.error('URDF texture has no filename for material ' + urdfMaterial.name + '.');
       }
+    }
 
-      this.name = xml.getAttribute("name");
-
-      // texture
-      var textures = xml.getElementsByTagName("texture");
-      if(textures.length>0)
-      {
-        var texture = textures[0];
-        if (texture.getAttribute("filename"))
-        {
-          this.texture_filename = texture.getAttribute("filename");
-          has_filename = true;
-        }
-        else
-        {
-          console.error("texture has no filename for Material " + this.name);
-        }
+    // color
+    var colors = xmlNode.getElementsByTagName('color');
+    if (colors.length > 0) {
+      var c = colors[0];
+      if (c.getAttribute('rgba')) {
+        // parse the RBGA string
+        var rgba = c.getAttribute('rgba').split(' ');
+        urdfMaterial.color = new ROS3D.UrdfColor(parseInt(rgba[0], rgba[1], rgba[2], rgba[3]));
+        hasRgba = true;
+      } else {
+        console.error('Material ' + this.name + ' color has no rgba.');
       }
+    }
 
-      // color
-      var colors = xml.getElementsByTagName("color");
-      if(colors.length>0)
-      {
-        var c = colors[0];
-        if (c.getAttribute("rgba"))
-        {
-          if (!this.color.initString(c.getAttribute("rgba")))
-          {
-            console.error("Material " + this.name + " has malformed color rgba values.");
-            this.color.clear();
-            return false;
-          }
-          else
-            has_rgb = true;
-        }
-        else
-        {
-          console.error("Material " + this.name + " color has no rgba");
-        }
-      }
-
-
-  //		if(has_rgb == false && has_filename ==false)
-  //		{
-  //		console.error("material xml is not initialized correctly");
-  //		this.color.clear();
-  //		has_rgb = true;
-  //		}
-
-      return (has_rgb || has_filename);
-    };
+    // check if we have a texture or color
+    if (hasRgba || hasFilename) {
+      return true;
+    } else {
+      console.error('Material ' + this.name + ' has no color or texture.');
+      return false;
+    }
   };
-
-  return UrdfMaterial;
-}));
+};

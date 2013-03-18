@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script type="text/javascript" src="../include/threejs/three.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
+<script type="text/javascript" src="../build/ros3d.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  /**
+   * Setup all visualization elements when the page is loaded.
+   */
+  function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros('ws://localhost:9090');
+
+    // Create the main viewer.
+    var viewer = ROS3D.Viewer({
+      divID : 'urdf',
+      width : 800,
+      height : 600,
+      antialias : true
+    });
+
+    // Setup the loader for the URDF.
+    var urdf = new ROS3D.UrdfLoader({
+      ros : ros
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1>Simple URDF Example</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li>roslaunch pr2_gazebo pr2_empty_world.launch</li>
+    <li>rosrun tf2_web_republisher tf2_web_republisher</li>
+    <li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
+  </ol>
+  <div id="urdf"></div>
+</body>
+</html>
