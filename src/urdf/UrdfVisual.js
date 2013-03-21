@@ -1,16 +1,34 @@
-ROS3D.UrdfVisual = function() {
-  var urdfVisual = this;
-  this.origin;
-  this.geometry;
-  this.material;
-  this.materialName;
+/**
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
 
-  this.initXml = function(xml) {
+/**
+ * A Visual element in a URDF.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
+ */
+ROS3D.UrdfVisual = function(options) {
+  var that = this;
+  var options = options || {};
+  var xml = options.xml;
+  this.origin = null;
+  this.geometry = null;
+  this.material = null;
+
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
+  var initXml = function(xml) {
     // origin
     var origins = xml.getElementsByTagName('origin');
     if (origins.length === 0) {
       // use the identity as the default
-      urdfVisual.origin = new ROSLIB.Pose();
+      that.origin = new ROSLIB.Pose();
     } else {
       // check the XYZ
       var xyz = xml.getAttribute('xyz');
@@ -19,13 +37,11 @@ ROS3D.UrdfVisual = function() {
         var position = new ROSLIB.Vector3();
       } else {
         var xyz = xyz.split(' ');
-        if (xyz.length !== 3) {
-          console.error('Invalid XYZ string in origin.');
-          return false;
-        } else {
-          var position = new ROSLIB.Vector3(parseFloat(xyz[0]), parseFloat(xyz[1]),
-              parseFloat(xyz[2]));
-        }
+        var position = new ROSLIB.Vector3({
+          x : parseFloat(xyz[0]),
+          y : parseFloat(xyz[1]),
+          z : parseFloat(xyz[2])
+        });
       }
 
       // check the RPY
@@ -35,37 +51,40 @@ ROS3D.UrdfVisual = function() {
         var orientation = new ROSLIB.Quaternion();
       } else {
         var rpy = rpy.split(' ');
-        if (rpy.length !== 3) {
-          console.error('Invalid RPY string in origin.');
-          return false;
-        } else {
-          // convert from RPY
-          var roll = parseFloat(rpy[0]);
-          var pitch = parseFloat(rpy[1]);
-          var yaw = parseFloat(rpy[2]);
-          var phi = roll / 2.0;
-          var the = pitch / 2.0;
-          var psi = yaw / 2.0;
+        // convert from RPY
+        var roll = parseFloat(rpy[0]);
+        var pitch = parseFloat(rpy[1]);
+        var yaw = parseFloat(rpy[2]);
+        var phi = roll / 2.0;
+        var the = pitch / 2.0;
+        var psi = yaw / 2.0;
+        var x = Math.sin(phi) * Math.cos(the) * Math.cos(psi) - Math.cos(phi) * Math.sin(the)
+            * Math.sin(psi);
+        var y = Math.cos(phi) * Math.sin(the) * Math.cos(psi) + Math.sin(phi) * Math.cos(the)
+            * Math.sin(psi);
+        var z = Math.cos(phi) * Math.cos(the) * Math.sin(psi) - Math.sin(phi) * Math.sin(the)
+            * Math.cos(psi);
+        var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
+            * Math.sin(psi);
 
-          var x = Math.sin(phi) * Math.cos(the) * Math.cos(psi) - Math.cos(phi) * Math.sin(the)
-              * Math.sin(psi);
-          var y = Math.cos(phi) * Math.sin(the) * Math.cos(psi) + Math.sin(phi) * Math.cos(the)
-              * Math.sin(psi);
-          var z = Math.cos(phi) * Math.cos(the) * Math.sin(psi) - Math.sin(phi) * Math.sin(the)
-              * Math.cos(psi);
-          var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
-              * Math.sin(psi);
-
-          var orientation = new ROSLIB.Quaternion(x, y, z, w);
-          orientation.normalize();
-        }
+        var orientation = new ROSLIB.Quaternion({
+          x : x,
+          y : y,
+          z : z,
+          w : w
+        });
+        orientation.normalize();
       }
-      urdfVisual.origin = new ROSLIB.Pose(position, orientation);
+      that.origin = new ROSLIB.Pose({
+        position : position,
+        orientation : orientation
+      });
     }
 
+    // geometry
     var geoms = xml.getElementsByTagName('geometry');
     if (geoms.length > 0) {
-      var shape;
+      var shape = null;
       // check for the shape
       for (n in geoms[0].childNodes) {
         var node = geoms[0].childNodes[n];
@@ -74,48 +93,38 @@ ROS3D.UrdfVisual = function() {
           break;
         }
       }
-      if (!shape) {
-        console.error('Geometry tag contains no child element.');
-        return false;
-      }
+      // check the type
       var type = shape.nodeName;
       if (type === 'sphere') {
-        geometry = new ROS3D.UrdfSphere();
+        that.geometry = new ROS3D.UrdfSphere({
+          xml : shape
+        });
       } else if (type === 'box') {
-        geometry = new ROS3D.UrdfBox();
+        that.geometry = new ROS3D.UrdfBox({
+          xml : shape
+        });
       } else if (type === 'cylinder') {
-        geometry = new ROS3D.UrdfCylinder();
+        that.geometry = new ROS3D.UrdfCylinder({
+          xml : shape
+        });
       } else if (type === 'mesh') {
-        geometry = new ROS3D.UrdfMesh();
+        that.geometry = new ROS3D.UrdfMesh({
+          xml : shape
+        });
       } else {
-        console.error('Unknown geometry type ' + type);
-        return false;
+        console.warn('Unknown geometry type ' + type);
       }
-      if (!geometry.initXml(shape)) {
-        console.error('Could not parse visual.');
-        return false;
-      }
-
-      urdfVisual.geometry = geometry;
     }
 
-    // material (optional)
+    // material
     var materials = xml.getElementsByTagName('material');
     if (materials.length > 0) {
-      // get material name
-      var materialXml = materials[0];
-      var material = new ROS3D.UrdfMaterial();
-      // could just be a name
-      if (!(urdfVisual.materialName = materialXml.getAttribute('name'))) {
-        console.error('URDF material must contain a name attribute');
-        return false;
-      }
-
-      // try to parse material element in place
-      if (material.initXml(materialXml)) {
-        urdfVisual.material = material;
-      }
+      that.material = new ROS3D.UrdfMaterial({
+        xml : materials[0]
+      });
     }
-    return true;
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };
