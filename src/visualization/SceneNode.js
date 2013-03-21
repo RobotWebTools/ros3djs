@@ -30,7 +30,7 @@ ROS3D.SceneNode = function(options) {
       function(msg) {
         // apply the transform
         var tf = new ROSLIB.Transform(msg);
-        var poseTransformed = new ROSLIB.Pose(that.pose);
+        var poseTransformed = new ROSLIB.Pose();
         poseTransformed.applyTransform(tf);
 
         // update the world

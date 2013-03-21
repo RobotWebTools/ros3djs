@@ -13,7 +13,9 @@
    */
   function init() {
     // Connect to ROS.
-    var ros = new ROSLIB.Ros({url : 'ws://localhost:9090'});
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
 
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
@@ -25,20 +27,24 @@
 
     // Setup a client to listen to TFs.
     var tfClient = new ROSLIB.TFClient({
-       ros: ros,
-       angularThres: 0.01,
-       transThres: 0.01,
-       rate: 10.0,
-    });
-
-    // Setup the loader for the URDF.
-    var urdf = new ROS3D.UrdfLoader({
       ros : ros,
-      tfClient : tfClient
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0
     });
 
-    urdf.on('ready', function() {
-      viewer.addObject(urdf.getObjectRoot());
+    // Get the URDF value from ROS.
+    var param = new ROSLIB.Param({
+      ros : ros,
+      name : 'robot_description'
+    });
+    param.get(function(xml) {
+      // Setup the loader for the URDF.
+      var urdfLoader = new ROS3D.UrdfLoader({
+        ros : ros,
+        tfClient : tfClient
+      });
+      viewer.addObject(urdfLoader.load(xml));
     });
   }
 </script>

@@ -12,60 +12,56 @@
  * 
  * @constructor
  * @param options - object with following keys:
- *  * ros - a handle to the ROS connection
  *  * tfClient - a handle to the TF client to be used to update the model's pose
- *  * xmlParam - the parameter name to load the URDF from, like 'robot_description'
- *  * objectRoot - the THREE 3D object to be used as the root of the model
  *  * path - the base path to the associated Collada models that will be loaded
  */
 ROS3D.UrdfLoader = function(options) {
   var that = this;
   var options = options || {};
-  this.ros = options.ros;
   this.tfClient = options.tfClient;
-  this.xmlParam = options.xmlParam || 'robot_description';
-  this.objectRoot = options.objectRoot || new THREE.Object3D();
   this.path = options.path || 'resources/';
-  this.urdfModel = null;
+};
 
-  // get the value from ROS
-  var param = new ROSLIB.Param({
-    ros : this.ros,
-    name : this.xmlParam
+/**
+ * Load the given URDF into a THREE Object3D.
+ * 
+ * @param string - the URDF as a string
+ * @returns the THREE Object3D that contains the entire URDF
+ */
+ROS3D.UrdfLoader.prototype.load = function(string) {
+  // hand off the XML string to the URDF model
+  var urdfModel = new ROS3D.UrdfModel({
+    string : string
   });
-  param.get(function(xml) {
-    // hand off the XML string to the URDF model
-    that.urdfModel = new ROS3D.UrdfModel({
-      string : xml
-    });
-    // load all models
-    var links = that.urdfModel.links;
-    for ( var l in links) {
-      var link = links[l];
-      if (link.visual && link.visual.geometry) {
-        if (link.visual.geometry.type === ROS3D.URDF_MESH) {
-          var frameID = '/' + link.name;
-          var uri = link.visual.geometry.filename;
-          var fileType = uri.substr(-4).toLowerCase();
 
-          // ignore mesh files which are not in Collada format
-          var meshLoader = new ROS3D.MeshLoader(that.path);
-          if (fileType === '.dae') {
-            var material = that.urdfModel.materials[link.visual.materialName];
-            var colladaModel = meshLoader.load(uri, material);
-            // create a scene node with the model
-            var sceneNode = new ROS3D.SceneNode({
-              frameID : frameID,
-              tfClient : that.tfClient,
-              pose : link.visual.origin,
-              model : colladaModel
-            });
-            that.objectRoot.add(sceneNode);
-          }
+  var objectRoot = new THREE.Object3D();
+
+  // load all models
+  var links = urdfModel.links;
+  var meshLoader = new ROS3D.MeshLoader({
+    path : this.path
+  });
+  for ( var l in links) {
+    var link = links[l];
+    if (link.visual && link.visual.geometry) {
+      if (link.visual.geometry.type === ROS3D.URDF_MESH) {
+        var frameID = '/' + link.name;
+        var uri = link.visual.geometry.filename;
+        var fileType = uri.substr(-4).toLowerCase();
+
+        // ignore mesh files which are not in Collada format
+        if (fileType === '.dae') {
+          var colladaModel = meshLoader.load(uri.substring(10));
+          // create a scene node with the model
+          var sceneNode = new ROS3D.SceneNode({
+            frameID : frameID,
+            tfClient : this.tfClient,
+            model : colladaModel
+          });
+          objectRoot.add(sceneNode);
         }
       }
-      that.emit('ready');
     }
-  });
+  }
+  return objectRoot;
 };
-ROS3D.UrdfLoader.prototype.__proto__ = EventEmitter2.prototype;

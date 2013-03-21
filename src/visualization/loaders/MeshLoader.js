@@ -1,68 +1,41 @@
-ROS3D.MeshLoader = function(meshBaseUrl) {
+/**
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
+ */
 
-  var meshLoader = this;
-  if (meshBaseUrl !== undefined) {
-    this.meshBaseUrl = meshBaseUrl;
+/**
+ * A mesh load can be used to load a given 3D mesh into a THREE object.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * path - the base path to the associated Collada models that will be loaded
+ */
+ROS3D.MeshLoader = function(options) {
+  var options = options || {};
+  this.path = options.path || '';
 
-    if (this.meshBaseUrl.substr(this.meshBaseUrl.length - 1) != "/") {
-      this.meshBaseUrl = this.meshBaseUrl + "/";
-    }
+  // check for a trailing '/'
+  if (this.path.substr(this.path.length - 1) !== '/') {
+    this.path += '/';
   }
+};
 
-  meshLoader.getMaterial = function(material) {
+/**
+ * Load the given mesh resource into a THREE Object3D.
+ * 
+ * @param resource - the mesh resource to load.
+ * @returns the THREE Object 3D containing the loaded mesh
+ */
+ROS3D.MeshLoader.prototype.load = function(resource) {
+  var object = new THREE.Object3D();
+  var uri = this.path + resource;
+  var fileType = uri.substr(-4).toLowerCase();
 
-    var texture_uri;
-    var texture;
-    var geomaterial;
-    if (material !== undefined) {
-      if (material.texture_filename !== "") {
-        texture_uri = meshBaseUrl + material.texture_filename.substr(10);
-        texture = new THREE.ImageUtils.loadTexture(texture_uri);
-        geomaterial = new THREE.MeshBasicMaterial({
-          map : texture
-        });
-      } else {
-        var color_name = material.name.toLowerCase();
-        geomaterial = new THREE.MeshBasicMaterial({
-          color : THREE.ColorKeywords[color_name]
-        });
-      }
-    } else {
-      geomaterial = new THREE.MeshBasicMaterial();
-    }
-
-    return geomaterial;
-  };
-
-  meshLoader.load = function(resource, material) {
-    var objroot = new THREE.Object3D();
-
-    if (meshBaseUrl == undefined) {
-      console.log('test');
-      THREE.Mesh
-          .call(this, new THREE.CubeGeometry(0.01, 0.01, 0.01), new THREE.MeshBasicMaterial());
-    } else {
-
-      var loader;
-
-      var uri = meshBaseUrl + resource.substr(10);
-      var texture_uri;
-      var texture;
-      var geomaterial;
-
-      // Collision model visualization support. This is not necessary for now.
-      // geomaterial = this.getMaterial(material); 
-
-      if (uri.substr(-4).toLowerCase() == ".dae") {
-        loader = new ROS3D.ColladaLoader();
-        loader.load(uri, function colladaReady(collada) {
-          var sceneObj = collada.scene;
-          //            sceneObj.children[0].material = geomaterial;
-
-          objroot.add(sceneObj);
-        });
-      }
-    }
-    return objroot;
-  };
+  // check the type
+  if (uri.substr(-4).toLowerCase() === '.dae') {
+    var loader = new ROS3D.ColladaLoader();
+    loader.load(uri, function colladaReady(collada) {
+      object.add(collada.scene);
+    });
+  }
+  return object;
 };
