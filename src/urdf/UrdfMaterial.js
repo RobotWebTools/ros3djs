@@ -4,13 +4,15 @@
  * @class
  * @augments Class
  */
-ROS3D.UrdfMaterial = function() {
+ROS3D.UrdfMaterial = function(options) {
   var that = this;
+  var options = options || {};
+  var xml = options.xml;
   this.name = null;
   this.textureFilename = null;
   this.color = null;
 
-  this.initXml = function(xml) {
+  var initXml = function(xml) {
     that.name = xml.getAttribute('name');
 
     // texture
@@ -23,8 +25,12 @@ ROS3D.UrdfMaterial = function() {
     var colors = xml.getElementsByTagName('color');
     if (colors.length > 0) {
       // parse the RBGA string
-      that.color = new ROS3D.UrdfColor();
-      that.color.initString(colors[0].getAttribute('rgba'));
+      that.color = new ROS3D.UrdfColor({
+        xml : colors[0]
+      });
     }
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };

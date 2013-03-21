@@ -2,6 +2,7 @@ ROS3D.UrdfModel = function(options) {
   var that = this;
   var options = options || {};
   var xml = options.xml;
+  var xml = options.xml;
   var string = options.string;
 
   this.name;
@@ -19,8 +20,9 @@ ROS3D.UrdfModel = function(options) {
     for (n in robotXml.childNodes) {
       var node = robotXml.childNodes[n];
       if (node.tagName === 'material') {
-        var material = new ROS3D.UrdfMaterial();
-        material.initXml(node);
+        var material = new ROS3D.UrdfMaterial({
+          xml : node
+        });
         // make sure this is unique
         if (that.materials[material.name]) {
           console.warn('Material ' + material.name + 'is not unique.');
@@ -28,8 +30,9 @@ ROS3D.UrdfModel = function(options) {
           that.materials[material.name] = material;
         }
       } else if (node.tagName === 'link') {
-        var link = new ROS3D.UrdfLink();
-        link.initXml(node);
+        var link = new ROS3D.UrdfLink({
+          xml : node
+        });
         // make sure this is unique
         if (that.links[link.name]) {
           console.warn('Link ' + link.name + ' is not unique.');

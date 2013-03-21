@@ -1,10 +1,12 @@
-ROS3D.UrdfVisual = function() {
+ROS3D.UrdfVisual = function(options) {
   var that = this;
+  var options = options || {};
+  var xml = options.xml;
   this.origin = null;
   this.geometry = null;
   this.material = null;
 
-  this.initXml = function(xml) {
+  var initXml = function(xml) {
     // origin
     var origins = xml.getElementsByTagName('origin');
     if (origins.length === 0) {
@@ -77,26 +79,35 @@ ROS3D.UrdfVisual = function() {
       // check the type
       var type = shape.nodeName;
       if (type === 'sphere') {
-        that.geometry = new ROS3D.UrdfSphere();
+        that.geometry = new ROS3D.UrdfSphere({
+          xml : shape
+        });
       } else if (type === 'box') {
-        that.geometry = new ROS3D.UrdfBox();
+        that.geometry = new ROS3D.UrdfBox({
+          xml : shape
+        });
       } else if (type === 'cylinder') {
-        that.geometry = new ROS3D.UrdfCylinder();
+        that.geometry = new ROS3D.UrdfCylinder({
+          xml : shape
+        });
       } else if (type === 'mesh') {
-        that.geometry = new ROS3D.UrdfMesh();
+        that.geometry = new ROS3D.UrdfMesh({
+          xml : shape
+        });
       } else {
         console.warn('Unknown geometry type ' + type);
       }
-      that.geometry.initXml(shape);
     }
 
     // material
     var materials = xml.getElementsByTagName('material');
     if (materials.length > 0) {
-      // get material name
-      that.material = new ROS3D.UrdfMaterial();
-      // try to parse material element in place
-      that.material.initXml(materials[0]);
+      that.material = new ROS3D.UrdfMaterial({
+        xml : materials[0]
+      });
     }
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };

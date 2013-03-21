@@ -4,13 +4,15 @@
  * @class
  * @augments Class
  */
-ROS3D.UrdfMesh = function() {
+ROS3D.UrdfMesh = function(options) {
   var that = this;
+  var options = options || {};
+  var xml = options.xml;
   this.filename = null;
   this.scale = null;
   this.type = null;
 
-  this.initXml = function(xml) {
+  var initXml = function(xml) {
     that.type = ROS3D.URDF_MESH;
     that.filename = xml.getAttribute('filename');
 
@@ -26,4 +28,7 @@ ROS3D.UrdfMesh = function() {
       });
     }
   };
+  
+  // pass it to the XML parser
+  initXml(xml);
 };

@@ -4,12 +4,14 @@
  * @class
  * @augments Class
  */
-ROS3D.UrdfBox = function() {
+ROS3D.UrdfBox = function(options) {
   var that = this;
+  var options = options || {};
+  var xml = options.xml;
   this.dimension = null;
   this.type = null;
 
-  this.initXml = function(xml) {
+  var initXml = function(xml) {
     this.type = ROS3D.URDF_BOX;
 
     // parse the string
@@ -20,4 +22,7 @@ ROS3D.UrdfBox = function() {
       z : parseFloat(xyz[2])
     });
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };
