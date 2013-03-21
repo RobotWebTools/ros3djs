@@ -1,10 +1,14 @@
-ROS3D.UrdfModel = function() {
-  var urdfModel = this;
+ROS3D.UrdfModel = function(options) {
+  var that = this;
+  var options = options || {};
+  var xml = options.xml;
+  var string = options.string;
+
   this.name;
   this.materials = [];
   this.links = [];
 
-  this.initXml = function(xml) {
+  var initXml = function(xml) {
     // check for the robot tag
     var robotXml = xml.evaluate('//robot', xml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     if (!robotXml) {
@@ -13,7 +17,7 @@ ROS3D.UrdfModel = function() {
     }
 
     // get the robot name
-    if (!(urdfModel.name = robotXml.getAttribute('name'))) {
+    if (!(that.name = robotXml.getAttribute('name'))) {
       console.error("No name given for the robot.");
       return false;
     }
@@ -25,11 +29,11 @@ ROS3D.UrdfModel = function() {
         var material = new ROS3D.UrdfMaterial();
         if (material.initXml(node)) {
           // make sure this is unique
-          if (urdfModel.materials[material.name]) {
+          if (that.materials[material.name]) {
             console.error('Material ' + material.name + 'is not unique.');
             return false;
           } else {
-            urdfModel.materials[material.name] = material;
+            that.materials[material.name] = material;
           }
         } else {
           return false;
@@ -38,17 +42,17 @@ ROS3D.UrdfModel = function() {
         var link = new ROS3D.UrdfLink();
 
         if (link.initXml(node)) {
-          if (urdfModel.links[link.name]) {
+          if (that.links[link.name]) {
             console.error('Link ' + link.name + ' is not unique.');
             return false;
           } else {
             // check for a material
             if (link.visual && link.visual.materialName) {
-              if (urdfModel.materials[link.visual.materialName]) {
-                link.visual.material = urdfModel.materials[link.visual.materialName];
+              if (that.materials[link.visual.materialName]) {
+                link.visual.material = that.materials[link.visual.materialName];
               } else {
                 if (link.visual.material) {
-                  urdfModel.materials[link.visual.material.name] = link.visual.material;
+                  that.materials[link.visual.material.name] = link.visual.material;
                 } else {
                   console.error('Link ' + link.name + ' material ' + link.visual.material_name
                       + ' is undefined.');
@@ -58,7 +62,7 @@ ROS3D.UrdfModel = function() {
             }
 
             // add the link
-            urdfModel.links[link.name] = link;
+            that.links[link.name] = link;
           }
         } else {
           console.error('Could not parse link.');
@@ -70,12 +74,12 @@ ROS3D.UrdfModel = function() {
     return true;
   };
 
-  this.initString = function(str) {
+  // check if we are using a string or an XML element
+  if (string) {
     // parse the string
     var parser = new DOMParser();
-    var xml = parser.parseFromString(str, 'text/xml');
-
-    // pass it to the XML parser
-    return urdfModel.initXml(xml);
-  };
+    xml = parser.parseFromString(string, 'text/xml');
+  }
+  // pass it to the XML parser
+  initXml(xml);
 };
