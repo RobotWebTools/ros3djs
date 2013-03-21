@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <script type="text/javascript" src="../include/threejs/three.js"></script>
-<script type="text/javascript"
-	src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
 <script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
 <script type="text/javascript" src="../build/ros3d.js"></script>
 
@@ -14,7 +13,7 @@
    */
   function init() {
     // Connect to ROS.
-    var ros = new ROSLIB.Ros('ws://localhost:9090');
+    var ros = new ROSLIB.Ros({url : 'ws://localhost:9090'});
 
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
@@ -46,21 +45,22 @@
 </head>
 
 <body onload="init()">
-	<h1>Simple URDF Example</h1>
-	<p>
-		Run the following commands in the terminal then refresh this page. <strong>Note
-			that this page must be run on a web server in order to properly
-			server the Collada models.</strong> Consider the following <a
-			href="http://www.linuxjournal.com/content/tech-tip-really-simple-http-server-python">basic
-			web server</a> in Python.
-	</p>
-	<ol>
-		<li>roslaunch pr2_description upload_pr2.launch</li>
-		<li>rosrun robot_state_publisher robot_state_publisher</li>
-		<li>rosrun joint_state_publisher joint_state_publisher</li>
-		<li>rosrun tf2_web_republisher tf2_web_republisher</li>
-		<li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
-	</ol>
-	<div id="urdf"></div>
+  <h1>Simple URDF Example</h1>
+  <p>
+    Run the following commands in the terminal then refresh this page. <strong>Note that
+      this page must be run on a web server in order to properly server the Collada models.</strong> Consider
+    the following <a
+      href="http://www.linuxjournal.com/content/tech-tip-really-simple-http-server-python">basic
+      web server</a> in Python.
+  </p>
+  <ol>
+    <li>roslaunch pr2_description upload_pr2.launch</li>
+    <li>rosrun robot_state_publisher robot_state_publisher</li>
+    <li>rosparam set use_gui true</li>
+    <li>rosrun joint_state_publisher joint_state_publisher</li>
+    <li>rosrun tf2_web_republisher tf2_web_republisher</li>
+    <li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
+  </ol>
+  <div id="urdf"></div>
 </body>
 </html>
