@@ -1,8 +1,14 @@
 /**
- * Handles material information for the URDF
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
+
+/**
+ * A Material element in a URDF.
  * 
- * @class
- * @augments Class
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
  */
 ROS3D.UrdfMaterial = function(options) {
   var that = this;
@@ -12,6 +18,11 @@ ROS3D.UrdfMaterial = function(options) {
   this.textureFilename = null;
   this.color = null;
 
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
   var initXml = function(xml) {
     that.name = xml.getAttribute('name');
 

@@ -1,7 +1,14 @@
 /**
- * Class to handle the Cylinder geometry type of a URDF.
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
+
+/**
+ * A Cylinder element in a URDF.
  * 
- * @class
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
  */
 ROS3D.UrdfCylinder = function(options) {
   var that = this;
@@ -11,12 +18,17 @@ ROS3D.UrdfCylinder = function(options) {
   this.length = null;
   this.radius = null;
 
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
   var initXml = function(xml) {
     that.type = ROS3D.URDF_CYLINDER;
     that.length = parseFloat(xml.getAttribute('length'));
     that.radius = parseFloat(xml.getAttribute('radius'));
   };
-  
+
   // pass it to the XML parser
   initXml(xml);
 };

@@ -1,7 +1,19 @@
+/**
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
+
+/**
+ * A URDF Model can be used to parse a given URDF into the appropriate elements. 
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
+ *  * string - the XML element to parse as a string
+ */
 ROS3D.UrdfModel = function(options) {
   var that = this;
   var options = options || {};
-  var xml = options.xml;
   var xml = options.xml;
   var string = options.string;
 
@@ -9,6 +21,11 @@ ROS3D.UrdfModel = function(options) {
   this.materials = [];
   this.links = [];
 
+  /**
+   * Initialize the model with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
   var initXml = function(xml) {
     // get the robot tag
     var robotXml = xml.evaluate('//robot', xml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;

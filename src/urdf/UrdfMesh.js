@@ -1,8 +1,14 @@
 /**
- * Mesh information for the urdf
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
+
+/**
+ * A Mesh element in a URDF.
  * 
- * @class
- * @augments Class
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
  */
 ROS3D.UrdfMesh = function(options) {
   var that = this;
@@ -12,6 +18,11 @@ ROS3D.UrdfMesh = function(options) {
   this.scale = null;
   this.type = null;
 
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
   var initXml = function(xml) {
     that.type = ROS3D.URDF_MESH;
     that.filename = xml.getAttribute('filename');
@@ -28,7 +39,7 @@ ROS3D.UrdfMesh = function(options) {
       });
     }
   };
-  
+
   // pass it to the XML parser
   initXml(xml);
 };
