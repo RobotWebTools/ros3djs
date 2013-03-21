@@ -25,8 +25,11 @@ ROS3D.UrdfMesh = function() {
         console.error('Invalid scale string.');
         return false;
       } else {
-        urdfMesh.scale = new ROSLIB.Vector3(parseFloat(xyz[0]), parseFloat(xyz[1]),
-            parseFloat(xyz[2]));
+        urdfMesh.scale = new ROSLIB.Vector3({
+          x : parseFloat(xyz[0]),
+          y : parseFloat(xyz[1]),
+          z : parseFloat(xyz[2])
+        });
       }
     }
 

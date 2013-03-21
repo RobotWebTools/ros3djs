@@ -23,8 +23,11 @@ ROS3D.UrdfVisual = function() {
           console.error('Invalid XYZ string in origin.');
           return false;
         } else {
-          var position = new ROSLIB.Vector3(parseFloat(xyz[0]), parseFloat(xyz[1]),
-              parseFloat(xyz[2]));
+          var position = new ROSLIB.Vector3({
+            x : parseFloat(xyz[0]),
+            y : parseFloat(xyz[1]),
+            z : parseFloat(xyz[2])
+          });
         }
       }
 
@@ -56,11 +59,19 @@ ROS3D.UrdfVisual = function() {
           var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
               * Math.sin(psi);
 
-          var orientation = new ROSLIB.Quaternion(x, y, z, w);
+          var orientation = new ROSLIB.Quaternion({
+            x : x,
+            y : y,
+            z : z,
+            w : w
+          });
           orientation.normalize();
         }
       }
-      urdfVisual.origin = new ROSLIB.Pose(position, orientation);
+      urdfVisual.origin = new ROSLIB.Pose({
+        position : position,
+        orientation : orientation
+      });
     }
 
     var geoms = xml.getElementsByTagName('geometry');

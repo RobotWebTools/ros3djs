@@ -10,20 +10,22 @@ ROS3D.SceneNode = function(options) {
   };
 
   this.setPoseFromServer = function(poseMsg) {
-    sceneNode.pose.copy(poseMsg);
+    sceneNode.pose = new ROSLIB.Pose(poseMsg);
     sceneNode.emitServerPoseUpdate();
   };
 
   this.tfUpdate = function(transformMsg) {
-    sceneNode.tfTransform.copy(transformMsg);
-    console.log(transformMsg.translation.x === sceneNode.tfTransform.translation.x);
+    console.log(transformMsg);
+    sceneNode.tfTransform = new ROSLIB.Transform(transformMsg);
     sceneNode.emitServerPoseUpdate();
   };
 
   this.emitServerPoseUpdate = function() {
-    var poseTransformed = new ROSLIB.Pose(sceneNode.pose.position, sceneNode.pose.orientation);
-    sceneNode.tfTransform.apply(poseTransformed);
-    //    this.emit('server_updated_pose',poseTransformed);
+    var poseTransformed = new ROSLIB.Pose({
+      position : sceneNode.pose.position,
+      orientation : sceneNode.pose.orientation
+    });
+    poseTransformed.applyTransform(sceneNode.tfTransform);
     sceneNode.position.x = poseTransformed.position.x;
     sceneNode.position.y = poseTransformed.position.y;
     sceneNode.position.z = poseTransformed.position.z;
@@ -33,7 +35,6 @@ ROS3D.SceneNode = function(options) {
         poseTransformed.orientation.y, poseTransformed.orientation.z, poseTransformed.orientation.w);
     sceneNode.updateMatrixWorld(true);
   };
-
 
   sceneNode.add(options.model);
   sceneNode.tfTransform = new ROSLIB.Transform();

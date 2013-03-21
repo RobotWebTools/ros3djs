@@ -22,7 +22,11 @@ ROS3D.UrdfBox = function() {
       console.error('Invalid size string.');
       return false;
     } else {
-      urdfBox.dim = new ROSLIB.Vector3(parseFloat(xyz[0]), parseFloat(xyz[1]), parseFloat(xyz[2]));
+      urdfBox.dim = new ROSLIB.Vector3({
+        x : parseFloat(xyz[0]),
+        y : parseFloat(xyz[1]),
+        z : parseFloat(xyz[2])
+      });
     }
 
     return true;
