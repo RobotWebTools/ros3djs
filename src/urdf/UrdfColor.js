@@ -5,24 +5,19 @@
  * @augments Class
  */
 ROS3D.UrdfColor = function() {
-  var urdfColor = this;
-  this.r;
-  this.g;
-  this.b;
-  this.a;
+  var that = this;
+  this.r = null;
+  this.g = null;
+  this.b = null;
+  this.a = null;
 
   this.initString = function(str) {
-    // try and parse the string
+    // parse the string
     var rgba = str.split(' ');
-    if (rgba.length !== 4) {
-      console.error('Invalid RBGA string.');
-      return false;
-    } else {
-      urdfColor.r = parseFloat(rgba[0]);
-      urdfColor.g = parseFloat(rgba[1]);
-      urdfColor.b = parseFloat(rgba[2]);
-      urdfColor.a = parseFloat(rgba[3]);
-      return true;
-    }
+    that.r = parseFloat(rgba[0]);
+    that.g = parseFloat(rgba[1]);
+    that.b = parseFloat(rgba[2]);
+    that.a = parseFloat(rgba[3]);
+    return true;
   };
 };

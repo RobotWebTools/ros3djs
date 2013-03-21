@@ -4,13 +4,14 @@
  * @class
  */
 ROS3D.UrdfCylinder = function() {
-  this.type = 0;
-  this.length = 0;
-  this.radius = 0;
+  var that = this;
+  this.type = null;
+  this.length = null;
+  this.radius = null;
 
   this.initXml = function(xml) {
-    this.type = ROS3D.URDF_CYLINDER;
-    this.length = parseFloat(xml.getAttribute('length'));
-    this.radius = parseFloat(xml.getAttribute('radius'));
+    that.type = ROS3D.URDF_CYLINDER;
+    that.length = parseFloat(xml.getAttribute('length'));
+    that.radius = parseFloat(xml.getAttribute('radius'));
   };
 };

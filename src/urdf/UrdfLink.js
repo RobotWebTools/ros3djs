@@ -1,26 +1,14 @@
 ROS3D.UrdfLink = function() {
-  var urdfLink = this;
-  this.name;
-  this.visual;
+  var that = this;
+  this.name = null;
+  this.visual = null;
 
   this.initXml = function(xml) {
-    if (!(urdfLink.name = xml.getAttribute('name'))) {
-      console.error('No name given for link.');
-      return false;
-    }
-
-    // visual (optional)
+    that.name = xml.getAttribute('name');
     var visuals = xml.getElementsByTagName('visual');
     if (visuals.length > 0) {
-      var visualXml = visuals[0];
-      var visual = new ROS3D.UrdfVisual();
-      if (!visual.initXml(visualXml)) {
-        console.error('Could not parse visual element for Link ' + this.name);
-        return false;
-      }
-      urdfLink.visual = visual;
+      that.visual = new ROS3D.UrdfVisual();
+      that.visual.initXml(visuals[0]);
     }
-
-    return true;
   };
 };

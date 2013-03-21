@@ -5,34 +5,25 @@
  * @augments Class
  */
 ROS3D.UrdfMesh = function() {
-  var urdfMesh = this;
-  this.filename = '';
-  this.scale;
-  this.type;
+  var that = this;
+  this.filename = null;
+  this.scale = null;
+  this.type = null;
 
   this.initXml = function(xml) {
-    this.type = ROS3D.URDF_MESH;
-    if (!(urdfMesh.filename = xml.getAttribute('filename'))) {
-      console.error('Mesh must contain a filename attribute.');
-      return false;
-    }
+    that.type = ROS3D.URDF_MESH;
+    that.filename = xml.getAttribute('filename');
 
     // check for a scale
-    if (xml.getAttribute('scale')) {
-      // check the XYZ
-      var xyz = xml.getAttribute('scale').split(' ');
-      if (xyz.length !== 3) {
-        console.error('Invalid scale string.');
-        return false;
-      } else {
-        urdfMesh.scale = new ROSLIB.Vector3({
-          x : parseFloat(xyz[0]),
-          y : parseFloat(xyz[1]),
-          z : parseFloat(xyz[2])
-        });
-      }
+    var scale = xml.getAttribute('scale');
+    if (scale) {
+      // get the XYZ
+      var xyz = scale.split(' ');
+      that.scale = new ROSLIB.Vector3({
+        x : parseFloat(xyz[0]),
+        y : parseFloat(xyz[1]),
+        z : parseFloat(xyz[2])
+      });
     }
-
-    return true;
   };
 };

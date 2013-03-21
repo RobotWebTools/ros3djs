@@ -5,17 +5,12 @@
  * @augments Class
  */
 ROS3D.UrdfSphere = function() {
-  var urdfSphere = this;
-  this.radius;
-  this.type;
+  var that = this;
+  this.radius = null;
+  this.type = null;
 
   this.initXml = function(xml) {
-    this.type = ROS3D.URDF_SPHERE;
-    if (!xml.getAttribute('radius')) {
-      console.error('Sphere shape must have a radius attribute');
-      return false;
-    }
-    urdfSphere.radius = parseFloat(xml.getAttribute("radius"));
-    return true;
+    that.type = ROS3D.URDF_SPHERE;
+    that.radius = parseFloat(xml.getAttribute('radius'));
   };
 };

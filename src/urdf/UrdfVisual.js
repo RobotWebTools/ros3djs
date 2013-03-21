@@ -1,16 +1,15 @@
 ROS3D.UrdfVisual = function() {
-  var urdfVisual = this;
-  this.origin;
-  this.geometry;
-  this.material;
-  this.materialName;
+  var that = this;
+  this.origin = null;
+  this.geometry = null;
+  this.material = null;
 
   this.initXml = function(xml) {
     // origin
     var origins = xml.getElementsByTagName('origin');
     if (origins.length === 0) {
       // use the identity as the default
-      urdfVisual.origin = new ROSLIB.Pose();
+      that.origin = new ROSLIB.Pose();
     } else {
       // check the XYZ
       var xyz = xml.getAttribute('xyz');
@@ -19,16 +18,11 @@ ROS3D.UrdfVisual = function() {
         var position = new ROSLIB.Vector3();
       } else {
         var xyz = xyz.split(' ');
-        if (xyz.length !== 3) {
-          console.error('Invalid XYZ string in origin.');
-          return false;
-        } else {
-          var position = new ROSLIB.Vector3({
-            x : parseFloat(xyz[0]),
-            y : parseFloat(xyz[1]),
-            z : parseFloat(xyz[2])
-          });
-        }
+        var position = new ROSLIB.Vector3({
+          x : parseFloat(xyz[0]),
+          y : parseFloat(xyz[1]),
+          z : parseFloat(xyz[2])
+        });
       }
 
       // check the RPY
@@ -38,45 +32,40 @@ ROS3D.UrdfVisual = function() {
         var orientation = new ROSLIB.Quaternion();
       } else {
         var rpy = rpy.split(' ');
-        if (rpy.length !== 3) {
-          console.error('Invalid RPY string in origin.');
-          return false;
-        } else {
-          // convert from RPY
-          var roll = parseFloat(rpy[0]);
-          var pitch = parseFloat(rpy[1]);
-          var yaw = parseFloat(rpy[2]);
-          var phi = roll / 2.0;
-          var the = pitch / 2.0;
-          var psi = yaw / 2.0;
+        // convert from RPY
+        var roll = parseFloat(rpy[0]);
+        var pitch = parseFloat(rpy[1]);
+        var yaw = parseFloat(rpy[2]);
+        var phi = roll / 2.0;
+        var the = pitch / 2.0;
+        var psi = yaw / 2.0;
+        var x = Math.sin(phi) * Math.cos(the) * Math.cos(psi) - Math.cos(phi) * Math.sin(the)
+            * Math.sin(psi);
+        var y = Math.cos(phi) * Math.sin(the) * Math.cos(psi) + Math.sin(phi) * Math.cos(the)
+            * Math.sin(psi);
+        var z = Math.cos(phi) * Math.cos(the) * Math.sin(psi) - Math.sin(phi) * Math.sin(the)
+            * Math.cos(psi);
+        var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
+            * Math.sin(psi);
 
-          var x = Math.sin(phi) * Math.cos(the) * Math.cos(psi) - Math.cos(phi) * Math.sin(the)
-              * Math.sin(psi);
-          var y = Math.cos(phi) * Math.sin(the) * Math.cos(psi) + Math.sin(phi) * Math.cos(the)
-              * Math.sin(psi);
-          var z = Math.cos(phi) * Math.cos(the) * Math.sin(psi) - Math.sin(phi) * Math.sin(the)
-              * Math.cos(psi);
-          var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
-              * Math.sin(psi);
-
-          var orientation = new ROSLIB.Quaternion({
-            x : x,
-            y : y,
-            z : z,
-            w : w
-          });
-          orientation.normalize();
-        }
+        var orientation = new ROSLIB.Quaternion({
+          x : x,
+          y : y,
+          z : z,
+          w : w
+        });
+        orientation.normalize();
       }
-      urdfVisual.origin = new ROSLIB.Pose({
+      that.origin = new ROSLIB.Pose({
         position : position,
         orientation : orientation
       });
     }
 
+    // geometry
     var geoms = xml.getElementsByTagName('geometry');
     if (geoms.length > 0) {
-      var shape;
+      var shape = null;
       // check for the shape
       for (n in geoms[0].childNodes) {
         var node = geoms[0].childNodes[n];
@@ -85,48 +74,29 @@ ROS3D.UrdfVisual = function() {
           break;
         }
       }
-      if (!shape) {
-        console.error('Geometry tag contains no child element.');
-        return false;
-      }
+      // check the type
       var type = shape.nodeName;
       if (type === 'sphere') {
-        geometry = new ROS3D.UrdfSphere();
+        that.geometry = new ROS3D.UrdfSphere();
       } else if (type === 'box') {
-        geometry = new ROS3D.UrdfBox();
+        that.geometry = new ROS3D.UrdfBox();
       } else if (type === 'cylinder') {
-        geometry = new ROS3D.UrdfCylinder();
+        that.geometry = new ROS3D.UrdfCylinder();
       } else if (type === 'mesh') {
-        geometry = new ROS3D.UrdfMesh();
+        that.geometry = new ROS3D.UrdfMesh();
       } else {
-        console.error('Unknown geometry type ' + type);
-        return false;
+        console.warn('Unknown geometry type ' + type);
       }
-      if (!geometry.initXml(shape)) {
-        console.error('Could not parse visual.');
-        return false;
-      }
-
-      urdfVisual.geometry = geometry;
+      that.geometry.initXml(shape);
     }
 
-    // material (optional)
+    // material
     var materials = xml.getElementsByTagName('material');
     if (materials.length > 0) {
       // get material name
-      var materialXml = materials[0];
-      var material = new ROS3D.UrdfMaterial();
-      // could just be a name
-      if (!(urdfVisual.materialName = materialXml.getAttribute('name'))) {
-        console.error('URDF material must contain a name attribute');
-        return false;
-      }
-
+      that.material = new ROS3D.UrdfMaterial();
       // try to parse material element in place
-      if (material.initXml(materialXml)) {
-        urdfVisual.material = material;
-      }
+      that.material.initXml(materials[0]);
     }
-    return true;
   };
 };
