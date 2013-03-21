@@ -14,7 +14,7 @@
 ROS3D.Axes = function(options) {
   THREE.Object3D.call(this);
   var that = this;
-  options = options || {};
+  var options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;

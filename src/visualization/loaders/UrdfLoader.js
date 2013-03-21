@@ -32,8 +32,8 @@ ROS3D.UrdfLoader = function(options) {
               var colladaModel = urdfLoader.meshLoader.load(uri, material);
 
               var sceneNode = new ROS3D.SceneNode({
-                frame_id : frameID,
-                tfclient : urdfLoader.tfClient,
+                frameID : frameID,
+                tfClient : urdfLoader.tfClient,
                 pose : link.visual.origin,
                 model : colladaModel
               });
