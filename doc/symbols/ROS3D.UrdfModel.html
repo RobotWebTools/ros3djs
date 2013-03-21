@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MouseHandler</title>
+		<title>JsDoc Reference - ROS3D.UrdfModel</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -234,7 +234,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MouseHandler
+				Class ROS3D.UrdfModel
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -245,13 +245,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_interaction_MouseHandler.js.html">MouseHandler.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_urdf_UrdfModel.js.html">UrdfModel.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MouseHandler.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.UrdfModel.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -264,9 +264,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MouseHandler.html#constructor">ROS3D.MouseHandler</a></b>(renderer, camera, rootObj, fallbackTarget)
+								<b><a href="../symbols/ROS3D.UrdfModel.html#constructor">ROS3D.UrdfModel</a></b>(options)
 							</div>
-							<div class="description">A handler for mouse events within a 3D viewer.</div>
+							<div class="description">A URDF Model can be used to parse a given URDF into the appropriate elements.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -280,7 +280,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.MouseHandler.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.UrdfModel.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -291,29 +291,11 @@ ul.inheritsList
 					<tbody>
 					
 						<tr>
-							<td class="attributes">&nbsp;</td>
+							<td class="attributes">&lt;inner&gt; &nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#destroy">destroy</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.UrdfModel.html#-initXml">initXml</a></b>(xml)
 								</div>
-								<div class="description">Destroy this mouse handler and its associated listeners.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#notify">notify</a></b>(target, type, event3D)
-								</div>
-								<div class="description">Notify the listener of the type of event that occurred.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#processDomEvent">processDomEvent</a></b>(domEvent)
-								</div>
-								<div class="description">Process the particular DOM even that has occurred based on the mouse's position in the scene.</div>
+								<div class="description">Initialize the model with the given XML node.</div>
 							</td>
 						</tr>
 					
@@ -334,11 +316,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MouseHandler</b>(renderer, camera, rootObj, fallbackTarget)
+						<b>ROS3D.UrdfModel</b>(options)
 				</div>
 				
 				<div class="description">
-					A handler for mouse events within a 3D viewer.
+					A URDF Model can be used to parse a given URDF into the appropriate elements.
 					
 				</div>
 				
@@ -350,28 +332,12 @@ ul.inheritsList
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								 <b>renderer</b>
+								 <b>options</b>
 								
 							</dt>
-								<dd>- the main renderer</dd>
-						
-							<dt>
-								 <b>camera</b>
-								
-							</dt>
-								<dd>- the main camera in the scene</dd>
-						
-							<dt>
-								 <b>rootObj</b>
-								
-							</dt>
-								<dd>- the root object to check for mouse events</dd>
-						
-							<dt>
-								 <b>fallbackTarget</b>
-								
-							</dt>
-								<dd>- the fallback target, e.g., the camera controls</dd>
+								<dd>- object with following keys:
+ * xml - the XML element to parse
+ * string - the XML element to parse as a string</dd>
 						
 						</dl>
 					
@@ -394,40 +360,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="destroy"> </a>
-					<div class="fixedFont">
+					<a name="-initXml"> </a>
+					<div class="fixedFont">&lt;inner&gt; 
 					
 					
-					<b>destroy</b>()
-					
-					</div>
-					<div class="description">
-						Destroy this mouse handler and its associated listeners.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="notify"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>notify</b>(target, type, event3D)
+					<b>initXml</b>(xml)
 					
 					</div>
 					<div class="description">
-						Notify the listener of the type of event that occurred.
+						Initialize the model with the given XML node.
 						
 						
 					</div>
@@ -439,65 +380,10 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>target</b>
+									<b>xml</b>
 									
 								</dt>
-								<dd>- the target of the event</dd>
-							
-								<dt>
-									<b>type</b>
-									
-								</dt>
-								<dd>- the type of event that occurred</dd>
-							
-								<dt>
-									<b>event3D</b>
-									
-								</dt>
-								<dd>- the 3D mouse even information</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>if an event was canceled</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="processDomEvent"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>processDomEvent</b>(domEvent)
-					
-					</div>
-					<div class="description">
-						Process the particular DOM even that has occurred based on the mouse's position in the scene.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>domEvent</b>
-									
-								</dt>
-								<dd>- the DOM event to process</dd>
+								<dd>- the XML element to parse</dd>
 							
 							</dl>
 						
