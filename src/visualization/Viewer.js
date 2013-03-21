@@ -1,7 +1,7 @@
 /**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
- * @author Jihoon Lee (jihoonlee.in@gmail.com)
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
  */
 
 /**
@@ -9,16 +9,16 @@
  *
  * @constructor
  * @param options - object with following keys:
- * * divID - the ID of the div to place the viewer in
- * * width - the initial width, in pixels, of the canvas
- * * height - the initial height, in pixels, of the canvas
- * * disableGrid - if the grid feature should be disabled in the viewer
- * * gridColor - the color to render the grid lines, like #cccccc
- * * background - the color to render the background, like #efefef
- * * antialias - if antialiasing should be used
+ *  * divID - the ID of the div to place the viewer in
+ *  * width - the initial width, in pixels, of the canvas
+ *  * height - the initial height, in pixels, of the canvas
+ *  * disableGrid - if the grid feature should be disabled in the viewer
+ *  * gridColor - the color to render the grid lines, like #cccccc
+ *  * background - the color to render the background, like #efefef
+ *  * antialias - if antialiasing should be used
  */
 ROS3D.Viewer = function(options) {
-  var viewer = this;
+  var that = this;
   options = options || {};
   this.divID = options.divID;
   this.width = options.width;
@@ -79,34 +79,25 @@ ROS3D.Viewer = function(options) {
   this.highlighter = new ROS3D.Highlighter(mouseHandler);
 
   /**
-   * Renders the associated scene to the viewer.
+   * Renders the associated scene to the that.
    */
   function draw() {
     // update the controls
-    viewer.cameraControls.update();
+    that.cameraControls.update();
 
     // put light to the top-left of the camera
-    viewer.directionalLight.position = viewer.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-    viewer.directionalLight.position.normalize();
+    that.directionalLight.position = that.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+    that.directionalLight.position.normalize();
 
     // set the scene
-    viewer.renderer.clear(true, true, true);
-    viewer.renderer.render(viewer.scene, viewer.camera);
+    that.renderer.clear(true, true, true);
+    that.renderer.render(that.scene, that.camera);
 
-    // reder any mouseovers
-    viewer.highlighter.renderHighlight(viewer.renderer, viewer.scene, viewer.camera);
+    // render any mouseovers
+    that.highlighter.renderHighlight(that.renderer, that.scene, that.camera);
 
     // draw the frame
     requestAnimationFrame(draw);
-  };
-  
-  /**
-   * Add the given THREE Object3D to the global scene in the viewer.
-   * 
-   * @param object - the THREE Object3D to add
-   */
-  this.addObject = function(object) {
-    viewer.scene.add(object);
   };
 
   // add the renderer to the page
@@ -114,4 +105,13 @@ ROS3D.Viewer = function(options) {
 
   // begin the animation
   draw();
+};
+
+/**
+ * Add the given THREE Object3D to the global scene in the that.
+ * 
+ * @param object - the THREE Object3D to add
+ */
+ROS3D.Viewer.prototype.addObject = function(object) {
+  this.scene.add(object);
 };

@@ -43,4 +43,4 @@ ROS3D.SceneNode = function(options) {
 
   sceneNode.subscribeTf(sceneNode.frame_id);
 };
-ROS3D.SceneNode.prototype = Object.create(THREE.Object3D.prototype);
+ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
