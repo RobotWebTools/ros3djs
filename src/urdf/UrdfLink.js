@@ -1,26 +1,37 @@
-ROS3D.UrdfLink = function() {
-  var urdfLink = this;
-  this.name;
-  this.visual;
+/**
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
+ */
 
-  this.initXml = function(xml) {
-    if (!(urdfLink.name = xml.getAttribute('name'))) {
-      console.error('No name given for link.');
-      return false;
-    }
+/**
+ * A Link element in a URDF.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
+ */
+ROS3D.UrdfLink = function(options) {
+  var that = this;
+  var options = options || {};
+  var xml = options.xml;
+  this.name = null;
+  this.visual = null;
 
-    // visual (optional)
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
+  var initXml = function(xml) {
+    that.name = xml.getAttribute('name');
     var visuals = xml.getElementsByTagName('visual');
     if (visuals.length > 0) {
-      var visualXml = visuals[0];
-      var visual = new ROS3D.UrdfVisual();
-      if (!visual.initXml(visualXml)) {
-        console.error('Could not parse visual element for Link ' + this.name);
-        return false;
-      }
-      urdfLink.visual = visual;
+      that.visual = new ROS3D.UrdfVisual({
+        xml : visuals[0]
+      });
     }
-
-    return true;
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };

@@ -4,25 +4,20 @@
 
 /**
  * An Axes object can be used to display the axis of a particular coordinate frame.
- *
+ * 
  * @constructor
  * @param options - object with following keys:
- * * shaftRadius - the radius of the shaft to render
- * * headRadius - the radius of the head to render
- * * headLength - the length of the head to render
+ *   * shaftRadius - the radius of the shaft to render
+ *   * headRadius - the radius of the head to render 
+ *   * headLength - the length of the head to render
  */
 ROS3D.Axes = function(options) {
-  var axes = this;
-  options = options || {};
+  THREE.Object3D.call(this);
+  var that = this;
+  var options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
-
-  THREE.Object3D.call(this);
-
-  // create the cylinders for the objects
-  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
   /**
    * Adds an axis marker to this axes object.
@@ -44,27 +39,31 @@ ROS3D.Axes = function(options) {
     rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
 
     // create the arrow
-    var arrow = new THREE.Mesh(axes.headGeom, material);
+    var arrow = new THREE.Mesh(that.headGeom, material);
     arrow.position = axis.clone();
     arrow.position.multiplyScalar(0.95);
     arrow.useQuaternion = true;
     arrow.quaternion = rot;
     arrow.updateMatrix();
-    axes.add(arrow);
+    that.add(arrow);
 
     // create the line
-    var line = new THREE.Mesh(axes.lineGeom, material);
+    var line = new THREE.Mesh(that.lineGeom, material);
     line.position = axis.clone();
     line.position.multiplyScalar(0.45);
     line.useQuaternion = true;
     line.quaternion = rot;
     line.updateMatrix();
-    axes.add(line);
+    that.add(line);
   };
+
+  // create the cylinders for the objects
+  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
   // add the three markers to the axes
   addAxis(new THREE.Vector3(1, 0, 0));
   addAxis(new THREE.Vector3(0, 1, 0));
   addAxis(new THREE.Vector3(0, 0, 1));
 };
-ROS3D.Axes.prototype = Object.create(THREE.Object3D.prototype);
+ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;

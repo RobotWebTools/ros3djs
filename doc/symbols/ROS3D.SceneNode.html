@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MouseHandler</title>
+		<title>JsDoc Reference - ROS3D.SceneNode</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -234,7 +234,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MouseHandler
+				Class ROS3D.SceneNode
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -245,13 +245,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_interaction_MouseHandler.js.html">MouseHandler.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_SceneNode.js.html">SceneNode.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MouseHandler.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.SceneNode.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -264,9 +264,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MouseHandler.html#constructor">ROS3D.MouseHandler</a></b>(renderer, camera, rootObj, fallbackTarget)
+								<b><a href="../symbols/ROS3D.SceneNode.html#constructor">ROS3D.SceneNode</a></b>(options)
 							</div>
-							<div class="description">A handler for mouse events within a 3D viewer.</div>
+							<div class="description">A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -277,51 +277,6 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
-			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.MouseHandler.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#destroy">destroy</a></b>()
-								</div>
-								<div class="description">Destroy this mouse handler and its associated listeners.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#notify">notify</a></b>(target, type, event3D)
-								</div>
-								<div class="description">Notify the listener of the type of event that occurred.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#processDomEvent">processDomEvent</a></b>(domEvent)
-								</div>
-								<div class="description">Process the particular DOM even that has occurred based on the mouse's position in the scene.</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -334,11 +289,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MouseHandler</b>(renderer, camera, rootObj, fallbackTarget)
+						<b>ROS3D.SceneNode</b>(options)
 				</div>
 				
 				<div class="description">
-					A handler for mouse events within a 3D viewer.
+					A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.
 					
 				</div>
 				
@@ -350,28 +305,13 @@ ul.inheritsList
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								 <b>renderer</b>
+								 <b>options</b>
 								
 							</dt>
-								<dd>- the main renderer</dd>
-						
-							<dt>
-								 <b>camera</b>
-								
-							</dt>
-								<dd>- the main camera in the scene</dd>
-						
-							<dt>
-								 <b>rootObj</b>
-								
-							</dt>
-								<dd>- the root object to check for mouse events</dd>
-						
-							<dt>
-								 <b>fallbackTarget</b>
-								
-							</dt>
-								<dd>- the fallback target, e.g., the camera controls</dd>
+								<dd>- object with following keys:
+ * tfClient - a handle to the TF client
+ * frameID - the frame ID this object belongs to
+ * model - the THREE 3D object to be rendered</dd>
 						
 						</dl>
 					
@@ -389,127 +329,6 @@ ul.inheritsList
 			
 
 <!-- ============================== method details ========================= -->		
-			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name="destroy"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>destroy</b>()
-					
-					</div>
-					<div class="description">
-						Destroy this mouse handler and its associated listeners.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="notify"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>notify</b>(target, type, event3D)
-					
-					</div>
-					<div class="description">
-						Notify the listener of the type of event that occurred.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>target</b>
-									
-								</dt>
-								<dd>- the target of the event</dd>
-							
-								<dt>
-									<b>type</b>
-									
-								</dt>
-								<dd>- the type of event that occurred</dd>
-							
-								<dt>
-									<b>event3D</b>
-									
-								</dt>
-								<dd>- the 3D mouse even information</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>if an event was canceled</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="processDomEvent"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>processDomEvent</b>(domEvent)
-					
-					</div>
-					<div class="description">
-						Process the particular DOM even that has occurred based on the mouse's position in the scene.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>domEvent</b>
-									
-								</dt>
-								<dd>- the DOM event to process</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					
-				
 			
 			
 <!-- ============================== event details ========================= -->		

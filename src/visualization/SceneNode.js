@@ -1,45 +1,46 @@
+/**
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *  * tfClient - a handle to the TF client
+ *  * frameID - the frame ID this object belongs to
+ *  * model - the THREE 3D object to be rendered
+ */
 ROS3D.SceneNode = function(options) {
-  var sceneNode = this;
+  var options = options || {};
+  var that = this;
+  this.tfClient = options.tfClient;
+  this.frameID = options.frameID;
+  this.model = options.model;
+
   THREE.Object3D.call(this);
+  this.useQuaternion = true;
 
-  this.tfclient = options.tfclient;
-  this.frame_id = options.frame_id;
+  // add the model
+  this.add(this.model);
 
-  this.subscribeTf = function(frame_id) {
-    sceneNode.tfclient.subscribe(frame_id, sceneNode.tfUpdate);
-  };
+  // listen for TF updates
+  this.tfClient.subscribe(this.frameID,
+      function(msg) {
+        // apply the transform
+        var tf = new ROSLIB.Transform(msg);
+        var poseTransformed = new ROSLIB.Pose();
+        poseTransformed.applyTransform(tf);
 
-  this.setPoseFromServer = function(poseMsg) {
-    sceneNode.pose.copy(poseMsg);
-    sceneNode.emitServerPoseUpdate();
-  };
-
-  this.tfUpdate = function(transformMsg) {
-    sceneNode.tfTransform.copy(transformMsg);
-    console.log(transformMsg.translation.x === sceneNode.tfTransform.translation.x);
-    sceneNode.emitServerPoseUpdate();
-  };
-
-  this.emitServerPoseUpdate = function() {
-    var poseTransformed = new ROSLIB.Pose(sceneNode.pose.position, sceneNode.pose.orientation);
-    sceneNode.tfTransform.apply(poseTransformed);
-    //    this.emit('server_updated_pose',poseTransformed);
-    sceneNode.position.x = poseTransformed.position.x;
-    sceneNode.position.y = poseTransformed.position.y;
-    sceneNode.position.z = poseTransformed.position.z;
-
-    sceneNode.useQuaternion = true;
-    sceneNode.quaternion = new THREE.Quaternion(poseTransformed.orientation.x,
-        poseTransformed.orientation.y, poseTransformed.orientation.z, poseTransformed.orientation.w);
-    sceneNode.updateMatrixWorld(true);
-  };
-
-
-  sceneNode.add(options.model);
-  sceneNode.tfTransform = new ROSLIB.Transform();
-  sceneNode.pose = new ROSLIB.Pose();
-  sceneNode.setPoseFromServer(options.pose);
-
-  sceneNode.subscribeTf(sceneNode.frame_id);
+        // update the world
+        that.position.x = poseTransformed.position.x;
+        that.position.y = poseTransformed.position.y;
+        that.position.z = poseTransformed.position.z;
+        that.quaternion = new THREE.Quaternion(poseTransformed.orientation.x,
+            poseTransformed.orientation.y, poseTransformed.orientation.z,
+            poseTransformed.orientation.w);
+        that.updateMatrixWorld(true);
+      });
 };
-ROS3D.SceneNode.prototype = Object.create(THREE.Object3D.prototype);
+ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;

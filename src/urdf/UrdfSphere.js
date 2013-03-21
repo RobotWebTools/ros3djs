@@ -1,21 +1,32 @@
 /**
- * Class to handle visualizing spheres in the urdf
- * 
- * @class
- * @augments Class
+ * @author Benjamin Pitzer (ben.pitzer@gmail.com)
+ * @author Russell Toris - (rctoris@wpi.edu)
  */
-ROS3D.UrdfSphere = function() {
-  var urdfSphere = this;
-  this.radius;
-  this.type;
 
-  this.initXml = function(xml) {
-    this.type = ROS3D.URDF_SPHERE;
-    if (!xml.getAttribute('radius')) {
-      console.error('Sphere shape must have a radius attribute');
-      return false;
-    }
-    urdfSphere.radius = parseFloat(xml.getAttribute("radius"));
-    return true;
+/**
+ * A Sphere element in a URDF.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * xml - the XML element to parse
+ */
+ROS3D.UrdfSphere = function(options) {
+  var that = this;
+  var options = options || {};
+  var xml = options.xml;
+  this.radius = null;
+  this.type = null;
+
+  /**
+   * Initialize the element with the given XML node.
+   * 
+   * @param xml - the XML element to parse
+   */
+  var initXml = function(xml) {
+    that.type = ROS3D.URDF_SPHERE;
+    that.radius = parseFloat(xml.getAttribute('radius'));
   };
+
+  // pass it to the XML parser
+  initXml(xml);
 };
