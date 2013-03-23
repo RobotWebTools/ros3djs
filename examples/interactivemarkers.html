@@ -34,27 +34,30 @@
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0,
-      fixedFrame : '/my_frame'
+      fixedFrame : '/rotating_frame'
     });
 
     // Setup the marker client.
-    var markerClient = new ROS3D.MarkerClient({
+    var imClient = new ROS3D.InteractiveMarkerClient({
       ros : ros,
       tfClient : tfClient,
-      topic : '/visualization_marker'
+      topic : '/basic_controls',
+      camera : viewer.camera
     });
-    viewer.addObject(markerClient.rootObject);
+    viewer.selectableObjs.add(imClient.root);
   }
 </script>
 </head>
 
 <body onload="init()">
-	<h1>Simple Marker Example</h1>
+	<h1>Simple Interactive Marker Example</h1>
 	<p>Run the following commands in the terminal then refresh this
 		page.</p>
 	<ol>
 		<li>roscore</li>
-		<li>rosrun visualization_marker_tutorials basic_shapes</li>
+		<li>rosrun interactive_marker_tutorials basic_controls</li>
+		<li>rosrun interactive_marker_proxy proxy topic_ns:=/basic_controls
+			target_frame:=/rotating_frame</li>
 		<li>rosrun tf2_web_republisher tf2_web_republisher</li>
 		<li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
 	</ol>

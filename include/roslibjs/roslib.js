@@ -790,6 +790,16 @@ ROSLIB.Pose.prototype.applyTransform = function(tf) {
   this.orientation = tmp;
 };
 
+ROSLIB.Pose.prototype.applyInverseTransform = function(tf) {
+  var rotInv = tf.rotation.clone();
+  rotInv.invert();
+  this.position.multiplyQuaternion(rotInv);
+  this.position.subtract(tf.translation);
+  var tmp = rotInv.clone();
+  tmp.multiply(this.orientation);
+  this.orientation = tmp;
+};
+
 /**
  * Clone a copy of this pose.
  *

@@ -42,7 +42,7 @@ ROS3D.MarkerClient = function(options) {
 
     that.previousMarker = sceneNode;
     that.rootObject.add(sceneNode);
-    that.emit('marker', that.rootObject);
+    that.emit('update');
   });
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;

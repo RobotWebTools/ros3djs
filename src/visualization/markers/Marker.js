@@ -3,7 +3,6 @@ ROS3D.Marker = function(options) {
   var options = options || {};
   this.path = options.path || '/';
   var message = options.message;
-  var geom = null;
 
   // check for a trailing '/'
   if (this.path.substr(this.path.length - 1) !== '/') {
@@ -63,7 +62,7 @@ ROS3D.Marker = function(options) {
       if (message.points.length === 2) {
         var p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
         var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
-        var direction = p1.clone().negate().addSelf(p2);
+        var direction = p1.clone().negate().add(p2);
         // direction = p2 - p1;
         len = direction.length();
         headR = message.scale.y;
@@ -178,9 +177,11 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_LINE_STRIP:
     case ROS3D.MARKER_LINE_LIST:
-    default:
       var geom = new THREE.CubeGeometry(0.1, 0.1, 0.1);
       this.add(new THREE.Mesh(geom, colorMaterial));
+      break;
+    default:
+      console.error('Unknown marker type: ' + message.type);
       break;
   }
 

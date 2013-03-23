@@ -30,14 +30,7 @@
 
   <target name="-concatenate" depends="-properties" description="Concatenates specified JavaScript files">
     <concat destfile="${build}/${js}">
-      <fileset dir="${src}" includes="*.js"/>
-      <fileset dir="${src}/urdf" includes="*.js"/>
-      <fileset dir="${src}/marker" includes="*.js"/>
-      <fileset dir="${src}/visualization" includes="*.js"/>
-      <fileset dir="${src}/visualization/interaction" includes="*.js"/>
-      <fileset dir="${src}/visualization/loaders" includes="*.js"/>
-      <fileset dir="${src}/visualization/markers" includes="*.js"/>
-      <fileset dir="${src}/visualization/models" includes="*.js"/>
+      <fileset dir="${src}"/>
     </concat>
     <echo>${js} created.</echo>
   </target>
