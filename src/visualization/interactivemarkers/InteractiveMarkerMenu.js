@@ -1,5 +1,4 @@
 ROS3D.InteractiveMarkerMenu = function(menuEntries) {
-  console.log(menuEntries);
   var allMenus = [];
   allMenus[0] = {
     children : []

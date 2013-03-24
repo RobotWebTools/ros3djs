@@ -108,10 +108,19 @@ ROS3D.Viewer = function(options) {
 };
 
 /**
- * Add the given THREE Object3D to the global scene in the that.
+ * Add the given THREE Object3D to the global selectable object scene in the viewer.
  * 
  * @param object - the THREE Object3D to add
  */
 ROS3D.Viewer.prototype.addObject = function(object) {
   this.scene.add(object);
+};
+
+/**
+ * Add the given THREE Object3D to the global scene in the viewer.
+ * 
+ * @param object - the THREE Object3D to add
+ */
+ROS3D.Viewer.prototype.addSelectableObject = function(object) {
+  this.selectableObjs.add(object);
 };

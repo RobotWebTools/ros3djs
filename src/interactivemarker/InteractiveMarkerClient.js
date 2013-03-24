@@ -1,40 +1,47 @@
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ */
+
+/**
+ * A client for an interactive marker topic.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *  * ros - a handle to the ROS connection
+ *  * tfClient - a handle to the TF client
+ *  * topic (optional) - the topic to subscribe to, like '/basic_controls'
+ *  * viewer - the main 3D viewer that is being rendered to
+ *  * path (optional) - the base path to any meshes that will be loaded
+ *  * rootObject (optional) - the root THREE 3D object to render to
+ */
 ROS3D.InteractiveMarkerClient = function(options) {
   var that = this;
+  var options = options || {};
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
-  this.root = new THREE.Object3D();
-  options.viewer.selectableObjs.add(this.root);
+  this.viewer = options.viewer;
+  this.path = '';
+  this.rootObject = options.rootObject || new THREE.Object3D();
+
   this.interactiveMarkers = {};
   this.updateTopic = null;
   this.feedbackTopic = null;
-  this.camera = options.viewer.camera;
-  this.meshBaseUrl = '';
 
   // check for an initial topic
   if (this.topic) {
     this.subscribe(this.topic);
   }
 
-  this.on('created_marker', function(marker) {
-    var intMarker = new ROS3D.InteractiveMarker(marker, that.camera, that.meshBaseUrl);
-    that.root.add(intMarker);
-
-    marker.on('server_updated_pose', function(pose) {
-      intMarker.onServerSetPose({
-        pose : pose
-      });
-    });
-
-    intMarker.addEventListener('user_changed_pose', marker.setPoseFromClient.bind(marker));
-    intMarker.addEventListener('user_mouse_down', marker.onMouseDown.bind(marker));
-    intMarker.addEventListener('user_mouse_up', marker.onMouseUp.bind(marker));
-    intMarker.addEventListener('user_button_click', marker.onButtonClick.bind(marker));
-    intMarker.addEventListener('menu_select', marker.onMenuSelect.bind(marker));
-  });
+  // add the markers
+  this.viewer.addSelectableObject(this.rootObject);
 };
-ROS3D.InteractiveMarkerClient.prototype.__proto__ = EventEmitter2.prototype;
 
+/**
+ * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
+ * 
+ * @param topic - the topic to subscribe to, like '/basic_controls'
+ */
 ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
   // unsubscribe to the other topics
   this.unsubscribe();
@@ -64,6 +71,9 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
   this.initService.callService(request, this.processInit.bind(this));
 };
 
+/**
+ * Unsubscribe from the current interactive marker topic.
+ */
 ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
   if (this.updateTopic) {
     this.updateTopic.unsubscribe();
@@ -78,34 +88,40 @@ ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
   this.interactiveMarkers = {};
 };
 
-ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
-  if (this.interactiveMarkers[intMarkerName]) {
-    this.emit('deleted_marker', intMarkerName);
-    delete this.interactiveMarkers[intMarkerName];
-  }
-};
-
+/**
+ * Process the given interactive marker initialization message.
+ * 
+ * @param initMessage - the interactive marker initialization message to process
+ */
 ROS3D.InteractiveMarkerClient.prototype.processInit = function(initMessage) {
   var message = initMessage.msg;
-  var client = this;
+
+  // erase any old markers
   message.erases = [];
   for (intMarkerName in this.interactiveMarkers) {
     message.erases.push(intMarkerName);
   };
   message.poses = [];
+
+  // treat it as an update
   this.processUpdate(message);
 };
 
+/**
+ * Process the given interactive marker update message.
+ * 
+ * @param initMessage - the interactive marker update message to process
+ */
 ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
   var that = this;
 
-  // Deletes markers
+  // erase any markers
   message.erases.forEach(function(name) {
     var marker = that.interactiveMarkers[name];
     that.eraseIntMarker(name);
   });
 
-  // Updates marker poses
+  // updates marker poses
   message.poses.forEach(function(poseMessage) {
     var marker = that.interactiveMarkers[poseMessage.name];
     if (marker) {
@@ -113,18 +129,48 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     }
   });
 
-  // Adds new markers
-  message.markers.forEach(function(imMsg) {
-    var oldIntMarkerHandle = that.interactiveMarkers[imMsg.name];
-    if (oldIntMarkerHandle) {
-      that.eraseIntMarker(oldIntMarkerHandle.name);
+  // add new markers
+  message.markers.forEach(function(msg) {
+    // get rid of anything with the same name
+    var oldhandle = that.interactiveMarkers[msg.name];
+    if (oldhandle) {
+      that.eraseIntMarker(oldhandle.name);
     }
 
-    var intMarkerHandle = new ROS3D.IntMarkerHandle(imMsg, that.feedbackTopic, that.tfClient);
-    that.interactiveMarkers[imMsg.name] = intMarkerHandle;
-    that.emit('created_marker', intMarkerHandle);
-    // this might trigger a transform update event immediately,
-    // so we need to call it after emitting a created_marker event.
-    intMarkerHandle.subscribeTf(imMsg);
+    // create the handle
+    var handle = new ROS3D.InteractiveMarkerHandle(msg, that.feedbackTopic, that.tfClient);
+    that.interactiveMarkers[msg.name] = handle;
+
+    // create the actual marker
+    var intMarker = new ROS3D.InteractiveMarker(handle, that.viewer.camera, that.path);
+    // add it to the scene
+    that.rootObject.add(intMarker);
+
+    // listen for any pose updates from the server
+    handle.on('pose', function(pose) {
+      intMarker.onServerSetPose({
+        pose : pose
+      });
+    });
+
+    intMarker.addEventListener('user_changed_pose', handle.setPoseFromClient.bind(handle));
+    intMarker.addEventListener('user_mouse_down', handle.onMouseDown.bind(handle));
+    intMarker.addEventListener('user_mouse_up', handle.onMouseUp.bind(handle));
+    intMarker.addEventListener('user_button_click', handle.onButtonClick.bind(handle));
+    intMarker.addEventListener('menu_select', handle.onMenuSelect.bind(handle));
+
+    // now list for any TF changes
+    handle.subscribeTf(msg);
   });
+};
+
+/**
+ * Erase the interactive marker with the given name.
+ * 
+ * @param intMarkerName - the interactive marker name to delete
+ */
+ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
+  if (this.interactiveMarkers[intMarkerName]) {
+    delete this.interactiveMarkers[intMarkerName];
+  }
 };

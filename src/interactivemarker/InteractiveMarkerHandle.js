@@ -1,6 +1,20 @@
-/* Handle with signals for a single interactive marker */
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ */
 
-ROS3D.IntMarkerHandle = function(imMsg, feedbackTopic, tfClient) {
+/**
+ * Handle with signals for a single interactive marker.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *  * ros - a handle to the ROS connection
+ *  * tfClient - a handle to the TF client
+ *  * topic (optional) - the topic to subscribe to, like '/basic_controls'
+ *  * viewer - the main 3D viewer that is being rendered to
+ *  * path (optional) - the base path to any meshes that will be loaded
+ *  * rootObject (optional) - the root THREE 3D object to render to
+ */
+ROS3D.InteractiveMarkerHandle = function(imMsg, feedbackTopic, tfClient) {
   this.feedbackTopic = feedbackTopic;
   this.tfClient = tfClient;
   this.name = imMsg.name;
@@ -13,48 +27,41 @@ ROS3D.IntMarkerHandle = function(imMsg, feedbackTopic, tfClient) {
   this.pose = new ROSLIB.Pose();
   this.setPoseFromServer(imMsg.pose);
 };
-ROS3D.IntMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
+ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 
-var KEEP_ALIVE = 0;
-var POSE_UPDATE = 1;
-var MENU_SELECT = 2;
-var BUTTON_CLICK = 3;
-var MOUSE_DOWN = 4;
-var MOUSE_UP = 5;
-
-ROS3D.IntMarkerHandle.prototype.subscribeTf = function(imMsg) {
+ROS3D.InteractiveMarkerHandle.prototype.subscribeTf = function(imMsg) {
   // subscribe to tf updates if frame-fixed
   if (imMsg.header.stamp.secs === 0.0 && imMsg.header.stamp.nsecs === 0.0) {
     this.tfClient.subscribe(imMsg.header.frame_id, this.tfUpdate.bind(this));
   }
 };
 
-ROS3D.IntMarkerHandle.prototype.emitServerPoseUpdate = function() {
+ROS3D.InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function() {
   var poseTransformed = new ROSLIB.Pose({
     position : this.pose.position,
     orientation : this.pose.orientation
   });
   poseTransformed.applyTransform(this.tfTransform);
-  this.emit('server_updated_pose', poseTransformed);
+  this.emit('pose', poseTransformed);
 };
 
-ROS3D.IntMarkerHandle.prototype.setPoseFromServer = function(poseMsg) {
+ROS3D.InteractiveMarkerHandle.prototype.setPoseFromServer = function(poseMsg) {
   this.pose = new ROSLIB.Pose(poseMsg);
   this.emitServerPoseUpdate();
 };
 
-ROS3D.IntMarkerHandle.prototype.tfUpdate = function(transformMsg) {
+ROS3D.InteractiveMarkerHandle.prototype.tfUpdate = function(transformMsg) {
   this.tfTransform = new ROSLIB.Transform(transformMsg);
   this.emitServerPoseUpdate();
 };
 
-ROS3D.IntMarkerHandle.prototype.setPoseFromClient = function(event) {
+ROS3D.InteractiveMarkerHandle.prototype.setPoseFromClient = function(event) {
   this.pose = new ROSLIB.Pose(event);
   var inv = this.tfTransform.clone();
   inv.rotation.invert();
   this.pose.applyTransform(inv);
-  this.emit('client_updated_pose', event);
-  this.sendFeedback(POSE_UPDATE, undefined, 0, event.controlName);
+
+  this.sendFeedback(ROS3D.INTERACTIVE_MARKER_POSE_UPDATE, undefined, 0, event.controlName);
 
   // keep sending pose feedback until the mouse goes up
   if (this.dragging) {
@@ -65,29 +72,30 @@ ROS3D.IntMarkerHandle.prototype.setPoseFromClient = function(event) {
   }
 };
 
-ROS3D.IntMarkerHandle.prototype.onButtonClick = function(event) {
-  this.sendFeedback(BUTTON_CLICK, event.clickPosition, 0, event.controlName);
+ROS3D.InteractiveMarkerHandle.prototype.onButtonClick = function(event) {
+  this.sendFeedback(ROS3D.INTERACTIVE_MARKER_BUTTON_CLICK, event.clickPosition, 0,
+      event.controlName);
 };
 
-ROS3D.IntMarkerHandle.prototype.onMouseDown = function(event) {
-  this.sendFeedback(MOUSE_DOWN, event.clickPosition, 0, event.controlName);
+ROS3D.InteractiveMarkerHandle.prototype.onMouseDown = function(event) {
+  this.sendFeedback(ROS3D.INTERACTIVE_MARKER_MOUSE_DOWN, event.clickPosition, 0, event.controlName);
   this.dragging = true;
 };
 
-ROS3D.IntMarkerHandle.prototype.onMouseUp = function(event) {
-  this.sendFeedback(MOUSE_UP, event.clickPosition, 0, event.controlName);
+ROS3D.InteractiveMarkerHandle.prototype.onMouseUp = function(event) {
+  this.sendFeedback(ROS3D.INTERACTIVE_MARKER_MOUSE_UP, event.clickPosition, 0, event.controlName);
   this.dragging = false;
   if (this.timeoutHandle) {
     clearTimeout(this.timeoutHandle);
   }
 };
 
-ROS3D.IntMarkerHandle.prototype.onMenuSelect = function(event) {
-  this.sendFeedback(MENU_SELECT, undefined, event.id, event.controlName);
+ROS3D.InteractiveMarkerHandle.prototype.onMenuSelect = function(event) {
+  this.sendFeedback(ROS3D.INTERACTIVE_MARKER_MENU_SELECT, undefined, event.id, event.controlName);
 };
 
-ROS3D.IntMarkerHandle.prototype.sendFeedback = function(eventType, clickPosition, menu_entry_id,
-    controlName) {
+ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, clickPosition,
+    menu_entry_id, controlName) {
 
   var mouse_point_valid = clickPosition !== undefined;
   var clickPosition = clickPosition || {
