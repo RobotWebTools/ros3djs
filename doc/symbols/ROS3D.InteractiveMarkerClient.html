@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.Axes</title>
+		<title>JsDoc Reference - ROS3D.InteractiveMarkerClient</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -240,7 +240,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.Axes
+				Class ROS3D.InteractiveMarkerClient
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -251,13 +251,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_rctoris_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_models_Axes.js.html">Axes.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_rctoris_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarker_InteractiveMarkerClient.js.html">InteractiveMarkerClient.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.Axes.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarkerClient.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -270,9 +270,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.Axes.html#constructor">ROS3D.Axes</a></b>(options)
+								<b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#constructor">ROS3D.InteractiveMarkerClient</a></b>(options)
 							</div>
-							<div class="description">An Axes object can be used to display the axis of a particular coordinate frame.</div>
+							<div class="description">A client for an interactive marker topic.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -286,7 +286,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.Axes.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.InteractiveMarkerClient.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -297,11 +297,47 @@ ul.inheritsList
 					<tbody>
 					
 						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.Axes.html#-addAxis">addAxis</a></b>(axis)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#eraseIntMarker">eraseIntMarker</a></b>(intMarkerName)
 								</div>
-								<div class="description">Adds an axis marker to this axes object.</div>
+								<div class="description">Erase the interactive marker with the given name.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#processInit">processInit</a></b>(initMessage)
+								</div>
+								<div class="description">Process the given interactive marker initialization message.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#processUpdate">processUpdate</a></b>(initMessage)
+								</div>
+								<div class="description">Process the given interactive marker update message.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#subscribe">subscribe</a></b>(topic)
+								</div>
+								<div class="description">Subscribe to the given interactive marker topic.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerClient.html#unsubscribe">unsubscribe</a></b>()
+								</div>
+								<div class="description">Unsubscribe from the current interactive marker topic.</div>
 							</td>
 						</tr>
 					
@@ -322,11 +358,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.Axes</b>(options)
+						<b>ROS3D.InteractiveMarkerClient</b>(options)
 				</div>
 				
 				<div class="description">
-					An Axes object can be used to display the axis of a particular coordinate frame.
+					A client for an interactive marker topic.
 					
 				</div>
 				
@@ -342,9 +378,12 @@ ul.inheritsList
 								
 							</dt>
 								<dd>- object with following keys:
-  * shaftRadius - the radius of the shaft to render
-  * headRadius - the radius of the head to render 
-  * headLength - the length of the head to render</dd>
+ * ros - a handle to the ROS connection
+ * tfClient - a handle to the TF client
+ * topic (optional) - the topic to subscribe to, like '/basic_controls'
+ * viewer - the main 3D viewer that is being rendered to
+ * path (optional) - the base path to any meshes that will be loaded
+ * rootObject (optional) - the root THREE 3D object to render to</dd>
 						
 						</dl>
 					
@@ -367,15 +406,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="-addAxis"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
+					<a name="eraseIntMarker"> </a>
+					<div class="fixedFont">
 					
 					
-					<b>addAxis</b>(axis)
+					<b>eraseIntMarker</b>(intMarkerName)
 					
 					</div>
 					<div class="description">
-						Adds an axis marker to this axes object.
+						Erase the interactive marker with the given name.
 						
 						
 					</div>
@@ -387,12 +426,145 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>axis</b>
+									<b>intMarkerName</b>
 									
 								</dt>
-								<dd>- the 3D vector representing the axis to add</dd>
+								<dd>- the interactive marker name to delete</dd>
 							
 							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="processInit"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>processInit</b>(initMessage)
+					
+					</div>
+					<div class="description">
+						Process the given interactive marker initialization message.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>initMessage</b>
+									
+								</dt>
+								<dd>- the interactive marker initialization message to process</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="processUpdate"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>processUpdate</b>(initMessage)
+					
+					</div>
+					<div class="description">
+						Process the given interactive marker update message.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>initMessage</b>
+									
+								</dt>
+								<dd>- the interactive marker update message to process</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="subscribe"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>subscribe</b>(topic)
+					
+					</div>
+					<div class="description">
+						Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>topic</b>
+									
+								</dt>
+								<dd>- the topic to subscribe to, like '/basic_controls'</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="unsubscribe"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>unsubscribe</b>()
+					
+					</div>
+					<div class="description">
+						Unsubscribe from the current interactive marker topic.
+						
+						
+					</div>
+					
+					
+					
 						
 						
 						

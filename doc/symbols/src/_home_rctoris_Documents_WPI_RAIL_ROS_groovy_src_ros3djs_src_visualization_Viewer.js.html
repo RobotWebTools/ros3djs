@@ -115,11 +115,20 @@
 <span class='line'>108</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>109</span> 
 <span class='line'>110</span> </span><span class="COMM">/**
-<span class='line'>111</span>  * Add the given THREE Object3D to the global scene in the that.
+<span class='line'>111</span>  * Add the given THREE Object3D to the global selectable object scene in the viewer.
 <span class='line'>112</span>  * 
 <span class='line'>113</span>  * @param object - the THREE Object3D to add
 <span class='line'>114</span>  */</span><span class="WHIT">
 <span class='line'>115</span> </span><span class="NAME">ROS3D.Viewer.prototype.addObject</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>116</span> </span><span class="WHIT">  </span><span class="NAME">this.scene.add</span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>117</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>118</span> </span></pre></body></html>
+<span class='line'>118</span> 
+<span class='line'>119</span> </span><span class="COMM">/**
+<span class='line'>120</span>  * Add the given THREE Object3D to the global scene in the viewer.
+<span class='line'>121</span>  * 
+<span class='line'>122</span>  * @param object - the THREE Object3D to add
+<span class='line'>123</span>  */</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="NAME">ROS3D.Viewer.prototype.addSelectableObject</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">  </span><span class="NAME">this.selectableObjs.add</span><span class="PUNC">(</span><span class="NAME">object</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>127</span> </span></pre></body></html>

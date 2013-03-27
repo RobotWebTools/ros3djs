@@ -19,7 +19,7 @@
  */
 ROS3D.Viewer = function(options) {
   var that = this;
-  options = options || {};
+  var options = options || {};
   this.divID = options.divID;
   this.width = options.width;
   this.height = options.height;

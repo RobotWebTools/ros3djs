@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.Axes</title>
+		<title>JsDoc Reference - ROS3D.InteractiveMarkerHandle</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -240,7 +240,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.Axes
+				Class ROS3D.InteractiveMarkerHandle
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -251,13 +251,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_rctoris_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_models_Axes.js.html">Axes.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_rctoris_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarker_InteractiveMarkerHandle.js.html">InteractiveMarkerHandle.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.Axes.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarkerHandle.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -270,9 +270,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.Axes.html#constructor">ROS3D.Axes</a></b>(options)
+								<b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#constructor">ROS3D.InteractiveMarkerHandle</a></b>(options, feedbackTopic, tfClient)
 							</div>
-							<div class="description">An Axes object can be used to display the axis of a particular coordinate frame.</div>
+							<div class="description">Handle with signals for a single interactive marker.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -283,33 +283,6 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
-			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.Axes.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.Axes.html#-addAxis">addAxis</a></b>(axis)
-								</div>
-								<div class="description">Adds an axis marker to this axes object.</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -322,11 +295,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.Axes</b>(options)
+						<b>ROS3D.InteractiveMarkerHandle</b>(options, feedbackTopic, tfClient)
 				</div>
 				
 				<div class="description">
-					An Axes object can be used to display the axis of a particular coordinate frame.
+					Handle with signals for a single interactive marker.
 					
 				</div>
 				
@@ -342,9 +315,24 @@ ul.inheritsList
 								
 							</dt>
 								<dd>- object with following keys:
-  * shaftRadius - the radius of the shaft to render
-  * headRadius - the radius of the head to render 
-  * headLength - the length of the head to render</dd>
+ * ros - a handle to the ROS connection
+ * tfClient - a handle to the TF client
+ * topic (optional) - the topic to subscribe to, like '/basic_controls'
+ * viewer - the main 3D viewer that is being rendered to
+ * path (optional) - the base path to any meshes that will be loaded
+ * rootObject (optional) - the root THREE 3D object to render to</dd>
+						
+							<dt>
+								 <b>feedbackTopic</b>
+								
+							</dt>
+								<dd></dd>
+						
+							<dt>
+								 <b>tfClient</b>
+								
+							</dt>
+								<dd></dd>
 						
 						</dl>
 					
@@ -362,47 +350,6 @@ ul.inheritsList
 			
 
 <!-- ============================== method details ========================= -->		
-			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name="-addAxis"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					
-					<b>addAxis</b>(axis)
-					
-					</div>
-					<div class="description">
-						Adds an axis marker to this axes object.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>axis</b>
-									
-								</dt>
-								<dd>- the 3D vector representing the axis to add</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					
-				
 			
 			
 <!-- ============================== event details ========================= -->		
