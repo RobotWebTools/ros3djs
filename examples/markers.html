@@ -3,14 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <script type="text/javascript" src="../include/threejs/three.js"></script>
-<script type="text/javascript"
-	src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
 <script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
 <script type="text/javascript" src="../build/ros3d.js"></script>
 
 <script type="text/javascript" type="text/javascript">
-  abcde = true;
-
   /**
    * Setup all visualization elements when the page is loaded. 
    */
@@ -23,8 +20,8 @@
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
       divID : 'markers',
-      width : 800,
-      height : 600,
+      width : 400,
+      height : 300,
       antialias : true
     });
 
@@ -49,15 +46,14 @@
 </head>
 
 <body onload="init()">
-	<h1>Simple Marker Example</h1>
-	<p>Run the following commands in the terminal then refresh this
-		page.</p>
-	<ol>
-		<li>roscore</li>
-		<li>rosrun visualization_marker_tutorials basic_shapes</li>
-		<li>rosrun tf2_web_republisher tf2_web_republisher</li>
-		<li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
-	</ol>
-	<div id="markers"></div>
+  <h1>Simple Marker Example</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>rosrun visualization_marker_tutorials basic_shapes</tt></li>
+    <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="markers"></div>
 </body>
 </html>
