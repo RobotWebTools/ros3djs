@@ -2,9 +2,61 @@
 <html>
 <head>
 <meta charset="utf-8" />
+
+<style type="text/css">
+.interactive_marker_menu {
+	background-color: #444444;
+	border: 1px solid #888888;
+	border: 1px solid #888888;
+	padding: 0px 0px 0px 0px;
+	color: #FFFFFF;
+	font-family: sans-serif;
+	font-size: 0.8em;
+	z-index: 1002;
+}
+
+.interactive_marker_menu ul {
+	padding: 0px 0px 5px 0px;
+	margin: 0px;
+	list-style-type: none;
+}
+
+.interactive_marker_menu ul li div {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
+	padding: 3px 10px 3px 10px;
+}
+
+.interactive_marker_menuentry:hover {
+	background-color: #666666;
+}
+
+.interactive_marker_menu ul ul {
+	font-style: italic;
+	padding-left: 10px;
+}
+
+.interactive_marker_overlay {
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	z-index: 1001;
+	-moz-opacity: 0.0;
+	opacity: .0;
+	filter: alpha(opacity = 0);
+}
+</style>
+
 <script type="text/javascript" src="../include/threejs/three.js"></script>
-<script type="text/javascript"
-	src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
 <script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
 <script type="text/javascript" src="../build/ros3d.js"></script>
 
@@ -49,17 +101,16 @@
 </head>
 
 <body onload="init()">
-	<h1>Simple Interactive Marker Example</h1>
-	<p>Run the following commands in the terminal then refresh this
-		page.</p>
-	<ol>
-		<li>roscore</li>
-		<li>rosrun interactive_marker_tutorials basic_controls</li>
-		<li>rosrun interactive_marker_proxy proxy topic_ns:=/basic_controls
-			target_frame:=/rotating_frame</li>
-		<li>rosrun tf2_web_republisher tf2_web_republisher</li>
-		<li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
-	</ol>
-	<div id="markers"></div>
+  <h1>Simple Interactive Marker Example</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li>roscore</li>
+    <li>rosrun interactive_marker_tutorials basic_controls</li>
+    <li>rosrun interactive_marker_proxy proxy topic_ns:=/basic_controls
+      target_frame:=/rotating_frame</li>
+    <li>rosrun tf2_web_republisher tf2_web_republisher</li>
+    <li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
+  </ol>
+  <div id="markers"></div>
 </body>
 </html>
