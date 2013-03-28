@@ -30,7 +30,7 @@ ROS3D.UrdfLoader = function(options) {
  */
 ROS3D.UrdfLoader.prototype.load = function(string) {
   // hand off the XML string to the URDF model
-  var urdfModel = new ROS3D.UrdfModel({
+  var urdfModel = new ROSLIB.UrdfModel({
     string : string
   });
 
@@ -44,7 +44,7 @@ ROS3D.UrdfLoader.prototype.load = function(string) {
   for ( var l in links) {
     var link = links[l];
     if (link.visual && link.visual.geometry) {
-      if (link.visual.geometry.type === ROS3D.URDF_MESH) {
+      if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
         var frameID = '/' + link.name;
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
