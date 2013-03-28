@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.UrdfLoader</title>
+		<title>JsDoc Reference - ROS3D.UrdfClient</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -191,6 +191,8 @@ ul.inheritsList
 	
 	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
 	
+	<li><a href="../symbols/ROS3D.Arrow.html">ROS3D.Arrow</a></li>
+	
 	<li><a href="../symbols/ROS3D.Axes.html">ROS3D.Axes</a></li>
 	
 	<li><a href="../symbols/ROS3D.Highlighter.html">ROS3D.Highlighter</a></li>
@@ -199,9 +201,11 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ROS3D.InteractiveMarkerHandle.html">ROS3D.InteractiveMarkerHandle</a></li>
 	
+	<li><a href="../symbols/ROS3D.Marker.html">ROS3D.Marker</a></li>
+	
 	<li><a href="../symbols/ROS3D.MarkerClient.html">ROS3D.MarkerClient</a></li>
 	
-	<li><a href="../symbols/ROS3D.MeshLoader.html">ROS3D.MeshLoader</a></li>
+	<li><a href="../symbols/ROS3D.MeshResource.html">ROS3D.MeshResource</a></li>
 	
 	<li><a href="../symbols/ROS3D.MouseHandler.html">ROS3D.MouseHandler</a></li>
 	
@@ -209,7 +213,11 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ROS3D.SceneNode.html">ROS3D.SceneNode</a></li>
 	
-	<li><a href="../symbols/ROS3D.UrdfLoader.html">ROS3D.UrdfLoader</a></li>
+	<li><a href="../symbols/ROS3D.TriangleList.html">ROS3D.TriangleList</a></li>
+	
+	<li><a href="../symbols/ROS3D.Urdf.html">ROS3D.Urdf</a></li>
+	
+	<li><a href="../symbols/ROS3D.UrdfClient.html">ROS3D.UrdfClient</a></li>
 	
 	<li><a href="../symbols/ROS3D.Viewer.html">ROS3D.Viewer</a></li>
 	
@@ -222,7 +230,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.UrdfLoader
+				Class ROS3D.UrdfClient
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -233,13 +241,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_loaders_UrdfLoader.js.html">UrdfLoader.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_urdf_UrdfClient.js.html">UrdfClient.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.UrdfLoader.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.UrdfClient.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -252,9 +260,10 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.UrdfLoader.html#constructor">ROS3D.UrdfLoader</a></b>(options)
+								<b><a href="../symbols/ROS3D.UrdfClient.html#constructor">ROS3D.UrdfClient</a></b>(options)
 							</div>
-							<div class="description">A URDF loader can be used to load a URDF and its associated models into a 3D object.</div>
+							<div class="description">A URDF client can be used to load a URDF and its associated models into a 3D object from the ROS
+parameter server.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -265,33 +274,6 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
-			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.UrdfLoader.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.UrdfLoader.html#load">load</a></b>(string)
-								</div>
-								<div class="description">Load the given URDF into a THREE Object3D.</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -304,15 +286,15 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.UrdfLoader</b>(options)
+						<b>ROS3D.UrdfClient</b>(options)
 				</div>
 				
 				<div class="description">
-					A URDF loader can be used to load a URDF and its associated models into a 3D object. By default,
-the URDF is loaded from the ROS parameter server.
+					A URDF client can be used to load a URDF and its associated models into a 3D object from the ROS
+parameter server.
 
 Emits the following events:
-* 'ready' - emited after the URDF and its meshes have been loaded into the root object
+* 'change' - emited after the URDF and its meshes have been loaded into the root object
 					
 				</div>
 				
@@ -328,8 +310,11 @@ Emits the following events:
 								
 							</dt>
 								<dd>- object with following keys:
- * tfClient - a handle to the TF client to be used to update the model's pose
- * path - the base path to the associated Collada models that will be loaded</dd>
+  * ros - the ROSLIB.Ros connection handle
+  * param (optional) - the paramter to load the URDF from, like 'robot_description'
+  * tfClient - the TF client handle to use
+  * path (optional) - the base path to the associated Collada models that will be loaded
+  * rootObject (optional) - the root object to add this marker to</dd>
 						
 						</dl>
 					
@@ -348,54 +333,6 @@ Emits the following events:
 
 <!-- ============================== method details ========================= -->		
 			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name="load"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>load</b>(string)
-					
-					</div>
-					<div class="description">
-						Load the given URDF into a THREE Object3D.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>string</b>
-									
-								</dt>
-								<dd>- the URDF as a string</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>the THREE Object3D that contains the entire URDF</dd>
-							
-							</dl>
-						
-						
-						
-
-					
-				
-			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -407,7 +344,7 @@ Emits the following events:
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 10:03:02 GMT-0700 (PDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 11:41:48 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>

@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MeshLoader</title>
+		<title>JsDoc Reference - ROS3D.TriangleList</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -191,6 +191,8 @@ ul.inheritsList
 	
 	<li><i><a href="../symbols/_global_.html">_global_</a></i></li>
 	
+	<li><a href="../symbols/ROS3D.Arrow.html">ROS3D.Arrow</a></li>
+	
 	<li><a href="../symbols/ROS3D.Axes.html">ROS3D.Axes</a></li>
 	
 	<li><a href="../symbols/ROS3D.Highlighter.html">ROS3D.Highlighter</a></li>
@@ -199,9 +201,11 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ROS3D.InteractiveMarkerHandle.html">ROS3D.InteractiveMarkerHandle</a></li>
 	
+	<li><a href="../symbols/ROS3D.Marker.html">ROS3D.Marker</a></li>
+	
 	<li><a href="../symbols/ROS3D.MarkerClient.html">ROS3D.MarkerClient</a></li>
 	
-	<li><a href="../symbols/ROS3D.MeshLoader.html">ROS3D.MeshLoader</a></li>
+	<li><a href="../symbols/ROS3D.MeshResource.html">ROS3D.MeshResource</a></li>
 	
 	<li><a href="../symbols/ROS3D.MouseHandler.html">ROS3D.MouseHandler</a></li>
 	
@@ -209,7 +213,11 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ROS3D.SceneNode.html">ROS3D.SceneNode</a></li>
 	
-	<li><a href="../symbols/ROS3D.UrdfLoader.html">ROS3D.UrdfLoader</a></li>
+	<li><a href="../symbols/ROS3D.TriangleList.html">ROS3D.TriangleList</a></li>
+	
+	<li><a href="../symbols/ROS3D.Urdf.html">ROS3D.Urdf</a></li>
+	
+	<li><a href="../symbols/ROS3D.UrdfClient.html">ROS3D.UrdfClient</a></li>
 	
 	<li><a href="../symbols/ROS3D.Viewer.html">ROS3D.Viewer</a></li>
 	
@@ -222,7 +230,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MeshLoader
+				Class ROS3D.TriangleList
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -233,13 +241,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_loaders_MeshLoader.js.html">MeshLoader.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_models_TriangleList.js.html">TriangleList.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MeshLoader.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.TriangleList.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -252,9 +260,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MeshLoader.html#constructor">ROS3D.MeshLoader</a></b>(options)
+								<b><a href="../symbols/ROS3D.TriangleList.html#constructor">ROS3D.TriangleList</a></b>(options)
 							</div>
-							<div class="description">A mesh load can be used to load a given 3D mesh into a THREE object.</div>
+							<div class="description">A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -268,7 +276,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.MeshLoader.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.TriangleList.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -281,9 +289,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MeshLoader.html#load">load</a></b>(resource)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.TriangleList.html#setColor">setColor</a></b>(hex)
 								</div>
-								<div class="description">Load the given mesh resource into a THREE Object3D.</div>
+								<div class="description">Set the color of this object to the given hex value.</div>
 							</td>
 						</tr>
 					
@@ -304,11 +312,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MeshLoader</b>(options)
+						<b>ROS3D.TriangleList</b>(options)
 				</div>
 				
 				<div class="description">
-					A mesh load can be used to load a given 3D mesh into a THREE object.
+					A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.
 					
 				</div>
 				
@@ -324,7 +332,9 @@ ul.inheritsList
 								
 							</dt>
 								<dd>- object with following keys:
- * path - the base path to the associated Collada models that will be loaded</dd>
+  * material (optional) - the material to use for the object
+  * vertices - the array of vertices to use
+  * colors - the associated array of colors to use</dd>
 						
 						</dl>
 					
@@ -347,15 +357,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="load"> </a>
+					<a name="setColor"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>load</b>(resource)
+					<b>setColor</b>(hex)
 					
 					</div>
 					<div class="description">
-						Load the given mesh resource into a THREE Object3D.
+						Set the color of this object to the given hex value.
 						
 						
 					</div>
@@ -367,23 +377,16 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>resource</b>
+									<b>hex</b>
 									
 								</dt>
-								<dd>- the mesh resource to load.</dd>
+								<dd>- the hex value of the color to set</dd>
 							
 							</dl>
 						
 						
 						
 						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>the THREE Object 3D containing the loaded mesh</dd>
-							
-							</dl>
 						
 						
 						
@@ -402,7 +405,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 10:03:02 GMT-0700 (PDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 11:41:48 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>

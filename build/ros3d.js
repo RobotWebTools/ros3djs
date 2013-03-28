@@ -59,6 +59,320 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
     });
   }
 };
+ROS3D.InteractiveMarker = function(handle, camera, meshBaseUrl) {
+  THREE.Object3D.call(this);
+  THREE.EventDispatcher.call(this);
+
+  var that = this;
+
+  this.name = handle.name;
+
+  this.dragging = false;
+  this.onServerSetPose({
+    pose : handle.pose
+  });
+
+  this.dragStart = {
+    position : new THREE.Vector3(),
+    orientation : new THREE.Quaternion(),
+    positionWorld : new THREE.Vector3(),
+    orientationWorld : new THREE.Quaternion(),
+    event3d : {}
+  };
+
+  handle.controls.forEach(function(controlMsg) {
+    that.add(new ROS3D.InteractiveMarkerControl(that, controlMsg, camera, meshBaseUrl));
+  });
+
+  if (handle.menuEntries.length > 0) {
+    this.menu = new ROS3D.InteractiveMarkerMenu(handle.menuEntries);
+
+    // forward menu select events
+    this.menu.addEventListener("menu_select", function(event) {
+      that.dispatchEvent(event);
+    });
+  }
+};
+
+ROS3D.InteractiveMarker.prototype = Object.create(THREE.Object3D.prototype);
+
+var projector = new THREE.Projector();
+
+var findClosestPoint = function(target_ray, mouse_ray) {
+  // Find the closest point on target_ray to any point on mouse_ray.
+  // Math taken from http://paulbourke.net/geometry/lineline3d/
+  // line P1->P2 is target_ray
+  // line P3->P4 is mouse_ray
+
+  var v13 = new THREE.Vector3;
+  v13.subVectors(target_ray.origin, mouse_ray.origin);
+  var v43 = mouse_ray.direction.clone();
+  var v21 = target_ray.direction.clone();
+  var d1343 = v13.dot(v43);
+  var d4321 = v43.dot(v21);
+  var d1321 = v13.dot(v21);
+  var d4343 = v43.dot(v43);
+  var d2121 = v21.dot(v21);
+
+  var denom = d2121 * d4343 - d4321 * d4321;
+  if (Math.abs(denom) <= 0.0001) {
+    return undefined;
+  }
+  var numer = d1343 * d4321 - d1321 * d4343;
+
+  var mua = numer / denom;
+  return mua;
+};
+
+var closestAxisPoint = function(axisRay, camera, mousePos) {
+  // project axis onto screen
+  var o = axisRay.origin.clone();
+  projector.projectVector(o, camera);
+
+  var o2 = axisRay.direction.clone().add(axisRay.origin);
+  projector.projectVector(o2, camera);
+
+  // d is the axis vector in screen space
+  var d = o2.clone().sub(o);
+  // d = o2-o;
+
+  // t is the 2d ray param of perpendicular projection
+  // of mousePos onto o
+  var tmp = new THREE.Vector2;
+  var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
+  // t = (mousePos - o) * d / (d*d);
+
+  // mp is the final 2d-projected mouse pos DDD
+  var mp = new THREE.Vector2;
+  mp.addVectors(o, d.clone().multiplyScalar(t));
+  // mp = o + d*t;
+
+  // go back to 3d by shooting a ray
+  var vector = new THREE.Vector3(mp.x, mp.y, 0.5);
+  projector.unprojectVector(vector, camera);
+  var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
+  var mua = findClosestPoint(axisRay, mpRay, mua);
+
+  return mua;
+};
+
+var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
+
+  var vector = new THREE.Vector3();
+  var intersectPoint = new THREE.Vector3();
+
+  vector.subVectors(planeOrigin, mouseRay.origin);
+  dot = mouseRay.direction.dot(planeNormal);
+
+  // bail if ray and plane are parallel
+  if (Math.abs(dot) < mouseRay.precision)
+    return null;
+
+  // calc distance to plane
+  scalar = planeNormal.dot(vector) / dot;
+
+  // if negative distance, then plane is behind ray
+  // if (scalar < 0)
+  // return null;
+
+  intersectPoint.addVectors(mouseRay.origin, mouseRay.direction.clone().multiplyScalar(scalar));
+  return intersectPoint;
+};
+
+ROS3D.InteractiveMarker.prototype.showMenu = function(control, event) {
+  if (this.menu) {
+    this.menu.show(control, event);
+  }
+};
+
+ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d) {
+  if (this.dragging) {
+    var currentControlOri = control.currentControlOri;
+    var axis = origAxis.clone().applyQuaternion(currentControlOri);
+    // get move axis in world coords
+    var originWorld = this.dragStart.event3d.intersection.point;
+    var axisWorld = axis.clone().applyQuaternion(this.dragStart.orientationWorld.clone());
+
+    var axisRay = new THREE.Ray(originWorld, axisWorld);
+
+    // find closest point to mouse on axis
+    var t = closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
+
+    // offset from drag start position
+    var p = new THREE.Vector3;
+    p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
+        .multiplyScalar(t));
+    this.setPosition(control, p);
+
+    event3d.stopPropagation();
+  }
+};
+
+ROS3D.InteractiveMarker.prototype.movePlane = function(control, origNormal, event3d) {
+  if (this.dragging) {
+    var currentControlOri = control.currentControlOri;
+    var normal = origNormal.clone().applyQuaternion(currentControlOri);
+    // get plane params in world coords
+    var originWorld = this.dragStart.event3d.intersection.point;
+    var normalWorld = normal.clone().applyQuaternion(this.dragStart.orientationWorld);
+
+    // intersect mouse ray with plane
+    var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
+
+    // offset from drag start position
+    var p = new THREE.Vector3;
+    p.subVectors(intersection, originWorld);
+    p.add(this.dragStart.positionWorld);
+    this.setPosition(control, p);
+    event3d.stopPropagation();
+  }
+};
+
+function printVec(v) {
+  // console.log(Math.round(v.x*10)/10,Math.round(v.y*10)/10,Math.round(v.y*10)/10);
+}
+function printQuat(v) {
+  // console.log(Math.round(v.x*10)/10,Math.round(v.y*10)/10,Math.round(v.y*10)/10,Math.round(v.w*10)/10);
+}
+
+ROS3D.InteractiveMarker.prototype.rotateAxis = function(control, origOrientation, event3d) {
+  if (this.dragging) {
+    control.updateMatrixWorld();
+
+    // console.log("------------------_");
+
+    var currentControlOri = control.currentControlOri;
+    var orientation = currentControlOri.clone().multiply(origOrientation.clone());
+
+    printQuat(currentControlOri);
+    printQuat(orientation);
+
+    var normal = (new THREE.Vector3(1, 0, 0)).applyQuaternion(orientation);
+
+    // get plane params in world coords
+    var originWorld = this.dragStart.event3d.intersection.point;
+    var normalWorld = normal.applyQuaternion(this.dragStart.orientationWorld);
+
+    printVec(normal);
+    printVec(normalWorld);
+
+    // intersect mouse ray with plane
+    var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
+
+    // offset local origin to lie on intersection plane
+    var normalRay = new THREE.Ray(this.dragStart.positionWorld, normalWorld);
+    var rotOrigin = intersectPlane(normalRay, originWorld, normalWorld);
+
+    // rotates from world to plane coords
+    var orientationWorld = this.dragStart.orientationWorld.clone().multiply(orientation);
+    var orientationWorldInv = orientationWorld.clone().inverse();
+
+    // rotate original and current intersection into local coords
+    intersection.sub(rotOrigin);
+    intersection.applyQuaternion(orientationWorldInv);
+
+    var origIntersection = this.dragStart.event3d.intersection.point.clone();
+    origIntersection.sub(rotOrigin);
+    origIntersection.applyQuaternion(orientationWorldInv);
+
+    // compute relative 2d angle
+    var a1 = Math.atan2(intersection.y, intersection.z);
+    var a2 = Math.atan2(origIntersection.y, origIntersection.z);
+    var a = a2 - a1;
+
+    var rot = new THREE.Quaternion();
+    rot.setFromAxisAngle(normal, a);
+
+    // rotate
+    // this.setOrientation( rot.multiplySelf(this.dragStart.orientationWorld) );
+    this.setOrientation(control, rot.multiply(this.dragStart.orientationWorld));
+
+    // offset from drag start position
+    event3d.stopPropagation();
+  }
+};
+
+ROS3D.InteractiveMarker.prototype.feedbackEvent = function(type, control) {
+  this.dispatchEvent({
+    type : type,
+    position : this.position.clone(),
+    orientation : this.quaternion.clone(),
+    controlName : control.name
+  });
+};
+
+ROS3D.InteractiveMarker.prototype.startDrag = function(control, event3d) {
+  if (event3d.domEvent.button !== 0) {
+    return;
+  }
+  event3d.stopPropagation();
+  this.dragging = true;
+  this.updateMatrixWorld(true);
+  var scale = new THREE.Vector3();
+  this.matrixWorld.decompose(this.dragStart.positionWorld, this.dragStart.orientationWorld, scale);
+  this.dragStart.position = this.position.clone();
+  this.dragStart.orientation = this.quaternion.clone();
+  this.dragStart.event3d = event3d;
+
+  this.feedbackEvent("user_mouse_down", control);
+};
+
+ROS3D.InteractiveMarker.prototype.stopDrag = function(control, event3d) {
+  if (event3d.domEvent.button !== 0) {
+    return;
+  }
+  event3d.stopPropagation();
+  this.dragging = false;
+  this.dragStart.event3d = {};
+  this.onServerSetPose(this.bufferedPoseEvent);
+  this.bufferedPoseEvent = undefined;
+
+  this.feedbackEvent("user_mouse_up", control);
+};
+
+ROS3D.InteractiveMarker.prototype.buttonClick = function(control, event3d) {
+  event3d.stopPropagation();
+  this.feedbackEvent("user_button_click", control);
+};
+
+ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
+  this.position = position;
+  this.feedbackEvent("user_changed_pose", control);
+};
+
+ROS3D.InteractiveMarker.prototype.setOrientation = function(control, orientation) {
+  orientation.normalize();
+  this.quaternion = orientation;
+  this.feedbackEvent("user_changed_pose", control);
+};
+
+ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
+  if (event === undefined) {
+    return;
+  }
+
+  if (this.dragging) {
+    this.bufferedPoseEvent = event;
+    return;
+  }
+
+  var pose = event.pose;
+
+  this.position.x = pose.position.x;
+  this.position.y = pose.position.y;
+  this.position.z = pose.position.z;
+
+  this.useQuaternion = true;
+  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+      pose.orientation.z, pose.orientation.w);
+
+  this.updateMatrixWorld(true);
+};
+
+// --------------------------------------------------------
+
+
+
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
@@ -95,7 +409,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   }
 
   // add the markers
-  this.viewer.addSelectableObject(this.rootObject);
+  this.viewer.addObject(this.rootObject, true);
 };
 
 /**
@@ -235,7 +549,179 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     delete this.interactiveMarkers[intMarkerName];
   }
 };
-/**
+ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
+    camera, meshBaseUrl) {
+  THREE.Object3D.call(this);
+  THREE.EventDispatcher.call(this);
+
+  this.parent = parent;
+  this.dragging = false;
+
+  var that = this;
+
+  this.name = controlMsg.name;
+
+  var NONE = 0;
+  var MENU = 1;
+  var BUTTON = 2;
+  var MOVE_AXIS = 3;
+  var MOVE_PLANE = 4;
+  var ROTATE_AXIS = 5;
+  var MOVE_ROTATE = 6;
+
+  var controlOri = new THREE.Quaternion(controlMsg.orientation.x, controlMsg.orientation.y,
+      controlMsg.orientation.z, controlMsg.orientation.w);
+  controlOri.normalize();
+
+  // transform x axis into local frame
+  var controlAxis = new THREE.Vector3(1, 0, 0);
+  controlAxis.applyQuaternion(controlOri);
+
+  this.currentControlOri = new THREE.Quaternion();
+
+  // determine mouse interaction
+  switch (controlMsg.interaction_mode) {
+    case MOVE_AXIS:
+      this.addEventListener("mousemove", parent.moveAxis.bind(parent, this, controlAxis));
+      this.addEventListener("touchmove", parent.moveAxis.bind(parent, this, controlAxis));
+      break;
+    case ROTATE_AXIS:
+      this.addEventListener("mousemove", parent.rotateAxis.bind(parent, this, controlOri));
+      break;
+    case MOVE_PLANE:
+      this.addEventListener("mousemove", parent.movePlane.bind(parent, this, controlAxis));
+      break;
+    case BUTTON:
+      this.addEventListener("click", parent.buttonClick.bind(parent, this));
+      break;
+    default:
+      break;
+  }
+
+  // install default listeners for highlighting / dragging
+  function stopPropagation(event) {
+    event.stopPropagation();
+  }
+
+  if (controlMsg.interaction_mode != NONE) {
+    this.addEventListener('mousedown', parent.startDrag.bind(parent, this));
+    this.addEventListener('mouseup', parent.stopDrag.bind(parent, this));
+    this.addEventListener('contextmenu', parent.showMenu.bind(parent, this));
+    this.addEventListener('mouseover', stopPropagation);
+    this.addEventListener('mouseout', stopPropagation);
+    this.addEventListener('click', stopPropagation);
+
+    // hacky touch support
+    this.addEventListener('touchstart', function(event3d) {
+      console.log(event3d.domEvent);
+      if (event3d.domEvent.touches.length == 1) {
+        event3d.type = 'mousedown';
+        event3d.domEvent.button = 0;
+        that.dispatchEvent(event3d);
+      }
+    });
+    this.addEventListener('touchmove', function(event3d) {
+      if (event3d.domEvent.touches.length == 1) {
+        console.log(event3d.domEvent);
+        event3d.type = 'mousemove';
+        event3d.domEvent.button = 0;
+        that.dispatchEvent(event3d);
+      }
+    });
+    this.addEventListener('touchend', function(event3d) {
+      if (event3d.domEvent.touches.length == 0) {
+        event3d.domEvent.button = 0;
+        event3d.type = 'mouseup';
+        that.dispatchEvent(event3d);
+        event3d.type = 'click';
+        that.dispatchEvent(event3d);
+      }
+    });
+  }
+
+  // define rotation behaviour
+  var INHERIT = 0;
+  var FIXED = 1;
+  var VIEW_FACING = 2;
+
+  var rotInv = new THREE.Quaternion();
+  var posInv = parent.position.clone().multiplyScalar(-1);
+
+  switch (controlMsg.orientation_mode) {
+    case INHERIT:
+      rotInv = parent.quaternion.clone().inverse();
+      that.updateMatrixWorld = function(force) {
+        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+        that.currentControlOri.copy(that.quaternion);
+        that.currentControlOri.normalize();
+      };
+      break;
+    case FIXED:
+      that.updateMatrixWorld = function(force) {
+        that.useQuaternion = true;
+        that.quaternion = that.parent.quaternion.clone().inverse();
+        that.updateMatrix();
+        that.matrixWorldNeedsUpdate = true;
+        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+        that.currentControlOri.copy(that.quaternion);
+      };
+      break;
+    case VIEW_FACING:
+      var independent_marker_orientation = controlMsg.independent_marker_orientation;
+      that.updateMatrixWorld = function(force) {
+
+        camera.updateMatrixWorld();
+        var cameraRot = new THREE.Matrix4().extractRotation(camera.matrixWorld);
+
+        var ros2Gl = new THREE.Matrix4();
+        var r90 = Math.PI * 0.5;
+        var rv = new THREE.Vector3(-r90, 0, r90);
+        ros2Gl.setRotationFromEuler(rv);
+
+        var worldToLocal = new THREE.Matrix4();
+        worldToLocal.getInverse(that.parent.matrixWorld);
+
+        cameraRot.multiplyMatrices(cameraRot, ros2Gl);
+        cameraRot.multiplyMatrices(worldToLocal, cameraRot);
+
+        that.currentControlOri.setFromRotationMatrix(cameraRot);
+
+        if (!independent_marker_orientation) {
+          that.useQuaternion = true;
+          that.quaternion.copy(that.currentControlOri);
+          that.updateMatrix();
+          that.matrixWorldNeedsUpdate = true;
+        }
+
+        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+      };
+      break;
+    default:
+      break;
+  }
+
+  // create visuals (markers)
+  controlMsg.markers.forEach(function(markerMsg) {
+    var markerHelper = new ROS3D.Marker({
+      message : markerMsg,
+      path : meshBaseUrl
+    });
+
+    if (markerMsg.header.frame_id !== "") {
+      // if the marker lives in its own coordinate frame,
+      // convert position into IM's local coordinate frame
+      markerHelper.position.add(posInv);
+      markerHelper.position.applyQuaternion(rotInv);
+      markerHelper.quaternion.multiplyQuaternions(rotInv, markerHelper.quaternion);
+      markerHelper.updateMatrixWorld();
+    }
+
+    that.add(markerHelper);
+  });
+
+};
+
+ROS3D.InteractiveMarkerControl.prototype = Object.create(THREE.Object3D.prototype);/**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -354,31 +840,333 @@ ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, click
   };
   this.feedbackTopic.publish(feedback);
 };
+ROS3D.InteractiveMarkerMenu = function(menuEntries) {
+  var allMenus = [];
+  allMenus[0] = {
+    children : []
+  };
+
+  THREE.EventDispatcher.call(this);
+
+  var that = this;
+
+  this.menuDomElem = document.createElement("div");
+  this.menuDomElem.style.position = "absolute";
+  this.menuDomElem.className = "interactive_marker_menu";
+  this.menuDomElem.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+  });
+
+  this.overlayDomElem = document.createElement("div");
+  this.overlayDomElem.className = "interactive_marker_overlay";
+
+  this.hideListener = this.hide.bind(this);
+  this.overlayDomElem.addEventListener("contextmenu", this.hideListener);
+  this.overlayDomElem.addEventListener("click", this.hideListener);
+
+  // parse all entries
+  for ( var i = 0; i < menuEntries.length; i++) {
+    var entry = menuEntries[i];
+    var id = entry.id;
+    allMenus[id] = {
+      title : entry.title,
+      id : id,
+      children : []
+    };
+  }
+
+  // link children to parents
+  for ( var i = 0; i < menuEntries.length; i++) {
+    var entry = menuEntries[i];
+    var id = entry.id;
+    var menu = allMenus[id];
+    var parent = allMenus[entry.parent_id];
+    parent.children.push(menu);
+  }
+
+  function emitMenuSelect(menuEntry, domEvent) {
+    this.dispatchEvent({
+      type : "menu_select",
+      domEvent : domEvent,
+      id : menuEntry.id,
+      controlName : this.controlName
+    });
+    this.hide(domEvent);
+  }
+
+  // create html menu, starting from root (id 0)
+  function makeUl(parentDomElem, parentMenu) {
+
+    var ulElem = document.createElement("ul");
+    parentDomElem.appendChild(ulElem);
+
+    var children = parentMenu.children;
+
+    for ( var i = 0; i < children.length; i++) {
+      var liElem = document.createElement("li");
+      var divElem = document.createElement("div");
+      divElem.appendChild(document.createTextNode(children[i].title));
+      ulElem.appendChild(liElem);
+      liElem.appendChild(divElem);
+
+      if (children[i].children.length > 0) {
+        makeUl(liElem, children[i]);
+        divElem.addEventListener("click", that.hide.bind(that));
+      } else {
+        divElem.addEventListener("click", emitMenuSelect.bind(that, children[i]));
+        divElem.className = "interactive_marker_menuentry";
+      }
+    }
+
+  }
+
+  // construct dom element
+  makeUl(this.menuDomElem, allMenus[0]);
+};
+
+ROS3D.InteractiveMarkerMenu.prototype.show = function(control, event) {
+  if (event && event.preventDefault) {
+    event.preventDefault();
+  }
+
+  this.controlName = control.name;
+
+  // this.overlayDomElem.style.visibility = "visible";
+  this.menuDomElem.style.left = event.domEvent.clientX + 'px';
+  this.menuDomElem.style.top = event.domEvent.clientY + 'px';
+  document.body.appendChild(this.overlayDomElem);
+  document.body.appendChild(this.menuDomElem);
+};
+
+ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
+  if (event && event.preventDefault) {
+    event.preventDefault();
+  }
+
+  document.body.removeChild(this.overlayDomElem);
+  document.body.removeChild(this.menuDomElem);
+};
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A Marker can convert a ROS marker message into a THREE object.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *   * path - the base path or URL for any mesh files that will be loaded for this marker
+ *   * message - the marker message
+ */
+ROS3D.Marker = function(options) {
+  var options = options || {};
+  var path = options.path || '/';
+  var message = options.message;
+
+  // check for a trailing '/'
+  if (path.substr(path.length - 1) !== '/') {
+    path += '/';
+  }
+
+  THREE.Object3D.call(this);
+  this.useQuaternion = true;
+
+  // set the pose and get the color
+  this.setPose(message.pose);
+  var colorMaterial = ROS3D.makeColorMaterial(message.color.r, message.color.g, message.color.b,
+      message.color.a);
+
+  // create the object based on the type
+  switch (message.type) {
+    case ROS3D.MARKER_ARROW:
+      // get the sizes for the arrow
+      var len = message.scale.x;
+      var headLength = len * 0.23;
+      var headDiameter = message.scale.y;
+      var shaftDiameter = headDiameter * 0.5;
+
+      // determine the points
+      if (message.points.length === 2) {
+        var p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
+        var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
+        var direction = p1.clone().negate().add(p2);
+        // direction = p2 - p1;
+        len = direction.length();
+        headDiameter = message.scale.y;
+        shaftDiameter = message.scale.x;
+
+        if (message.scale.z !== 0.0) {
+          headLength = message.scale.z;
+        }
+      }
+
+      // add the marker
+      this.add(new ROS3D.Arrow({
+        direction : direction,
+        origin : p1,
+        length : len,
+        headLength : headLength,
+        shaftDiameter : shaftDiameter,
+        headDiameter : headDiameter,
+        material : colorMaterial
+      }));
+      break;
+    case ROS3D.MARKER_CUBE:
+      // set the cube dimensions
+      var geom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
+      this.add(new THREE.Mesh(geom, colorMaterial));
+      break;
+    case ROS3D.MARKER_SPHERE:
+      // set the sphere dimensions
+      var geom = new THREE.SphereGeometry(0.5);
+      var mesh = new THREE.Mesh(geom, colorMaterial);
+      mesh.scale.x = message.scale.x;
+      mesh.scale.y = message.scale.y;
+      mesh.scale.z = message.scale.z;
+      this.add(mesh);
+      break;
+    case ROS3D.MARKER_CYLINDER:
+      // set the cylinder dimensions
+      var geom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
+      var mesh = new THREE.Mesh(geom, colorMaterial);
+      mesh.useQuaternion = true;
+      mesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+      mesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      this.add(mesh);
+      break;
+    case ROS3D.MARKER_CUBE_LIST:
+    case ROS3D.MARKER_SPHERE_LIST:
+    case ROS3D.MARKER_POINTS:
+      // for now, use a particle system for the lists
+      var geometry = new THREE.Geometry();
+      var material = new THREE.ParticleBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      for ( var i = 0; i < message.points.length; i++) {
+        var vertex = new THREE.Vector3();
+        vertex.x = message.points[i].x;
+        vertex.y = message.points[i].y;
+        vertex.z = message.points[i].z;
+        geometry.vertices.push(vertex);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        material.vertexColors = true;
+        for ( var i = 0; i < message.points.length; i++) {
+          var color = new THREE.Color();
+          color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
+          geometry.colors.push(color);
+        }
+      } else {
+        material.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the particle system
+      this.add(new THREE.ParticleSystem(geometry, material));
+      break;
+    case ROS3D.MARKER_TEXT_VIEW_FACING:
+      // setup the text
+      var textGeo = new THREE.TextGeometry(message.text, {
+        size : message.scale.x * 0.5,
+        height : 0.1 * message.scale.x,
+        curveSegments : 4,
+        font : 'helvetiker',
+        bevelEnabled : false,
+        bevelThickness : 2,
+        bevelSize : 2,
+        material : 0,
+        extrudeMaterial : 0
+      });
+      textGeo.computeVertexNormals();
+      textGeo.computeBoundingBox();
+
+      // position the text and add it
+      var mesh = new THREE.Mesh(textGeo, colorMaterial);
+      var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
+      mesh.position.y = -centerOffset;
+      mesh.rotation.x = Math.PI * 0.5;
+      mesh.rotation.y = Math.PI * 1.5;
+      this.add(mesh);
+      break;
+    case ROS3D.MARKER_MESH_RESOURCE:
+      // load and add the mesh
+      this.add(new ROS3D.MeshResource({
+        path : path,
+        resource : message.mesh_resource.substr(10)
+      }));
+      break;
+    case ROS3D.MARKER_TRIANGLE_LIST:
+      // create the list of triangles
+      var tri = new ROS3D.TriangleList({
+        material : colorMaterial,
+        vertices : message.points,
+        colors : message.colors
+      });
+      tri.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      this.add(tri);
+      break;
+    default:
+      console.error('Currently unsupported marker type: ' + message.type);
+      break;
+  }
+};
+ROS3D.Marker.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * Set the pose of this marker to the given values.
+ * 
+ * @param pose - the pose to set for this marker
+ */
+ROS3D.Marker.prototype.setPose = function(pose) {
+  // set position information
+  this.position.x = pose.position.x;
+  this.position.y = pose.position.y;
+  this.position.z = pose.position.z;
+
+  // set the rotation
+  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+      pose.orientation.z, pose.orientation.w);
+  this.quaternion.normalize();
+
+  // update the world
+  this.updateMatrixWorld();
+};
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
 /**
  * A marker client that listens to a given marker topic.
- *
- *  @constructor
- *  @param options - object with following keys:
+ * 
+ * Emits the following events:
+ *  * 'change' - there was an update or change in the marker
+ *  
+ * @constructor
+ * @param options - object with following keys:
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic - the marker topic to listen to
+ *   * tfClient - the TF client handle to use
+ *   * rootObject (optional) - the root object to add this marker to
  */
 ROS3D.MarkerClient = function(options) {
   var that = this;
   var options = options || {};
-  this.ros = options.ros;
+  var ros = options.ros;
+  var topic = options.topic;
   this.tfClient = options.tfClient;
-  this.topic = options.topic;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  this.previousMarker = null;
+
+  // current marker that is displayed
+  this.currentMarker = null;
 
   // subscribe to the topic
   var rosTopic = new ROSLIB.Topic({
-    ros : this.ros,
-    name : this.topic,
+    ros : ros,
+    name : topic,
     messageType : 'visualization_msgs/Marker',
     compression : 'png'
   });
@@ -387,21 +1175,120 @@ ROS3D.MarkerClient = function(options) {
       message : message
     });
     // check for an old marker
-    if (that.previousMarker) {
-      that.rootObject.remove(that.previousMarker);
+    if (that.currentMarker) {
+      that.rootObject.remove(that.currentMarker);
     }
-    var sceneNode = new ROS3D.SceneNode({
+
+    that.currentMarker = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
-      model : newMarker
+      object : newMarker
     });
-
-    that.previousMarker = sceneNode;
-    that.rootObject.add(sceneNode);
-    that.emit('update');
+    that.rootObject.add(that.currentMarker);
+    
+    that.emit('change');
   });
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
+/**
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A URDF can be used to load a ROSLIB.UrdfModel and its associated models into a 3D object.
+ *  
+ * @constructor
+ * @param options - object with following keys:
+ *   * urdfModel - the ROSLIB.UrdfModel to load
+ *   * tfClient - the TF client handle to use
+ *   * path (optional) - the base path to the associated Collada models that will be loaded
+ */
+ROS3D.Urdf = function(options) {
+  var options = options || {};
+  var urdfModel = options.urdfModel;
+  var path = options.path || '/';
+  var tfClient = options.tfClient;
+
+  THREE.Object3D.call(this);
+  this.useQuaternion = true;
+
+  // load all models
+  var links = urdfModel.links;
+  for ( var l in links) {
+    var link = links[l];
+    if (link.visual && link.visual.geometry) {
+      if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
+        var frameID = '/' + link.name;
+        var uri = link.visual.geometry.filename;
+        var fileType = uri.substr(-4).toLowerCase();
+
+        // ignore mesh files which are not in Collada format
+        if (fileType === '.dae') {
+          // create a scene node with the model
+          var sceneNode = new ROS3D.SceneNode({
+            frameID : frameID,
+            tfClient : tfClient,
+            object : new ROS3D.MeshResource({
+              path : path,
+              resource : uri.substring(10)
+            })
+          });
+          this.add(sceneNode);
+        }
+      }
+    }
+  }
+};
+ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
+/**
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A URDF client can be used to load a URDF and its associated models into a 3D object from the ROS
+ * parameter server.
+ *
+ * Emits the following events:
+ * * 'change' - emited after the URDF and its meshes have been loaded into the root object
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *   * ros - the ROSLIB.Ros connection handle
+ *   * param (optional) - the paramter to load the URDF from, like 'robot_description'
+ *   * tfClient - the TF client handle to use
+ *   * path (optional) - the base path to the associated Collada models that will be loaded
+ *   * rootObject (optional) - the root object to add this marker to
+ */
+ROS3D.UrdfClient = function(options) {
+  var that = this;
+  var options = options || {};
+  var ros = options.ros;
+  var param = options.param || 'robot_description';
+  this.path = options.path || '/';
+  this.tfClient = options.tfClient;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+
+  // get the URDF value from ROS
+  var getParam = new ROSLIB.Param({
+    ros : ros,
+    name : param
+  });
+  getParam.get(function(string) {
+    // hand off the XML string to the URDF model
+    var urdfModel = new ROSLIB.UrdfModel({
+      string : string
+    });
+
+    // load all models
+    that.rootObject.add(new ROS3D.Urdf({
+      urdfModel : urdfModel,
+      path : that.path,
+      tfClient : that.tfClient
+    }));
+  });
+};
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
@@ -414,23 +1301,23 @@ ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
  * @param options - object with following keys:
  *  * tfClient - a handle to the TF client
  *  * frameID - the frame ID this object belongs to
- *  * model - the THREE 3D object to be rendered
+ *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
   var options = options || {};
   var that = this;
-  this.tfClient = options.tfClient;
-  this.frameID = options.frameID;
-  this.model = options.model;
+  var tfClient = options.tfClient;
+  var frameID = options.frameID;
+  var object = options.object;
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
 
   // add the model
-  this.add(this.model);
+  this.add(object);
 
   // listen for TF updates
-  this.tfClient.subscribe(this.frameID,
+  tfClient.subscribe(frameID,
       function(msg) {
         // apply the transform
         var tf = new ROSLIB.Transform(msg);
@@ -447,8 +1334,7 @@ ROS3D.SceneNode = function(options) {
         that.updateMatrixWorld(true);
       });
 };
-ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
-/**
+ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;/**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -462,29 +1348,25 @@ ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
  *  * divID - the ID of the div to place the viewer in
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
- *  * disableGrid - if the grid feature should be disabled in the viewer
- *  * gridColor - the color to render the grid lines, like #cccccc
- *  * background - the color to render the background, like #efefef
+ *  * background - the color to render the background, like '#efefef'
  *  * antialias - if antialiasing should be used
  */
 ROS3D.Viewer = function(options) {
   var that = this;
   var options = options || {};
-  this.divID = options.divID;
-  this.width = options.width;
-  this.height = options.height;
-  this.disableGrid = options.disableGrid;
-  this.gridColor = options.gridColor || '#cccccc';
-  this.background = options.background || '#111111';
-  this.antialias = options.antialias;
+  var divID = options.divID;
+  var width = options.width;
+  var height = options.height;
+  var background = options.background || '#111111';
+  var antialias = options.antialias;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
     antialias : this.antialias
   });
-  this.renderer.setClearColorHex(this.background.replace('#', '0x'), 1.0);
+  this.renderer.setClearColorHex(background.replace('#', '0x'), 1.0);
   this.renderer.sortObjects = false;
-  this.renderer.setSize(this.width, this.height);
+  this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
   this.renderer.autoClear = false;
 
@@ -492,7 +1374,7 @@ ROS3D.Viewer = function(options) {
   this.scene = new THREE.Scene();
 
   // create the global camera
-  this.camera = new THREE.PerspectiveCamera(40, this.width / this.height, 0.01, 1000);
+  this.camera = new THREE.PerspectiveCamera(40, width / height, 0.01, 1000);
   this.camera.position.x = 3;
   this.camera.position.y = 3;
   this.camera.position.z = 3;
@@ -500,33 +1382,25 @@ ROS3D.Viewer = function(options) {
   this.cameraControls = new ROS3D.OrbitControls(this.scene, this.camera);
   this.cameraControls.userZoomSpeed = 0.5;
 
-  // create a grid
-  if (!this.disableGrid) {
-    // 50 cells
-    var gridGeom = new THREE.PlaneGeometry(50, 50, 50, 50);
-    var gridMaterial = new THREE.MeshBasicMaterial({
-      color : this.gridColor,
-      wireframe : true,
-      wireframeLinewidth : 1,
-      transparent : true
-    });
-    var gridObj = new THREE.Mesh(gridGeom, gridMaterial);
-    this.scene.add(gridObj);
-  }
-
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
   this.directionalLight = new THREE.DirectionalLight(0xffffff);
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjs = new THREE.Object3D;
-  this.scene.add(this.selectableObjs);
-  var mouseHandler = new ROS3D.MouseHandler(this.renderer, this.camera, this.selectableObjs,
-      this.cameraControls);
+  this.selectableObjects = new THREE.Object3D;
+  this.scene.add(this.selectableObjects);
+  var mouseHandler = new ROS3D.MouseHandler({
+    renderer : this.renderer,
+    camera : this.camera,
+    rootObject : this.selectableObjects,
+    fallbackTarget : this.cameraControls
+  });
 
   // highlights the receiver of mouse events
-  this.highlighter = new ROS3D.Highlighter(mouseHandler);
+  this.highlighter = new ROS3D.Highlighter({
+    mouseHandler : mouseHandler
+  });
 
   /**
    * Renders the associated scene to the that.
@@ -551,28 +1425,24 @@ ROS3D.Viewer = function(options) {
   };
 
   // add the renderer to the page
-  document.getElementById(this.divID).appendChild(this.renderer.domElement);
+  document.getElementById(divID).appendChild(this.renderer.domElement);
 
   // begin the animation
   draw();
 };
 
 /**
- * Add the given THREE Object3D to the global selectable object scene in the viewer.
- * 
- * @param object - the THREE Object3D to add
- */
-ROS3D.Viewer.prototype.addObject = function(object) {
-  this.scene.add(object);
-};
-
-/**
  * Add the given THREE Object3D to the global scene in the viewer.
  * 
  * @param object - the THREE Object3D to add
+ * @param selectable (optional) - if the object should be added to the selectable list
  */
-ROS3D.Viewer.prototype.addSelectableObject = function(object) {
-  this.selectableObjs.add(object);
+ROS3D.Viewer.prototype.addObject = function(object, selectable) {
+  if (selectable) {
+    this.selectableObjects.add(object);
+  } else {
+    this.scene.add(object);
+  }
 };
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -582,87 +1452,90 @@ ROS3D.Viewer.prototype.addSelectableObject = function(object) {
  * A mouseover highlighter for 3D objects in the scene.
  *
  * @constructor
- * @param mouseHandler - the handler for the mouseover and mouseout events
+ * @param options - object with following keys:
+ *   * mouseHandler - the handler for the mouseover and mouseout events
  */
-ROS3D.Highlighter = function(mouseHandler) {
+ROS3D.Highlighter = function(options) {
+  var options = options || {};
+  var mouseHandler = options.mouseHandler;
   this.hoverObjs = [];
-
-  /**
-   * Add the current target of the mouseover to the hover list.
-   * @param event - the event that contains the target of the mouseover
-   */
-  this.onMouseOver = function(event) {
-    this.hoverObjs.push(event.currentTarget);
-  };
-
-  /**
-   * Remove the current target of the mouseover from the hover list.
-   * @param event - the event that contains the target of the mouseout
-   */
-  this.onMouseOut = function(event) {
-    this.hoverObjs.splice(this.hoverObjs.indexOf(event.currentTarget), 1);
-  };
-
-  /**
-   * Add all corresponding webgl objects in the given scene and add them to the given render list.
-   * 
-   * @param scene - the scene to check for webgl objects
-   * @param objects - the objects list to check
-   * @param renderList - the list to add to
-   */
-  this.getWebglObjects = function(scene, objects, renderList) {
-    var objlist = scene.__webglObjects;
-    // get corresponding webgl objects
-    for ( var c = 0; c < objects.length; c++) {
-      if (objects[c]) {
-        for ( var o = objlist.length - 1; o >= 0; o--) {
-          if (objlist[o].object === objects[c]) {
-            renderList.push(objlist[o]);
-            break;
-          }
-        }
-        // recurse into children
-        this.getWebglObjects(scene, objects[c].children, renderList);
-      }
-    }
-  };
-
-  /**
-   * Render highlighted objects in the scene.
-   * 
-   * @param renderer - the renderer to use
-   * @param scene - the scene to use
-   * @param camera - the camera to use
-   */
-  this.renderHighlight = function(renderer, scene, camera) {
-    // get webgl objects
-    var renderList = [];
-    this.getWebglObjects(scene, this.hoverObjs, renderList);
-
-    // define highlight material
-    scene.overrideMaterial = new THREE.MeshBasicMaterial({
-      fog : false,
-      opacity : 0.5,
-      depthTest : true,
-      depthWrite : false,
-      polygonOffset : true,
-      polygonOffsetUnits : -1,
-      side : THREE.DoubleSide
-    });;
-
-    // swap render lists, render, undo
-    var oldWebglObjects = scene.__webglObjects;
-    scene.__webglObjects = renderList;
-
-    renderer.render(scene, camera);
-
-    scene.__webglObjects = oldWebglObjects;
-    scene.overrideMaterial = null;
-  };
 
   // bind the mouse events
   mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
   mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
+};
+
+/**
+ * Add the current target of the mouseover to the hover list.
+ * @param event - the event that contains the target of the mouseover
+ */
+ROS3D.Highlighter.prototype.onMouseOver = function(event) {
+  this.hoverObjs.push(event.currentTarget);
+};
+
+/**
+ * Remove the current target of the mouseover from the hover list.
+ * @param event - the event that contains the target of the mouseout
+ */
+ROS3D.Highlighter.prototype.onMouseOut = function(event) {
+  this.hoverObjs.splice(this.hoverObjs.indexOf(event.currentTarget), 1);
+};
+
+/**
+ * Add all corresponding webgl objects in the given scene and add them to the given render list.
+ * 
+ * @param scene - the scene to check for webgl objects
+ * @param objects - the objects list to check
+ * @param renderList - the list to add to
+ */
+ROS3D.Highlighter.prototype.getWebglObjects = function(scene, objects, renderList) {
+  var objlist = scene.__webglObjects;
+  // get corresponding webgl objects
+  for ( var c = 0; c < objects.length; c++) {
+    if (objects[c]) {
+      for ( var o = objlist.length - 1; o >= 0; o--) {
+        if (objlist[o].object === objects[c]) {
+          renderList.push(objlist[o]);
+          break;
+        }
+      }
+      // recurse into children
+      this.getWebglObjects(scene, objects[c].children, renderList);
+    }
+  }
+};
+
+/**
+ * Render highlighted objects in the scene.
+ * 
+ * @param renderer - the renderer to use
+ * @param scene - the scene to use
+ * @param camera - the camera to use
+ */
+ROS3D.Highlighter.prototype.renderHighlight = function(renderer, scene, camera) {
+  // get webgl objects
+  var renderList = [];
+  this.getWebglObjects(scene, this.hoverObjs, renderList);
+
+  // define highlight material
+  scene.overrideMaterial = new THREE.MeshBasicMaterial({
+    fog : false,
+    opacity : 0.5,
+    depthTest : true,
+    depthWrite : false,
+    polygonOffset : true,
+    polygonOffsetUnits : -1,
+    side : THREE.DoubleSide
+  });;
+
+  // swap render lists, render, undo
+  var oldWebglObjects = scene.__webglObjects;
+  scene.__webglObjects = renderList;
+
+  renderer.render(scene, camera);
+
+  scene.__webglObjects = oldWebglObjects;
+  scene.overrideMaterial = null;
 };
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -672,18 +1545,19 @@ ROS3D.Highlighter = function(mouseHandler) {
  * A handler for mouse events within a 3D viewer.
  *
  * @constructor
- * @param renderer - the main renderer
- * @param camera - the main camera in the scene
- * @param rootObj - the root object to check for mouse events
- * @param fallbackTarget - the fallback target, e.g., the camera controls
+ * @param options - object with following keys:
+ *   * renderer - the main renderer
+ *   * camera - the main camera in the scene
+ *   * rootObject - the root object to check for mouse events
+ *   * fallbackTarget - the fallback target, e.g., the camera controls
  */
-ROS3D.MouseHandler = function(renderer, camera, rootObj, fallbackTarget) {
+ROS3D.MouseHandler = function(options) {
   THREE.EventDispatcher.call(this);
-  this.camera = camera;
-  this.rootObj = rootObj;
-  this.renderer = renderer;
-  this.fallbackTarget = fallbackTarget;
-  this.lastTarget = fallbackTarget;
+  this.renderer = options.renderer;
+  this.camera = options.camera;
+  this.rootObject = options.rootObject;
+  this.fallbackTarget = options.fallbackTarget;
+  this.lastTarget = this.fallbackTarget;
   this.dragging = false;
   this.projector = new THREE.Projector();
 
@@ -693,141 +1567,141 @@ ROS3D.MouseHandler = function(renderer, camera, rootObj, fallbackTarget) {
       'touchleave', 'touchmove' ];
   this.listeners = {};
 
-  /**
-   * Process the particular DOM even that has occurred based on the mouse's position in the scene.
-   * 
-   * @param domEvent - the DOM event to process
-   */
-  this.processDomEvent = function(domEvent) {
-    // don't deal with the default handler
-    domEvent.preventDefault();
-
-    // compute normalized device coords and 3D mouse ray
-    var target = domEvent.target;
-    var rect = target.getBoundingClientRect();
-    var left = domEvent.clientX - rect.left - target.clientLeft + target.scrollLeft;
-    var top = domEvent.clientY - rect.top - target.clientTop + target.scrollTop;
-    var deviceX = left / target.clientWidth * 2 - 1;
-    var deviceY = -top / target.clientHeight * 2 + 1;
-    var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
-    this.projector.unprojectVector(vector, this.camera);
-    // use the THREE raycaster
-    var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
-        this.camera.position).normalize());
-    var mouseRay = mouseRaycaster.ray;
-
-    // make our 3d mouse event
-    var event3D = {
-      mousePos : new THREE.Vector2(deviceX, deviceY),
-      mouseRay : mouseRay,
-      domEvent : domEvent,
-      camera : this.camera,
-      intersection : this.lastIntersection
-    };
-
-    // if the mouse leaves the dom element, stop everything
-    if (domEvent.type == 'mouseout') {
-      if (this.dragging) {
-        this.notify(this.lastTarget, 'mouseup', event3D);
-        this.dragging = false;
-      }
-      this.notify(this.lastTarget, 'mouseout', event3D);
-      this.lastTarget = null;
-      return;
-    }
-
-    // while the user is holding the mouse down, stay on the same target
-    if (this.dragging) {
-      this.notify(this.lastTarget, domEvent.type, event3D);
-      // for check for right or left mouse button
-      if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click') {
-        this.dragging = false;
-      }
-      return;
-    }
-
-    // in the normal case, we need to check what is under the mouse
-    var target = this.lastTarget;
-    var intersections = [];
-    intersections = mouseRaycaster.intersectObject(this.rootObj, true);
-    if (intersections.length > 0) {
-      target = intersections[0].object;
-      event3D.intersection = this.lastIntersection = intersections[0];
-    } else {
-      target = this.fallbackTarget;
-    }
-
-    // if the mouse moves from one object to another (or from/to the 'null' object), notify both
-    if (target !== this.lastTarget) {
-      var eventAccepted = this.notify(target, 'mouseover', event3D);
-      if (eventAccepted) {
-        this.notify(this.lastTarget, 'mouseout', event3D);
-      } else {
-        // if target was null or no target has caught our event, fall back
-        target = this.fallbackTarget;
-        if (target !== this.lastTarget) {
-          this.notify(target, 'mouseover', event3D);
-          this.notify(this.lastTarget, 'mouseout', event3D);
-        }
-      }
-    }
-
-    // pass through event
-    this.notify(target, domEvent.type, event3D);
-    if (domEvent.type === 'mousedown') {
-      this.dragging = true;
-    }
-    this.lastTarget = target;
-  };
-
-  /**
-   * Notify the listener of the type of event that occurred.
-   * 
-   * @param target - the target of the event
-   * @param type - the type of event that occurred 
-   * @param event3D - the 3D mouse even information
-   * @returns if an event was canceled
-   */
-  this.notify = function(target, type, event3D) {
-    // ensure the type is set
-    event3D.type = type;
-
-    // make the event cancelable
-    event3D.cancelBubble = false;
-    event3D.stopPropagation = function() {
-      event3D.cancelBubble = true;
-    };
-    // walk up graph until event is canceled or root node has been reached
-    event3D.currentTarget = target;
-    while (event3D.currentTarget) {
-      // try to fire event on object
-      if (event3D.currentTarget.dispatchEvent
-          && event3D.currentTarget.dispatchEvent instanceof Function) {
-        event3D.currentTarget.dispatchEvent(event3D);
-        if (event3D.cancelBubble) {
-          this.dispatchEvent(event3D);
-          return true;
-        }
-      }
-      // walk up
-      event3D.currentTarget = event3D.currentTarget.parent;
-    }
-    return false;
-  };
-
-  /**
-   * Destroy this mouse handler and its associated listeners.
-   */
-  this.destroy = function() {
-    this.listeners.forEach(function(listener) {
-      this.renderer.domElement.removeEventListener(eventName, listener, false);
-    }, this);
-  };
-
   // add event listeners for the associated mouse events
   eventNames.forEach(function(eventName) {
     this.listeners[eventName] = this.processDomEvent.bind(this);
     this.renderer.domElement.addEventListener(eventName, this.listeners[eventName], false);
+  }, this);
+};
+
+/**
+ * Process the particular DOM even that has occurred based on the mouse's position in the scene.
+ * 
+ * @param domEvent - the DOM event to process
+ */
+ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
+  // don't deal with the default handler
+  domEvent.preventDefault();
+
+  // compute normalized device coords and 3D mouse ray
+  var target = domEvent.target;
+  var rect = target.getBoundingClientRect();
+  var left = domEvent.clientX - rect.left - target.clientLeft + target.scrollLeft;
+  var top = domEvent.clientY - rect.top - target.clientTop + target.scrollTop;
+  var deviceX = left / target.clientWidth * 2 - 1;
+  var deviceY = -top / target.clientHeight * 2 + 1;
+  var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
+  this.projector.unprojectVector(vector, this.camera);
+  // use the THREE raycaster
+  var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
+      this.camera.position).normalize());
+  var mouseRay = mouseRaycaster.ray;
+
+  // make our 3d mouse event
+  var event3D = {
+    mousePos : new THREE.Vector2(deviceX, deviceY),
+    mouseRay : mouseRay,
+    domEvent : domEvent,
+    camera : this.camera,
+    intersection : this.lastIntersection
+  };
+
+  // if the mouse leaves the dom element, stop everything
+  if (domEvent.type == 'mouseout') {
+    if (this.dragging) {
+      this.notify(this.lastTarget, 'mouseup', event3D);
+      this.dragging = false;
+    }
+    this.notify(this.lastTarget, 'mouseout', event3D);
+    this.lastTarget = null;
+    return;
+  }
+
+  // while the user is holding the mouse down, stay on the same target
+  if (this.dragging) {
+    this.notify(this.lastTarget, domEvent.type, event3D);
+    // for check for right or left mouse button
+    if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click') {
+      this.dragging = false;
+    }
+    return;
+  }
+
+  // in the normal case, we need to check what is under the mouse
+  var target = this.lastTarget;
+  var intersections = [];
+  intersections = mouseRaycaster.intersectObject(this.rootObject, true);
+  if (intersections.length > 0) {
+    target = intersections[0].object;
+    event3D.intersection = this.lastIntersection = intersections[0];
+  } else {
+    target = this.fallbackTarget;
+  }
+
+  // if the mouse moves from one object to another (or from/to the 'null' object), notify both
+  if (target !== this.lastTarget) {
+    var eventAccepted = this.notify(target, 'mouseover', event3D);
+    if (eventAccepted) {
+      this.notify(this.lastTarget, 'mouseout', event3D);
+    } else {
+      // if target was null or no target has caught our event, fall back
+      target = this.fallbackTarget;
+      if (target !== this.lastTarget) {
+        this.notify(target, 'mouseover', event3D);
+        this.notify(this.lastTarget, 'mouseout', event3D);
+      }
+    }
+  }
+
+  // pass through event
+  this.notify(target, domEvent.type, event3D);
+  if (domEvent.type === 'mousedown') {
+    this.dragging = true;
+  }
+  this.lastTarget = target;
+};
+
+/**
+ * Notify the listener of the type of event that occurred.
+ * 
+ * @param target - the target of the event
+ * @param type - the type of event that occurred 
+ * @param event3D - the 3D mouse even information
+ * @returns if an event was canceled
+ */
+ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
+  // ensure the type is set
+  event3D.type = type;
+
+  // make the event cancelable
+  event3D.cancelBubble = false;
+  event3D.stopPropagation = function() {
+    event3D.cancelBubble = true;
+  };
+  // walk up graph until event is canceled or root node has been reached
+  event3D.currentTarget = target;
+  while (event3D.currentTarget) {
+    // try to fire event on object
+    if (event3D.currentTarget.dispatchEvent
+        && event3D.currentTarget.dispatchEvent instanceof Function) {
+      event3D.currentTarget.dispatchEvent(event3D);
+      if (event3D.cancelBubble) {
+        this.dispatchEvent(event3D);
+        return true;
+      }
+    }
+    // walk up
+    event3D.currentTarget = event3D.currentTarget.parent;
+  }
+  return false;
+};
+
+/**
+ * Destroy this mouse handler and its associated listeners.
+ */
+ROS3D.MouseHandler.prototype.destroy = function() {
+  this.listeners.forEach(function(listener) {
+    this.renderer.domElement.removeEventListener(eventName, listener, false);
   }, this);
 };
 /**
@@ -1239,598 +2113,6 @@ ROS3D.OrbitControls = function(scene, object) {
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);
-};
-ROS3D.InteractiveMarker = function(handle, camera, meshBaseUrl) {
-  THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
-
-  var that = this;
-
-  this.name = handle.name;
-
-  this.dragging = false;
-  this.onServerSetPose({
-    pose : handle.pose
-  });
-
-  this.dragStart = {
-    position : new THREE.Vector3(),
-    orientation : new THREE.Quaternion(),
-    positionWorld : new THREE.Vector3(),
-    orientationWorld : new THREE.Quaternion(),
-    event3d : {}
-  };
-
-  handle.controls.forEach(function(controlMsg) {
-    that.add(new ROS3D.InteractiveMarkerControl(that, controlMsg, camera, meshBaseUrl));
-  });
-
-  if (handle.menuEntries.length > 0) {
-    this.menu = new ROS3D.InteractiveMarkerMenu(handle.menuEntries);
-
-    // forward menu select events
-    this.menu.addEventListener("menu_select", function(event) {
-      that.dispatchEvent(event);
-    });
-  }
-};
-
-ROS3D.InteractiveMarker.prototype = Object.create(THREE.Object3D.prototype);
-
-var projector = new THREE.Projector();
-
-var findClosestPoint = function(target_ray, mouse_ray) {
-  // Find the closest point on target_ray to any point on mouse_ray.
-  // Math taken from http://paulbourke.net/geometry/lineline3d/
-  // line P1->P2 is target_ray
-  // line P3->P4 is mouse_ray
-
-  var v13 = new THREE.Vector3;
-  v13.subVectors(target_ray.origin, mouse_ray.origin);
-  var v43 = mouse_ray.direction.clone();
-  var v21 = target_ray.direction.clone();
-  var d1343 = v13.dot(v43);
-  var d4321 = v43.dot(v21);
-  var d1321 = v13.dot(v21);
-  var d4343 = v43.dot(v43);
-  var d2121 = v21.dot(v21);
-
-  var denom = d2121 * d4343 - d4321 * d4321;
-  if (Math.abs(denom) <= 0.0001) {
-    return undefined;
-  }
-  var numer = d1343 * d4321 - d1321 * d4343;
-
-  var mua = numer / denom;
-  return mua;
-};
-
-var closestAxisPoint = function(axisRay, camera, mousePos) {
-  // project axis onto screen
-  var o = axisRay.origin.clone();
-  projector.projectVector(o, camera);
-
-  var o2 = axisRay.direction.clone().add(axisRay.origin);
-  projector.projectVector(o2, camera);
-
-  // d is the axis vector in screen space
-  var d = o2.clone().sub(o);
-  // d = o2-o;
-
-  // t is the 2d ray param of perpendicular projection
-  // of mousePos onto o
-  var tmp = new THREE.Vector2;
-  var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
-  // t = (mousePos - o) * d / (d*d);
-
-  // mp is the final 2d-projected mouse pos DDD
-  var mp = new THREE.Vector2;
-  mp.addVectors(o, d.clone().multiplyScalar(t));
-  // mp = o + d*t;
-
-  // go back to 3d by shooting a ray
-  var vector = new THREE.Vector3(mp.x, mp.y, 0.5);
-  projector.unprojectVector(vector, camera);
-  var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
-  var mua = findClosestPoint(axisRay, mpRay, mua);
-
-  return mua;
-};
-
-var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
-
-  var vector = new THREE.Vector3();
-  var intersectPoint = new THREE.Vector3();
-
-  vector.subVectors(planeOrigin, mouseRay.origin);
-  dot = mouseRay.direction.dot(planeNormal);
-
-  // bail if ray and plane are parallel
-  if (Math.abs(dot) < mouseRay.precision)
-    return null;
-
-  // calc distance to plane
-  scalar = planeNormal.dot(vector) / dot;
-
-  // if negative distance, then plane is behind ray
-  // if (scalar < 0)
-  // return null;
-
-  intersectPoint.addVectors(mouseRay.origin, mouseRay.direction.clone().multiplyScalar(scalar));
-  return intersectPoint;
-};
-
-ROS3D.InteractiveMarker.prototype.showMenu = function(control, event) {
-  if (this.menu) {
-    this.menu.show(control, event);
-  }
-};
-
-ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d) {
-  if (this.dragging) {
-    var currentControlOri = control.currentControlOri;
-    var axis = origAxis.clone().applyQuaternion(currentControlOri);
-    // get move axis in world coords
-    var originWorld = this.dragStart.event3d.intersection.point;
-    var axisWorld = axis.clone().applyQuaternion(this.dragStart.orientationWorld.clone());
-
-    var axisRay = new THREE.Ray(originWorld, axisWorld);
-
-    // find closest point to mouse on axis
-    var t = closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
-
-    // offset from drag start position
-    var p = new THREE.Vector3;
-    p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
-        .multiplyScalar(t));
-    this.setPosition(control, p);
-
-    event3d.stopPropagation();
-  }
-};
-
-ROS3D.InteractiveMarker.prototype.movePlane = function(control, origNormal, event3d) {
-  if (this.dragging) {
-    var currentControlOri = control.currentControlOri;
-    var normal = origNormal.clone().applyQuaternion(currentControlOri);
-    // get plane params in world coords
-    var originWorld = this.dragStart.event3d.intersection.point;
-    var normalWorld = normal.clone().applyQuaternion(this.dragStart.orientationWorld);
-
-    // intersect mouse ray with plane
-    var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
-
-    // offset from drag start position
-    var p = new THREE.Vector3;
-    p.subVectors(intersection, originWorld);
-    p.add(this.dragStart.positionWorld);
-    this.setPosition(control, p);
-    event3d.stopPropagation();
-  }
-};
-
-function printVec(v) {
-  // console.log(Math.round(v.x*10)/10,Math.round(v.y*10)/10,Math.round(v.y*10)/10);
-}
-function printQuat(v) {
-  // console.log(Math.round(v.x*10)/10,Math.round(v.y*10)/10,Math.round(v.y*10)/10,Math.round(v.w*10)/10);
-}
-
-ROS3D.InteractiveMarker.prototype.rotateAxis = function(control, origOrientation, event3d) {
-  if (this.dragging) {
-    control.updateMatrixWorld();
-
-    // console.log("------------------_");
-
-    var currentControlOri = control.currentControlOri;
-    var orientation = currentControlOri.clone().multiply(origOrientation.clone());
-
-    printQuat(currentControlOri);
-    printQuat(orientation);
-
-    var normal = (new THREE.Vector3(1, 0, 0)).applyQuaternion(orientation);
-
-    // get plane params in world coords
-    var originWorld = this.dragStart.event3d.intersection.point;
-    var normalWorld = normal.applyQuaternion(this.dragStart.orientationWorld);
-
-    printVec(normal);
-    printVec(normalWorld);
-
-    // intersect mouse ray with plane
-    var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
-
-    // offset local origin to lie on intersection plane
-    var normalRay = new THREE.Ray(this.dragStart.positionWorld, normalWorld);
-    var rotOrigin = intersectPlane(normalRay, originWorld, normalWorld);
-
-    // rotates from world to plane coords
-    var orientationWorld = this.dragStart.orientationWorld.clone().multiply(orientation);
-    var orientationWorldInv = orientationWorld.clone().inverse();
-
-    // rotate original and current intersection into local coords
-    intersection.sub(rotOrigin);
-    intersection.applyQuaternion(orientationWorldInv);
-
-    var origIntersection = this.dragStart.event3d.intersection.point.clone();
-    origIntersection.sub(rotOrigin);
-    origIntersection.applyQuaternion(orientationWorldInv);
-
-    // compute relative 2d angle
-    var a1 = Math.atan2(intersection.y, intersection.z);
-    var a2 = Math.atan2(origIntersection.y, origIntersection.z);
-    var a = a2 - a1;
-
-    var rot = new THREE.Quaternion();
-    rot.setFromAxisAngle(normal, a);
-
-    // rotate
-    // this.setOrientation( rot.multiplySelf(this.dragStart.orientationWorld) );
-    this.setOrientation(control, rot.multiply(this.dragStart.orientationWorld));
-
-    // offset from drag start position
-    event3d.stopPropagation();
-  }
-};
-
-ROS3D.InteractiveMarker.prototype.feedbackEvent = function(type, control) {
-  this.dispatchEvent({
-    type : type,
-    position : this.position.clone(),
-    orientation : this.quaternion.clone(),
-    controlName : control.name
-  });
-};
-
-ROS3D.InteractiveMarker.prototype.startDrag = function(control, event3d) {
-  if (event3d.domEvent.button !== 0) {
-    return;
-  }
-  event3d.stopPropagation();
-  this.dragging = true;
-  this.updateMatrixWorld(true);
-  var scale = new THREE.Vector3();
-  this.matrixWorld.decompose(this.dragStart.positionWorld, this.dragStart.orientationWorld, scale);
-  this.dragStart.position = this.position.clone();
-  this.dragStart.orientation = this.quaternion.clone();
-  this.dragStart.event3d = event3d;
-
-  this.feedbackEvent("user_mouse_down", control);
-};
-
-ROS3D.InteractiveMarker.prototype.stopDrag = function(control, event3d) {
-  if (event3d.domEvent.button !== 0) {
-    return;
-  }
-  event3d.stopPropagation();
-  this.dragging = false;
-  this.dragStart.event3d = {};
-  this.onServerSetPose(this.bufferedPoseEvent);
-  this.bufferedPoseEvent = undefined;
-
-  this.feedbackEvent("user_mouse_up", control);
-};
-
-ROS3D.InteractiveMarker.prototype.buttonClick = function(control, event3d) {
-  event3d.stopPropagation();
-  this.feedbackEvent("user_button_click", control);
-};
-
-ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
-  this.position = position;
-  this.feedbackEvent("user_changed_pose", control);
-};
-
-ROS3D.InteractiveMarker.prototype.setOrientation = function(control, orientation) {
-  orientation.normalize();
-  this.quaternion = orientation;
-  this.feedbackEvent("user_changed_pose", control);
-};
-
-ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
-  if (event === undefined) {
-    return;
-  }
-
-  if (this.dragging) {
-    this.bufferedPoseEvent = event;
-    return;
-  }
-
-  var pose = event.pose;
-
-  this.position.x = pose.position.x;
-  this.position.y = pose.position.y;
-  this.position.z = pose.position.z;
-
-  this.useQuaternion = true;
-  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
-      pose.orientation.z, pose.orientation.w);
-
-  this.updateMatrixWorld(true);
-};
-
-// --------------------------------------------------------
-
-
-
-ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
-    camera, meshBaseUrl) {
-  THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
-
-  this.parent = parent;
-  this.dragging = false;
-
-  var that = this;
-
-  this.name = controlMsg.name;
-
-  var NONE = 0;
-  var MENU = 1;
-  var BUTTON = 2;
-  var MOVE_AXIS = 3;
-  var MOVE_PLANE = 4;
-  var ROTATE_AXIS = 5;
-  var MOVE_ROTATE = 6;
-
-  var controlOri = new THREE.Quaternion(controlMsg.orientation.x, controlMsg.orientation.y,
-      controlMsg.orientation.z, controlMsg.orientation.w);
-  controlOri.normalize();
-
-  // transform x axis into local frame
-  var controlAxis = new THREE.Vector3(1, 0, 0);
-  controlAxis.applyQuaternion(controlOri);
-
-  this.currentControlOri = new THREE.Quaternion();
-
-  // determine mouse interaction
-  switch (controlMsg.interaction_mode) {
-    case MOVE_AXIS:
-      this.addEventListener("mousemove", parent.moveAxis.bind(parent, this, controlAxis));
-      this.addEventListener("touchmove", parent.moveAxis.bind(parent, this, controlAxis));
-      break;
-    case ROTATE_AXIS:
-      this.addEventListener("mousemove", parent.rotateAxis.bind(parent, this, controlOri));
-      break;
-    case MOVE_PLANE:
-      this.addEventListener("mousemove", parent.movePlane.bind(parent, this, controlAxis));
-      break;
-    case BUTTON:
-      this.addEventListener("click", parent.buttonClick.bind(parent, this));
-      break;
-    default:
-      break;
-  }
-
-  // install default listeners for highlighting / dragging
-  function stopPropagation(event) {
-    event.stopPropagation();
-  }
-
-  if (controlMsg.interaction_mode != NONE) {
-    this.addEventListener('mousedown', parent.startDrag.bind(parent, this));
-    this.addEventListener('mouseup', parent.stopDrag.bind(parent, this));
-    this.addEventListener('contextmenu', parent.showMenu.bind(parent, this));
-    this.addEventListener('mouseover', stopPropagation);
-    this.addEventListener('mouseout', stopPropagation);
-    this.addEventListener('click', stopPropagation);
-
-    // hacky touch support
-    this.addEventListener('touchstart', function(event3d) {
-      console.log(event3d.domEvent);
-      if (event3d.domEvent.touches.length == 1) {
-        event3d.type = 'mousedown';
-        event3d.domEvent.button = 0;
-        that.dispatchEvent(event3d);
-      }
-    });
-    this.addEventListener('touchmove', function(event3d) {
-      if (event3d.domEvent.touches.length == 1) {
-        console.log(event3d.domEvent);
-        event3d.type = 'mousemove';
-        event3d.domEvent.button = 0;
-        that.dispatchEvent(event3d);
-      }
-    });
-    this.addEventListener('touchend', function(event3d) {
-      if (event3d.domEvent.touches.length == 0) {
-        event3d.domEvent.button = 0;
-        event3d.type = 'mouseup';
-        that.dispatchEvent(event3d);
-        event3d.type = 'click';
-        that.dispatchEvent(event3d);
-      }
-    });
-  }
-
-  // define rotation behaviour
-  var INHERIT = 0;
-  var FIXED = 1;
-  var VIEW_FACING = 2;
-
-  var rotInv = new THREE.Quaternion();
-  var posInv = parent.position.clone().multiplyScalar(-1);
-
-  switch (controlMsg.orientation_mode) {
-    case INHERIT:
-      rotInv = parent.quaternion.clone().inverse();
-      that.updateMatrixWorld = function(force) {
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-        that.currentControlOri.copy(that.quaternion);
-        that.currentControlOri.normalize();
-      };
-      break;
-    case FIXED:
-      that.updateMatrixWorld = function(force) {
-        that.useQuaternion = true;
-        that.quaternion = that.parent.quaternion.clone().inverse();
-        that.updateMatrix();
-        that.matrixWorldNeedsUpdate = true;
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-        that.currentControlOri.copy(that.quaternion);
-      };
-      break;
-    case VIEW_FACING:
-      var independent_marker_orientation = controlMsg.independent_marker_orientation;
-      that.updateMatrixWorld = function(force) {
-
-        camera.updateMatrixWorld();
-        var cameraRot = new THREE.Matrix4().extractRotation(camera.matrixWorld);
-
-        var ros2Gl = new THREE.Matrix4();
-        var r90 = Math.PI * 0.5;
-        var rv = new THREE.Vector3(-r90, 0, r90);
-        ros2Gl.setRotationFromEuler(rv);
-
-        var worldToLocal = new THREE.Matrix4();
-        worldToLocal.getInverse(that.parent.matrixWorld);
-
-        cameraRot.multiplyMatrices(cameraRot, ros2Gl);
-        cameraRot.multiplyMatrices(worldToLocal, cameraRot);
-
-        that.currentControlOri.setFromRotationMatrix(cameraRot);
-
-        if (!independent_marker_orientation) {
-          that.useQuaternion = true;
-          that.quaternion.copy(that.currentControlOri);
-          that.updateMatrix();
-          that.matrixWorldNeedsUpdate = true;
-        }
-
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-      };
-      break;
-    default:
-      break;
-  }
-
-  // create visuals (markers)
-  controlMsg.markers.forEach(function(markerMsg) {
-    var markerHelper = new ROS3D.Marker({
-      message : markerMsg,
-      path : meshBaseUrl
-    });
-
-    if (markerMsg.header.frame_id !== "") {
-      // if the marker lives in its own coordinate frame,
-      // convert position into IM's local coordinate frame
-      markerHelper.position.add(posInv);
-      markerHelper.position.applyQuaternion(rotInv);
-      markerHelper.quaternion.multiplyQuaternions(rotInv, markerHelper.quaternion);
-      markerHelper.updateMatrixWorld();
-    }
-
-    that.add(markerHelper);
-  });
-
-};
-
-ROS3D.InteractiveMarkerControl.prototype = Object.create(THREE.Object3D.prototype);ROS3D.InteractiveMarkerMenu = function(menuEntries) {
-  var allMenus = [];
-  allMenus[0] = {
-    children : []
-  };
-
-  THREE.EventDispatcher.call(this);
-
-  var that = this;
-
-  this.menuDomElem = document.createElement("div");
-  this.menuDomElem.style.position = "absolute";
-  this.menuDomElem.className = "interactive_marker_menu";
-  this.menuDomElem.addEventListener("contextmenu", function(event) {
-    event.preventDefault();
-  });
-
-  this.overlayDomElem = document.createElement("div");
-  this.overlayDomElem.className = "interactive_marker_overlay";
-
-  this.hideListener = this.hide.bind(this);
-  this.overlayDomElem.addEventListener("contextmenu", this.hideListener);
-  this.overlayDomElem.addEventListener("click", this.hideListener);
-
-  // parse all entries
-  for ( var i = 0; i < menuEntries.length; i++) {
-    var entry = menuEntries[i];
-    var id = entry.id;
-    allMenus[id] = {
-      title : entry.title,
-      id : id,
-      children : []
-    };
-  }
-
-  // link children to parents
-  for ( var i = 0; i < menuEntries.length; i++) {
-    var entry = menuEntries[i];
-    var id = entry.id;
-    var menu = allMenus[id];
-    var parent = allMenus[entry.parent_id];
-    parent.children.push(menu);
-  }
-
-  function emitMenuSelect(menuEntry, domEvent) {
-    this.dispatchEvent({
-      type : "menu_select",
-      domEvent : domEvent,
-      id : menuEntry.id,
-      controlName : this.controlName
-    });
-    this.hide(domEvent);
-  }
-
-  // create html menu, starting from root (id 0)
-  function makeUl(parentDomElem, parentMenu) {
-
-    var ulElem = document.createElement("ul");
-    parentDomElem.appendChild(ulElem);
-
-    var children = parentMenu.children;
-
-    for ( var i = 0; i < children.length; i++) {
-      var liElem = document.createElement("li");
-      var divElem = document.createElement("div");
-      divElem.appendChild(document.createTextNode(children[i].title));
-      ulElem.appendChild(liElem);
-      liElem.appendChild(divElem);
-
-      if (children[i].children.length > 0) {
-        makeUl(liElem, children[i]);
-        divElem.addEventListener("click", that.hide.bind(that));
-      } else {
-        divElem.addEventListener("click", emitMenuSelect.bind(that, children[i]));
-        divElem.className = "interactive_marker_menuentry";
-      }
-    }
-
-  }
-
-  // construct dom element
-  makeUl(this.menuDomElem, allMenus[0]);
-};
-
-ROS3D.InteractiveMarkerMenu.prototype.show = function(control, event) {
-  if (event && event.preventDefault) {
-    event.preventDefault();
-  }
-
-  this.controlName = control.name;
-
-  // this.overlayDomElem.style.visibility = "visible";
-  this.menuDomElem.style.left = event.domEvent.clientX + 'px';
-  this.menuDomElem.style.top = event.domEvent.clientY + 'px';
-  document.body.appendChild(this.overlayDomElem);
-  document.body.appendChild(this.menuDomElem);
-};
-
-ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
-  if (event && event.preventDefault) {
-    event.preventDefault();
-  }
-
-  document.body.removeChild(this.overlayDomElem);
-  document.body.removeChild(this.menuDomElem);
 };
 /**
  * @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
@@ -6327,123 +6609,30 @@ ROS3D.ColladaLoader = function () {
 
 };
 /**
- * @author Jihoon Lee - jihoonlee.in@gmail.com
+ * @author David Gossow - dgossow@willowgarage.com
  */
 
 /**
- * A mesh load can be used to load a given 3D mesh into a THREE object.
- * 
- * @constructor
- * @param options - object with following keys:
- *  * path - the base path to the associated Collada models that will be loaded
- */
-ROS3D.MeshLoader = function(options) {
-  var options = options || {};
-  this.path = options.path || '';
-
-  // check for a trailing '/'
-  if (this.path.substr(this.path.length - 1) !== '/') {
-    this.path += '/';
-  }
-};
-
-/**
- * Load the given mesh resource into a THREE Object3D.
- * 
- * @param resource - the mesh resource to load.
- * @returns the THREE Object 3D containing the loaded mesh
- */
-ROS3D.MeshLoader.prototype.load = function(resource) {
-  var object = new THREE.Object3D();
-  var uri = this.path + resource;
-  var fileType = uri.substr(-4).toLowerCase();
-
-  // check the type
-  if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader = new ROS3D.ColladaLoader();
-    loader.load(uri, function colladaReady(collada) {
-      object.add(collada.scene);
-    });
-  }
-  return object;
-};
-/**
- * @author Jihoon Lee - jihoonlee.in@gmail.com
- * @author Russell Toris - rctoris@wpi.edu
- */
-
-/**
- * A URDF loader can be used to load a URDF and its associated models into a 3D object. By default,
- * the URDF is loaded from the ROS parameter server.
+ * A Arrow is a THREE object that can be used to display an arrow model.
  *
- * Emits the following events:
- * * 'ready' - emited after the URDF and its meshes have been loaded into the root object
- * 
  * @constructor
  * @param options - object with following keys:
- *  * tfClient - a handle to the TF client to be used to update the model's pose
- *  * path - the base path to the associated Collada models that will be loaded
+ *   * origin (optional) - the origin of the arrow
+ *   * direction (optional) - the direction vector of the arrow
+ *   * length (optional) - the length of the arrow
+ *   * headLength (optional) - the head length of the arrow
+ *   * shaftDiameter (optional) - the shaft diameter of the arrow
+ *   * headDiameter (optional) - the head diameter of the arrow
+ *   * material (optional) - the material to use for this arrow
  */
-ROS3D.UrdfLoader = function(options) {
-  var that = this;
+ROS3D.Arrow = function(options) {
   var options = options || {};
-  this.tfClient = options.tfClient;
-  this.path = options.path || 'resources/';
-};
-
-/**
- * Load the given URDF into a THREE Object3D.
- * 
- * @param string - the URDF as a string
- * @returns the THREE Object3D that contains the entire URDF
- */
-ROS3D.UrdfLoader.prototype.load = function(string) {
-  // hand off the XML string to the URDF model
-  var urdfModel = new ROSLIB.UrdfModel({
-    string : string
-  });
-
-  var objectRoot = new THREE.Object3D();
-
-  // load all models
-  var links = urdfModel.links;
-  var meshLoader = new ROS3D.MeshLoader({
-    path : this.path
-  });
-  for ( var l in links) {
-    var link = links[l];
-    if (link.visual && link.visual.geometry) {
-      if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
-        var frameID = '/' + link.name;
-        var uri = link.visual.geometry.filename;
-        var fileType = uri.substr(-4).toLowerCase();
-
-        // ignore mesh files which are not in Collada format
-        if (fileType === '.dae') {
-          var colladaModel = meshLoader.load(uri.substring(10));
-          // create a scene node with the model
-          var sceneNode = new ROS3D.SceneNode({
-            frameID : frameID,
-            tfClient : this.tfClient,
-            model : colladaModel
-          });
-          objectRoot.add(sceneNode);
-        }
-      }
-    }
-  }
-  return objectRoot;
-};
-ROS3D.ArrowMarker = function(options) {
   var origin = options.origin || new THREE.Vector3(0, 0, 0);
   var direction = options.direction || new THREE.Vector3(1, 0, 0);
-
   var length = options.length || 1;
   var headLength = options.headLength || 0.2;
-
   var shaftDiameter = options.shaftDiameter || 0.05;
   var headDiameter = options.headDiameter || 0.1;
-
   var material = options.material || new THREE.MeshBasicMaterial();
 
   var shaftLength = length - headLength;
@@ -6451,16 +6640,16 @@ ROS3D.ArrowMarker = function(options) {
   // create and merge geometry
   var geometry = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
       12, 1);
-
-  var m = new THREE.Matrix4;
+  var m = new THREE.Matrix4();
   m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
   geometry.applyMatrix(m);
 
+  // create the head
   var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
-
   m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
   coneGeometry.applyMatrix(m);
 
+  // put the arrow together
   THREE.GeometryUtils.merge(geometry, coneGeometry);
 
   THREE.Mesh.call(this, geometry, material);
@@ -6468,269 +6657,178 @@ ROS3D.ArrowMarker = function(options) {
   this.position = origin;
   this.setDirection(direction);
 };
-ROS3D.ArrowMarker.prototype = Object.create(THREE.Mesh.prototype);
+ROS3D.Arrow.prototype.__proto__ = THREE.Mesh.prototype;
 
-ROS3D.ArrowMarker.prototype.setDirection = function(direction) {
-
+/**
+ * Set the direction of this arrow to that of the given vector.
+ * 
+ * @param direction - the direction to set this arrow
+ */
+ROS3D.Arrow.prototype.setDirection = function(direction) {
   var axis = new THREE.Vector3(0, 1, 0).cross(direction);
-
   var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
-
   this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
-
   this.rotation.setEulerFromRotationMatrix(this.matrix, this.eulerOrder);
-
 };
 
-ROS3D.ArrowMarker.prototype.setLength = function(length) {
+/**
+ * Set this arrow to be the given length.
+ * 
+ * @param length - the new length of the arrow
+ */
+ROS3D.Arrow.prototype.setLength = function(length) {
   this.scale.set(length, length, length);
 };
 
-ROS3D.ArrowMarker.prototype.setColor = function(hex) {
+/**
+ * Set the color of this arrow to the given hex value.
+ * 
+ * @param hex - the hex value of the color to use
+ */
+ROS3D.Arrow.prototype.setColor = function(hex) {
   this.line.material.color.setHex(hex);
   this.cone.material.color.setHex(hex);
 };
-ROS3D.Marker = function(options) {
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ */
+
+/**
+ * An Axes object can be used to display the axis of a particular coordinate frame.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *   * shaftRadius (optional) - the radius of the shaft to render
+ *   * headRadius (optional) - the radius of the head to render 
+ *   * headLength (optional) - the length of the head to render
+ */
+ROS3D.Axes = function(options) {
   var that = this;
   var options = options || {};
-  this.path = options.path || '/';
-  var message = options.message;
+  var shaftRadius = options.shaftRadius || 0.008;
+  var headRadius = options.headRadius || 0.023;
+  var headLength = options.headLength || 0.1;
+
+  THREE.Object3D.call(this);
+
+  // create the cylinders for the objects
+  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
+
+  /**
+   * Adds an axis marker to this axes object.
+   * 
+   * @param axis - the 3D vector representing the axis to add
+   */
+  function addAxis(axis) {
+    // set the color of the axis
+    var color = new THREE.Color();
+    color.setRGB(axis.x, axis.y, axis.z);
+    var material = new THREE.MeshBasicMaterial({
+      color : color.getHex()
+    });
+
+    // setup the rotation information
+    var rotAxis = new THREE.Vector3;
+    rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
+    var rot = new THREE.Quaternion;
+    rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
+
+    // create the arrow
+    var arrow = new THREE.Mesh(that.headGeom, material);
+    arrow.position = axis.clone();
+    arrow.position.multiplyScalar(0.95);
+    arrow.useQuaternion = true;
+    arrow.quaternion = rot;
+    arrow.updateMatrix();
+    that.add(arrow);
+
+    // create the line
+    var line = new THREE.Mesh(that.lineGeom, material);
+    line.position = axis.clone();
+    line.position.multiplyScalar(0.45);
+    line.useQuaternion = true;
+    line.quaternion = rot;
+    line.updateMatrix();
+    that.add(line);
+  };
+
+  // add the three markers to the axes
+  addAxis(new THREE.Vector3(1, 0, 0));
+  addAxis(new THREE.Vector3(0, 1, 0));
+  addAxis(new THREE.Vector3(0, 0, 1));
+};
+ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;
+/**
+ * @author Jihoon Lee - jihoonlee.in@gmail.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
+ * Collada files.
+ * 
+ * @constructor
+ * @param options - object with following keys:
+ *  * path (optional) - the base path to the associated models that will be loaded
+ *  * resource - the resource file name to load
+ */
+ROS3D.MeshResource = function(options) {
+  var that = this;
+  var options = options || {};
+  var path = options.path || '/';
+  var resource = options.resource;
+
+  THREE.Object3D.call(this);
 
   // check for a trailing '/'
-  if (this.path.substr(this.path.length - 1) !== '/') {
+  if (path.substr(path.length - 1) !== '/') {
     this.path += '/';
   }
 
-  /**
-   * Create a THREE material based on the given RGBA values.
-   * 
-   * @param r - the red value
-   * @param g - the green value
-   * @param b - the blue value
-   * @param a - the alpha value
-   * @returns the THREE material
-   */
-  function makeColorMaterial(r, g, b, a) {
-    var color = new THREE.Color();
-    color.setRGB(r, g, b);
-    if (a <= 0.99) {
-      return new THREE.MeshBasicMaterial({
-        color : color.getHex(),
-        opacity : a + 0.1,
-        transparent : true,
-        depthWrite : true,
-        blendSrc : THREE.SrcAlphaFactor,
-        blendDst : THREE.OneMinusSrcAlphaFactor,
-        blendEquation : THREE.ReverseSubtractEquation,
-        blending : THREE.NormalBlending
-      });
-    } else {
-      return new THREE.MeshLambertMaterial({
-        color : color.getHex(),
-        opacity : a,
-        blending : THREE.NormalBlending
-      });
-    }
-  }
+  var uri = path + resource;
+  var fileType = uri.substr(-4).toLowerCase();
 
-  THREE.Object3D.call(this);
-  this.useQuaternion = true;
-
-  // set the pose and get the color
-  this.setPose(message.pose);
-  var colorMaterial = makeColorMaterial(message.color.r, message.color.g, message.color.b,
-      message.color.a);
-
-  // create the object based on the type
-  switch (message.type) {
-    case ROS3D.MARKER_ARROW:
-      // get the sizes for the arrow
-      var len = message.scale.x;
-      var headLen = len * 0.23;
-      var headR = message.scale.y;
-      var shaftR = headR * 0.5;
-
-      // determine the points
-      if (message.points.length === 2) {
-        var p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
-        var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
-        var direction = p1.clone().negate().add(p2);
-        // direction = p2 - p1;
-        len = direction.length();
-        headR = message.scale.y;
-        shaftR = message.scale.x;
-
-        if (message.scale.z !== 0.0) {
-          headLen = message.scale.z;
-        }
-      }
-      // add the marker
-      this.add(new ROS3D.ArrowMarker({
-        direction : direction,
-        origin : p1,
-        length : len,
-        headLength : headLen,
-        shaftDiameter : shaftR,
-        headDiameter : headR,
-        material : colorMaterial
-      }));
-      break;
-    case ROS3D.MARKER_CUBE:
-      var geom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
-      this.add(new THREE.Mesh(geom, colorMaterial));
-      break;
-    case ROS3D.MARKER_SPHERE:
-      var geom = new THREE.SphereGeometry(0.5);
-      var mesh = new THREE.Mesh(geom, colorMaterial);
-      mesh.scale.x = message.scale.x;
-      mesh.scale.y = message.scale.y;
-      mesh.scale.z = message.scale.z;
-      that.add(mesh);
-      break;
-    case ROS3D.MARKER_CYLINDER:
-      var geom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
-      var mesh = new THREE.Mesh(geom, colorMaterial);
-      mesh.useQuaternion = true;
-      mesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-      mesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
-      this.add(mesh);
-      break;
-    case ROS3D.MARKER_CUBE_LIST:
-    case ROS3D.MARKER_SPHERE_LIST:
-    case ROS3D.MARKER_POINTS:
-      var geometry = new THREE.Geometry();
-      var material = new THREE.ParticleBasicMaterial({
-        size : message.scale.x
-      });
-
-      for ( var i = 0; i < message.points.length; i++) {
-        var vertex = new THREE.Vector3();
-        vertex.x = message.points[i].x;
-        vertex.y = message.points[i].y;
-        vertex.z = message.points[i].z;
-        geometry.vertices.push(vertex);
-      }
-
-      if (message.colors.length == message.points.length) {
-        material.vertexColors = true;
-        for ( var i = 0; i < message.points.length; i++) {
-          var color = new THREE.Color();
-          color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
-          geometry.colors.push(color);
-        }
-      } else {
-        material.color.setRGB(message.color.r, message.color.g, message.color.b);
-      }
-
-      var particles = new THREE.ParticleSystem(geometry, material);
-      this.add(particles);
-      break;
-    case ROS3D.MARKER_TEXT_VIEW_FACING:
-      var textGeo = new THREE.TextGeometry(message.text, {
-
-        size : message.scale.x * 0.5,
-        height : 0.1 * message.scale.x,
-        curveSegments : 4,
-        font : "helvetiker",
-
-        bevelEnabled : false,
-        bevelThickness : 2,
-        bevelSize : 2,
-
-        material : 0,
-        extrudeMaterial : 0
-
-      });
-
-      textGeo.computeVertexNormals();
-      textGeo.computeBoundingBox();
-
-      var mesh = new THREE.Mesh(textGeo, colorMaterial);
-
-      var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
-      mesh.position.y = -centerOffset;
-
-      mesh.rotation.x = Math.PI * 0.5;
-      mesh.rotation.y = Math.PI * 1.5;
-      this.add(mesh);
-      break;
-    case ROS3D.MARKER_MESH_RESOURCE:
-      if (message.mesh_use_embedded_materials) {
-        var meshMarker = new ROS3D.MeshMarker(message, this.path, false);
-      } else {
-        var meshMarker = new ROS3D.MeshMarker(message, this.path, colorMaterial);
-      }
-      this.add(meshMarker);
-      break;
-    case ROS3D.MARKER_TRIANGLE_LIST:
-      var tri = new ROS3D.TriangleListMarker(colorMaterial, message.points, message.colors);
-      tri.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
-      this.add(tri);
-      break;
-    case ROS3D.MARKER_LINE_STRIP:
-    case ROS3D.MARKER_LINE_LIST:
-      var geom = new THREE.CubeGeometry(0.1, 0.1, 0.1);
-      this.add(new THREE.Mesh(geom, colorMaterial));
-      break;
-    default:
-      console.error('Unknown marker type: ' + message.type);
-      break;
-  }
-
-};
-ROS3D.Marker.prototype.__proto__ = THREE.Object3D.prototype;
-
-ROS3D.Marker.prototype.setPose = function(pose) {
-  // set position information
-  this.position.x = pose.position.x;
-  this.position.y = pose.position.y;
-  this.position.z = pose.position.z;
-
-  // set the rotation
-  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
-      pose.orientation.z, pose.orientation.w);
-  this.quaternion.normalize();
-
-  // update the world
-  this.updateMatrixWorld();
-};
-ROS3D.MeshMarker = function(markerMsg, meshBaseUrl, overrideMaterial) {
-
-  if (meshBaseUrl == undefined) {
-    THREE.Mesh.call(this, new THREE.CubeGeometry(0.01, 0.01, 0.01), new THREE.MeshBasicMaterial());
-  } else {
-    THREE.Mesh.call(this, new THREE.CubeGeometry(0.01, 0.01, 0.01), new THREE.MeshBasicMaterial());
-    // THREE.Object3D.call(this);
-
-    var loader = new THREE.ColladaLoader(overrideMaterial);
-    var url = meshBaseUrl + markerMsg.mesh_resource.substr(10);
-
-    var that = this;
-
-    loader.load(url, function colladaReady(collada) {
-      var sceneObj = collada.scene;
-      // sceneObj.children[0].material = new THREE.MeshLambertMaterial({
-      // color:0x888888
-      // });
-      that.add(sceneObj);
+  // check the type
+  if (uri.substr(-4).toLowerCase() === '.dae') {
+    var loader = new ROS3D.ColladaLoader();
+    loader.load(uri, function colladaReady(collada) {
+      that.add(collada.scene);
     });
   }
 };
+ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ */
 
-ROS3D.MeshMarker.prototype = Object.create(THREE.Mesh.prototype);ROS3D.TriangleListMarker = function(material, vertices, colors) {
+/**
+ * A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *   * material (optional) - the material to use for the object
+ *   * vertices - the array of vertices to use
+ *   * colors - the associated array of colors to use
+ */
+ROS3D.TriangleList = function(options) {
+  var options = options || {};
+  var material = options.material || new THREE.MeshBasicMaterial();
+  var vertices = options.vertices;
+  var colors = options.colors;
+
   THREE.Object3D.call(this);
 
-  if (material === undefined)
-    material = new THREE.MeshBasicMaterial();
-
+  // set the material to be double sided
   material.side = THREE.DoubleSide;
 
+  // construct the geometry
   var geometry = new THREE.Geometry();
-
   for (i = 0; i < vertices.length; i++) {
     geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
   }
 
+  // set the colors
   if (colors.length === vertices.length) {
     // use per-vertex color
     for (i = 0; i < vertices.length; i += 3) {
@@ -6764,81 +6862,15 @@ ROS3D.MeshMarker.prototype = Object.create(THREE.Mesh.prototype);ROS3D.TriangleL
   geometry.computeCentroids();
   geometry.computeFaceNormals();
 
-  this.mesh = new THREE.Mesh(geometry, material);
-  this.add(this.mesh);
+  this.add(new THREE.Mesh(geometry, material));
 };
+ROS3D.TriangleList.prototype.__proto__ = THREE.Object3D.prototype;
 
-ROS3D.TriangleListMarker.prototype = Object.create(THREE.Object3D.prototype);
-
-ROS3D.TriangleListMarker.prototype.setColor = function(hex) {
+/**
+ * Set the color of this object to the given hex value.
+ * 
+ * @param hex - the hex value of the color to set
+ */
+ROS3D.TriangleList.prototype.setColor = function(hex) {
   this.mesh.material.color.setHex(hex);
 };
-/**
- * @author David Gossow - dgossow@willowgarage.com
- */
-
-/**
- * An Axes object can be used to display the axis of a particular coordinate frame.
- * 
- * @constructor
- * @param options - object with following keys:
- *   * shaftRadius - the radius of the shaft to render
- *   * headRadius - the radius of the head to render 
- *   * headLength - the length of the head to render
- */
-ROS3D.Axes = function(options) {
-  THREE.Object3D.call(this);
-  var that = this;
-  var options = options || {};
-  var shaftRadius = options.shaftRadius || 0.008;
-  var headRadius = options.headRadius || 0.023;
-  var headLength = options.headLength || 0.1;
-
-  /**
-   * Adds an axis marker to this axes object.
-   * 
-   * @param axis - the 3D vector representing the axis to add
-   */
-  function addAxis(axis) {
-    // set the color of the axis
-    var color = new THREE.Color;
-    color.setRGB(axis.x, axis.y, axis.z);
-    var material = new THREE.MeshBasicMaterial({
-      color : color.getHex()
-    });
-
-    // setup the rotation information
-    var rotAxis = new THREE.Vector3;
-    rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
-    var rot = new THREE.Quaternion;
-    rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
-
-    // create the arrow
-    var arrow = new THREE.Mesh(that.headGeom, material);
-    arrow.position = axis.clone();
-    arrow.position.multiplyScalar(0.95);
-    arrow.useQuaternion = true;
-    arrow.quaternion = rot;
-    arrow.updateMatrix();
-    that.add(arrow);
-
-    // create the line
-    var line = new THREE.Mesh(that.lineGeom, material);
-    line.position = axis.clone();
-    line.position.multiplyScalar(0.45);
-    line.useQuaternion = true;
-    line.quaternion = rot;
-    line.updateMatrix();
-    that.add(line);
-  };
-
-  // create the cylinders for the objects
-  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
-
-  // add the three markers to the axes
-  addAxis(new THREE.Vector3(1, 0, 0));
-  addAxis(new THREE.Vector3(0, 1, 0));
-  addAxis(new THREE.Vector3(0, 0, 1));
-};
-ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;

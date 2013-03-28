@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MouseHandler</title>
+		<title>JsDoc Reference - ROS3D.Arrow</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -230,7 +230,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MouseHandler
+				Class ROS3D.Arrow
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -241,13 +241,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_interaction_MouseHandler.js.html">MouseHandler.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_visualization_models_Arrow.js.html">Arrow.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MouseHandler.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.Arrow.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -260,9 +260,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MouseHandler.html#constructor">ROS3D.MouseHandler</a></b>(options)
+								<b><a href="../symbols/ROS3D.Arrow.html#constructor">ROS3D.Arrow</a></b>(options)
 							</div>
-							<div class="description">A handler for mouse events within a 3D viewer.</div>
+							<div class="description">A Arrow is a THREE object that can be used to display an arrow model.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -276,7 +276,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.MouseHandler.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.Arrow.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -289,27 +289,27 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#destroy">destroy</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.Arrow.html#setColor">setColor</a></b>(hex)
 								</div>
-								<div class="description">Destroy this mouse handler and its associated listeners.</div>
+								<div class="description">Set the color of this arrow to the given hex value.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#notify">notify</a></b>(target, type, event3D)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.Arrow.html#setDirection">setDirection</a></b>(direction)
 								</div>
-								<div class="description">Notify the listener of the type of event that occurred.</div>
+								<div class="description">Set the direction of this arrow to that of the given vector.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.MouseHandler.html#processDomEvent">processDomEvent</a></b>(domEvent)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.Arrow.html#setLength">setLength</a></b>(length)
 								</div>
-								<div class="description">Process the particular DOM even that has occurred based on the mouse's position in the scene.</div>
+								<div class="description">Set this arrow to be the given length.</div>
 							</td>
 						</tr>
 					
@@ -330,11 +330,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MouseHandler</b>(options)
+						<b>ROS3D.Arrow</b>(options)
 				</div>
 				
 				<div class="description">
-					A handler for mouse events within a 3D viewer.
+					A Arrow is a THREE object that can be used to display an arrow model.
 					
 				</div>
 				
@@ -350,10 +350,13 @@ ul.inheritsList
 								
 							</dt>
 								<dd>- object with following keys:
-  * renderer - the main renderer
-  * camera - the main camera in the scene
-  * rootObject - the root object to check for mouse events
-  * fallbackTarget - the fallback target, e.g., the camera controls</dd>
+  * origin (optional) - the origin of the arrow
+  * direction (optional) - the direction vector of the arrow
+  * length (optional) - the length of the arrow
+  * headLength (optional) - the head length of the arrow
+  * shaftDiameter (optional) - the shaft diameter of the arrow
+  * headDiameter (optional) - the head diameter of the arrow
+  * material (optional) - the material to use for this arrow</dd>
 						
 						</dl>
 					
@@ -376,40 +379,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="destroy"> </a>
+					<a name="setColor"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>destroy</b>()
+					<b>setColor</b>(hex)
 					
 					</div>
 					<div class="description">
-						Destroy this mouse handler and its associated listeners.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="notify"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>notify</b>(target, type, event3D)
-					
-					</div>
-					<div class="description">
-						Notify the listener of the type of event that occurred.
+						Set the color of this arrow to the given hex value.
 						
 						
 					</div>
@@ -421,50 +399,31 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>target</b>
+									<b>hex</b>
 									
 								</dt>
-								<dd>- the target of the event</dd>
-							
-								<dt>
-									<b>type</b>
-									
-								</dt>
-								<dd>- the type of event that occurred</dd>
-							
-								<dt>
-									<b>event3D</b>
-									
-								</dt>
-								<dd>- the 3D mouse even information</dd>
+								<dd>- the hex value of the color to use</dd>
 							
 							</dl>
 						
 						
 						
 						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>if an event was canceled</dd>
-							
-							</dl>
 						
 						
 						
 
 					<hr />
 				
-					<a name="processDomEvent"> </a>
+					<a name="setDirection"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>processDomEvent</b>(domEvent)
+					<b>setDirection</b>(direction)
 					
 					</div>
 					<div class="description">
-						Process the particular DOM even that has occurred based on the mouse's position in the scene.
+						Set the direction of this arrow to that of the given vector.
 						
 						
 					</div>
@@ -476,10 +435,46 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>domEvent</b>
+									<b>direction</b>
 									
 								</dt>
-								<dd>- the DOM event to process</dd>
+								<dd>- the direction to set this arrow</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="setLength"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setLength</b>(length)
+					
+					</div>
+					<div class="description">
+						Set this arrow to be the given length.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>length</b>
+									
+								</dt>
+								<dd>- the new length of the arrow</dd>
 							
 							</dl>
 						
