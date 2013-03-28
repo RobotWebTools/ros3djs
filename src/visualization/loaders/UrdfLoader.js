@@ -56,7 +56,7 @@ ROS3D.UrdfLoader.prototype.load = function(string) {
           var sceneNode = new ROS3D.SceneNode({
             frameID : frameID,
             tfClient : this.tfClient,
-            model : colladaModel
+            object : colladaModel
           });
           objectRoot.add(sceneNode);
         }

@@ -34,7 +34,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   }
 
   // add the markers
-  this.viewer.addSelectableObject(this.rootObject);
+  this.viewer.addObject(this.rootObject, true);
 };
 
 /**

@@ -37,7 +37,7 @@ ROS3D.MarkerClient = function(options) {
     var sceneNode = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
-      model : newMarker
+      object : newMarker
     });
 
     that.previousMarker = sceneNode;
