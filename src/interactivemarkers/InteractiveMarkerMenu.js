@@ -1,3 +1,17 @@
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ */
+
+/**
+ * A menu for an interactive marker. This will be overlayed on the canvas.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *  * menuEntries - the menu entries to add
+ *  * className (optional) - a custom CSS class for the menu div
+ *  * entryClassName (optional) - a custom CSS class for the menu entry
+ *  * overlayClassName (optional) - a  custom CSS class for the menu overlay
+ */
 ROS3D.InteractiveMarkerMenu = function(options) {
   var that = this;
   var options = options || {};

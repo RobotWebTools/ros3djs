@@ -135,7 +135,11 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     }
 
     // create the handle
-    var handle = new ROS3D.InteractiveMarkerHandle(msg, that.feedbackTopic, that.tfClient);
+    var handle = new ROS3D.InteractiveMarkerHandle({
+      message : msg,
+      feedbackTopic : that.feedbackTopic,
+      tfClient : that.tfClient
+    });
     that.interactiveMarkers[msg.name] = handle;
 
     // create the actual marker
@@ -157,7 +161,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     intMarker.addEventListener('menu-select', handle.onMenuSelect.bind(handle));
 
     // now list for any TF changes
-    handle.subscribeTf(msg);
+    handle.subscribeTf();
   });
 };
 
