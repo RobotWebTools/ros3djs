@@ -38,9 +38,9 @@
     var markerClient = new ROS3D.MarkerClient({
       ros : ros,
       tfClient : tfClient,
-      topic : '/visualization_marker'
+      topic : '/visualization_marker',
+      rootObject : viewer.scene
     });
-    viewer.addObject(markerClient.rootObject);
   }
 </script>
 </head>

@@ -13,6 +13,7 @@
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic - the marker topic to listen to
  *   * tfClient - the TF client handle to use
+ *   * rootObject (optional) - the root object to add this marker to
  */
 ROS3D.MarkerClient = function(options) {
   var that = this;
