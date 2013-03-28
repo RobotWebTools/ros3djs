@@ -24,10 +24,12 @@ ROS3D.InteractiveMarker = function(handle, camera, meshBaseUrl) {
   });
 
   if (handle.menuEntries.length > 0) {
-    this.menu = new ROS3D.InteractiveMarkerMenu(handle.menuEntries);
+    this.menu = new ROS3D.InteractiveMarkerMenu({
+      menuEntries : handle.menuEntries
+    });
 
     // forward menu select events
-    this.menu.addEventListener("menu_select", function(event) {
+    this.menu.addEventListener("menu-select", function(event) {
       that.dispatchEvent(event);
     });
   }
@@ -253,7 +255,7 @@ ROS3D.InteractiveMarker.prototype.startDrag = function(control, event3d) {
   this.dragStart.orientation = this.quaternion.clone();
   this.dragStart.event3d = event3d;
 
-  this.feedbackEvent("user_mouse_down", control);
+  this.feedbackEvent("user-mousedown", control);
 };
 
 ROS3D.InteractiveMarker.prototype.stopDrag = function(control, event3d) {
@@ -266,23 +268,23 @@ ROS3D.InteractiveMarker.prototype.stopDrag = function(control, event3d) {
   this.onServerSetPose(this.bufferedPoseEvent);
   this.bufferedPoseEvent = undefined;
 
-  this.feedbackEvent("user_mouse_up", control);
+  this.feedbackEvent("user-mouseup", control);
 };
 
 ROS3D.InteractiveMarker.prototype.buttonClick = function(control, event3d) {
   event3d.stopPropagation();
-  this.feedbackEvent("user_button_click", control);
+  this.feedbackEvent("user-button-click", control);
 };
 
 ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
   this.position = position;
-  this.feedbackEvent("user_changed_pose", control);
+  this.feedbackEvent("user-pose-change", control);
 };
 
 ROS3D.InteractiveMarker.prototype.setOrientation = function(control, orientation) {
   orientation.normalize();
   this.quaternion = orientation;
-  this.feedbackEvent("user_changed_pose", control);
+  this.feedbackEvent("user-pose-change", control);
 };
 
 ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
@@ -309,6 +311,4 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
 };
 
 // --------------------------------------------------------
-
-
 

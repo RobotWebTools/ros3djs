@@ -10,8 +10,8 @@
  *  * ros - a handle to the ROS connection
  *  * tfClient - a handle to the TF client
  *  * topic (optional) - the topic to subscribe to, like '/basic_controls'
- *  * viewer - the main 3D viewer that is being rendered to
  *  * path (optional) - the base path to any meshes that will be loaded
+ *  * camera - the main camera associated with the viewer for this marker client
  *  * rootObject (optional) - the root THREE 3D object to render to
  */
 ROS3D.InteractiveMarkerClient = function(options) {
@@ -20,7 +20,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
-  this.viewer = options.viewer;
+  this.camera = options.camera;
   this.path = '';
   this.rootObject = options.rootObject || new THREE.Object3D();
 
@@ -32,9 +32,6 @@ ROS3D.InteractiveMarkerClient = function(options) {
   if (this.topic) {
     this.subscribe(this.topic);
   }
-
-  // add the markers
-  this.viewer.addObject(this.rootObject, true);
 };
 
 /**
@@ -142,7 +139,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     that.interactiveMarkers[msg.name] = handle;
 
     // create the actual marker
-    var intMarker = new ROS3D.InteractiveMarker(handle, that.viewer.camera, that.path);
+    var intMarker = new ROS3D.InteractiveMarker(handle, that.camera, that.path);
     // add it to the scene
     that.rootObject.add(intMarker);
 
@@ -153,11 +150,11 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       });
     });
 
-    intMarker.addEventListener('user_changed_pose', handle.setPoseFromClient.bind(handle));
-    intMarker.addEventListener('user_mouse_down', handle.onMouseDown.bind(handle));
-    intMarker.addEventListener('user_mouse_up', handle.onMouseUp.bind(handle));
-    intMarker.addEventListener('user_button_click', handle.onButtonClick.bind(handle));
-    intMarker.addEventListener('menu_select', handle.onMenuSelect.bind(handle));
+    intMarker.addEventListener('user-pose-change', handle.setPoseFromClient.bind(handle));
+    intMarker.addEventListener('user-mousedown', handle.onMouseDown.bind(handle));
+    intMarker.addEventListener('user-mouseup', handle.onMouseUp.bind(handle));
+    intMarker.addEventListener('user-button-click', handle.onButtonClick.bind(handle));
+    intMarker.addEventListener('menu-select', handle.onMenuSelect.bind(handle));
 
     // now list for any TF changes
     handle.subscribeTf(msg);
