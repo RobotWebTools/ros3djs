@@ -7,7 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
- *  * mouseHandler - he handler for the mouseover and mouseout events
+ *   * mouseHandler - the handler for the mouseover and mouseout events
  */
 ROS3D.Highlighter = function(options) {
   var options = options || {};
