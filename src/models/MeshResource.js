@@ -30,7 +30,7 @@ ROS3D.MeshResource = function(options) {
 
   // check the type
   if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader = new ROS3D.ColladaLoader();
+    var loader = new THREE.ColladaLoader();
     loader.load(uri, function colladaReady(collada) {
       that.add(collada.scene);
     });
