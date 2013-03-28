@@ -154,7 +154,11 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
       // create the list of triangles
-      var tri = new ROS3D.TriangleListMarker(colorMaterial, message.points, message.colors);
+      var tri = new ROS3D.TriangleList({
+        material : colorMaterial,
+        vertices : message.points,
+        colors : message.colors
+      });
       tri.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
       this.add(tri);
       break;
