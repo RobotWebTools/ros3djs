@@ -58,7 +58,9 @@ ROS3D.Viewer = function(options) {
       this.cameraControls);
 
   // highlights the receiver of mouse events
-  this.highlighter = new ROS3D.Highlighter(mouseHandler);
+  this.highlighter = new ROS3D.Highlighter({
+    mouseHandler : mouseHandler
+  });
 
   /**
    * Renders the associated scene to the that.
