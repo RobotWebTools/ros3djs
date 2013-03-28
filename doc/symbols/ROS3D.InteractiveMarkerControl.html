@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MeshResource</title>
+		<title>JsDoc Reference - ROS3D.InteractiveMarkerControl</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -238,7 +238,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MeshResource
+				Class ROS3D.InteractiveMarkerControl
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -249,13 +249,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_models_MeshResource.js.html">MeshResource.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarkers_InteractiveMarkerControl.js.html">InteractiveMarkerControl.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MeshResource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarkerControl.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,9 +268,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MeshResource.html#constructor">ROS3D.MeshResource</a></b>(options)
+								<b><a href="../symbols/ROS3D.InteractiveMarkerControl.html#constructor">ROS3D.InteractiveMarkerControl</a></b>(options)
 							</div>
-							<div class="description">A MeshResource is an THREE object that will load from a external mesh file.</div>
+							<div class="description">The main marker control object for an interactive marker.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -281,6 +281,42 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.InteractiveMarkerControl.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerControl.html#-stopPropagation">stopPropagation</a></b>(event)
+								</div>
+								<div class="description">Install default listeners for highlighting / dragging.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b>updateMatrixWorld</b>(force)
+								</div>
+								<div class="description"></div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -293,12 +329,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MeshResource</b>(options)
+						<b>ROS3D.InteractiveMarkerControl</b>(options)
 				</div>
 				
 				<div class="description">
-					A MeshResource is an THREE object that will load from a external mesh file. Currently loads
-Collada files.
+					The main marker control object for an interactive marker.
 					
 				</div>
 				
@@ -314,8 +349,10 @@ Collada files.
 								
 							</dt>
 								<dd>- object with following keys:
- * path (optional) - the base path to the associated models that will be loaded
- * resource - the resource file name to load</dd>
+ * parent - the parent of this control
+ * message - the interactive marker control message
+ * camera - the main camera associated with the viewer for this marker client
+ * path (optional) - the base path to any meshes that will be loaded</dd>
 						
 						</dl>
 					
@@ -333,6 +370,83 @@ Collada files.
 			
 
 <!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name="-stopPropagation"> </a>
+					<div class="fixedFont">&lt;inner&gt; 
+					
+					
+					<b>stopPropagation</b>(event)
+					
+					</div>
+					<div class="description">
+						Install default listeners for highlighting / dragging.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>event</b>
+									
+								</dt>
+								<dd>- the event to stop</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="updateMatrixWorld"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>updateMatrixWorld</b>(force)
+					
+					</div>
+					<div class="description">
+						
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>force</b>
+									
+								</dt>
+								<dd></dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
 			
 			
 <!-- ============================== event details ========================= -->		

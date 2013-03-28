@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.MeshResource</title>
+		<title>JsDoc Reference - ROS3D.InteractiveMarkerMenu</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -238,7 +238,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.MeshResource
+				Class ROS3D.InteractiveMarkerMenu
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -249,13 +249,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_models_MeshResource.js.html">MeshResource.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarkers_InteractiveMarkerMenu.js.html">InteractiveMarkerMenu.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.MeshResource.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarkerMenu.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,9 +268,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.MeshResource.html#constructor">ROS3D.MeshResource</a></b>(options)
+								<b><a href="../symbols/ROS3D.InteractiveMarkerMenu.html#constructor">ROS3D.InteractiveMarkerMenu</a></b>(options)
 							</div>
-							<div class="description">A MeshResource is an THREE object that will load from a external mesh file.</div>
+							<div class="description">A menu for an interactive marker.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -281,6 +281,51 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
+			
+				
+				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.InteractiveMarkerMenu.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerMenu.html#hide">hide</a></b>(event)
+								</div>
+								<div class="description">Hide the menu DOM element.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&lt;inner&gt; &nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerMenu.html#-makeUl">makeUl</a></b>(parentDomElem, parentMenu)
+								</div>
+								<div class="description">Create the HTML UL element for the menu and link it to the parent.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerMenu.html#show">show</a></b>(control, event)
+								</div>
+								<div class="description">Shoe the menu DOM element.</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
+				
+				
+				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -293,12 +338,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.MeshResource</b>(options)
+						<b>ROS3D.InteractiveMarkerMenu</b>(options)
 				</div>
 				
 				<div class="description">
-					A MeshResource is an THREE object that will load from a external mesh file. Currently loads
-Collada files.
+					A menu for an interactive marker. This will be overlayed on the canvas.
 					
 				</div>
 				
@@ -314,8 +358,10 @@ Collada files.
 								
 							</dt>
 								<dd>- object with following keys:
- * path (optional) - the base path to the associated models that will be loaded
- * resource - the resource file name to load</dd>
+ * menuEntries - the menu entries to add
+ * className (optional) - a custom CSS class for the menu div
+ * entryClassName (optional) - a custom CSS class for the menu entry
+ * overlayClassName (optional) - a  custom CSS class for the menu overlay</dd>
 						
 						</dl>
 					
@@ -333,6 +379,131 @@ Collada files.
 			
 
 <!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name="hide"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>hide</b>(event)
+					
+					</div>
+					<div class="description">
+						Hide the menu DOM element.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>event</b>
+									
+								</dt>
+								<dd>(optional) - the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="-makeUl"> </a>
+					<div class="fixedFont">&lt;inner&gt; 
+					
+					
+					<b>makeUl</b>(parentDomElem, parentMenu)
+					
+					</div>
+					<div class="description">
+						Create the HTML UL element for the menu and link it to the parent.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>parentDomElem</b>
+									
+								</dt>
+								<dd>- the parent DOM element</dd>
+							
+								<dt>
+									<b>parentMenu</b>
+									
+								</dt>
+								<dd>- the parent menu</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="show"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>show</b>(control, event)
+					
+					</div>
+					<div class="description">
+						Shoe the menu DOM element.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control for the menu</dd>
+							
+								<dt>
+									<b>event</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
 			
 			
 <!-- ============================== event details ========================= -->		

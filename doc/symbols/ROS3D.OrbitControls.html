@@ -199,9 +199,15 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ROS3D.Highlighter.html">ROS3D.Highlighter</a></li>
 	
+	<li><a href="../symbols/ROS3D.InteractiveMarker.html">ROS3D.InteractiveMarker</a></li>
+	
 	<li><a href="../symbols/ROS3D.InteractiveMarkerClient.html">ROS3D.InteractiveMarkerClient</a></li>
 	
+	<li><a href="../symbols/ROS3D.InteractiveMarkerControl.html">ROS3D.InteractiveMarkerControl</a></li>
+	
 	<li><a href="../symbols/ROS3D.InteractiveMarkerHandle.html">ROS3D.InteractiveMarkerHandle</a></li>
+	
+	<li><a href="../symbols/ROS3D.InteractiveMarkerMenu.html">ROS3D.InteractiveMarkerMenu</a></li>
 	
 	<li><a href="../symbols/ROS3D.Marker.html">ROS3D.Marker</a></li>
 	
@@ -262,7 +268,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.OrbitControls.html#constructor">ROS3D.OrbitControls</a></b>(scene, object)
+								<b><a href="../symbols/ROS3D.OrbitControls.html#constructor">ROS3D.OrbitControls</a></b>(scene, camera, userZoomSpeed, userRotateSpeed, autoRotate, autoRotate)
 							</div>
 							<div class="description">Behaves like THREE.OrbitControls, but uses right-handed coordinates and z as up vector.</div>
 						</td>
@@ -287,33 +293,6 @@ ul.inheritsList
 						</tr>
 					</thead>
 					<tbody>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.OrbitControls.html#-getAutoRotationAngle">getAutoRotationAngle</a></b>()
-								</div>
-								<div class="description">Get the default, auto rotation angle.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.OrbitControls.html#-getZoomScale">getZoomScale</a></b>()
-								</div>
-								<div class="description">Get the default, auto zoom scale.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;inner&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.OrbitControls.html#-intersectViewPlane">intersectViewPlane</a></b>(mouseRay, planeOrigin, planeNormal)
-								</div>
-								<div class="description">Intersect the main view plane based on the given information.</div>
-							</td>
-						</tr>
 					
 						<tr>
 							<td class="attributes">&lt;inner&gt; &nbsp;</td>
@@ -458,7 +437,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.OrbitControls</b>(scene, object)
+						<b>ROS3D.OrbitControls</b>(scene, camera, userZoomSpeed, userRotateSpeed, autoRotate, autoRotate)
 				</div>
 				
 				<div class="description">
@@ -480,10 +459,34 @@ ul.inheritsList
 								<dd>- the global scene to use</dd>
 						
 							<dt>
-								 <b>object</b>
+								 <b>camera</b>
 								
 							</dt>
-								<dd>- the object (e.g., camera) to use</dd>
+								<dd>- the camera to use</dd>
+						
+							<dt>
+								 <b>userZoomSpeed</b>
+								
+							</dt>
+								<dd>(optional) - the speed for zooming</dd>
+						
+							<dt>
+								 <b>userRotateSpeed</b>
+								
+							</dt>
+								<dd>(optional) - the speed for rotating</dd>
+						
+							<dt>
+								 <b>autoRotate</b>
+								
+							</dt>
+								<dd>(optional) - if the orbit should auto rotate</dd>
+						
+							<dt>
+								 <b>autoRotate</b>
+								
+							</dt>
+								<dd>(optional) - the speed for auto rotating</dd>
 						
 						</dl>
 					
@@ -505,125 +508,6 @@ ul.inheritsList
 				<div class="sectionTitle">
 					Method Detail
 				</div>
-				
-					<a name="-getAutoRotationAngle"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					
-					<b>getAutoRotationAngle</b>()
-					
-					</div>
-					<div class="description">
-						Get the default, auto rotation angle.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>the default, auto rotation angle</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-getZoomScale"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					
-					<b>getZoomScale</b>()
-					
-					</div>
-					<div class="description">
-						Get the default, auto zoom scale.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>the default, auto zoom scale</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="-intersectViewPlane"> </a>
-					<div class="fixedFont">&lt;inner&gt; 
-					
-					
-					<b>intersectViewPlane</b>(mouseRay, planeOrigin, planeNormal)
-					
-					</div>
-					<div class="description">
-						Intersect the main view plane based on the given information.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>mouseRay</b>
-									
-								</dt>
-								<dd>- the ray from the mouse</dd>
-							
-								<dt>
-									<b>planeOrigin</b>
-									
-								</dt>
-								<dd>- the origin of the plane</dd>
-							
-								<dt>
-									<b>planeNormal</b>
-									
-								</dt>
-								<dd>- the normal of the plane</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd>the intersection</dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
 				
 					<a name="-onMouseDown"> </a>
 					<div class="fixedFont">&lt;inner&gt; 
@@ -1119,7 +1003,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 12:27:43 GMT-0700 (PDT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Mar 28 2013 16:28:11 GMT-0700 (PDT)
 		</div>
 	</body>
 </html>

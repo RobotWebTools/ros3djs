@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - ROS3D.InteractiveMarkerHandle</title>
+		<title>JsDoc Reference - ROS3D.InteractiveMarker</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -238,7 +238,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class ROS3D.InteractiveMarkerHandle
+				Class ROS3D.InteractiveMarker
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -249,13 +249,13 @@ ul.inheritsList
 				
 				
 				
-					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarkers_InteractiveMarkerHandle.js.html">InteractiveMarkerHandle.js</a>.
+					<br /><i>Defined in: </i> <a href="../symbols/src/_home_tor1pal_Documents_WPI_RAIL_ROS_groovy_src_ros3djs_src_interactivemarkers_InteractiveMarker.js.html">InteractiveMarker.js</a>.
 				
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarkerHandle.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class ROS3D.InteractiveMarker.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -268,9 +268,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#constructor">ROS3D.InteractiveMarkerHandle</a></b>(options)
+								<b><a href="../symbols/ROS3D.InteractiveMarker.html#constructor">ROS3D.InteractiveMarker</a></b>(options)
 							</div>
-							<div class="description">Handle with signals for a single interactive marker.</div>
+							<div class="description">The main interactive marker object.</div>
 						</td>
 					</tr>
 				</tbody>
@@ -284,7 +284,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.InteractiveMarkerHandle.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class ROS3D.InteractiveMarker.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -297,90 +297,99 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#emitServerPoseUpdate">emitServerPoseUpdate</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#buttonClick">buttonClick</a></b>(control, event3d)
 								</div>
-								<div class="description">Emit the new pose that has come from the server.</div>
+								<div class="description">Handle a button click.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#onButtonClick">onButtonClick</a></b>(event)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#feedbackEvent">feedbackEvent</a></b>(type, control)
 								</div>
-								<div class="description">Send the button click feedback to the server.</div>
+								<div class="description">Dispatch the given event type.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#onMenuSelect">onMenuSelect</a></b>(event)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#moveAxis">moveAxis</a></b>(control, origAxis, event3d)
 								</div>
-								<div class="description">Send the menu select feedback to the server.</div>
+								<div class="description">Move the axis based on the given event information.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#onMouseDown">onMouseDown</a></b>(event)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#movePlane">movePlane</a></b>(control, origNormal, event3d)
 								</div>
-								<div class="description">Send the mousedown feedback to the server.</div>
+								<div class="description">Move with respect to the plane based on the contorl and event.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#onMouseUp">onMouseUp</a></b>(event)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#onServerSetPose">onServerSetPose</a></b>(event)
 								</div>
-								<div class="description">Send the mouseup feedback to the server.</div>
+								<div class="description">Update the marker based when the pose is set from the server.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#sendFeedback">sendFeedback</a></b>(eventType, clickPosition, menuEntryID, controlName)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#rotateAxis">rotateAxis</a></b>(control, origOrientation, event3d)
 								</div>
-								<div class="description">Send feedback to the interactive marker server.</div>
+								<div class="description">Rotate based on the control and event given.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#setPoseFromClient">setPoseFromClient</a></b>(event)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#setOrientation">setOrientation</a></b>(control, event3d)
 								</div>
-								<div class="description">Set the pose from the client based on the given event.</div>
+								<div class="description">Handle a user pose change for the orientation.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#setPoseFromServer">setPoseFromServer</a></b>(poseMsg)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#setPosition">setPosition</a></b>(control, event3d)
 								</div>
-								<div class="description">Update the pose based on the pose given by the server.</div>
+								<div class="description">Handle a user pose change for the position.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#subscribeTf">subscribeTf</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#showMenu">showMenu</a></b>(control, event)
 								</div>
-								<div class="description">Subscribe to the TF associated with this interactive marker.</div>
+								<div class="description">Show the interactive marker menu associated with this marker.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarkerHandle.html#tfUpdate">tfUpdate</a></b>(transformMsg)
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#startDrag">startDrag</a></b>(control, event3d)
 								</div>
-								<div class="description">Update the pose based on the TF given by the server.</div>
+								<div class="description">Start a drag action.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ROS3D.InteractiveMarker.html#stopDrag">stopDrag</a></b>(control, event3d)
+								</div>
+								<div class="description">Stop a drag action.</div>
 							</td>
 						</tr>
 					
@@ -401,14 +410,11 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>ROS3D.InteractiveMarkerHandle</b>(options)
+						<b>ROS3D.InteractiveMarker</b>(options)
 				</div>
 				
 				<div class="description">
-					Handle with signals for a single interactive marker.
-
-Emits the following events:
- * 'pose' - emitted when a new pose comes from the server
+					The main interactive marker object.
 					
 				</div>
 				
@@ -424,9 +430,9 @@ Emits the following events:
 								
 							</dt>
 								<dd>- object with following keys:
- * message - the interactive marker message
- * feedbackTopic - the ROSLIB.Topic associated with the feedback
- * tfClient - a handle to the TF client to use</dd>
+ * handle - the ROS3D.InteractiveMarkerHandle for this marker
+ * camera - the main camera associated with the viewer for this marker
+ * path (optional) - the base path to any meshes that will be loaded</dd>
 						
 						</dl>
 					
@@ -449,21 +455,38 @@ Emits the following events:
 					Method Detail
 				</div>
 				
-					<a name="emitServerPoseUpdate"> </a>
+					<a name="buttonClick"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>emitServerPoseUpdate</b>()
+					<b>buttonClick</b>(control, event3d)
 					
 					</div>
 					<div class="description">
-						Emit the new pose that has come from the server.
+						Handle a button click.
 						
 						
 					</div>
 					
 					
 					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
 						
 						
 						
@@ -474,15 +497,153 @@ Emits the following events:
 
 					<hr />
 				
-					<a name="onButtonClick"> </a>
+					<a name="feedbackEvent"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>onButtonClick</b>(event)
+					<b>feedbackEvent</b>(type, control)
 					
 					</div>
 					<div class="description">
-						Send the button click feedback to the server.
+						Dispatch the given event type.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>type</b>
+									
+								</dt>
+								<dd>- the type of event</dd>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="moveAxis"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>moveAxis</b>(control, origAxis, event3d)
+					
+					</div>
+					<div class="description">
+						Move the axis based on the given event information.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>origAxis</b>
+									
+								</dt>
+								<dd>- the origin of the axis</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="movePlane"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>movePlane</b>(control, origNormal, event3d)
+					
+					</div>
+					<div class="description">
+						Move with respect to the plane based on the contorl and event.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>origNormal</b>
+									
+								</dt>
+								<dd>- the normal of the origin</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="onServerSetPose"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>onServerSetPose</b>(event)
+					
+					</div>
+					<div class="description">
+						Update the marker based when the pose is set from the server.
 						
 						
 					</div>
@@ -497,7 +658,7 @@ Emits the following events:
 									<b>event</b>
 									
 								</dt>
-								<dd>- the event associated with the button click</dd>
+								<dd>- the event that caused this</dd>
 							
 							</dl>
 						
@@ -510,15 +671,15 @@ Emits the following events:
 
 					<hr />
 				
-					<a name="onMenuSelect"> </a>
+					<a name="rotateAxis"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>onMenuSelect</b>(event)
+					<b>rotateAxis</b>(control, origOrientation, event3d)
 					
 					</div>
 					<div class="description">
-						Send the menu select feedback to the server.
+						Rotate based on the control and event given.
 						
 						
 					</div>
@@ -528,12 +689,150 @@ Emits the following events:
 						
 							<dl class="detailList">
 							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>origOrientation</b>
+									
+								</dt>
+								<dd>- the orientation of the origin</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="setOrientation"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setOrientation</b>(control, event3d)
+					
+					</div>
+					<div class="description">
+						Handle a user pose change for the orientation.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="setPosition"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setPosition</b>(control, event3d)
+					
+					</div>
+					<div class="description">
+						Handle a user pose change for the position.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="showMenu"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>showMenu</b>(control, event)
+					
+					</div>
+					<div class="description">
+						Show the interactive marker menu associated with this marker.
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<b>control</b>
+									
+								</dt>
+								<dd>- the control to use</dd>
 							
 								<dt>
 									<b>event</b>
 									
 								</dt>
-								<dd>- the event associated with the menu select</dd>
+								<dd>- the event that caused this</dd>
 							
 							</dl>
 						
@@ -546,15 +845,15 @@ Emits the following events:
 
 					<hr />
 				
-					<a name="onMouseDown"> </a>
+					<a name="startDrag"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>onMouseDown</b>(event)
+					<b>startDrag</b>(control, event3d)
 					
 					</div>
 					<div class="description">
-						Send the mousedown feedback to the server.
+						Start a drag action.
 						
 						
 					</div>
@@ -566,10 +865,16 @@ Emits the following events:
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>event</b>
+									<b>control</b>
 									
 								</dt>
-								<dd>- the event associated with the mousedown</dd>
+								<dd>- the control to use</dd>
+							
+								<dt>
+									<b>event3d</b>
+									
+								</dt>
+								<dd>- the event that caused this</dd>
 							
 							</dl>
 						
@@ -582,15 +887,15 @@ Emits the following events:
 
 					<hr />
 				
-					<a name="onMouseUp"> </a>
+					<a name="stopDrag"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>onMouseUp</b>(event)
+					<b>stopDrag</b>(control, event3d)
 					
 					</div>
 					<div class="description">
-						Send the mouseup feedback to the server.
+						Stop a drag action.
 						
 						
 					</div>
@@ -602,197 +907,16 @@ Emits the following events:
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>event</b>
+									<b>control</b>
 									
 								</dt>
-								<dd>- the event associated with the mouseup</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="sendFeedback"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>sendFeedback</b>(eventType, clickPosition, menuEntryID, controlName)
-					
-					</div>
-					<div class="description">
-						Send feedback to the interactive marker server.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
+								<dd>- the control to use</dd>
 							
 								<dt>
-									<b>eventType</b>
+									<b>event3d</b>
 									
 								</dt>
-								<dd>- the type of event that happened</dd>
-							
-								<dt>
-									<b>clickPosition</b>
-									
-								</dt>
-								<dd>(optional) - the position in ROS space the click happened</dd>
-							
-								<dt>
-									<b>menuEntryID</b>
-									
-								</dt>
-								<dd>(optional) - the menu entry ID that is associated</dd>
-							
-								<dt>
-									<b>controlName</b>
-									
-								</dt>
-								<dd>- the name of the control</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="setPoseFromClient"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>setPoseFromClient</b>(event)
-					
-					</div>
-					<div class="description">
-						Set the pose from the client based on the given event.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>event</b>
-									
-								</dt>
-								<dd>- the event to base the change off of</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="setPoseFromServer"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>setPoseFromServer</b>(poseMsg)
-					
-					</div>
-					<div class="description">
-						Update the pose based on the pose given by the server.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>poseMsg</b>
-									
-								</dt>
-								<dd>- the pose given by the server</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="subscribeTf"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>subscribeTf</b>()
-					
-					</div>
-					<div class="description">
-						Subscribe to the TF associated with this interactive marker.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="tfUpdate"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>tfUpdate</b>(transformMsg)
-					
-					</div>
-					<div class="description">
-						Update the pose based on the TF given by the server.
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<b>transformMsg</b>
-									
-								</dt>
-								<dd>- the TF given by the server</dd>
+								<dd>- the event that caused this</dd>
 							
 							</dl>
 						
