@@ -23,9 +23,6 @@ ROS3D.Urdf = function(options) {
 
   // load all models
   var links = urdfModel.links;
-  var meshLoader = new ROS3D.MeshLoader({
-    path : path
-  });
   for ( var l in links) {
     var link = links[l];
     if (link.visual && link.visual.geometry) {
@@ -36,12 +33,14 @@ ROS3D.Urdf = function(options) {
 
         // ignore mesh files which are not in Collada format
         if (fileType === '.dae') {
-          var colladaModel = meshLoader.load(uri.substring(10));
           // create a scene node with the model
           var sceneNode = new ROS3D.SceneNode({
             frameID : frameID,
             tfClient : tfClient,
-            object : colladaModel
+            object : new ROS3D.MeshResource({
+              path : path,
+              resource : uri.substring(10)
+            })
           });
           this.add(sceneNode);
         }

@@ -145,12 +145,11 @@ ROS3D.Marker = function(options) {
       this.add(mesh);
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
-      // check if we are using an emedded material
-      if (message.mesh_use_embedded_materials) {
-        this.add(new ROS3D.MeshMarker(message, path, false));
-      } else {
-        this.add(new ROS3D.MeshMarker(message, path, colorMaterial));
-      }
+      // load and add the mesh
+      this.add(new ROS3D.MeshResource({
+        path : path,
+        resource : message.mesh_resource.substr(10)
+      }));
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
       // create the list of triangles
