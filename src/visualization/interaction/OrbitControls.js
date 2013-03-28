@@ -10,14 +10,17 @@
  *
  * @constructor
  * @param scene - the global scene to use
- * @param object - the object (e.g., camera) to use
+ * @param camera - the camera to use
  */
-ROS3D.OrbitControls = function(scene, object) {
+ROS3D.OrbitControls = function(options) {
   THREE.EventDispatcher.call(this);
-  this.object = object;
+  var that = this;
+  var options = options || {};
+  var scene = options.scene;
+  this.camera = options.camera;
 
   // In ROS, z is pointing upwards
-  this.object.up = new THREE.Vector3(0, 0, 1);
+  this.camera.up = new THREE.Vector3(0, 0, 1);
 
   // API
   this.center = new THREE.Vector3();
@@ -29,7 +32,6 @@ ROS3D.OrbitControls = function(scene, object) {
   this.autoRotateSpeed = 2.0;
 
   // internals
-  var scope = this;
   var EPS = 0.000001;
   var PIXELS_PER_ROUND = 1800;
   var rotateStart = new THREE.Vector2();
@@ -60,7 +62,7 @@ ROS3D.OrbitControls = function(scene, object) {
    * @returns the default, auto rotation angle
    */
   function getAutoRotationAngle() {
-    return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
+    return 2 * Math.PI / 60 / 60 * that.autoRotateSpeed;
   };
 
   /**
@@ -69,7 +71,7 @@ ROS3D.OrbitControls = function(scene, object) {
    * @returns the default, auto zoom scale
    */
   function getZoomScale() {
-    return Math.pow(0.95, scope.userZoomSpeed);
+    return Math.pow(0.95, that.userZoomSpeed);
   };
 
   /**
@@ -115,17 +117,17 @@ ROS3D.OrbitControls = function(scene, object) {
    * Display the main axes for 1 second.
    */
   this.showAxes = function() {
-    scope.axes.traverse(function(obj) {
+    that.axes.traverse(function(obj) {
       obj.visible = true;
     });
     if (this.hideTimeout) {
       clearTimeout(this.hideTimeout);
     }
-    scope.hideTimeout = setTimeout(function() {
-      scope.axes.traverse(function(obj) {
+    that.hideTimeout = setTimeout(function() {
+      that.axes.traverse(function(obj) {
         obj.visible = false;
       });
-      scope.hideTimeout = false;
+      that.hideTimeout = false;
     }, 1000);
   };
 
@@ -152,12 +154,12 @@ ROS3D.OrbitControls = function(scene, object) {
         state = STATE.MOVE;
 
         moveStartNormal = new THREE.Vector3(0, 0, 1);
-        var rMat = new THREE.Matrix4().extractRotation(object.matrix);
+        var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
         // rMat.multiplyVector3( moveStartNormal );
         moveStartNormal.applyMatrix4(rMat);
 
-        moveStartCenter = scope.center.clone();
-        moveStartPosition = scope.object.position.clone();
+        moveStartCenter = that.center.clone();
+        moveStartPosition = that.camera.position.clone();
         moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
             moveStartNormal);
         break;
@@ -182,8 +184,8 @@ ROS3D.OrbitControls = function(scene, object) {
       rotateEnd.set(event.clientX, event.clientY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
 
-      scope.rotateLeft(2 * Math.PI * rotateDelta.x / PIXELS_PER_ROUND * scope.userRotateSpeed);
-      scope.rotateUp(2 * Math.PI * rotateDelta.y / PIXELS_PER_ROUND * scope.userRotateSpeed);
+      that.rotateLeft(2 * Math.PI * rotateDelta.x / PIXELS_PER_ROUND * that.userRotateSpeed);
+      that.rotateUp(2 * Math.PI * rotateDelta.y / PIXELS_PER_ROUND * that.userRotateSpeed);
 
       rotateStart.copy(rotateEnd);
       this.showAxes();
@@ -192,16 +194,16 @@ ROS3D.OrbitControls = function(scene, object) {
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
       if (zoomDelta.y > 0) {
-        scope.zoomIn();
+        that.zoomIn();
       } else {
-        scope.zoomOut();
+        that.zoomOut();
       }
 
       zoomStart.copy(zoomEnd);
       this.showAxes();
 
     } else if (state === STATE.MOVE) {
-      var intersection = intersectViewPlane(event3D.mouseRay, scope.center, moveStartNormal);
+      var intersection = intersectViewPlane(event3D.mouseRay, that.center, moveStartNormal);
 
       if (!intersection) {
         return;
@@ -210,10 +212,10 @@ ROS3D.OrbitControls = function(scene, object) {
       var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
           .clone());
 
-      scope.center.addVectors(moveStartCenter.clone(), delta.clone());
-      scope.object.position.addVectors(moveStartPosition.clone(), delta.clone());
-      scope.update();
-      scope.object.updateMatrixWorld();
+      that.center.addVectors(moveStartCenter.clone(), delta.clone());
+      that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
+      that.update();
+      that.camera.updateMatrixWorld();
       this.showAxes();
     }
   };
@@ -224,7 +226,7 @@ ROS3D.OrbitControls = function(scene, object) {
    * @param event3D - the 3D event to handle
    */
   function onMouseUp(event3D) {
-    if (!scope.userRotate) {
+    if (!that.userRotate) {
       return;
     }
 
@@ -237,7 +239,7 @@ ROS3D.OrbitControls = function(scene, object) {
    * @param event3D - the 3D event to handle
    */
   function onMouseWheel(event3D) {
-    if (!scope.userZoom) {
+    if (!that.userZoom) {
       return;
     }
 
@@ -249,9 +251,9 @@ ROS3D.OrbitControls = function(scene, object) {
       var delta = -event.detail;
     }
     if (delta > 0) {
-      scope.zoomOut();
+      that.zoomOut();
     } else {
-      scope.zoomIn();
+      that.zoomIn();
     }
 
     this.showAxes();
@@ -354,7 +356,7 @@ ROS3D.OrbitControls = function(scene, object) {
    */
   this.update = function() {
     // x->y, y->z, z->x
-    var position = this.object.position;
+    var position = this.camera.position;
     var offset = position.clone().sub(this.center);
 
     // angle from z-axis around y-axis
@@ -381,7 +383,7 @@ ROS3D.OrbitControls = function(scene, object) {
 
     position.copy(this.center).add(offset);
 
-    this.object.lookAt(this.center);
+    this.camera.lookAt(this.center);
 
     radius = offset.length();
     this.axes.position = this.center.clone();
@@ -392,9 +394,9 @@ ROS3D.OrbitControls = function(scene, object) {
     phiDelta = 0;
     scale = 1;
 
-    if (lastPosition.distanceTo(this.object.position) > 0) {
+    if (lastPosition.distanceTo(this.camera.position) > 0) {
       this.dispatchEvent(changeEvent);
-      lastPosition.copy(this.object.position);
+      lastPosition.copy(this.camera.position);
     }
   };
 

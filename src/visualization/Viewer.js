@@ -43,7 +43,10 @@ ROS3D.Viewer = function(options) {
   this.camera.position.y = 3;
   this.camera.position.z = 3;
   // add controls to the camera
-  this.cameraControls = new ROS3D.OrbitControls(this.scene, this.camera);
+  this.cameraControls = new ROS3D.OrbitControls({
+    scene : this.scene,
+    camera : this.camera
+  });
   this.cameraControls.userZoomSpeed = 0.5;
 
   // lights
