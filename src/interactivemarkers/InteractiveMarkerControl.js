@@ -1,25 +1,19 @@
-ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
-    camera, meshBaseUrl) {
+ROS3D.InteractiveMarkerControl = function(options) {
+  var that = this;
   THREE.Object3D.call(this);
   THREE.EventDispatcher.call(this);
 
-  this.parent = parent;
+  var options = options || {};
+  this.parent = options.parent;
+  var controlMessage = options.controlMessage;
+  this.name = controlMessage.name;
+  this.camera = options.camera;
+  this.path = options.path;
   this.dragging = false;
 
-  var that = this;
-
-  this.name = controlMsg.name;
-
-  var NONE = 0;
-  var MENU = 1;
-  var BUTTON = 2;
-  var MOVE_AXIS = 3;
-  var MOVE_PLANE = 4;
-  var ROTATE_AXIS = 5;
-  var MOVE_ROTATE = 6;
-
-  var controlOri = new THREE.Quaternion(controlMsg.orientation.x, controlMsg.orientation.y,
-      controlMsg.orientation.z, controlMsg.orientation.w);
+  // orientation for the control
+  var controlOri = new THREE.Quaternion(controlMessage.orientation.x, controlMessage.orientation.y,
+      controlMessage.orientation.z, controlMessage.orientation.w);
   controlOri.normalize();
 
   // transform x axis into local frame
@@ -29,38 +23,45 @@ ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
   this.currentControlOri = new THREE.Quaternion();
 
   // determine mouse interaction
-  switch (controlMsg.interaction_mode) {
-    case MOVE_AXIS:
-      this.addEventListener("mousemove", parent.moveAxis.bind(parent, this, controlAxis));
-      this.addEventListener("touchmove", parent.moveAxis.bind(parent, this, controlAxis));
+  switch (controlMessage.interaction_mode) {
+    case ROS3D.INTERACTIVE_MARKER_MOVE_AXIS:
+      this.addEventListener('mousemove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
+      this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
       break;
-    case ROTATE_AXIS:
-      this.addEventListener("mousemove", parent.rotateAxis.bind(parent, this, controlOri));
+    case ROS3D.INTERACTIVE_MARKER_ROTATE_AXIS:
+      this
+          .addEventListener('mousemove', this.parent.rotateAxis.bind(this.parent, this, controlOri));
       break;
-    case MOVE_PLANE:
-      this.addEventListener("mousemove", parent.movePlane.bind(parent, this, controlAxis));
+    case ROS3D.INTERACTIVE_MARKER_MOVE_PLANE:
+      this
+          .addEventListener('mousemove', this.parent.movePlane.bind(this.parent, this, controlAxis));
       break;
-    case BUTTON:
-      this.addEventListener("click", parent.buttonClick.bind(parent, this));
+    case ROS3D.INTERACTIVE_MARKER_BUTTON:
+      this.addEventListener('click', this.parent.buttonClick.bind(this.parent, this));
       break;
     default:
       break;
   }
 
-  // install default listeners for highlighting / dragging
+  /**
+   * Install default listeners for highlighting / dragging.
+   * 
+   * @param event - the event to stop
+   */
   function stopPropagation(event) {
     event.stopPropagation();
   }
 
-  if (controlMsg.interaction_mode != NONE) {
-    this.addEventListener('mousedown', parent.startDrag.bind(parent, this));
-    this.addEventListener('mouseup', parent.stopDrag.bind(parent, this));
-    this.addEventListener('contextmenu', parent.showMenu.bind(parent, this));
+  // check the mode
+  if (controlMessage.interaction_mode != ROS3D.INTERACTIVE_MARKER_NONE) {
+    this.addEventListener('mousedown', this.parent.startDrag.bind(this.parent, this));
+    this.addEventListener('mouseup', this.parent.stopDrag.bind(this.parent, this));
+    this.addEventListener('contextmenu', this.parent.showMenu.bind(this.parent, this));
     this.addEventListener('mouseover', stopPropagation);
     this.addEventListener('mouseout', stopPropagation);
     this.addEventListener('click', stopPropagation);
 
-    // hacky touch support
+    // touch support
     this.addEventListener('touchstart', function(event3d) {
       console.log(event3d.domEvent);
       if (event3d.domEvent.touches.length == 1) {
@@ -88,24 +89,19 @@ ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
     });
   }
 
-  // define rotation behaviour
-  var INHERIT = 0;
-  var FIXED = 1;
-  var VIEW_FACING = 2;
-
+  // rotation behavior
   var rotInv = new THREE.Quaternion();
-  var posInv = parent.position.clone().multiplyScalar(-1);
-
-  switch (controlMsg.orientation_mode) {
-    case INHERIT:
-      rotInv = parent.quaternion.clone().inverse();
+  var posInv = this.parent.position.clone().multiplyScalar(-1);
+  switch (controlMessage.orientation_mode) {
+    case ROS3D.INTERACTIVE_MARKER_INHERIT:
+      rotInv = this.parent.quaternion.clone().inverse();
       that.updateMatrixWorld = function(force) {
         ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
         that.currentControlOri.copy(that.quaternion);
         that.currentControlOri.normalize();
       };
       break;
-    case FIXED:
+    case ROS3D.INTERACTIVE_MARKER_FIXED:
       that.updateMatrixWorld = function(force) {
         that.useQuaternion = true;
         that.quaternion = that.parent.quaternion.clone().inverse();
@@ -115,12 +111,16 @@ ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
         that.currentControlOri.copy(that.quaternion);
       };
       break;
-    case VIEW_FACING:
-      var independent_marker_orientation = controlMsg.independent_marker_orientation;
+    case ROS3D.INTERACTIVE_MARKER_VIEW_FACING:
+      var independentMarkerOrientation = controlMessage.independentMarkerOrientation;
+      /**
+       * Updates the world for view facing rotation behavior.
+       * 
+       * @param force - the force to forward to the marker's update
+       */
       that.updateMatrixWorld = function(force) {
-
-        camera.updateMatrixWorld();
-        var cameraRot = new THREE.Matrix4().extractRotation(camera.matrixWorld);
+        that.camera.updateMatrixWorld();
+        var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
 
         var ros2Gl = new THREE.Matrix4();
         var r90 = Math.PI * 0.5;
@@ -135,39 +135,39 @@ ROS3D.InteractiveMarkerControl = function(parent, controlMsg,
 
         that.currentControlOri.setFromRotationMatrix(cameraRot);
 
-        if (!independent_marker_orientation) {
+        // check the orientation
+        if (!independentMarkerOrientation) {
           that.useQuaternion = true;
           that.quaternion.copy(that.currentControlOri);
           that.updateMatrix();
           that.matrixWorldNeedsUpdate = true;
         }
-
         ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
       };
       break;
     default:
+      console.error('Unkown orientation mode: ' + controlMessage.orientation_mode);
       break;
   }
 
   // create visuals (markers)
-  controlMsg.markers.forEach(function(markerMsg) {
+  controlMessage.markers.forEach(function(markerMsg) {
     var markerHelper = new ROS3D.Marker({
       message : markerMsg,
-      path : meshBaseUrl
+      path : that.path
     });
 
-    if (markerMsg.header.frame_id !== "") {
-      // if the marker lives in its own coordinate frame,
-      // convert position into IM's local coordinate frame
+    if (markerMsg.header.frame_id !== '') {
+      // if the marker lives in its own coordinate frame, convert position into IM's local frame
       markerHelper.position.add(posInv);
       markerHelper.position.applyQuaternion(rotInv);
       markerHelper.quaternion.multiplyQuaternions(rotInv, markerHelper.quaternion);
       markerHelper.updateMatrixWorld();
     }
 
+    // add the marker
     that.add(markerHelper);
   });
 
 };
-
-ROS3D.InteractiveMarkerControl.prototype = Object.create(THREE.Object3D.prototype);
+ROS3D.InteractiveMarkerControl.prototype.__proto__ = THREE.Object3D.prototype;

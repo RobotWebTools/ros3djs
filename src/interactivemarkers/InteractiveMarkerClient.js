@@ -20,8 +20,8 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
-  this.camera = options.camera;
   this.path = '';
+  this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
   this.interactiveMarkers = {};

@@ -20,7 +20,12 @@ ROS3D.InteractiveMarker = function(handle, camera, meshBaseUrl) {
   };
 
   handle.controls.forEach(function(controlMsg) {
-    that.add(new ROS3D.InteractiveMarkerControl(that, controlMsg, camera, meshBaseUrl));
+    that.add(new ROS3D.InteractiveMarkerControl({
+      parent : that,
+      controlMessage : controlMsg,
+      camera : camera,
+      path : meshBaseUrl
+    }));
   });
 
   if (handle.menuEntries.length > 0) {
