@@ -1,4 +1,4 @@
-ROS3D.ArrowMarker = function(options) {
+ROS3D.Arrow = function(options) {
   var origin = options.origin || new THREE.Vector3(0, 0, 0);
   var direction = options.direction || new THREE.Vector3(1, 0, 0);
 
@@ -32,9 +32,9 @@ ROS3D.ArrowMarker = function(options) {
   this.position = origin;
   this.setDirection(direction);
 };
-ROS3D.ArrowMarker.prototype = Object.create(THREE.Mesh.prototype);
+ROS3D.Arrow.prototype = Object.create(THREE.Mesh.prototype);
 
-ROS3D.ArrowMarker.prototype.setDirection = function(direction) {
+ROS3D.Arrow.prototype.setDirection = function(direction) {
 
   var axis = new THREE.Vector3(0, 1, 0).cross(direction);
 
@@ -46,11 +46,11 @@ ROS3D.ArrowMarker.prototype.setDirection = function(direction) {
 
 };
 
-ROS3D.ArrowMarker.prototype.setLength = function(length) {
+ROS3D.Arrow.prototype.setLength = function(length) {
   this.scale.set(length, length, length);
 };
 
-ROS3D.ArrowMarker.prototype.setColor = function(hex) {
+ROS3D.Arrow.prototype.setColor = function(hex) {
   this.line.material.color.setHex(hex);
   this.cone.material.color.setHex(hex);
 };

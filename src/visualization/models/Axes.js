@@ -7,17 +7,22 @@
  * 
  * @constructor
  * @param options - object with following keys:
- *   * shaftRadius - the radius of the shaft to render
- *   * headRadius - the radius of the head to render 
- *   * headLength - the length of the head to render
+ *   * shaftRadius (optional) - the radius of the shaft to render
+ *   * headRadius (optional) - the radius of the head to render 
+ *   * headLength (optional) - the length of the head to render
  */
 ROS3D.Axes = function(options) {
-  THREE.Object3D.call(this);
   var that = this;
   var options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
+
+  THREE.Object3D.call(this);
+
+  // create the cylinders for the objects
+  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
   /**
    * Adds an axis marker to this axes object.
@@ -26,7 +31,7 @@ ROS3D.Axes = function(options) {
    */
   function addAxis(axis) {
     // set the color of the axis
-    var color = new THREE.Color;
+    var color = new THREE.Color();
     color.setRGB(axis.x, axis.y, axis.z);
     var material = new THREE.MeshBasicMaterial({
       color : color.getHex()
@@ -56,10 +61,6 @@ ROS3D.Axes = function(options) {
     line.updateMatrix();
     that.add(line);
   };
-
-  // create the cylinders for the objects
-  this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-  this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
   // add the three markers to the axes
   addAxis(new THREE.Vector3(1, 0, 0));

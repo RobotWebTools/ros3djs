@@ -1,44 +1,24 @@
+/**
+ * @author David Gossow - dgossow@willowgarage.com
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * A Marker can convert a ROS marker message into a THREE object.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *   * path - the base path or URL for any mesh files that will be loaded for this marker
+ *   * message - the marker message
+ */
 ROS3D.Marker = function(options) {
-  var that = this;
   var options = options || {};
-  this.path = options.path || '/';
+  var path = options.path || '/';
   var message = options.message;
 
   // check for a trailing '/'
-  if (this.path.substr(this.path.length - 1) !== '/') {
-    this.path += '/';
-  }
-
-  /**
-   * Create a THREE material based on the given RGBA values.
-   * 
-   * @param r - the red value
-   * @param g - the green value
-   * @param b - the blue value
-   * @param a - the alpha value
-   * @returns the THREE material
-   */
-  function makeColorMaterial(r, g, b, a) {
-    var color = new THREE.Color();
-    color.setRGB(r, g, b);
-    if (a <= 0.99) {
-      return new THREE.MeshBasicMaterial({
-        color : color.getHex(),
-        opacity : a + 0.1,
-        transparent : true,
-        depthWrite : true,
-        blendSrc : THREE.SrcAlphaFactor,
-        blendDst : THREE.OneMinusSrcAlphaFactor,
-        blendEquation : THREE.ReverseSubtractEquation,
-        blending : THREE.NormalBlending
-      });
-    } else {
-      return new THREE.MeshLambertMaterial({
-        color : color.getHex(),
-        opacity : a,
-        blending : THREE.NormalBlending
-      });
-    }
+  if (path.substr(path.length - 1) !== '/') {
+    path += '/';
   }
 
   THREE.Object3D.call(this);
@@ -46,7 +26,7 @@ ROS3D.Marker = function(options) {
 
   // set the pose and get the color
   this.setPose(message.pose);
-  var colorMaterial = makeColorMaterial(message.color.r, message.color.g, message.color.b,
+  var colorMaterial = ROS3D.makeColorMaterial(message.color.r, message.color.g, message.color.b,
       message.color.a);
 
   // create the object based on the type
@@ -54,9 +34,9 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_ARROW:
       // get the sizes for the arrow
       var len = message.scale.x;
-      var headLen = len * 0.23;
-      var headR = message.scale.y;
-      var shaftR = headR * 0.5;
+      var headLength = len * 0.23;
+      var headDiameter = message.scale.y;
+      var shaftDiameter = headDiameter * 0.5;
 
       // determine the points
       if (message.points.length === 2) {
@@ -65,37 +45,41 @@ ROS3D.Marker = function(options) {
         var direction = p1.clone().negate().add(p2);
         // direction = p2 - p1;
         len = direction.length();
-        headR = message.scale.y;
-        shaftR = message.scale.x;
+        headDiameter = message.scale.y;
+        shaftDiameter = message.scale.x;
 
         if (message.scale.z !== 0.0) {
-          headLen = message.scale.z;
+          headLength = message.scale.z;
         }
       }
+
       // add the marker
-      this.add(new ROS3D.ArrowMarker({
+      this.add(new ROS3D.Arrow({
         direction : direction,
         origin : p1,
         length : len,
-        headLength : headLen,
-        shaftDiameter : shaftR,
-        headDiameter : headR,
+        headLength : headLength,
+        shaftDiameter : shaftDiameter,
+        headDiameter : headDiameter,
         material : colorMaterial
       }));
       break;
     case ROS3D.MARKER_CUBE:
+      // set the cube dimensions
       var geom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
       this.add(new THREE.Mesh(geom, colorMaterial));
       break;
     case ROS3D.MARKER_SPHERE:
+      // set the sphere dimensions
       var geom = new THREE.SphereGeometry(0.5);
       var mesh = new THREE.Mesh(geom, colorMaterial);
       mesh.scale.x = message.scale.x;
       mesh.scale.y = message.scale.y;
       mesh.scale.z = message.scale.z;
-      that.add(mesh);
+      this.add(mesh);
       break;
     case ROS3D.MARKER_CYLINDER:
+      // set the cylinder dimensions
       var geom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
       var mesh = new THREE.Mesh(geom, colorMaterial);
       mesh.useQuaternion = true;
@@ -106,11 +90,13 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_CUBE_LIST:
     case ROS3D.MARKER_SPHERE_LIST:
     case ROS3D.MARKER_POINTS:
+      // for now, use a particle system for the lists
       var geometry = new THREE.Geometry();
       var material = new THREE.ParticleBasicMaterial({
         size : message.scale.x
       });
 
+      // add the points
       for ( var i = 0; i < message.points.length; i++) {
         var vertex = new THREE.Vector3();
         vertex.x = message.points[i].x;
@@ -119,7 +105,8 @@ ROS3D.Marker = function(options) {
         geometry.vertices.push(vertex);
       }
 
-      if (message.colors.length == message.points.length) {
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
         material.vertexColors = true;
         for ( var i = 0; i < message.points.length; i++) {
           var color = new THREE.Color();
@@ -130,64 +117,59 @@ ROS3D.Marker = function(options) {
         material.color.setRGB(message.color.r, message.color.g, message.color.b);
       }
 
-      var particles = new THREE.ParticleSystem(geometry, material);
-      this.add(particles);
+      // add the particle system
+      this.add(new THREE.ParticleSystem(geometry, material));
       break;
     case ROS3D.MARKER_TEXT_VIEW_FACING:
+      // setup the text
       var textGeo = new THREE.TextGeometry(message.text, {
-
         size : message.scale.x * 0.5,
         height : 0.1 * message.scale.x,
         curveSegments : 4,
-        font : "helvetiker",
-
+        font : 'helvetiker',
         bevelEnabled : false,
         bevelThickness : 2,
         bevelSize : 2,
-
         material : 0,
         extrudeMaterial : 0
-
       });
-
       textGeo.computeVertexNormals();
       textGeo.computeBoundingBox();
 
+      // position the text and add it
       var mesh = new THREE.Mesh(textGeo, colorMaterial);
-
       var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
       mesh.position.y = -centerOffset;
-
       mesh.rotation.x = Math.PI * 0.5;
       mesh.rotation.y = Math.PI * 1.5;
       this.add(mesh);
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
+      // check if we are using an emedded material
       if (message.mesh_use_embedded_materials) {
-        var meshMarker = new ROS3D.MeshMarker(message, this.path, false);
+        this.add(new ROS3D.MeshMarker(message, path, false));
       } else {
-        var meshMarker = new ROS3D.MeshMarker(message, this.path, colorMaterial);
+        this.add(new ROS3D.MeshMarker(message, path, colorMaterial));
       }
-      this.add(meshMarker);
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
+      // create the list of triangles
       var tri = new ROS3D.TriangleListMarker(colorMaterial, message.points, message.colors);
       tri.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
       this.add(tri);
       break;
-    case ROS3D.MARKER_LINE_STRIP:
-    case ROS3D.MARKER_LINE_LIST:
-      var geom = new THREE.CubeGeometry(0.1, 0.1, 0.1);
-      this.add(new THREE.Mesh(geom, colorMaterial));
-      break;
     default:
-      console.error('Unknown marker type: ' + message.type);
+      console.error('Currently unsupported marker type: ' + message.type);
       break;
   }
-
 };
 ROS3D.Marker.prototype.__proto__ = THREE.Object3D.prototype;
 
+/**
+ * Set the pose of this marker to the given values.
+ * 
+ * @param pose - the pose to set for this marker
+ */
 ROS3D.Marker.prototype.setPose = function(pose) {
   // set position information
   this.position.x = pose.position.x;
