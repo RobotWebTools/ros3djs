@@ -1,16 +1,10 @@
 /**
- * @author Russell Toris - rctoris@wpi.edu
- */
+* @author Russell Toris - rctoris@wpi.edu
+*/
 
 var ROS3D = ROS3D || {
   REVISION : '1'
 };
-
-// URDF types
-ROS3D.URDF_SPHERE = 0;
-ROS3D.URDF_BOX = 1;
-ROS3D.URDF_CYLINDER = 2;
-ROS3D.URDF_MESH = 3;
 
 // Marker types
 ROS3D.MARKER_ARROW = 0;
@@ -32,7 +26,40 @@ ROS3D.INTERACTIVE_MARKER_POSE_UPDATE = 1;
 ROS3D.INTERACTIVE_MARKER_MENU_SELECT = 2;
 ROS3D.INTERACTIVE_MARKER_BUTTON_CLICK = 3;
 ROS3D.INTERACTIVE_MARKER_MOUSE_DOWN = 4;
-ROS3D.INTERACTIVE_MARKER_MOUSE_UP = 5;/**
+ROS3D.INTERACTIVE_MARKER_MOUSE_UP = 5;
+
+/**
+ * Create a THREE material based on the given RGBA values.
+ * 
+ * @param r - the red value
+ * @param g - the green value
+ * @param b - the blue value
+ * @param a - the alpha value
+ * @returns the THREE material
+ */
+ROS3D.makeColorMaterial = function(r, g, b, a) {
+  var color = new THREE.Color();
+  color.setRGB(r, g, b);
+  if (a <= 0.99) {
+    return new THREE.MeshBasicMaterial({
+      color : color.getHex(),
+      opacity : a + 0.1,
+      transparent : true,
+      depthWrite : true,
+      blendSrc : THREE.SrcAlphaFactor,
+      blendDst : THREE.OneMinusSrcAlphaFactor,
+      blendEquation : THREE.ReverseSubtractEquation,
+      blending : THREE.NormalBlending
+    });
+  } else {
+    return new THREE.MeshLambertMaterial({
+      color : color.getHex(),
+      opacity : a,
+      blending : THREE.NormalBlending
+    });
+  }
+};
+/**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
