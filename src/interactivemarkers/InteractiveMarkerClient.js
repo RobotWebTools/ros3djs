@@ -143,7 +143,11 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     that.interactiveMarkers[msg.name] = handle;
 
     // create the actual marker
-    var intMarker = new ROS3D.InteractiveMarker(handle, that.camera, that.path);
+    var intMarker = new ROS3D.InteractiveMarker({
+      handle : handle,
+      camera : that.camera,
+      path : that.path
+    });
     // add it to the scene
     that.rootObject.add(intMarker);
 
