@@ -1,6 +1,9 @@
 DEVEL - **r2**
-* Examples now use CDN versions of JS and DAE files (rctoris)
+* Examples now use CDN version of DAE files (rctoris)
 * Maps module added with OccupancyGrid and client (rctoris)
+* SceneNode now takes an optional pose (rctoris)
+* Bugfix in InteractiveMarkerClient path option (rctoris)
+* Bugfix in interactive marker feedback (rctoris)
 
 2013-03-17 - **r1**
 * Initial development of ROS3D (rctoris)
