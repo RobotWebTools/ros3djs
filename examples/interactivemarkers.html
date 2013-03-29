@@ -2,15 +2,13 @@
 <html>
 <head>
 <meta charset="utf-8" />
+
 <script type="text/javascript" src="../include/threejs/three.js"></script>
-<script type="text/javascript"
-	src="../include/EventEmitter2/eventemitter2.js"></script>
+<script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
 <script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
 <script type="text/javascript" src="../build/ros3d.js"></script>
 
 <script type="text/javascript" type="text/javascript">
-  abcde = true;
-
   /**
    * Setup all visualization elements when the page is loaded. 
    */
@@ -42,24 +40,24 @@
       ros : ros,
       tfClient : tfClient,
       topic : '/basic_controls',
-      viewer : viewer
+      camera : viewer.camera,
+      rootObject : viewer.selectableObjects
     });
   }
 </script>
 </head>
 
 <body onload="init()">
-	<h1>Simple Interactive Marker Example</h1>
-	<p>Run the following commands in the terminal then refresh this
-		page.</p>
-	<ol>
-		<li>roscore</li>
-		<li>rosrun interactive_marker_tutorials basic_controls</li>
-		<li>rosrun interactive_marker_proxy proxy topic_ns:=/basic_controls
-			target_frame:=/rotating_frame</li>
-		<li>rosrun tf2_web_republisher tf2_web_republisher</li>
-		<li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
-	</ol>
-	<div id="markers"></div>
+  <h1>Simple Interactive Marker Example</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>rosrun interactive_marker_tutorials basic_controls</tt></li>
+    <li><tt>rosrun interactive_marker_proxy proxy topic_ns:=/basic_controls
+        target_frame:=/rotating_frame</tt></li>
+    <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="markers"></div>
 </body>
 </html>

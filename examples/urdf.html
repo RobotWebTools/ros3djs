@@ -24,6 +24,9 @@
       height : 600,
       antialias : true
     });
+    
+    // Add a grid.
+    viewer.addObject(new ROS3D.Grid());
 
     // Setup a client to listen to TFs.
     var tfClient = new ROSLIB.TFClient({
@@ -33,18 +36,12 @@
       rate : 10.0
     });
 
-    // Get the URDF value from ROS.
-    var param = new ROSLIB.Param({
+    // Setup the URDF client.
+    var urdfClient = new ROS3D.UrdfClient({
       ros : ros,
-      name : 'robot_description'
-    });
-    param.get(function(xml) {
-      // Setup the loader for the URDF.
-      var urdfLoader = new ROS3D.UrdfLoader({
-        ros : ros,
-        tfClient : tfClient
-      });
-      viewer.addObject(urdfLoader.load(xml));
+      tfClient : tfClient,
+      path : 'resources/',
+      rootObject : viewer.scene
     });
   }
 </script>
@@ -60,12 +57,12 @@
       web server</a> in Python.
   </p>
   <ol>
-    <li>roslaunch pr2_description upload_pr2.launch</li>
-    <li>rosrun robot_state_publisher robot_state_publisher</li>
-    <li>rosparam set use_gui true</li>
-    <li>rosrun joint_state_publisher joint_state_publisher</li>
-    <li>rosrun tf2_web_republisher tf2_web_republisher</li>
-    <li>roslaunch rosbridge_server rosbridge_websocket.launch</li>
+    <li><tt>roslaunch pr2_description upload_pr2.launch</tt></li>
+    <li><tt>rosrun robot_state_publisher robot_state_publisher</tt></li>
+    <li><tt>rosparam set use_gui true</tt></li>
+    <li><tt>rosrun joint_state_publisher joint_state_publisher</tt></li>
+    <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
   </ol>
   <div id="urdf"></div>
 </body>

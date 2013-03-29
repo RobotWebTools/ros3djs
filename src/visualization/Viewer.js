@@ -12,29 +12,25 @@
  *  * divID - the ID of the div to place the viewer in
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
- *  * disableGrid - if the grid feature should be disabled in the viewer
- *  * gridColor - the color to render the grid lines, like #cccccc
- *  * background - the color to render the background, like #efefef
+ *  * background - the color to render the background, like '#efefef'
  *  * antialias - if antialiasing should be used
  */
 ROS3D.Viewer = function(options) {
   var that = this;
   var options = options || {};
-  this.divID = options.divID;
-  this.width = options.width;
-  this.height = options.height;
-  this.disableGrid = options.disableGrid;
-  this.gridColor = options.gridColor || '#cccccc';
-  this.background = options.background || '#111111';
-  this.antialias = options.antialias;
+  var divID = options.divID;
+  var width = options.width;
+  var height = options.height;
+  var background = options.background || '#111111';
+  var antialias = options.antialias;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
     antialias : this.antialias
   });
-  this.renderer.setClearColorHex(this.background.replace('#', '0x'), 1.0);
+  this.renderer.setClearColorHex(background.replace('#', '0x'), 1.0);
   this.renderer.sortObjects = false;
-  this.renderer.setSize(this.width, this.height);
+  this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
   this.renderer.autoClear = false;
 
@@ -42,27 +38,16 @@ ROS3D.Viewer = function(options) {
   this.scene = new THREE.Scene();
 
   // create the global camera
-  this.camera = new THREE.PerspectiveCamera(40, this.width / this.height, 0.01, 1000);
+  this.camera = new THREE.PerspectiveCamera(40, width / height, 0.01, 1000);
   this.camera.position.x = 3;
   this.camera.position.y = 3;
   this.camera.position.z = 3;
   // add controls to the camera
-  this.cameraControls = new ROS3D.OrbitControls(this.scene, this.camera);
+  this.cameraControls = new ROS3D.OrbitControls({
+    scene : this.scene,
+    camera : this.camera
+  });
   this.cameraControls.userZoomSpeed = 0.5;
-
-  // create a grid
-  if (!this.disableGrid) {
-    // 50 cells
-    var gridGeom = new THREE.PlaneGeometry(50, 50, 50, 50);
-    var gridMaterial = new THREE.MeshBasicMaterial({
-      color : this.gridColor,
-      wireframe : true,
-      wireframeLinewidth : 1,
-      transparent : true
-    });
-    var gridObj = new THREE.Mesh(gridGeom, gridMaterial);
-    this.scene.add(gridObj);
-  }
 
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
@@ -70,13 +55,19 @@ ROS3D.Viewer = function(options) {
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjs = new THREE.Object3D;
-  this.scene.add(this.selectableObjs);
-  var mouseHandler = new ROS3D.MouseHandler(this.renderer, this.camera, this.selectableObjs,
-      this.cameraControls);
+  this.selectableObjects = new THREE.Object3D;
+  this.scene.add(this.selectableObjects);
+  var mouseHandler = new ROS3D.MouseHandler({
+    renderer : this.renderer,
+    camera : this.camera,
+    rootObject : this.selectableObjects,
+    fallbackTarget : this.cameraControls
+  });
 
   // highlights the receiver of mouse events
-  this.highlighter = new ROS3D.Highlighter(mouseHandler);
+  this.highlighter = new ROS3D.Highlighter({
+    mouseHandler : mouseHandler
+  });
 
   /**
    * Renders the associated scene to the that.
@@ -101,26 +92,22 @@ ROS3D.Viewer = function(options) {
   };
 
   // add the renderer to the page
-  document.getElementById(this.divID).appendChild(this.renderer.domElement);
+  document.getElementById(divID).appendChild(this.renderer.domElement);
 
   // begin the animation
   draw();
 };
 
 /**
- * Add the given THREE Object3D to the global selectable object scene in the viewer.
- * 
- * @param object - the THREE Object3D to add
- */
-ROS3D.Viewer.prototype.addObject = function(object) {
-  this.scene.add(object);
-};
-
-/**
  * Add the given THREE Object3D to the global scene in the viewer.
  * 
  * @param object - the THREE Object3D to add
+ * @param selectable (optional) - if the object should be added to the selectable list
  */
-ROS3D.Viewer.prototype.addSelectableObject = function(object) {
-  this.selectableObjs.add(object);
+ROS3D.Viewer.prototype.addObject = function(object, selectable) {
+  if (selectable) {
+    this.selectableObjects.add(object);
+  } else {
+    this.scene.add(object);
+  }
 };

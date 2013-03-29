@@ -10,23 +10,23 @@
  * @param options - object with following keys:
  *  * tfClient - a handle to the TF client
  *  * frameID - the frame ID this object belongs to
- *  * model - the THREE 3D object to be rendered
+ *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
   var options = options || {};
   var that = this;
-  this.tfClient = options.tfClient;
-  this.frameID = options.frameID;
-  this.model = options.model;
+  var tfClient = options.tfClient;
+  var frameID = options.frameID;
+  var object = options.object;
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
 
   // add the model
-  this.add(this.model);
+  this.add(object);
 
   // listen for TF updates
-  this.tfClient.subscribe(this.frameID,
+  tfClient.subscribe(frameID,
       function(msg) {
         // apply the transform
         var tf = new ROSLIB.Transform(msg);
