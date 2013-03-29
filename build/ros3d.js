@@ -4,7 +4,7 @@
 */
 
 var ROS3D = ROS3D || {
-  REVISION : '1'
+  REVISION : '2-devel'
 };
 
 // Marker types
@@ -490,7 +490,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
-  this.path = '';
+  this.path = options.path || '/';
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
@@ -997,8 +997,8 @@ ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, click
     event_type : eventType,
     pose : this.pose,
     mouse_point : clickPosition,
-    mousePointValid : mousePointValid,
-    menuEntryID : menuEntryID
+    mouse_point_valid : mousePointValid,
+    menu_entry_id : menuEntryID
   };
   this.feedbackTopic.publish(feedback);
 };
@@ -1855,6 +1855,7 @@ ROS3D.Urdf = function(options) {
           // create a scene node with the model
           var sceneNode = new ROS3D.SceneNode({
             frameID : frameID,
+            pose : link.visual.origin,
             tfClient : tfClient,
             object : new ROS3D.MeshResource({
               path : path,
@@ -1928,6 +1929,7 @@ ROS3D.UrdfClient = function(options) {
  * @param options - object with following keys:
  *  * tfClient - a handle to the TF client
  *  * frameID - the frame ID this object belongs to
+ *  * pose (optional) - the pose associated with this object
  *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
@@ -1936,6 +1938,7 @@ ROS3D.SceneNode = function(options) {
   var tfClient = options.tfClient;
   var frameID = options.frameID;
   var object = options.object;
+  this.pose = options.pose || new ROSLIB.Pose();
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
@@ -1948,7 +1951,7 @@ ROS3D.SceneNode = function(options) {
       function(msg) {
         // apply the transform
         var tf = new ROSLIB.Transform(msg);
-        var poseTransformed = new ROSLIB.Pose();
+        var poseTransformed = new ROSLIB.Pose(that.pose);
         poseTransformed.applyTransform(tf);
 
         // update the world

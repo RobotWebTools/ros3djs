@@ -10,6 +10,7 @@
  * @param options - object with following keys:
  *  * tfClient - a handle to the TF client
  *  * frameID - the frame ID this object belongs to
+ *  * pose (optional) - the pose associated with this object
  *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
@@ -18,6 +19,7 @@ ROS3D.SceneNode = function(options) {
   var tfClient = options.tfClient;
   var frameID = options.frameID;
   var object = options.object;
+  this.pose = options.pose || new ROSLIB.Pose();
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
@@ -30,7 +32,7 @@ ROS3D.SceneNode = function(options) {
       function(msg) {
         // apply the transform
         var tf = new ROSLIB.Transform(msg);
-        var poseTransformed = new ROSLIB.Pose();
+        var poseTransformed = new ROSLIB.Pose(that.pose);
         poseTransformed.applyTransform(tf);
 
         // update the world
