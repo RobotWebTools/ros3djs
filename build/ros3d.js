@@ -490,7 +490,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
-  this.path = '';
+  this.path = options.path || '/';
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
@@ -997,8 +997,8 @@ ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, click
     event_type : eventType,
     pose : this.pose,
     mouse_point : clickPosition,
-    mousePointValid : mousePointValid,
-    menuEntryID : menuEntryID
+    mouse_point_valid : mousePointValid,
+    menu_entry_id : menuEntryID
   };
   this.feedbackTopic.publish(feedback);
 };
