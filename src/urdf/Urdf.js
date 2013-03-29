@@ -36,6 +36,7 @@ ROS3D.Urdf = function(options) {
           // create a scene node with the model
           var sceneNode = new ROS3D.SceneNode({
             frameID : frameID,
+            pose : link.visual.origin,
             tfClient : tfClient,
             object : new ROS3D.MeshResource({
               path : path,
