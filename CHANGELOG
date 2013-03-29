@@ -1,2 +1,6 @@
+DEVEL - **r2**
+* Examples now use CDN versions of JS and DAE files (rctoris)
+* Maps module added with OccupancyGrid and client (rctoris)
+
 2013-03-17 - **r1**
 * Initial development of ROS3D (rctoris)
