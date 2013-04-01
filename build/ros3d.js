@@ -1250,7 +1250,7 @@ ROS3D.OccupancyGridClient = function(options) {
   var options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/map';
-  this.tfClient = options.tfClient;
+  this.continuous = options.continuous;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
   // current grid that is displayed
@@ -1275,6 +1275,11 @@ ROS3D.OccupancyGridClient = function(options) {
     that.rootObject.add(that.currentGrid);
 
     that.emit('change');
+    
+    // check if we should unsubscribe
+    if(!that.continuous) {
+      rosTopic.unsubscribe();
+    }
   });
 };
 ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
