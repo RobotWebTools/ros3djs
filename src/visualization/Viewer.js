@@ -24,7 +24,7 @@ ROS3D.Viewer = function(options) {
   var height = options.height;
   var background = options.background || '#111111';
   var antialias = options.antialias;
-  var intensity = options.intensity || 0.9;
+  var intensity = options.intensity || 0.66;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({

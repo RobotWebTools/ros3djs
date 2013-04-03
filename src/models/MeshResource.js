@@ -11,12 +11,14 @@
  * @param options - object with following keys:
  *  * path (optional) - the base path to the associated models that will be loaded
  *  * resource - the resource file name to load
+ *  * warnings (optional) - if warnings should be printed
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
   var options = options || {};
   var path = options.path || '/';
   var resource = options.resource;
+  this.warnings = options.warnings;
 
   THREE.Object3D.call(this);
 
@@ -30,7 +32,12 @@ ROS3D.MeshResource = function(options) {
 
   // check the type
   if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader = new THREE.ColladaLoader();
+    var loader = new ColladaLoader2();
+    loader.log = function(message) {
+      if (that.warnings) {
+        console.warn(message);
+      }
+    };
     loader.load(uri, function colladaReady(collada) {
       that.add(collada.scene);
     });
