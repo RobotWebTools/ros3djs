@@ -12,8 +12,9 @@
  *  * divID - the ID of the div to place the viewer in
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
- *  * background - the color to render the background, like '#efefef'
- *  * antialias - if antialiasing should be used
+ *  * background (optional) - the color to render the background, like '#efefef'
+ *  * antialias (optional) - if antialiasing should be used
+ *  * intensity (optional) - the lighting intensity setting to use
  */
 ROS3D.Viewer = function(options) {
   var that = this;
@@ -23,6 +24,7 @@ ROS3D.Viewer = function(options) {
   var height = options.height;
   var background = options.background || '#111111';
   var antialias = options.antialias;
+  var intensity = options.intensity || 0.9;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -51,7 +53,7 @@ ROS3D.Viewer = function(options) {
 
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
-  this.directionalLight = new THREE.DirectionalLight(0xffffff);
+  this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
