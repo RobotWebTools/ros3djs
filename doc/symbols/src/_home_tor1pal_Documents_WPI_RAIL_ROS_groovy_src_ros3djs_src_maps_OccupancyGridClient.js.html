@@ -10,7 +10,7 @@
 <span class='line'>  3</span>  */</span><span class="WHIT">
 <span class='line'>  4</span> 
 <span class='line'>  5</span> </span><span class="COMM">/**
-<span class='line'>  6</span>  * A marker client that listens to a given marker topic.
+<span class='line'>  6</span>  * An occupancy grid client that listens to a given map topic.
 <span class='line'>  7</span>  * 
 <span class='line'>  8</span>  * Emits the following events:
 <span class='line'>  9</span>  *  * 'change' - there was an update or change in the marker
@@ -19,8 +19,8 @@
 <span class='line'> 12</span>  * @param options - object with following keys:
 <span class='line'> 13</span>  *   * ros - the ROSLIB.Ros connection handle
 <span class='line'> 14</span>  *   * topic (optional) - the map topic to listen to
-<span class='line'> 15</span>  *   * rootObject (optional) - the root object to add this marker to
-<span class='line'> 16</span>  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+<span class='line'> 15</span>  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+<span class='line'> 16</span>  *   * rootObject (optional) - the root object to add this marker to
 <span class='line'> 17</span>  */</span><span class="WHIT">
 <span class='line'> 18</span> </span><span class="NAME">ROS3D.OccupancyGridClient</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 19</span> </span><span class="WHIT">  </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">that</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
@@ -41,7 +41,7 @@
 <span class='line'> 34</span> </span><span class="WHIT">    </span><span class="NAME">compression</span><span class="WHIT"> </span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">'png'</span><span class="WHIT">
 <span class='line'> 35</span> </span><span class="WHIT">  </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 36</span> </span><span class="WHIT">  </span><span class="NAME">rosTopic.subscribe</span><span class="PUNC">(</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">message</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'> 37</span> </span><span class="WHIT">    </span><span class="COMM">// check for an old marker</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">    </span><span class="COMM">// check for an old map</span><span class="WHIT">
 <span class='line'> 38</span> </span><span class="WHIT">    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">that.currentGrid</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 39</span> </span><span class="WHIT">      </span><span class="NAME">that.rootObject.remove</span><span class="PUNC">(</span><span class="NAME">that.currentGrid</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 40</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
