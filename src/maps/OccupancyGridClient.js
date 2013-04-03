@@ -3,7 +3,7 @@
  */
 
 /**
- * A marker client that listens to a given marker topic.
+ * An occupancy grid client that listens to a given map topic.
  * 
  * Emits the following events:
  *  * 'change' - there was an update or change in the marker
@@ -12,15 +12,15 @@
  * @param options - object with following keys:
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic (optional) - the map topic to listen to
- *   * rootObject (optional) - the root object to add this marker to
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+ *   * rootObject (optional) - the root object to add this marker to
  */
 ROS3D.OccupancyGridClient = function(options) {
   var that = this;
   var options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/map';
-  this.tfClient = options.tfClient;
+  this.continuous = options.continuous;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
   // current grid that is displayed
@@ -34,7 +34,7 @@ ROS3D.OccupancyGridClient = function(options) {
     compression : 'png'
   });
   rosTopic.subscribe(function(message) {
-    // check for an old marker
+    // check for an old map
     if (that.currentGrid) {
       that.rootObject.remove(that.currentGrid);
     }
@@ -45,6 +45,11 @@ ROS3D.OccupancyGridClient = function(options) {
     that.rootObject.add(that.currentGrid);
 
     that.emit('change');
+    
+    // check if we should unsubscribe
+    if(!that.continuous) {
+      rosTopic.unsubscribe();
+    }
   });
 };
 ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
