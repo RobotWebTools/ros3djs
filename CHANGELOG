@@ -1,4 +1,6 @@
-DEVEL - **r2**
+DEVEL - **r3**
+
+2013-04-03 - **r2**
 * Examples now use CDN version of DAE files (rctoris)
 * Maps module added with OccupancyGrid and client (rctoris)
 * SceneNode now takes an optional pose (rctoris)
