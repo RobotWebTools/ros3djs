@@ -21,7 +21,10 @@ ros3djs depends on:
 The current supported version can be found [in this project](include/EventEmitter2/eventemitter2.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/EventEmitter2/0.4.11/eventemitter2.js)) | ([min](http://cdn.robotwebtools.org/EventEmitter2/0.4.11/eventemitter2.min.js))
 
 [three.js](https://github.com/mrdoob/three.js/). The current supported version is r56.
-The current supported version can be found [in this project](include/threejs/three.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/threejs/r56/three.js)) | ([min](http://cdn.robotwebtools.org/threejs/r56/three.minjs)).
+The current supported version can be found [in this project](include/threejs/three.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/threejs/r56/three.js)) | ([min](http://cdn.robotwebtools.org/threejs/r56/three.min.js)).
+
+[ColladaLoader2](https://github.com/crobi/ColladaAnimationCompress). The current supported version is 0.0.1.
+The current supported version can be found [in this project](include/ColladaAnimationCompress/ColladaLoader2.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.1/ColladaLoader2.js)) | ([min](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.1/ColladaLoader2.min.js)).
 
 [roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is r4.
 The current supported version can be found [in this project](include/roslibjs/roslib.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/roslibjs/r4/roslib.js)) | ([min](http://cdn.robotwebtools.org/roslibjs/r4/roslib.min.js)).
