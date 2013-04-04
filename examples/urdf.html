@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <script type="text/javascript" src="../include/threejs/three.js"></script>
+<script type="text/javascript" src="../include/ColladaAnimationCompress/ColladaLoader2.js"></script>
 <script type="text/javascript" src="../include/EventEmitter2/eventemitter2.js"></script>
 <script type="text/javascript" src="../include/roslibjs/roslib.js"></script>
 <script type="text/javascript" src="../build/ros3d.js"></script>
@@ -24,7 +25,7 @@
       height : 600,
       antialias : true
     });
-    
+
     // Add a grid.
     viewer.addObject(new ROS3D.Grid());
 
@@ -49,13 +50,7 @@
 
 <body onload="init()">
   <h1>Simple URDF Example</h1>
-  <p>
-    Run the following commands in the terminal then refresh this page. <strong>Note that
-      this page must be run on a web server in order to properly server the Collada models.</strong> Consider
-    the following <a
-      href="http://www.linuxjournal.com/content/tech-tip-really-simple-http-server-python">basic
-      web server</a> in Python.
-  </p>
+  <p>Run the following commands in the terminal then refresh this page.</p>
   <ol>
     <li><tt>roslaunch pr2_description upload_pr2.launch</tt></li>
     <li><tt>rosrun robot_state_publisher robot_state_publisher</tt></li>
