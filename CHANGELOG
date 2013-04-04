@@ -1,4 +1,7 @@
-DEVEL - **r3**
+2013-04-03 - **r3**
+* ColladaLoader2 added as third-party module (rctoris)
+* ColladaLoader2 replaces THREE.ColladaLoader (rctoris)
+* Viewer now takes an option intensity for the lighting (rctoris)
 
 2013-04-03 - **r2**
 * Examples now use CDN version of DAE files (rctoris)
