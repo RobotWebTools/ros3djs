@@ -18,8 +18,13 @@ ROS3D.OccupancyGrid = function(options) {
   var height = message.info.height;
   var geom = new THREE.PlaneGeometry(width, height);
 
+  // internal drawing canvas
+  var canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext('2d');
   // create the color material
-  var dataColor = new Uint8Array(width * height * 3);
+  var imageData = context.createImageData(width, height);
   for ( var row = 0; row < height; row++) {
     for ( var col = 0; col < width; col++) {
       // determine the index into the map data
@@ -35,16 +40,20 @@ ROS3D.OccupancyGrid = function(options) {
       }
 
       // determine the index into the image data array
-      var i = (col + (row * width)) * 3;
+      var i = (col + (row * width)) * 4;
       // r
-      dataColor[i] = val;
+      imageData.data[i] = val;
       // g
-      dataColor[++i] = val;
+      imageData.data[++i] = val;
       // b
-      dataColor[++i] = val;
+      imageData.data[++i] = val;
+      // a
+      imageData.data[++i] = 255;
     }
   }
-  var texture = new THREE.DataTexture(dataColor, width, height, THREE.RGBFormat);
+  context.putImageData(imageData, 0, 0);
+
+  var texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
   var material = new THREE.MeshBasicMaterial({
     map : texture
