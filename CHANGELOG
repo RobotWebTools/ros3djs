@@ -3,6 +3,9 @@ DEVEL - **r4**
 * Texture method for OccupancyGrid changed to canvas to allow for very large maps (rctoris)
 * OccupancyGrid origin now in corner instead of center of image (rctoris)
 * Optional TF client added to occupancy grid client (rctoris)
+* Interactive markers now removed correctly (rctoris)
+* Viewer now takes an optional initial camera position (rctoris)
+* Orbit controls fixed to prevent flicker during camera pan (rctoris)
 
 2013-04-03 - **r3**
 * ColladaLoader2 added as third-party module (rctoris)

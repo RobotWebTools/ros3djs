@@ -32,10 +32,6 @@ ROS3D.SceneNode = function(options) {
 
   // listen for TF updates
   tfClient.subscribe(frameID, function(msg) {
-    if (that.TMP !== '/base_link') {
-      console.log(msg);
-      console.log(that.TMP);
-    }
 
     // apply the transform
     var tf = new ROSLIB.Transform(msg);
