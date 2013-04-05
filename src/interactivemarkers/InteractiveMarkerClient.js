@@ -114,7 +114,6 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 
   // erase any markers
   message.erases.forEach(function(name) {
-    var marker = that.interactiveMarkers[name];
     that.eraseIntMarker(name);
   });
 
@@ -149,6 +148,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       path : that.path
     });
     // add it to the scene
+    intMarker.name = msg.name;
     that.rootObject.add(intMarker);
 
     // listen for any pose updates from the server
@@ -176,6 +176,8 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
  */
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
+    // remove the object
+    this.rootObject.remove(this.rootObject.getChildByName(intMarkerName));
     delete this.interactiveMarkers[intMarkerName];
   }
 };
