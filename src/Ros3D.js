@@ -87,7 +87,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE.Vector3();
   var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
-  dot = mouseRay.direction.dot(planeNormal);
+  var dot = mouseRay.direction.dot(planeNormal);
 
   // bail if ray and plane are parallel
   if (Math.abs(dot) < mouseRay.precision) {
@@ -95,7 +95,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   }
 
   // calc distance to plane
-  scalar = planeNormal.dot(vector) / dot;
+  var scalar = planeNormal.dot(vector) / dot;
 
   intersectPoint.addVectors(mouseRay.origin, mouseRay.direction.clone().multiplyScalar(scalar));
   return intersectPoint;
