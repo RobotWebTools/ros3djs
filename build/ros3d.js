@@ -1189,8 +1189,13 @@ ROS3D.OccupancyGrid = function(options) {
   var height = message.info.height;
   var geom = new THREE.PlaneGeometry(width, height);
 
+  // internal drawing canvas
+  var canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext('2d');
   // create the color material
-  var dataColor = new Uint8Array(width * height * 3);
+  var imageData = context.createImageData(width, height);
   for ( var row = 0; row < height; row++) {
     for ( var col = 0; col < width; col++) {
       // determine the index into the map data
@@ -1206,16 +1211,20 @@ ROS3D.OccupancyGrid = function(options) {
       }
 
       // determine the index into the image data array
-      var i = (col + (row * width)) * 3;
+      var i = (col + (row * width)) * 4;
       // r
-      dataColor[i] = val;
+      imageData.data[i] = val;
       // g
-      dataColor[++i] = val;
+      imageData.data[++i] = val;
       // b
-      dataColor[++i] = val;
+      imageData.data[++i] = val;
+      // a
+      imageData.data[++i] = 255;
     }
   }
-  var texture = new THREE.DataTexture(dataColor, width, height, THREE.RGBFormat);
+  context.putImageData(imageData, 0, 0);
+
+  var texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
   var material = new THREE.MeshBasicMaterial({
     map : texture
@@ -1224,6 +1233,9 @@ ROS3D.OccupancyGrid = function(options) {
 
   // create the mesh
   THREE.Mesh.call(this, geom, material);
+  // move the map so the corner is at 0, 0
+  this.position.x = (width * message.info.resolution) / 2;
+  this.position.y = (height * message.info.resolution) / 2;
   this.scale.x = message.info.resolution;
   this.scale.y = message.info.resolution;
 };
@@ -1243,6 +1255,7 @@ ROS3D.OccupancyGrid.prototype.__proto__ = THREE.Mesh.prototype;
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic (optional) - the map topic to listen to
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+ *   * tfClient (optional) - the TF client handle to use for a scene node
  *   * rootObject (optional) - the root object to add this marker to
  */
 ROS3D.OccupancyGridClient = function(options) {
@@ -1251,6 +1264,7 @@ ROS3D.OccupancyGridClient = function(options) {
   var ros = options.ros;
   var topic = options.topic || '/map';
   this.continuous = options.continuous;
+  this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
   // current grid that is displayed
@@ -1269,15 +1283,28 @@ ROS3D.OccupancyGridClient = function(options) {
       that.rootObject.remove(that.currentGrid);
     }
 
-    that.currentGrid = new ROS3D.OccupancyGrid({
+    var newGrid = new ROS3D.OccupancyGrid({
       message : message
     });
+
+    // check if we care about the scene
+    if (that.tfClient) {
+      that.currentGrid = new ROS3D.SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : that.tfClient,
+        object : newGrid,
+        pose : message.info.origin
+      });
+    } else {
+      that.currentGrid = newGrid;
+    }
+
     that.rootObject.add(that.currentGrid);
 
     that.emit('change');
-    
+
     // check if we should unsubscribe
-    if(!that.continuous) {
+    if (!that.continuous) {
       rosTopic.unsubscribe();
     }
   });

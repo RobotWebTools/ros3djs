@@ -49,7 +49,6 @@
       <arg value="-d=${doc}" />
       <arg value="${src}" />
       <arg value="-r" />
-      <arg value="--exclude=ColladaLoader.js" />
     </exec>
     <echo>JSDOC created.</echo>
   </target>

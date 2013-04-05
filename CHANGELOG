@@ -1,5 +1,8 @@
 DEVEL - **r4**
 * Initial pose now set in SceneNode (rctoris)
+* Texture method for OccupancyGrid changed to canvas to allow for very large maps (rctoris)
+* OccupancyGrid origin now in corner instead of center of image (rctoris)
+* Optional TF client added to occupancy grid client (rctoris)
 
 2013-04-03 - **r3**
 * ColladaLoader2 added as third-party module (rctoris)
