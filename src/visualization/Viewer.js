@@ -15,6 +15,7 @@
  *  * background (optional) - the color to render the background, like '#efefef'
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
+ *  * cameraPosition (optional) - the starting position of the camera
  */
 ROS3D.Viewer = function(options) {
   var that = this;
@@ -25,6 +26,11 @@ ROS3D.Viewer = function(options) {
   var background = options.background || '#111111';
   var antialias = options.antialias;
   var intensity = options.intensity || 0.66;
+  var cameraPosition = options.cameraPose || {
+    x : 3,
+    y : 3,
+    z : 3
+  };;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -41,9 +47,9 @@ ROS3D.Viewer = function(options) {
 
   // create the global camera
   this.camera = new THREE.PerspectiveCamera(40, width / height, 0.01, 1000);
-  this.camera.position.x = 3;
-  this.camera.position.y = 3;
-  this.camera.position.z = 3;
+  this.camera.position.x = cameraPosition.x;
+  this.camera.position.y = cameraPosition.y;
+  this.camera.position.z = cameraPosition.z;
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,

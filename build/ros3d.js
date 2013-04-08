@@ -87,7 +87,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE.Vector3();
   var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
-  dot = mouseRay.direction.dot(planeNormal);
+  var dot = mouseRay.direction.dot(planeNormal);
 
   // bail if ray and plane are parallel
   if (Math.abs(dot) < mouseRay.precision) {
@@ -95,7 +95,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   }
 
   // calc distance to plane
-  scalar = planeNormal.dot(vector) / dot;
+  var scalar = planeNormal.dot(vector) / dot;
 
   intersectPoint.addVectors(mouseRay.origin, mouseRay.direction.clone().multiplyScalar(scalar));
   return intersectPoint;
@@ -584,7 +584,6 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 
   // erase any markers
   message.erases.forEach(function(name) {
-    var marker = that.interactiveMarkers[name];
     that.eraseIntMarker(name);
   });
 
@@ -619,6 +618,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       path : that.path
     });
     // add it to the scene
+    intMarker.name = msg.name;
     that.rootObject.add(intMarker);
 
     // listen for any pose updates from the server
@@ -646,6 +646,8 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
  */
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
+    // remove the object
+    this.rootObject.remove(this.rootObject.getChildByName(intMarkerName));
     delete this.interactiveMarkers[intMarkerName];
   }
 };
@@ -1990,10 +1992,6 @@ ROS3D.SceneNode = function(options) {
 
   // listen for TF updates
   tfClient.subscribe(frameID, function(msg) {
-    if (that.TMP !== '/base_link') {
-      console.log(msg);
-      console.log(that.TMP);
-    }
 
     // apply the transform
     var tf = new ROSLIB.Transform(msg);
@@ -2036,6 +2034,7 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
  *  * background (optional) - the color to render the background, like '#efefef'
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
+ *  * cameraPosition (optional) - the starting position of the camera
  */
 ROS3D.Viewer = function(options) {
   var that = this;
@@ -2046,6 +2045,11 @@ ROS3D.Viewer = function(options) {
   var background = options.background || '#111111';
   var antialias = options.antialias;
   var intensity = options.intensity || 0.66;
+  var cameraPosition = options.cameraPose || {
+    x : 3,
+    y : 3,
+    z : 3
+  };;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -2062,9 +2066,9 @@ ROS3D.Viewer = function(options) {
 
   // create the global camera
   this.camera = new THREE.PerspectiveCamera(40, width / height, 0.01, 1000);
-  this.camera.position.x = 3;
-  this.camera.position.y = 3;
-  this.camera.position.z = 3;
+  this.camera.position.x = cameraPosition.x;
+  this.camera.position.y = cameraPosition.y;
+  this.camera.position.z = cameraPosition.z;
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,
@@ -2485,12 +2489,11 @@ ROS3D.OrbitControls = function(options) {
 
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
-        // rMat.multiplyVector3( moveStartNormal );
         moveStartNormal.applyMatrix4(rMat);
 
         moveStartCenter = that.center.clone();
         moveStartPosition = that.camera.position.clone();
-        moveStartIntersection = ROS3D.intersectPlane(event3D.mouseRay, moveStartCenter,
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
             moveStartNormal);
         break;
       case 2:
@@ -2533,7 +2536,7 @@ ROS3D.OrbitControls = function(options) {
       this.showAxes();
 
     } else if (state === STATE.MOVE) {
-      var intersection = ROS3D.intersectPlane(event3D.mouseRay, that.center, moveStartNormal);
+      var intersection = intersectViewPlane(event3D.mouseRay, that.center, moveStartNormal);
 
       if (!intersection) {
         return;
@@ -2548,6 +2551,33 @@ ROS3D.OrbitControls = function(options) {
       that.camera.updateMatrixWorld();
       this.showAxes();
     }
+  };
+
+  /**
+   * Used to track the movement during camera movement.
+   *  
+   * @param mouseRay - the mouse ray to intersect with
+   * @param planeOrigin - the origin of the plane
+   * @param planeNormal - the normal of the plane
+   * @returns the intersection
+   */
+  function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
+
+    var vector = new THREE.Vector3();
+    var intersection = new THREE.Vector3();
+
+    vector.subVectors(planeOrigin, mouseRay.origin);
+    var dot = mouseRay.direction.dot(planeNormal);
+
+    // bail if ray and plane are parallel
+    if (Math.abs(dot) < mouseRay.precision)
+      return null;
+
+    // calc distance to plane
+    var scalar = planeNormal.dot(vector) / dot;
+
+    intersection = mouseRay.direction.clone().multiplyScalar(scalar);
+    return intersection;
   };
 
   /**
@@ -2733,7 +2763,7 @@ ROS3D.OrbitControls.prototype.update = function() {
   theta += this.thetaDelta;
   phi += this.phiDelta;
 
-  // restrict phi to be betwee EPS and PI-EPS
+  // restrict phi to be between EPS and PI-EPS
   var eps = 0.000001;
   phi = Math.max(eps, Math.min(Math.PI - eps, phi));
 

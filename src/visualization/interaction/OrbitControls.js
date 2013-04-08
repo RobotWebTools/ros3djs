@@ -89,12 +89,11 @@ ROS3D.OrbitControls = function(options) {
 
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
-        // rMat.multiplyVector3( moveStartNormal );
         moveStartNormal.applyMatrix4(rMat);
 
         moveStartCenter = that.center.clone();
         moveStartPosition = that.camera.position.clone();
-        moveStartIntersection = ROS3D.intersectPlane(event3D.mouseRay, moveStartCenter,
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
             moveStartNormal);
         break;
       case 2:
@@ -137,7 +136,7 @@ ROS3D.OrbitControls = function(options) {
       this.showAxes();
 
     } else if (state === STATE.MOVE) {
-      var intersection = ROS3D.intersectPlane(event3D.mouseRay, that.center, moveStartNormal);
+      var intersection = intersectViewPlane(event3D.mouseRay, that.center, moveStartNormal);
 
       if (!intersection) {
         return;
@@ -152,6 +151,33 @@ ROS3D.OrbitControls = function(options) {
       that.camera.updateMatrixWorld();
       this.showAxes();
     }
+  };
+
+  /**
+   * Used to track the movement during camera movement.
+   *  
+   * @param mouseRay - the mouse ray to intersect with
+   * @param planeOrigin - the origin of the plane
+   * @param planeNormal - the normal of the plane
+   * @returns the intersection
+   */
+  function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
+
+    var vector = new THREE.Vector3();
+    var intersection = new THREE.Vector3();
+
+    vector.subVectors(planeOrigin, mouseRay.origin);
+    var dot = mouseRay.direction.dot(planeNormal);
+
+    // bail if ray and plane are parallel
+    if (Math.abs(dot) < mouseRay.precision)
+      return null;
+
+    // calc distance to plane
+    var scalar = planeNormal.dot(vector) / dot;
+
+    intersection = mouseRay.direction.clone().multiplyScalar(scalar);
+    return intersection;
   };
 
   /**
@@ -337,7 +363,7 @@ ROS3D.OrbitControls.prototype.update = function() {
   theta += this.thetaDelta;
   phi += this.phiDelta;
 
-  // restrict phi to be betwee EPS and PI-EPS
+  // restrict phi to be between EPS and PI-EPS
   var eps = 0.000001;
   phi = Math.max(eps, Math.min(Math.PI - eps, phi));
 
