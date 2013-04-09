@@ -6,6 +6,7 @@ DEVEL - **r4**
 * Interactive markers now removed correctly (rctoris)
 * Viewer now takes an optional initial camera position (rctoris)
 * Orbit controls fixed to prevent flicker during camera pan (rctoris)
+* Scale (units) now work in Collada files (rctoris)
 
 2013-04-03 - **r3**
 * ColladaLoader2 added as third-party module (rctoris)
