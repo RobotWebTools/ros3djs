@@ -14,7 +14,7 @@
  *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
-  var options = options || {};
+  options = options || {};
   var that = this;
   var tfClient = options.tfClient;
   var frameID = options.frameID;
@@ -46,7 +46,7 @@ ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
  * Set the pose of the associated model.
- * 
+ *
  * @param pose - the pose to update with
  */
 ROS3D.SceneNode.prototype.updatePose = function(pose) {

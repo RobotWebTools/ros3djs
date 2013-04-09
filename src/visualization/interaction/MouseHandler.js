@@ -37,7 +37,7 @@ ROS3D.MouseHandler = function(options) {
 
 /**
  * Process the particular DOM even that has occurred based on the mouse's position in the scene.
- * 
+ *
  * @param domEvent - the DOM event to process
  */
 ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
@@ -68,7 +68,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   };
 
   // if the mouse leaves the dom element, stop everything
-  if (domEvent.type == 'mouseout') {
+  if (domEvent.type === 'mouseout') {
     if (this.dragging) {
       this.notify(this.lastTarget, 'mouseup', event3D);
       this.dragging = false;
@@ -89,7 +89,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   }
 
   // in the normal case, we need to check what is under the mouse
-  var target = this.lastTarget;
+  target = this.lastTarget;
   var intersections = [];
   intersections = mouseRaycaster.intersectObject(this.rootObject, true);
   if (intersections.length > 0) {
@@ -124,9 +124,9 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
 
 /**
  * Notify the listener of the type of event that occurred.
- * 
+ *
  * @param target - the target of the event
- * @param type - the type of event that occurred 
+ * @param type - the type of event that occurred
  * @param event3D - the 3D mouse even information
  * @returns if an event was canceled
  */
@@ -155,13 +155,4 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
     event3D.currentTarget = event3D.currentTarget.parent;
   }
   return false;
-};
-
-/**
- * Destroy this mouse handler and its associated listeners.
- */
-ROS3D.MouseHandler.prototype.destroy = function() {
-  this.listeners.forEach(function(listener) {
-    this.renderer.domElement.removeEventListener(eventName, listener, false);
-  }, this);
 };

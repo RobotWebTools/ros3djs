@@ -4,10 +4,10 @@
 
 /**
  * An occupancy grid client that listens to a given map topic.
- * 
+ *
  * Emits the following events:
  *  * 'change' - there was an update or change in the marker
- *  
+ *
  * @constructor
  * @param options - object with following keys:
  *   * ros - the ROSLIB.Ros connection handle
@@ -18,7 +18,7 @@
  */
 ROS3D.OccupancyGridClient = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/map';
   this.continuous = options.continuous;
