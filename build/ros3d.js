@@ -1777,6 +1777,11 @@ ROS3D.MeshResource = function(options) {
       }
     };
     loader.load(uri, function colladaReady(collada) {
+      // check for a scale factor
+      if(collada.dae.asset.unit) {
+        var scale = collada.dae.asset.unit;
+        collada.scene.scale = new THREE.Vector3(scale, scale, scale);
+      }
       that.add(collada.scene);
     });
   }
