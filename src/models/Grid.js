@@ -4,7 +4,7 @@
 
 /**
  * Create a grid object.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *  * size (optional) - the size of the grid
@@ -12,7 +12,7 @@
  *  * lineWidth (optional) - the width of the lines in the grid
  */
 ROS3D.Grid = function(options) {
-  var options = options || {};
+  options = options || {};
   var size = options.size || 50;
   var color = options.color || '#cccccc';
   var lineWidth = options.lineWidth || 1;

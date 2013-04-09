@@ -1,9 +1,11 @@
 {
   "globals": {
     "module": true,
-    "EventEmitter2" : true,
-    "ROSLIBJS" : true,
-    "THREE" : true
+    "EventEmitter2": true,
+    "ROSLIB": true,
+    "THREE": true,
+    "ColladaLoader2": true,
+    "requestAnimationFrame": true
   },
   "curly": true,
   "eqeqeq": true,

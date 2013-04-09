@@ -6,7 +6,7 @@
 /**
  * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
  * Collada files.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *  * path (optional) - the base path to the associated models that will be loaded
@@ -15,7 +15,7 @@
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var path = options.path || '/';
   var resource = options.resource;
   this.warnings = options.warnings;

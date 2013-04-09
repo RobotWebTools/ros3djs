@@ -10,7 +10,7 @@
  *   * mouseHandler - the handler for the mouseover and mouseout events
  */
 ROS3D.Highlighter = function(options) {
-  var options = options || {};
+  options = options || {};
   var mouseHandler = options.mouseHandler;
   this.hoverObjs = [];
 
@@ -21,6 +21,7 @@ ROS3D.Highlighter = function(options) {
 
 /**
  * Add the current target of the mouseover to the hover list.
+ *
  * @param event - the event that contains the target of the mouseover
  */
 ROS3D.Highlighter.prototype.onMouseOver = function(event) {
@@ -29,6 +30,7 @@ ROS3D.Highlighter.prototype.onMouseOver = function(event) {
 
 /**
  * Remove the current target of the mouseover from the hover list.
+ *
  * @param event - the event that contains the target of the mouseout
  */
 ROS3D.Highlighter.prototype.onMouseOut = function(event) {
@@ -37,7 +39,7 @@ ROS3D.Highlighter.prototype.onMouseOut = function(event) {
 
 /**
  * Add all corresponding webgl objects in the given scene and add them to the given render list.
- * 
+ *
  * @param scene - the scene to check for webgl objects
  * @param objects - the objects list to check
  * @param renderList - the list to add to
@@ -61,7 +63,7 @@ ROS3D.Highlighter.prototype.getWebglObjects = function(scene, objects, renderLis
 
 /**
  * Render highlighted objects in the scene.
- * 
+ *
  * @param renderer - the renderer to use
  * @param scene - the scene to use
  * @param camera - the camera to use
@@ -80,7 +82,7 @@ ROS3D.Highlighter.prototype.renderHighlight = function(renderer, scene, camera) 
     polygonOffset : true,
     polygonOffsetUnits : -1,
     side : THREE.DoubleSide
-  });;
+  });
 
   // swap render lists, render, undo
   var oldWebglObjects = scene.__webglObjects;

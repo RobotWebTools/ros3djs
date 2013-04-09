@@ -19,7 +19,7 @@
  */
 ROS3D.Viewer = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var divID = options.divID;
   var width = options.width;
   var height = options.height;
@@ -30,7 +30,7 @@ ROS3D.Viewer = function(options) {
     x : 3,
     y : 3,
     z : 3
-  };;
+  };
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -63,7 +63,7 @@ ROS3D.Viewer = function(options) {
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE.Object3D;
+  this.selectableObjects = new THREE.Object3D();
   this.scene.add(this.selectableObjects);
   var mouseHandler = new ROS3D.MouseHandler({
     renderer : this.renderer,
@@ -97,7 +97,7 @@ ROS3D.Viewer = function(options) {
 
     // draw the frame
     requestAnimationFrame(draw);
-  };
+  }
 
   // add the renderer to the page
   document.getElementById(divID).appendChild(this.renderer.domElement);
@@ -108,7 +108,7 @@ ROS3D.Viewer = function(options) {
 
 /**
  * Add the given THREE Object3D to the global scene in the viewer.
- * 
+ *
  * @param object - the THREE Object3D to add
  * @param selectable (optional) - if the object should be added to the selectable list
  */

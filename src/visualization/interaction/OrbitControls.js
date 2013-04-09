@@ -14,12 +14,12 @@
  * @param userZoomSpeed (optional) - the speed for zooming
  * @param userRotateSpeed (optional) - the speed for rotating
  * @param autoRotate (optional) - if the orbit should auto rotate
- * @param autoRotate (optional) - the speed for auto rotating 
+ * @param autoRotate (optional) - the speed for auto rotating
  */
 ROS3D.OrbitControls = function(options) {
   THREE.EventDispatcher.call(this);
   var that = this;
-  var options = options || {};
+  options = options || {};
   var scene = options.scene;
   this.camera = options.camera;
   this.center = new THREE.Vector3();
@@ -72,7 +72,7 @@ ROS3D.OrbitControls = function(options) {
 
   /**
    * Handle the mousedown 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onMouseDown(event3D) {
@@ -103,11 +103,11 @@ ROS3D.OrbitControls = function(options) {
     }
 
     this.showAxes();
-  };
+  }
 
   /**
    * Handle the movemove 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onMouseMove(event3D) {
@@ -151,11 +151,11 @@ ROS3D.OrbitControls = function(options) {
       that.camera.updateMatrixWorld();
       this.showAxes();
     }
-  };
+  }
 
   /**
    * Used to track the movement during camera movement.
-   *  
+   *
    * @param mouseRay - the mouse ray to intersect with
    * @param planeOrigin - the origin of the plane
    * @param planeNormal - the normal of the plane
@@ -170,19 +170,20 @@ ROS3D.OrbitControls = function(options) {
     var dot = mouseRay.direction.dot(planeNormal);
 
     // bail if ray and plane are parallel
-    if (Math.abs(dot) < mouseRay.precision)
+    if (Math.abs(dot) < mouseRay.precision) {
       return null;
+    }
 
     // calc distance to plane
     var scalar = planeNormal.dot(vector) / dot;
 
     intersection = mouseRay.direction.clone().multiplyScalar(scalar);
     return intersection;
-  };
+  }
 
   /**
    * Handle the mouseup 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onMouseUp(event3D) {
@@ -191,11 +192,11 @@ ROS3D.OrbitControls = function(options) {
     }
 
     state = STATE.NONE;
-  };
+  }
 
   /**
    * Handle the mousewheel 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onMouseWheel(event3D) {
@@ -205,10 +206,11 @@ ROS3D.OrbitControls = function(options) {
 
     var event = event3D.domEvent;
     // wheelDelta --> Chrome, detail --> Firefox
+    var delta;
     if (typeof (event.wheelDelta) !== 'undefined') {
-      var delta = event.wheelDelta;
+      delta = event.wheelDelta;
     } else {
-      var delta = -event.detail;
+      delta = -event.detail;
     }
     if (delta > 0) {
       that.zoomOut();
@@ -217,27 +219,27 @@ ROS3D.OrbitControls = function(options) {
     }
 
     this.showAxes();
-  };
+  }
 
   /**
    * Handle the touchdown 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onTouchDown(event) {
     onMouseDown(event);
     event.preventDefault();
-  };
+  }
 
   /**
    * Handle the touchmove 3D event.
-   * 
+   *
    * @param event3D - the 3D event to handle
    */
   function onTouchMove(event) {
     onMouseMove(event);
     event.preventDefault();
-  };
+  }
 
   // add event listeners
   this.addEventListener('mousedown', onMouseDown);
@@ -272,7 +274,7 @@ ROS3D.OrbitControls.prototype.showAxes = function() {
 
 /**
  * Rotate the camera to the left by the given angle.
- * 
+ *
  * @param angle (optional) - the angle to rotate by
  */
 ROS3D.OrbitControls.prototype.rotateLeft = function(angle) {
@@ -284,7 +286,7 @@ ROS3D.OrbitControls.prototype.rotateLeft = function(angle) {
 
 /**
  * Rotate the camera to the right by the given angle.
- * 
+ *
  * @param angle (optional) - the angle to rotate by
  */
 ROS3D.OrbitControls.prototype.rotateRight = function(angle) {
@@ -296,7 +298,7 @@ ROS3D.OrbitControls.prototype.rotateRight = function(angle) {
 
 /**
  * Rotate the camera up by the given angle.
- * 
+ *
  * @param angle (optional) - the angle to rotate by
  */
 ROS3D.OrbitControls.prototype.rotateUp = function(angle) {
@@ -308,7 +310,7 @@ ROS3D.OrbitControls.prototype.rotateUp = function(angle) {
 
 /**
  * Rotate the camera down by the given angle.
- * 
+ *
  * @param angle (optional) - the angle to rotate by
  */
 ROS3D.OrbitControls.prototype.rotateDown = function(angle) {
@@ -320,7 +322,7 @@ ROS3D.OrbitControls.prototype.rotateDown = function(angle) {
 
 /**
  * Zoom in by the given scale.
- * 
+ *
  * @param zoomScale (optional) - the scale to zoom in by
  */
 ROS3D.OrbitControls.prototype.zoomIn = function(zoomScale) {
@@ -332,7 +334,7 @@ ROS3D.OrbitControls.prototype.zoomIn = function(zoomScale) {
 
 /**
  * Zoom out by the given scale.
- * 
+ *
  * @param zoomScale (optional) - the scale to zoom in by
  */
 ROS3D.OrbitControls.prototype.zoomOut = function(zoomScale) {
