@@ -26,7 +26,7 @@ The current supported version can be found [in this project](include/threejs/thr
 [ColladaLoader2](https://github.com/crobi/ColladaAnimationCompress). The current supported version is 0.0.1.
 The current supported version can be found [in this project](include/ColladaAnimationCompress/ColladaLoader2.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.1/ColladaLoader2.js)) | ([min](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.1/ColladaLoader2.min.js)).
 
-[roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is r4.
+[roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is r5.
 The current supported version can be found [in this project](include/roslibjs/roslib.js) or on the Robot Web Tools CDN ([full](http://cdn.robotwebtools.org/roslibjs/r4/roslib.js)) | ([min](http://cdn.robotwebtools.org/roslibjs/r4/roslib.min.js)).
 
 ### Build ###
@@ -45,5 +45,5 @@ To run the build script, use the following:
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.
 
 ### Authors ###
-See the [AUTHORS](AUTHORS) file for a full list of contributors.
+See the [AUTHORS.md](AUTHORS) file for a full list of contributors.
 
