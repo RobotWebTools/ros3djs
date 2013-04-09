@@ -12,7 +12,7 @@
  *   * colors - the associated array of colors to use
  */
 ROS3D.TriangleList = function(options) {
-  var options = options || {};
+  options = options || {};
   var material = options.material || new THREE.MeshBasicMaterial();
   var vertices = options.vertices;
   var colors = options.colors;
@@ -29,14 +29,15 @@ ROS3D.TriangleList = function(options) {
   }
 
   // set the colors
+  var i, j;
   if (colors.length === vertices.length) {
     // use per-vertex color
     for (i = 0; i < vertices.length; i += 3) {
-      var face = new THREE.Face3(i, i + 1, i + 2);
+      var faceVert = new THREE.Face3(i, i + 1, i + 2);
       for (j = i * 3; j < i * 3 + 3; i++) {
         var color = new THREE.Color();
         color.setRGB(colors[i].r, colors[i].g, colors[i].b);
-        face.vertexColors.push(color);
+        faceVert.vertexColors.push(color);
       }
       geometry.faces.push(face);
     }
@@ -44,9 +45,9 @@ ROS3D.TriangleList = function(options) {
   } else if (colors.length === vertices.length / 3) {
     // use per-triangle color
     for (i = 0; i < vertices.length; i += 3) {
-      var face = new THREE.Face3(i, i + 1, i + 2);
-      face.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
-      geometry.faces.push(face);
+      var faceTri = new THREE.Face3(i, i + 1, i + 2);
+      faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
+      geometry.faces.push(faceTri);
     }
     material.vertexColors = THREE.FaceColors;
   } else {
@@ -68,7 +69,7 @@ ROS3D.TriangleList.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
  * Set the color of this object to the given hex value.
- * 
+ *
  * @param hex - the hex value of the color to set
  */
 ROS3D.TriangleList.prototype.setColor = function(hex) {

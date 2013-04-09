@@ -14,7 +14,7 @@
  */
 ROS3D.InteractiveMarkerMenu = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var menuEntries = options.menuEntries;
   var className = options.className || 'default-interactive-marker-menu';
   var entryClassName = options.entryClassName || 'default-interactive-marker-menu-entry';
@@ -67,21 +67,20 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   this.overlayDomElem.addEventListener('contextmenu', this.hideListener);
   this.overlayDomElem.addEventListener('click', this.hideListener);
 
-  // parse all entries
-  for ( var i = 0; i < menuEntries.length; i++) {
-    var entry = menuEntries[i];
-    var id = entry.id;
+  // parse all entries and link children to parents
+  var i, entry, id;
+  for ( i = 0; i < menuEntries.length; i++) {
+    entry = menuEntries[i];
+    id = entry.id;
     allMenus[id] = {
       title : entry.title,
       id : id,
       children : []
     };
   }
-
-  // link children to parents
-  for ( var i = 0; i < menuEntries.length; i++) {
-    var entry = menuEntries[i];
-    var id = entry.id;
+  for ( i = 0; i < menuEntries.length; i++) {
+    entry = menuEntries[i];
+    id = entry.id;
     var menu = allMenus[id];
     var parent = allMenus[entry.parent_id];
     parent.children.push(menu);
@@ -99,7 +98,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
 
   /**
    * Create the HTML UL element for the menu and link it to the parent.
-   * 
+   *
    * @param parentDomElem - the parent DOM element
    * @param parentMenu - the parent menu
    */
@@ -134,7 +133,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
 
 /**
  * Shoe the menu DOM element.
- * 
+ *
  * @param control - the control for the menu
  * @param event - the event that caused this
  */
@@ -154,7 +153,7 @@ ROS3D.InteractiveMarkerMenu.prototype.show = function(control, event) {
 
 /**
  * Hide the menu DOM element.
- * 
+ *
  * @param event (optional) - the event that caused this
  */
 ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {

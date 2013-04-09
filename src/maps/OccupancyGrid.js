@@ -10,7 +10,7 @@
  *   * message - the occupancy grid message
  */
 ROS3D.OccupancyGrid = function(options) {
-  var options = options || {};
+  options = options || {};
   var message = options.message;
 
   // create the geometry
@@ -31,12 +31,13 @@ ROS3D.OccupancyGrid = function(options) {
       var mapI = col + ((height - row - 1) * width);
       // determine the value
       var data = message.data[mapI];
+      var val;
       if (data === 100) {
-        var val = 0;
+        val = 0;
       } else if (data === 0) {
-        var val = 255;
+        val = 255;
       } else {
-        var val = 127;
+        val = 127;
       }
 
       // determine the index into the image data array

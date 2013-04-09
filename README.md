@@ -1,5 +1,5 @@
-ros3djs
-========
+ros3djs [![Build Status](https://api.travis-ci.org/RobotWebTools/ros3djs.png)](https://travis-ci.org/RobotWebTools/ros3djs)
+=======
 
 #### 3D Visualization Library for use with the ROS JavaScript Libraries ####
 
