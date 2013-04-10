@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       build: {
-        src  : ['../src/Rod3D.js', '../src/**/*.js'],
+        src  : ['../src/Ros3D.js', '../src/**/*.js'],
         dest : '../build/ros3d.js'
       }
     },
