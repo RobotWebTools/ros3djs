@@ -16,7 +16,7 @@
  *   * material (optional) - the material to use for this arrow
  */
 ROS3D.Arrow = function(options) {
-  var options = options || {};
+  options = options || {};
   var origin = options.origin || new THREE.Vector3(0, 0, 0);
   var direction = options.direction || new THREE.Vector3(1, 0, 0);
   var length = options.length || 1;
@@ -51,7 +51,7 @@ ROS3D.Arrow.prototype.__proto__ = THREE.Mesh.prototype;
 
 /**
  * Set the direction of this arrow to that of the given vector.
- * 
+ *
  * @param direction - the direction to set this arrow
  */
 ROS3D.Arrow.prototype.setDirection = function(direction) {
@@ -63,7 +63,7 @@ ROS3D.Arrow.prototype.setDirection = function(direction) {
 
 /**
  * Set this arrow to be the given length.
- * 
+ *
  * @param length - the new length of the arrow
  */
 ROS3D.Arrow.prototype.setLength = function(length) {
@@ -72,7 +72,7 @@ ROS3D.Arrow.prototype.setLength = function(length) {
 
 /**
  * Set the color of this arrow to the given hex value.
- * 
+ *
  * @param hex - the hex value of the color to use
  */
 ROS3D.Arrow.prototype.setColor = function(hex) {

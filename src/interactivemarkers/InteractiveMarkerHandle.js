@@ -15,7 +15,7 @@
  *  * tfClient - a handle to the TF client to use
  */
 ROS3D.InteractiveMarkerHandle = function(options) {
-  var options = options || {};
+  options = options || {};
   this.message = options.message;
   this.feedbackTopic = options.feedbackTopic;
   this.tfClient = options.tfClient;
@@ -54,7 +54,7 @@ ROS3D.InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function() {
 
 /**
  * Update the pose based on the pose given by the server.
- * 
+ *
  * @param poseMsg - the pose given by the server
  */
 ROS3D.InteractiveMarkerHandle.prototype.setPoseFromServer = function(poseMsg) {
@@ -64,7 +64,7 @@ ROS3D.InteractiveMarkerHandle.prototype.setPoseFromServer = function(poseMsg) {
 
 /**
  * Update the pose based on the TF given by the server.
- * 
+ *
  * @param transformMsg - the TF given by the server
  */
 ROS3D.InteractiveMarkerHandle.prototype.tfUpdate = function(transformMsg) {
@@ -74,7 +74,7 @@ ROS3D.InteractiveMarkerHandle.prototype.tfUpdate = function(transformMsg) {
 
 /**
  * Set the pose from the client based on the given event.
- * 
+ *
  * @param event - the event to base the change off of
  */
 ROS3D.InteractiveMarkerHandle.prototype.setPoseFromClient = function(event) {
@@ -98,7 +98,7 @@ ROS3D.InteractiveMarkerHandle.prototype.setPoseFromClient = function(event) {
 
 /**
  * Send the button click feedback to the server.
- * 
+ *
  * @param event - the event associated with the button click
  */
 ROS3D.InteractiveMarkerHandle.prototype.onButtonClick = function(event) {
@@ -108,7 +108,7 @@ ROS3D.InteractiveMarkerHandle.prototype.onButtonClick = function(event) {
 
 /**
  * Send the mousedown feedback to the server.
- * 
+ *
  * @param event - the event associated with the mousedown
  */
 ROS3D.InteractiveMarkerHandle.prototype.onMouseDown = function(event) {
@@ -118,7 +118,7 @@ ROS3D.InteractiveMarkerHandle.prototype.onMouseDown = function(event) {
 
 /**
  * Send the mouseup feedback to the server.
- * 
+ *
  * @param event - the event associated with the mouseup
  */
 ROS3D.InteractiveMarkerHandle.prototype.onMouseUp = function(event) {
@@ -131,7 +131,7 @@ ROS3D.InteractiveMarkerHandle.prototype.onMouseUp = function(event) {
 
 /**
  * Send the menu select feedback to the server.
- * 
+ *
  * @param event - the event associated with the menu select
  */
 ROS3D.InteractiveMarkerHandle.prototype.onMenuSelect = function(event) {
@@ -140,7 +140,7 @@ ROS3D.InteractiveMarkerHandle.prototype.onMenuSelect = function(event) {
 
 /**
  * Send feedback to the interactive marker server.
- * 
+ *
  * @param eventType - the type of event that happened
  * @param clickPosition (optional) - the position in ROS space the click happened
  * @param menuEntryID (optional) - the menu entry ID that is associated
@@ -151,7 +151,7 @@ ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, click
 
   // check for the click position
   var mousePointValid = clickPosition !== undefined;
-  var clickPosition = clickPosition || {
+  clickPosition = clickPosition || {
     x : 0,
     y : 0,
     z : 0

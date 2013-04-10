@@ -16,7 +16,7 @@
  */
 ROS3D.InteractiveMarkerClient = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   this.ros = options.ros;
   this.tfClient = options.tfClient;
   this.topic = options.topic;
@@ -36,7 +36,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
 
 /**
  * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
- * 
+ *
  * @param topic - the topic to subscribe to, like '/basic_controls'
  */
 ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
@@ -79,7 +79,7 @@ ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
     this.feedbackTopic.unadvertise();
   }
   // erase all markers
-  for (intMarkerName in this.interactiveMarkers) {
+  for (var intMarkerName in this.interactiveMarkers) {
     this.eraseIntMarker(intMarkerName);
   }
   this.interactiveMarkers = {};
@@ -87,7 +87,7 @@ ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
 
 /**
  * Process the given interactive marker initialization message.
- * 
+ *
  * @param initMessage - the interactive marker initialization message to process
  */
 ROS3D.InteractiveMarkerClient.prototype.processInit = function(initMessage) {
@@ -95,9 +95,9 @@ ROS3D.InteractiveMarkerClient.prototype.processInit = function(initMessage) {
 
   // erase any old markers
   message.erases = [];
-  for (intMarkerName in this.interactiveMarkers) {
+  for (var intMarkerName in this.interactiveMarkers) {
     message.erases.push(intMarkerName);
-  };
+  }
   message.poses = [];
 
   // treat it as an update
@@ -106,7 +106,7 @@ ROS3D.InteractiveMarkerClient.prototype.processInit = function(initMessage) {
 
 /**
  * Process the given interactive marker update message.
- * 
+ *
  * @param initMessage - the interactive marker update message to process
  */
 ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
@@ -114,7 +114,6 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 
   // erase any markers
   message.erases.forEach(function(name) {
-    var marker = that.interactiveMarkers[name];
     that.eraseIntMarker(name);
   });
 
@@ -149,6 +148,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       path : that.path
     });
     // add it to the scene
+    intMarker.name = msg.name;
     that.rootObject.add(intMarker);
 
     // listen for any pose updates from the server
@@ -171,11 +171,13 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 
 /**
  * Erase the interactive marker with the given name.
- * 
+ *
  * @param intMarkerName - the interactive marker name to delete
  */
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
+    // remove the object
+    this.rootObject.remove(this.rootObject.getChildByName(intMarkerName));
     delete this.interactiveMarkers[intMarkerName];
   }
 };

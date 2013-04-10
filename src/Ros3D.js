@@ -1,10 +1,10 @@
 /**
-* @author Russell Toris - rctoris@wpi.edu
-* @author David Gossow - dgossow@willowgarage.com
-*/
+ * @author Russell Toris - rctoris@wpi.edu
+ * @author David Gossow - dgossow@willowgarage.com
+ */
 
 var ROS3D = ROS3D || {
-  REVISION : '3'
+  REVISION : '4-devel'
 };
 
 // Marker types
@@ -45,7 +45,7 @@ ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
  * Create a THREE material based on the given RGBA values.
- * 
+ *
  * @param r - the red value
  * @param g - the green value
  * @param b - the blue value
@@ -77,7 +77,7 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
 
 /**
  * Return the intersection between the mouseray and the plane.
- * 
+ *
  * @param mouseRay - the mouse ray
  * @param planeOrigin - the origin of the plane
  * @param planeNormal - the normal of the plane
@@ -87,7 +87,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE.Vector3();
   var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
-  dot = mouseRay.direction.dot(planeNormal);
+  var dot = mouseRay.direction.dot(planeNormal);
 
   // bail if ray and plane are parallel
   if (Math.abs(dot) < mouseRay.precision) {
@@ -95,22 +95,22 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   }
 
   // calc distance to plane
-  scalar = planeNormal.dot(vector) / dot;
+  var scalar = planeNormal.dot(vector) / dot;
 
   intersectPoint.addVectors(mouseRay.origin, mouseRay.direction.clone().multiplyScalar(scalar));
   return intersectPoint;
 };
 
 /**
- * Find the closest point on targetRay to any point on mouseRay. Math taken from 
+ * Find the closest point on targetRay to any point on mouseRay. Math taken from
  * http://paulbourke.net/geometry/lineline3d/
- * 
+ *
  * @param targetRay - the target ray to use
  * @param mouseRay - the mouse ray
  * @param the closest point between the two rays
  */
 ROS3D.findClosestPoint = function(targetRay, mouseRay) {
-  var v13 = new THREE.Vector3;
+  var v13 = new THREE.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
   var v21 = targetRay.direction.clone();
@@ -133,7 +133,7 @@ ROS3D.findClosestPoint = function(targetRay, mouseRay) {
 
 /**
  * Find the closest point between the axis and the mouse.
- * 
+ *
  * @param axisRay - the ray from the axis
  * @param camera - the camera to project from
  * @param mousePos - the mouse position
@@ -152,12 +152,12 @@ ROS3D.closestAxisPoint = function(axisRay, camera, mousePos) {
   var d = o2.clone().sub(o);
 
   // t is the 2d ray param of perpendicular projection of mousePos onto o
-  var tmp = new THREE.Vector2;
+  var tmp = new THREE.Vector2();
   // (t = (mousePos - o) * d / (d*d))
   var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
 
   // mp is the final 2d-projected mouse pos (mp = o + d*t)
-  var mp = new THREE.Vector2;
+  var mp = new THREE.Vector2();
   mp.addVectors(o, d.clone().multiplyScalar(t));
 
   // go back to 3d by shooting a ray
