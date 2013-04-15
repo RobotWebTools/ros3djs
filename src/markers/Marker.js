@@ -12,7 +12,7 @@
  *   * message - the marker message
  */
 ROS3D.Marker = function(options) {
-  var options = options || {};
+  options = options || {};
   var path = options.path || '/';
   var message = options.message;
 
@@ -39,10 +39,11 @@ ROS3D.Marker = function(options) {
       var shaftDiameter = headDiameter * 0.5;
 
       // determine the points
+      var direction, p1 = null;
       if (message.points.length === 2) {
-        var p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
+        p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
         var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
-        var direction = p1.clone().negate().add(p2);
+        direction = p1.clone().negate().add(p2);
         // direction = p2 - p1;
         len = direction.length();
         headDiameter = message.scale.y;
@@ -66,26 +67,26 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_CUBE:
       // set the cube dimensions
-      var geom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
-      this.add(new THREE.Mesh(geom, colorMaterial));
+      var cubeGeom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
+      this.add(new THREE.Mesh(cubeGeom, colorMaterial));
       break;
     case ROS3D.MARKER_SPHERE:
       // set the sphere dimensions
-      var geom = new THREE.SphereGeometry(0.5);
-      var mesh = new THREE.Mesh(geom, colorMaterial);
-      mesh.scale.x = message.scale.x;
-      mesh.scale.y = message.scale.y;
-      mesh.scale.z = message.scale.z;
-      this.add(mesh);
+      var sphereGeom = new THREE.SphereGeometry(0.5);
+      var sphereMesh = new THREE.Mesh(sphereGeom, colorMaterial);
+      sphereMesh.scale.x = message.scale.x;
+      sphereMesh.scale.y = message.scale.y;
+      sphereMesh.scale.z = message.scale.z;
+      this.add(sphereMesh);
       break;
     case ROS3D.MARKER_CYLINDER:
       // set the cylinder dimensions
-      var geom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
-      var mesh = new THREE.Mesh(geom, colorMaterial);
-      mesh.useQuaternion = true;
-      mesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-      mesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
-      this.add(mesh);
+      var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
+      var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
+      cylinderMesh.useQuaternion = true;
+      cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      this.add(cylinderMesh);
       break;
     case ROS3D.MARKER_CUBE_LIST:
     case ROS3D.MARKER_SPHERE_LIST:
@@ -97,7 +98,8 @@ ROS3D.Marker = function(options) {
       });
 
       // add the points
-      for ( var i = 0; i < message.points.length; i++) {
+      var i;
+      for ( i = 0; i < message.points.length; i++) {
         var vertex = new THREE.Vector3();
         vertex.x = message.points[i].x;
         vertex.y = message.points[i].y;
@@ -108,7 +110,7 @@ ROS3D.Marker = function(options) {
       // determine the colors for each
       if (message.colors.length === message.points.length) {
         material.vertexColors = true;
-        for ( var i = 0; i < message.points.length; i++) {
+        for ( i = 0; i < message.points.length; i++) {
           var color = new THREE.Color();
           color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
           geometry.colors.push(color);
@@ -170,7 +172,7 @@ ROS3D.Marker.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
  * Set the pose of this marker to the given values.
- * 
+ *
  * @param pose - the pose to set for this marker
  */
 ROS3D.Marker.prototype.setPose = function(pose) {

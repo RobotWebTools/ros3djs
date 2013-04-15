@@ -9,7 +9,7 @@
  *
  * Emits the following events:
  * * 'change' - emited after the URDF and its meshes have been loaded into the root object
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *   * ros - the ROSLIB.Ros connection handle
@@ -20,7 +20,7 @@
  */
 ROS3D.UrdfClient = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var ros = options.ros;
   var param = options.param || 'robot_description';
   this.path = options.path || '/';

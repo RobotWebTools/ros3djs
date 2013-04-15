@@ -6,7 +6,7 @@
 /**
  * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
  * Collada files.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *  * path (optional) - the base path to the associated models that will be loaded
@@ -15,7 +15,7 @@
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var path = options.path || '/';
   var resource = options.resource;
   this.warnings = options.warnings;
@@ -39,6 +39,11 @@ ROS3D.MeshResource = function(options) {
       }
     };
     loader.load(uri, function colladaReady(collada) {
+      // check for a scale factor
+      if(collada.dae.asset.unit) {
+        var scale = collada.dae.asset.unit;
+        collada.scene.scale = new THREE.Vector3(scale, scale, scale);
+      }
       that.add(collada.scene);
     });
   }

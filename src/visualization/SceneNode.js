@@ -14,7 +14,7 @@
  *  * object - the THREE 3D object to be rendered
  */
 ROS3D.SceneNode = function(options) {
-  var options = options || {};
+  options = options || {};
   var that = this;
   var tfClient = options.tfClient;
   var frameID = options.frameID;
@@ -27,22 +27,33 @@ ROS3D.SceneNode = function(options) {
   // add the model
   this.add(object);
 
-  // listen for TF updates
-  tfClient.subscribe(frameID,
-      function(msg) {
-        // apply the transform
-        var tf = new ROSLIB.Transform(msg);
-        var poseTransformed = new ROSLIB.Pose(that.pose);
-        poseTransformed.applyTransform(tf);
+  // set the inital pose
+  this.updatePose(this.pose);
 
-        // update the world
-        that.position.x = poseTransformed.position.x;
-        that.position.y = poseTransformed.position.y;
-        that.position.z = poseTransformed.position.z;
-        that.quaternion = new THREE.Quaternion(poseTransformed.orientation.x,
-            poseTransformed.orientation.y, poseTransformed.orientation.z,
-            poseTransformed.orientation.w);
-        that.updateMatrixWorld(true);
-      });
+  // listen for TF updates
+  tfClient.subscribe(frameID, function(msg) {
+
+    // apply the transform
+    var tf = new ROSLIB.Transform(msg);
+    var poseTransformed = new ROSLIB.Pose(that.pose);
+    poseTransformed.applyTransform(tf);
+
+    // update the world
+    that.updatePose(poseTransformed);
+  });
 };
 ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * Set the pose of the associated model.
+ *
+ * @param pose - the pose to update with
+ */
+ROS3D.SceneNode.prototype.updatePose = function(pose) {
+  this.position.x = pose.position.x;
+  this.position.y = pose.position.y;
+  this.position.z = pose.position.z;
+  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+      pose.orientation.z, pose.orientation.w);
+  this.updateMatrixWorld(true);
+};
