@@ -1,3 +1,5 @@
+DEVEL - **r5**
+
 2013-04-15 - **r4**
  * Initial pose now set in SceneNode [(rctoris)](https://github.com/rctoris/)
  * Texture method for OccupancyGrid changed to canvas to allow for very large maps [(rctoris)](https://github.com/rctoris/)
