@@ -1,8 +1,7 @@
 ros3djs Build Setup
-====================
+===================
 
-[Grunt](http://gruntjs.com/) is used for building, including concatenating,
-minimizing, documenting, linting, and testing.
+[Grunt](http://gruntjs.com/) is used for building, including concatenating, minimizing, documenting, linting, and testing.
 
 ### Install Grunt and its Dependencies
 
@@ -42,13 +41,9 @@ To run the build tasks:
  1. `cd /path/to/ros3djs/utils/`
  2. `grunt build`
 
-`grunt build` will concatenate and minimize the files under src and replace
-ros3d.js and ros3d.min.js in the build directory. It will also run the linter
-and test cases. This is what [Travis
-CI](https://travis-ci.org/RobotWebTools/ros3djs) runs when a Pull Request is
-submitted.
+`grunt build` will concatenate and minimize the files under src and replace ros3d.js and ros3d.min.js in the build directory. It will also run the linter and test cases. This is what [Travis CI](https://travis-ci.org/RobotWebTools/ros3djs) runs when a Pull Request is submitted.
 
-`grunt dev` will watch for any changes to any of the src/ files and
-automatically concatenate and minimize the files. This is ideal for those
-developing as you should only have to run `grunt dev` once.
+`grunt dev` will watch for any changes to any of the src/ files and automatically concatenate and minimize the files. This is ideal for those developing as you should only have to run `grunt dev` once.
+
+`grunt doc` will rebuild all JSDoc for the project.
 

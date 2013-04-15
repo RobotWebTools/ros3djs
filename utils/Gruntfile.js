@@ -4,7 +4,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       build: {
-        src  : ['../src/Ros3D.js', '../src/**/*.js'],
+        src  : ['../src/*.js', '../src/**/*.js'],
         dest : '../build/ros3d.js'
       }
     },
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
           interrupt: true
         },
         files: [
-          '../src/Ros3D.js',
+          '../src/*.js',
           '../src/**/*.js'
         ],
         tasks: ['concat']
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
         files: [
           'Gruntfile.js',
           '.jshintrc',
-          '../src/Ros3D.js',
+          '../src/*.js',
           '../src/**/*.js'
         ],
         tasks: ['build']
@@ -66,7 +66,7 @@ module.exports = function(grunt) {
     jsdoc: {
       doc: {
         src: [
-          '../src/Ros3D.js',
+          '../src/*.js',
           '../src/**/*.js'
         ],
         options: {
