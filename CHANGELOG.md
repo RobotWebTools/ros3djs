@@ -7,7 +7,7 @@ DEVEL - **r5**
  * Optional TF client added to occupancy grid client [(rctoris)](https://github.com/rctoris/)
  * Interactive markers now removed correctly [(rctoris)](https://github.com/rctoris/)
  * Viewer now takes an optional initial camera position [(rctoris)](https://github.com/rctoris/)
- * Orbit controls fixed to prevent flicker during camera pan [(rctoris)](https://github.c
+ * Orbit controls fixed to prevent flicker during camera pan [(rctoris)](https://github.com/rctoris/)
  * Scale (units) now work in Collada files [(rctoris)](https://github.com/rctoris/)om/rctoris/)
  * Grunt files added and code cleanup for linter [(rctoris)](https://github.com/rctoris/)
 
