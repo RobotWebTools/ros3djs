@@ -8,7 +8,7 @@ DEVEL - **r5**
  * Interactive markers now removed correctly [(rctoris)](https://github.com/rctoris/)
  * Viewer now takes an optional initial camera position [(rctoris)](https://github.com/rctoris/)
  * Orbit controls fixed to prevent flicker during camera pan [(rctoris)](https://github.com/rctoris/)
- * Scale (units) now work in Collada files [(rctoris)](https://github.com/rctoris/)om/rctoris/)
+ * Scale (units) now work in Collada files [(rctoris)](https://github.com/rctoris/)
  * Grunt files added and code cleanup for linter [(rctoris)](https://github.com/rctoris/)
 
 2013-04-03 - **r3**
