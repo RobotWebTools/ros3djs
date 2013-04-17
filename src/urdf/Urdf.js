@@ -5,7 +5,7 @@
 
 /**
  * A URDF can be used to load a ROSLIB.UrdfModel and its associated models into a 3D object.
- *  
+ *
  * @constructor
  * @param options - object with following keys:
  *   * urdfModel - the ROSLIB.UrdfModel to load
@@ -13,7 +13,7 @@
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  */
 ROS3D.Urdf = function(options) {
-  var options = options || {};
+  options = options || {};
   var urdfModel = options.urdfModel;
   var path = options.path || '/';
   var tfClient = options.tfClient;

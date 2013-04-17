@@ -17,7 +17,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   THREE.Object3D.call(this);
   THREE.EventDispatcher.call(this);
 
-  var options = options || {};
+  options = options || {};
   this.parent = options.parent;
   var message = options.message;
   this.name = message.name;
@@ -59,7 +59,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
   /**
    * Install default listeners for highlighting / dragging.
-   * 
+   *
    * @param event - the event to stop
    */
   function stopPropagation(event) {
@@ -67,7 +67,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   }
 
   // check the mode
-  if (message.interaction_mode != ROS3D.INTERACTIVE_MARKER_NONE) {
+  if (message.interaction_mode !== ROS3D.INTERACTIVE_MARKER_NONE) {
     this.addEventListener('mousedown', this.parent.startDrag.bind(this.parent, this));
     this.addEventListener('mouseup', this.parent.stopDrag.bind(this.parent, this));
     this.addEventListener('contextmenu', this.parent.showMenu.bind(this.parent, this));
@@ -78,14 +78,14 @@ ROS3D.InteractiveMarkerControl = function(options) {
     // touch support
     this.addEventListener('touchstart', function(event3d) {
       console.log(event3d.domEvent);
-      if (event3d.domEvent.touches.length == 1) {
+      if (event3d.domEvent.touches.length === 1) {
         event3d.type = 'mousedown';
         event3d.domEvent.button = 0;
         that.dispatchEvent(event3d);
       }
     });
     this.addEventListener('touchmove', function(event3d) {
-      if (event3d.domEvent.touches.length == 1) {
+      if (event3d.domEvent.touches.length === 1) {
         console.log(event3d.domEvent);
         event3d.type = 'mousemove';
         event3d.domEvent.button = 0;
@@ -93,7 +93,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
     this.addEventListener('touchend', function(event3d) {
-      if (event3d.domEvent.touches.length == 0) {
+      if (event3d.domEvent.touches.length === 0) {
         event3d.domEvent.button = 0;
         event3d.type = 'mouseup';
         that.dispatchEvent(event3d);

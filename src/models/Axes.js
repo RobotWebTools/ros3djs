@@ -4,16 +4,16 @@
 
 /**
  * An Axes object can be used to display the axis of a particular coordinate frame.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *   * shaftRadius (optional) - the radius of the shaft to render
- *   * headRadius (optional) - the radius of the head to render 
+ *   * headRadius (optional) - the radius of the head to render
  *   * headLength (optional) - the length of the head to render
  */
 ROS3D.Axes = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
@@ -26,7 +26,7 @@ ROS3D.Axes = function(options) {
 
   /**
    * Adds an axis marker to this axes object.
-   * 
+   *
    * @param axis - the 3D vector representing the axis to add
    */
   function addAxis(axis) {
@@ -38,9 +38,9 @@ ROS3D.Axes = function(options) {
     });
 
     // setup the rotation information
-    var rotAxis = new THREE.Vector3;
+    var rotAxis = new THREE.Vector3();
     rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
-    var rot = new THREE.Quaternion;
+    var rot = new THREE.Quaternion();
     rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
 
     // create the arrow
@@ -60,7 +60,7 @@ ROS3D.Axes = function(options) {
     line.quaternion = rot;
     line.updateMatrix();
     that.add(line);
-  };
+  }
 
   // add the three markers to the axes
   addAxis(new THREE.Vector3(1, 0, 0));

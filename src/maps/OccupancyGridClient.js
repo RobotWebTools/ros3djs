@@ -4,23 +4,25 @@
 
 /**
  * An occupancy grid client that listens to a given map topic.
- * 
+ *
  * Emits the following events:
  *  * 'change' - there was an update or change in the marker
- *  
+ *
  * @constructor
  * @param options - object with following keys:
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic (optional) - the map topic to listen to
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+ *   * tfClient (optional) - the TF client handle to use for a scene node
  *   * rootObject (optional) - the root object to add this marker to
  */
 ROS3D.OccupancyGridClient = function(options) {
   var that = this;
-  var options = options || {};
+  options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/map';
   this.continuous = options.continuous;
+  this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
   // current grid that is displayed
@@ -39,15 +41,28 @@ ROS3D.OccupancyGridClient = function(options) {
       that.rootObject.remove(that.currentGrid);
     }
 
-    that.currentGrid = new ROS3D.OccupancyGrid({
+    var newGrid = new ROS3D.OccupancyGrid({
       message : message
     });
+
+    // check if we care about the scene
+    if (that.tfClient) {
+      that.currentGrid = new ROS3D.SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : that.tfClient,
+        object : newGrid,
+        pose : message.info.origin
+      });
+    } else {
+      that.currentGrid = newGrid;
+    }
+
     that.rootObject.add(that.currentGrid);
 
     that.emit('change');
-    
+
     // check if we should unsubscribe
-    if(!that.continuous) {
+    if (!that.continuous) {
       rosTopic.unsubscribe();
     }
   });

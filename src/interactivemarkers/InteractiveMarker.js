@@ -16,7 +16,7 @@ ROS3D.InteractiveMarker = function(options) {
   THREE.EventDispatcher.call(this);
 
   var that = this;
-  var options = options || {};
+  options = options || {};
   var handle = options.handle;
   this.name = handle.name;
   var camera = options.camera;
@@ -63,7 +63,7 @@ ROS3D.InteractiveMarker.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
  * Show the interactive marker menu associated with this marker.
- * 
+ *
  * @param control - the control to use
  * @param event - the event that caused this
  */
@@ -75,7 +75,7 @@ ROS3D.InteractiveMarker.prototype.showMenu = function(control, event) {
 
 /**
  * Move the axis based on the given event information.
- * 
+ *
  * @param control - the control to use
  * @param origAxis - the origin of the axis
  * @param event3d - the event that caused this
@@ -94,7 +94,7 @@ ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d
     var t = ROS3D.closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
 
     // offset from drag start position
-    var p = new THREE.Vector3;
+    var p = new THREE.Vector3();
     p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
         .multiplyScalar(t));
     this.setPosition(control, p);
@@ -105,7 +105,7 @@ ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d
 
 /**
  * Move with respect to the plane based on the contorl and event.
- * 
+ *
  * @param control - the control to use
  * @param origNormal - the normal of the origin
  * @param event3d - the event that caused this
@@ -122,7 +122,7 @@ ROS3D.InteractiveMarker.prototype.movePlane = function(control, origNormal, even
     var intersection = ROS3D.intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
     // offset from drag start position
-    var p = new THREE.Vector3;
+    var p = new THREE.Vector3();
     p.subVectors(intersection, originWorld);
     p.add(this.dragStart.positionWorld);
     this.setPosition(control, p);
@@ -132,7 +132,7 @@ ROS3D.InteractiveMarker.prototype.movePlane = function(control, origNormal, even
 
 /**
  * Rotate based on the control and event given.
- * 
+ *
  * @param control - the control to use
  * @param origOrientation - the orientation of the origin
  * @param event3d - the event that caused this
@@ -187,7 +187,7 @@ ROS3D.InteractiveMarker.prototype.rotateAxis = function(control, origOrientation
 
 /**
  * Dispatch the given event type.
- * 
+ *
  * @param type - the type of event
  * @param control - the control to use
  */
@@ -202,7 +202,7 @@ ROS3D.InteractiveMarker.prototype.feedbackEvent = function(type, control) {
 
 /**
  * Start a drag action.
- * 
+ *
  * @param control - the control to use
  * @param event3d - the event that caused this
  */
@@ -224,7 +224,7 @@ ROS3D.InteractiveMarker.prototype.startDrag = function(control, event3d) {
 
 /**
  * Stop a drag action.
- * 
+ *
  * @param control - the control to use
  * @param event3d - the event that caused this
  */
@@ -242,7 +242,7 @@ ROS3D.InteractiveMarker.prototype.stopDrag = function(control, event3d) {
 
 /**
  * Handle a button click.
- * 
+ *
  * @param control - the control to use
  * @param event3d - the event that caused this
  */
@@ -253,7 +253,7 @@ ROS3D.InteractiveMarker.prototype.buttonClick = function(control, event3d) {
 
 /**
  * Handle a user pose change for the position.
- * 
+ *
  * @param control - the control to use
  * @param event3d - the event that caused this
  */
@@ -264,7 +264,7 @@ ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
 
 /**
  * Handle a user pose change for the orientation.
- * 
+ *
  * @param control - the control to use
  * @param event3d - the event that caused this
  */
@@ -276,7 +276,7 @@ ROS3D.InteractiveMarker.prototype.setOrientation = function(control, orientation
 
 /**
  * Update the marker based when the pose is set from the server.
- * 
+ *
  * @param event - the event that caused this
  */
 ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
