@@ -31,5 +31,5 @@ Checkout [utils/README.md](utils/README.md) for details on building.
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.
 
 ### Authors
-See the [AUTHORS.md](AUTHORS) file for a full list of contributors.
+See the [AUTHORS.md](AUTHORS.md) file for a full list of contributors.
 
