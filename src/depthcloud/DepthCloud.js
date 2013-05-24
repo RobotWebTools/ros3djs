@@ -15,13 +15,13 @@
  */
 ROS3D.DepthCloud = function(options) {
 
+  THREE.Object3D.call(this);
+
   // ///////////////////////////
   // depth cloud options
   // ///////////////////////////
 
   this.url = options.url;
-  this.shaderUrl = options.shaderUrl || 'js/';
-  this.sceneNode = options.sceneNode;
   // f defaults to standard Kinect calibration
   this.f = (options.f !== undefined) ? options.f : 526;
   this.pointSize = (options.pointSize !== undefined) ? options.pointSize : 3;
@@ -37,8 +37,8 @@ ROS3D.DepthCloud = function(options) {
 
   this.video.loop = true;
   this.video.src = this.url;
-  this.video.crossOrigin = "Anonymous";
-  this.video.setAttribute("crossorigin", "Anonymous");
+  this.video.crossOrigin = 'Anonymous';
+  this.video.setAttribute('crossorigin', 'Anonymous');
 
   // ///////////////////////////
   // load shaders
@@ -212,7 +212,8 @@ ROS3D.DepthCloud = function(options) {
     '  ',
     '}'
     ].join('\n');
-}
+};
+ROS3D.DepthCloud.prototype.__proto__ = THREE.Object3D.prototype;
 
 /*
  * Callback called when video metadata is ready
@@ -220,7 +221,7 @@ ROS3D.DepthCloud = function(options) {
 ROS3D.DepthCloud.prototype.metaLoaded = function() {
   this.metaLoaded = true;
   this.initStreamer();
-}
+};
 
 /*
  * Callback called when video metadata is ready
@@ -244,36 +245,36 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
 
       uniforms : {
 
-        "map" : {
-          type : "t",
+        'map' : {
+          type : 't',
           value : this.texture
         },
-        "width" : {
-          type : "f",
+        'width' : {
+          type : 'f',
           value : this.width
         },
-        "height" : {
-          type : "f",
+        'height' : {
+          type : 'f',
           value : this.height
         },
-        "focallength" : {
-          type : "f",
+        'focallength' : {
+          type : 'f',
           value : this.f
         },
-        "pointSize" : {
-          type : "f",
+        'pointSize' : {
+          type : 'f',
           value : this.pointSize
         },
-        "zOffset" : {
-          type : "f",
+        'zOffset' : {
+          type : 'f',
           value : 0
         },
-        "whiteness" : {
-          type : "f",
+        'whiteness' : {
+          type : 'f',
           value : this.whiteness
         },
-        "varianceThreshold" : {
-          type : "f",
+        'varianceThreshold' : {
+          type : 'f',
           value : this.varianceThreshold
         }
       },
@@ -286,7 +287,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
     this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
     this.mesh.position.x = 0;
     this.mesh.position.y = 0;
-    this.sceneNode.add(this.mesh);
+    this.add(this.mesh);
 
     var that = this;
 
@@ -296,18 +297,18 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
       }
     }, 1000 / 30);
   }
-}
+};
 
 /*
  * Start video playback
  */
 ROS3D.DepthCloud.prototype.startStream = function() {
   this.video.play();
-}
+};
 
 /*
  * Stop video playback
  */
 ROS3D.DepthCloud.prototype.stopStream = function() {
   this.video.stop();
-}
+};
