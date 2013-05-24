@@ -20,10 +20,19 @@
 
     // Create the main viewer.
     var viewer = new ROS3D.Viewer({
-      divID : 'markers',
+      divID : 'viewer',
       width : 800,
       height : 600,
       antialias : true
+    });
+
+    // Setup a client to listen to TFs.
+    var tfClient = new ROSLIB.TFClient({
+      ros : ros,
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0,
+      fixedFrame : '/camera_link'
     });
 
     // Setup Kinect DepthCloud stream
@@ -33,14 +42,13 @@
     });
     depthCloud.startStream();
 
-    viewer.scene.add(depthCloud);
-
-    // Rotate the DepthCloud node so z points forward
-    depthCloud.useQuaternion = true;
-    depthCloud.quaternion.x = Math.sqrt(1/2);
-    depthCloud.quaternion.y = 0.0;
-    depthCloud.quaternion.z = 0.0;
-    depthCloud.quaternion.w = -1*Math.sqrt(1/2);
+    // Create Kinect scene node
+    var kinectNode = new ROS3D.SceneNode({
+      frameID : '/camera_rgb_optical_frame',
+      tfClient : tfClient,
+      object : depthCloud
+    });
+    viewer.scene.add(kinectNode);
   }
 </script>
 </head>
@@ -51,6 +59,7 @@
   <ol>
     <li><tt>roscore</tt></li>
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+    <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
     <li><tt>roslaunch openni_launch openni.launch depth_registration:=true</tt></li>
     <li><tt>rosrun ros_web_video ros_web_video _port:=9999 _framerate:=15 _bitrate:=250000 _profile:=best www_file_server:=true _wwwroot:=<b>/path/to/ros3djs/</b></tt></li>
     <li><tt>rosrun depthcloud_encoder depthcloud_encoder_node _depth:=/camera/depth_registered/image_rect _rgb:=/camera/rgb/image_rect_color</tt></li>
@@ -58,6 +67,6 @@
   <small>*Due to a bug in the current WebGL implementations, it is not possible to serve
   this file and the video stream from a different host or port number, so we need ros_web_video
   to serve the html file as well. If you use Apache, you can set it up to proxy port 9999 to a subdirectory.</small><br/>
-  <div id="markers"></div>
+  <div id="viewer"></div>
 </body>
 </html>
