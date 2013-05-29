@@ -1,8 +1,7 @@
-DEVEL - **r5**
 
 2013-05-29 - **r5**
- * Added DepthCloud class for point ploud streaming with ros_web_video and depthcloud_encoder [(jkammerl)[https://github.com/jkammerl/](dgossow)[https://github.com/dgossow/]]
- *
+ * Added DepthCloud class for point ploud streaming with ros_web_video and depthcloud_encoder ([jkammerl](https://github.com/jkammerl/), [dgossow](https://github.com/dgossow/))
+
 2013-04-15 - **r4**
  * Initial pose now set in SceneNode [(rctoris)](https://github.com/rctoris/)
  * Texture method for OccupancyGrid changed to canvas to allow for very large maps [(rctoris)](https://github.com/rctoris/)
