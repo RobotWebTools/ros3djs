@@ -78,7 +78,7 @@ ROS3D.Viewer = function(options) {
   });
 
   /**
-   * Renders the associated scene to the that.
+   * Renders the associated scene to the viewer.
    */
   function draw() {
     // update the controls
