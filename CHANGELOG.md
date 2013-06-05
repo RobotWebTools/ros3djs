@@ -1,4 +1,5 @@
 DEVEL - **r6**
+ * MARKER_CUBE_LIST added to Marker.js [(rctoris)](https://github.com/rctoris/)
 
 2013-05-29 - **r5**
  * Added DepthCloud class for point ploud streaming with ros_web_video and depthcloud_encoder ([jkammerl](https://github.com/jkammerl/), [dgossow](https://github.com/dgossow/))
