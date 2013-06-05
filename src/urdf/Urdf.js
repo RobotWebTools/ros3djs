@@ -33,15 +33,27 @@ ROS3D.Urdf = function(options) {
 
         // ignore mesh files which are not in Collada format
         if (fileType === '.dae') {
+          // create the model
+          var mesh = new ROS3D.MeshResource({
+            path : path,
+            resource : uri.substring(10)
+          });
+          
+          // check for a scale
+          if(link.visual.geometry.scale) {
+            mesh.scale = new THREE.Vector3(
+              link.visual.geometry.scale.x,
+              link.visual.geometry.scale.y,
+              link.visual.geometry.scale.z
+            );
+          }
+
           // create a scene node with the model
           var sceneNode = new ROS3D.SceneNode({
             frameID : frameID,
             pose : link.visual.origin,
             tfClient : tfClient,
-            object : new ROS3D.MeshResource({
-              path : path,
-              resource : uri.substring(10)
-            })
+            object : mesh
           });
           this.add(sceneNode);
         }
