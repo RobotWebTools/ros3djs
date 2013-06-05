@@ -1,6 +1,5 @@
-
 2013-05-29 - **r5**
- * Added DepthCloud class for point ploud streaming with ros_web_video and depthcloud_encoder ([jkammerl](https://github.com/jkammerl/), [dgossow](https://github.com/dgossow/))
+ * Added DepthCloud class for point ploud streaming with ros_web_video and depthcloud_encoder [(jkammerl)](https://github.com/jkammerl/), [(dgossow)](https://github.com/dgossow/)
 
 2013-04-15 - **r4**
  * Initial pose now set in SceneNode [(rctoris)](https://github.com/rctoris/)
@@ -27,4 +26,3 @@
 
 2013-03-17 - **r1**
  * Initial development of ROS3D [(rctoris)](https://github.com/rctoris/)
-
