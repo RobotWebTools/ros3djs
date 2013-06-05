@@ -177,28 +177,25 @@ ROS3D.closestAxisPoint = function(axisRay, camera, mousePos) {
  *
  * @constructor
  * @param options - object with following keys:
- *  * f - The camera's focal length
- *  * pointSize - Point size (pixels) for rendered point cloud
- *  * width, height - Dimensions of the video stream
- *  * whiteness - Blends rgb values to white (0..100)
- *  * varianceThreshold - Threshold for variance filter, used for compression artifact removal
+ *   * url - the URL of the stream
+ *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
+ *   * pointSize (optional) - point size (pixels) for rendered point cloud
+ *   * width (optional) - width of the video stream
+ *   * height (optional) - height of the video stream
+ *   * whiteness (optional) - blends rgb values to white (0..100)
+ *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
  */
 ROS3D.DepthCloud = function(options) {
-
+  options = options || {};
   THREE.Object3D.call(this);
-
-  // ///////////////////////////
-  // depth cloud options
-  // ///////////////////////////
-
+  
   this.url = options.url;
-  // f defaults to standard Kinect calibration
-  this.f = (options.f !== undefined) ? options.f : 526;
-  this.pointSize = (options.pointSize !== undefined) ? options.pointSize : 3;
-  this.width = (options.width !== undefined) ? options.width : 1024;
-  this.height = (options.height !== undefined) ? options.height : 1024;
-  this.whiteness = (options.whiteness !== undefined) ? options.whiteness : 0;
-  this.varianceThreshold = (options.varianceThreshold !== undefined) ? options.varianceThreshold : 0.000016667;
+  this.f = options.f || 526;
+  this.pointSize = options.pointSize || 3;
+  this.width = options.width || 1024;
+  this.height = options.height || 1024;
+  this.whiteness = options.whiteness || 0;
+  this.varianceThreshold = options.varianceThreshold || 0.000016667;
 
   var metaLoaded = false;
   this.video = document.createElement('video');
@@ -210,9 +207,7 @@ ROS3D.DepthCloud = function(options) {
   this.video.crossOrigin = 'Anonymous';
   this.video.setAttribute('crossorigin', 'Anonymous');
 
-  // ///////////////////////////
-  // load shaders
-  // ///////////////////////////
+  // define custom shaders
   this.vertex_shader = [
     'uniform sampler2D map;',
     '',
@@ -385,7 +380,7 @@ ROS3D.DepthCloud = function(options) {
 };
 ROS3D.DepthCloud.prototype.__proto__ = THREE.Object3D.prototype;
 
-/*
+/**
  * Callback called when video metadata is ready
  */
 ROS3D.DepthCloud.prototype.metaLoaded = function() {
@@ -393,7 +388,7 @@ ROS3D.DepthCloud.prototype.metaLoaded = function() {
   this.initStreamer();
 };
 
-/*
+/**
  * Callback called when video metadata is ready
  */
 ROS3D.DepthCloud.prototype.initStreamer = function() {
@@ -412,9 +407,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
     }
 
     this.material = new THREE.ShaderMaterial({
-
       uniforms : {
-
         'map' : {
           type : 't',
           value : this.texture
@@ -450,8 +443,6 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
       },
       vertexShader : this.vertex_shader,
       fragmentShader : this.fragment_shader
-      // depthWrite: false
-
     });
 
     this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
@@ -469,14 +460,14 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
   }
 };
 
-/*
+/**
  * Start video playback
  */
 ROS3D.DepthCloud.prototype.startStream = function() {
   this.video.play();
 };
 
-/*
+/**
  * Stop video playback
  */
 ROS3D.DepthCloud.prototype.stopStream = function() {
