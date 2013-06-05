@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: markers/MarkerClient.js</title>
+    <title>JSDoc: Class: DepthCloud</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,72 +17,163 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: markers/MarkerClient.js</h1>
+    <h1 class="page-title">Class: DepthCloud</h1>
     
     
 
 
+
+<section>
     
-    <section>
-        <article>
-            <pre class="prettyprint source"><code>/**
- * @author Russell Toris - rctoris@wpi.edu
- */
-
-/**
- * A marker client that listens to a given marker topic.
- *
- * Emits the following events:
- *  * 'change' - there was an update or change in the marker
- *
- * @constructor
- * @param options - object with following keys:
- *   * ros - the ROSLIB.Ros connection handle
- *   * topic - the marker topic to listen to
- *   * tfClient - the TF client handle to use
- *   * rootObject (optional) - the root object to add this marker to
- */
-ROS3D.MarkerClient = function(options) {
-  var that = this;
-  options = options || {};
-  var ros = options.ros;
-  var topic = options.topic;
-  this.tfClient = options.tfClient;
-  this.rootObject = options.rootObject || new THREE.Object3D();
-
-  // current marker that is displayed
-  this.currentMarker = null;
-
-  // subscribe to the topic
-  var rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'visualization_msgs/Marker',
-    compression : 'png'
-  });
-  rosTopic.subscribe(function(message) {
-    var newMarker = new ROS3D.Marker({
-      message : message
-    });
-    // check for an old marker
-    if (that.currentMarker) {
-      that.rootObject.remove(that.currentMarker);
-    }
-
-    that.currentMarker = new ROS3D.SceneNode({
-      frameID : message.header.frame_id,
-      tfClient : that.tfClient,
-      object : newMarker
-    });
-    that.rootObject.add(that.currentMarker);
+<header>
+    <h2>
+        <span class="ancestors"><a href="global.html#ROS3D">ROS3D</a>.</span>
     
-    that.emit('change');
-  });
-};
-ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
-</code></pre>
-        </article>
-    </section>
+    DepthCloud
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="DepthCloud"><span class="type-signature"></span>new DepthCloud<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        The DepthCloud object.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">object with following keys:
+ * f - The camera's focal length
+ * pointSize - Point size (pixels) for rendered point cloud
+ * width, height - Dimensions of the video stream
+ * whiteness - Blends rgb values to white (0..100)
+ * varianceThreshold - Threshold for variance filter, used for compression artifact removal</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 16
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</article>
+
+</section>  
 
 
 
