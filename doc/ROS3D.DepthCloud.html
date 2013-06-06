@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Viewer</title>
+    <title>JSDoc: Class: DepthCloud</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: Viewer</h1>
+    <h1 class="page-title">Class: DepthCloud</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="global.html#ROS3D">ROS3D</a>.</span>
     
-    Viewer
+    DepthCloud
     </h2>
     
 </header>  
@@ -41,7 +41,7 @@
     
         
 <dt>
-    <h4 class="name" id="Viewer"><span class="type-signature"></span>new Viewer<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DepthCloud"><span class="type-signature"></span>new DepthCloud<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -49,7 +49,7 @@
     
     
     <div class="description">
-        A Viewer can be used to render an interactive 3D scene to a HTML5 canvas.
+        The DepthCloud object.
     </div>
     
 
@@ -95,13 +95,13 @@
             
             
             <td class="description last">object with following keys:
- * divID - the ID of the div to place the viewer in
- * width - the initial width, in pixels, of the canvas
- * height - the initial height, in pixels, of the canvas
- * background (optional) - the color to render the background, like '#efefef'
- * antialias (optional) - if antialiasing should be used
- * intensity (optional) - the lighting intensity setting to use
- * cameraPosition (optional) - the starting position of the camera</td>
+  * url - the URL of the stream
+  * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
+  * pointSize (optional) - point size (pixels) for rendered point cloud
+  * width (optional) - width of the video stream
+  * height (optional) - height of the video stream
+  * whiteness (optional) - blends rgb values to white (0..100)
+  * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal</td>
         </tr>
 	
 	
@@ -132,7 +132,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Viewer.js.html">visualization/Viewer.js</a>, line 20
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 18
     </li></ul></dd>
     
     
@@ -174,7 +174,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="addObject"><span class="type-signature"></span>addObject<span class="signature">(object, selectable)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="initStreamer"><span class="type-signature"></span>initStreamer<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -182,7 +182,7 @@
     
     
     <div class="description">
-        Add the given THREE Object3D to the global scene in the viewer.
+        Callback called when video metadata is ready
     </div>
     
 
@@ -190,67 +190,6 @@
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>object</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">the THREE Object3D to add</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>selectable</code></td>
-            
-            
-            <td class="type">
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">(optional) - if the object should be added to the selectable list</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -276,7 +215,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Viewer.js.html">visualization/Viewer.js</a>, line 115
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 224
     </li></ul></dd>
     
     
@@ -300,7 +239,7 @@
         
             
 <dt>
-    <h4 class="name" id="draw"><span class="type-signature">&lt;inner> </span>draw<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="metaLoaded"><span class="type-signature"></span>metaLoaded<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -308,7 +247,7 @@
     
     
     <div class="description">
-        Renders the associated scene to the viewer.
+        Callback called when video metadata is ready
     </div>
     
 
@@ -341,7 +280,137 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Viewer.js.html">visualization/Viewer.js</a>, line 83
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 216
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="startStream"><span class="type-signature"></span>startStream<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Start video playback
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 296
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="stopStream"><span class="type-signature"></span>stopStream<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stop video playback
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="DepthCloud.js.html">depthcloud/DepthCloud.js</a>, line 303
     </li></ul></dd>
     
     
@@ -384,7 +453,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 06 2013 10:17:54 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Thu Jun 06 2013 10:17:53 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
