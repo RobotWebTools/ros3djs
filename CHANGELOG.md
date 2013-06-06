@@ -1,3 +1,5 @@
+DEVEL - **r7**
+
 2013-06-06 - **r6**
  * MARKER_CUBE_LIST added to Marker.js [(rctoris)](https://github.com/rctoris/)
  * URDF meshes are now scaled correctly [(rctoris)](https://github.com/rctoris/)
