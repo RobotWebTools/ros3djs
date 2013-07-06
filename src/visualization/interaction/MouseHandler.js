@@ -67,6 +67,12 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     intersection : this.lastIntersection
   };
 
+  console.log('------------------------------------');
+  console.log(domEvent.type);
+  console.log('    Dragging?: ' + this.dragging);
+  console.log('    lastTarget: ' + this.lastTarget);
+  console.log('    Target: ' + target);
+
   // if the mouse leaves the dom element, stop everything
   if (domEvent.type === 'mouseout') {
     if (this.dragging) {
@@ -78,11 +84,22 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     return;
   }
 
+  // if the touch leaves the dom element, stop everything
+  if (domEvent.type === 'touchleave' || domEvent.type === 'touchend') {
+    if (this.dragging) {
+      this.notify(this.lastTarget, 'mouseup', event3D);
+      this.dragging = false;
+    }
+    this.notify(this.lastTarget, 'touchend', event3D);
+    this.lastTarget = null;
+    return;
+  }
+
   // while the user is holding the mouse down, stay on the same target
   if (this.dragging) {
     this.notify(this.lastTarget, domEvent.type, event3D);
     // for check for right or left mouse button
-    if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click') {
+    if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click' || domEvent.type === 'touchend') {
       this.dragging = false;
     }
     return;
@@ -100,7 +117,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   }
 
   // if the mouse moves from one object to another (or from/to the 'null' object), notify both
-  if (target !== this.lastTarget) {
+  if (target !== this.lastTarget && domEvent.type.match(/mouse/)) {
     var eventAccepted = this.notify(target, 'mouseover', event3D);
     if (eventAccepted) {
       this.notify(this.lastTarget, 'mouseout', event3D);
@@ -114,9 +131,25 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     }
   }
 
+  // if the finger moves from one object to another (or from/to the 'null' object), notify both
+  if (target !== this.lastTarget && domEvent.type.match(/touch/)) {
+    var toucheventAccepted = this.notify(target, 'touchmove', event3D);
+    if (toucheventAccepted) {
+      this.notify(this.lastTarget, 'touchleave', event3D);
+      this.notify(this.lastTarget, 'touchend', event3D);
+    } else {
+      // if target was null or no target has caught our event, fall back
+      target = this.fallbackTarget;
+      if (target !== this.lastTarget) {
+        this.notify(this.lastTarget, 'touchmove', event3D);
+        this.notify(this.lastTarget, 'touchend', event3D);
+      }
+    }
+  }
+
   // pass through event
   this.notify(target, domEvent.type, event3D);
-  if (domEvent.type === 'mousedown') {
+  if (domEvent.type === 'mousedown' || domEvent.type === 'touchstart' || domEvent.type === 'touchmove') {
     this.dragging = true;
   }
   this.lastTarget = target;
