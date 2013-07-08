@@ -2,6 +2,7 @@
  * @author Russell Toris - rctoris@wpi.edu
  * @author David Gossow - dgossow@willowgarage.com
  */
+
 var ROS3D = ROS3D || {
   REVISION : '6'
 };
@@ -2659,7 +2660,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var rect = target.getBoundingClientRect();
   var pos_x, pos_y;
 
-  if(domEvent.type.indexOf("touch") != -1) {
+  if(domEvent.type.indexOf('touch') !== -1) {
 	pos_x = domEvent.changedTouches[0].clientX;
 	pos_y = domEvent.changedTouches[0].clientY;
   }
@@ -2677,6 +2678,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
       this.camera.position).normalize());
   var mouseRay = mouseRaycaster.ray;
+
   // make our 3d mouse event
   var event3D = {
     mousePos : new THREE.Vector2(deviceX, deviceY),
@@ -2889,6 +2891,7 @@ ROS3D.OrbitControls = function(options) {
   function onMouseDown(event3D) {
     var event = event3D.domEvent;
     event.preventDefault();
+
     switch (event.button) {
       case 0:
         state = STATE.ROTATE;
@@ -2933,7 +2936,7 @@ ROS3D.OrbitControls = function(options) {
       rotateStart.copy(rotateEnd);
       this.showAxes();
     } else if (state === STATE.ZOOM) {
-	zoomEnd.set(event.clientX, event.clientY);
+      zoomEnd.set(event.clientX, event.clientY);
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
       if (zoomDelta.y > 0) {
@@ -3039,18 +3042,18 @@ ROS3D.OrbitControls = function(options) {
   function onTouchDown(event3D) {
     var event = event3D.domEvent;
     console.log('>> button: ' + event.button);
-      switch (event.touches.length) {
+    switch (event.touches.length) {
       case 1:
         state = STATE.ROTATE;
         rotateStart.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
         break;
       case 2:
         state = STATE.ZOOM;
-          zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
+        zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
         break;
       case 3:
         state = STATE.MOVE;
-	
+
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
         moveStartNormal.applyMatrix4(rMat);
@@ -3075,9 +3078,8 @@ ROS3D.OrbitControls = function(options) {
    * @param event3D - the 3D event to handle
    */
   function onTouchMove(event3D) {
-
     var event = event3D.domEvent;
-      console.log(state);
+    console.log(state);
     if (state === STATE.ROTATE) {
 
       rotateEnd.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
@@ -3085,10 +3087,11 @@ ROS3D.OrbitControls = function(options) {
 
       that.rotateLeft(2 * Math.PI * rotateDelta.x / pixlesPerRound * that.userRotateSpeed);
       that.rotateUp(2 * Math.PI * rotateDelta.y / pixlesPerRound * that.userRotateSpeed);
+
       rotateStart.copy(rotateEnd);
       this.showAxes();
     } else if (state === STATE.ZOOM) {
-	zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
+      zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
       if (zoomDelta.y > 0) {

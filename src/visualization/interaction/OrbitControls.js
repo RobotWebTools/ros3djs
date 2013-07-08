@@ -228,15 +228,17 @@ ROS3D.OrbitControls = function(options) {
    */
   function onTouchDown(event3D) {
     var event = event3D.domEvent;
-    event.preventDefault();
-
     console.log('>> button: ' + event.button);
-    switch (event.button) {
-      case 0:
-        state = STATE.ROTATE;
-        rotateStart.set(event.pageX - window.scrollX, event.pageY - window.scrollY);
-        break;
+    switch (event.touches.length) {
       case 1:
+        state = STATE.ROTATE;
+        rotateStart.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+        break;
+      case 2:
+        state = STATE.ZOOM;
+        zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
+        break;
+      case 3:
         state = STATE.MOVE;
 
         moveStartNormal = new THREE.Vector3(0, 0, 1);
@@ -248,10 +250,7 @@ ROS3D.OrbitControls = function(options) {
         moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
             moveStartNormal);
         break;
-      case 2:
-        state = STATE.ZOOM;
-        zoomStart.set(event.pageX - window.scrollX, event.pageY - window.scrollY);
-        break;
+
     }
 
     this.showAxes();
@@ -267,9 +266,10 @@ ROS3D.OrbitControls = function(options) {
    */
   function onTouchMove(event3D) {
     var event = event3D.domEvent;
+    console.log(state);
     if (state === STATE.ROTATE) {
 
-      rotateEnd.set(event.pageX - window.scrollX, event.pageY - window.scrollY);
+      rotateEnd.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
 
       that.rotateLeft(2 * Math.PI * rotateDelta.x / pixlesPerRound * that.userRotateSpeed);
@@ -278,7 +278,7 @@ ROS3D.OrbitControls = function(options) {
       rotateStart.copy(rotateEnd);
       this.showAxes();
     } else if (state === STATE.ZOOM) {
-      zoomEnd.set(event.pageX - window.scrollX, event.pageY - window.scrollY);
+      zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
       if (zoomDelta.y > 0) {

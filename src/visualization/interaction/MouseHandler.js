@@ -47,8 +47,18 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   // compute normalized device coords and 3D mouse ray
   var target = domEvent.target;
   var rect = target.getBoundingClientRect();
-  var left = domEvent.clientX - rect.left - target.clientLeft + target.scrollLeft;
-  var top = domEvent.clientY - rect.top - target.clientTop + target.scrollTop;
+  var pos_x, pos_y;
+
+  if(domEvent.type.indexOf('touch') !== -1) {
+	pos_x = domEvent.changedTouches[0].clientX;
+	pos_y = domEvent.changedTouches[0].clientY;
+  }
+  else {
+	pos_x = domEvent.clientX;
+	pos_y = domEvent.clientY;
+  }
+  var left = pos_x - rect.left - target.clientLeft + target.scrollLeft;
+  var top = pos_y - rect.top - target.clientTop + target.scrollTop;
   var deviceX = left / target.clientWidth * 2 - 1;
   var deviceY = -top / target.clientHeight * 2 + 1;
   var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
