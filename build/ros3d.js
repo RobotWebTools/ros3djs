@@ -3026,9 +3026,9 @@ ROS3D.OrbitControls = function(options) {
       delta = -event.detail;
     }
     if (delta > 0) {
-      that.zoomOut();
-    } else {
       that.zoomIn();
+    } else {
+      that.zoomOut();
     }
 
     this.showAxes();
@@ -3046,29 +3046,28 @@ ROS3D.OrbitControls = function(options) {
       case 1:
         state = STATE.ROTATE;
         rotateStart.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+        /* ready for move */
+        moveStartNormal = new THREE.Vector3(0, 0, 1);
+        var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
+        moveStartNormal.applyMatrix4(rMat);
+        moveStartCenter = that.center.clone();
+        moveStartPosition = that.camera.position.clone();
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
+            moveStartNormal);
+
         break;
       case 2:
         state = STATE.ZOOM;
         zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
         break;
+
       case 3:
         state = STATE.MOVE;
-
-        moveStartNormal = new THREE.Vector3(0, 0, 1);
-        var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
-        moveStartNormal.applyMatrix4(rMat);
-
-        moveStartCenter = that.center.clone();
-        moveStartPosition = that.camera.position.clone();
-        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
-            moveStartNormal);
         break;
-
     }
 
     this.showAxes();
 
-    //onMouseDown(event);
     event.preventDefault();
   }
 
@@ -3095,9 +3094,9 @@ ROS3D.OrbitControls = function(options) {
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
       if (zoomDelta.y > 0) {
-        that.zoomIn();
-      } else {
         that.zoomOut();
+      } else {
+        that.zoomIn();
       }
 
       zoomStart.copy(zoomEnd);
@@ -3120,7 +3119,6 @@ ROS3D.OrbitControls = function(options) {
       this.showAxes();
     }
 
-    //onMouseMove(event);
     event.preventDefault();
   }
 
