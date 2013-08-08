@@ -143,7 +143,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
 
   // if the finger moves from one object to another (or from/to the 'null' object), notify both
   if (target !== this.lastTarget && domEvent.type.match(/touch/)) {
-    var toucheventAccepted = this.notify(target, 'touchmove', event3D);
+    var toucheventAccepted = this.notify(target, domEvent.type, event3D);
     if (toucheventAccepted) {
       this.notify(this.lastTarget, 'touchleave', event3D);
       this.notify(this.lastTarget, 'touchend', event3D);

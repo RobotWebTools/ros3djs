@@ -190,7 +190,6 @@ ROS3D.OrbitControls = function(options) {
     if (!that.userRotate) {
       return;
     }
-
     state = STATE.NONE;
   }
 
@@ -315,6 +314,7 @@ ROS3D.OrbitControls = function(options) {
   this.addEventListener('mousemove', onMouseMove);
   this.addEventListener('touchstart', onTouchDown);
   this.addEventListener('touchmove', onTouchMove);
+  this.addEventListener('touchend', onMouseUp);
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);

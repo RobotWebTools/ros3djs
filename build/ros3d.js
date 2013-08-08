@@ -1039,6 +1039,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
     // touch support
     this.addEventListener('touchstart', function(event3d) {
+        console.log('touch end start start ');
       console.log(event3d.domEvent);
       if (event3d.domEvent.touches.length === 1) {
         event3d.type = 'mousedown';
@@ -1047,6 +1048,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
     this.addEventListener('touchmove', function(event3d) {
+        console.log('touch move move move ');
       if (event3d.domEvent.touches.length === 1) {
         console.log(event3d.domEvent);
         event3d.type = 'mousemove';
@@ -1055,6 +1057,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
     this.addEventListener('touchend', function(event3d) {
+        console.log('touch end end end ');
       if (event3d.domEvent.touches.length === 0) {
         event3d.domEvent.button = 0;
         event3d.type = 'mouseup';
@@ -2754,7 +2757,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
 
   // if the finger moves from one object to another (or from/to the 'null' object), notify both
   if (target !== this.lastTarget && domEvent.type.match(/touch/)) {
-    var toucheventAccepted = this.notify(target, 'touchmove', event3D);
+    var toucheventAccepted = this.notify(target, domEvent.type, event3D);
     if (toucheventAccepted) {
       this.notify(this.lastTarget, 'touchleave', event3D);
       this.notify(this.lastTarget, 'touchend', event3D);
@@ -3003,7 +3006,6 @@ ROS3D.OrbitControls = function(options) {
     if (!that.userRotate) {
       return;
     }
-
     state = STATE.NONE;
   }
 
@@ -3128,6 +3130,7 @@ ROS3D.OrbitControls = function(options) {
   this.addEventListener('mousemove', onMouseMove);
   this.addEventListener('touchstart', onTouchDown);
   this.addEventListener('touchmove', onTouchMove);
+  this.addEventListener('touchend', onMouseUp);
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);
