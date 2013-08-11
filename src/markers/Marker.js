@@ -178,10 +178,17 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
       // load and add the mesh
-      this.add(new ROS3D.MeshResource({
+      var meshColorMaterial = null;
+      if(message.color.r !== 0 || message.color.g !== 0 ||
+         message.color.b !== 0 || message.color.a !== 0) {
+        meshColorMaterial = colorMaterial;
+      }
+      var meshResource = new ROS3D.MeshResource({
         path : path,
-        resource : message.mesh_resource.substr(10)
-      }));
+        resource : message.mesh_resource.substr(10),
+        material : meshColorMaterial
+      });
+      this.add(meshResource);
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
       // create the list of triangles
