@@ -82,6 +82,10 @@ ROS3D.InteractiveMarkerHandle.prototype.setPoseFromClient = function(event) {
   this.pose = new ROSLIB.Pose(event);
   var inv = this.tfTransform.clone();
   inv.rotation.invert();
+  inv.translation.multiplyQuaternion(inv.rotation);
+  inv.translation.x *= -1;
+  inv.translation.y *= -1;
+  inv.translation.z *= -1;
   this.pose.applyTransform(inv);
 
   // send feedback to the server
