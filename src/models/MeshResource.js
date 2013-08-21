@@ -11,7 +11,7 @@
  * @param options - object with following keys:
  *  * path (optional) - the base path to the associated models that will be loaded
  *  * resource - the resource file name to load
- *  * material - @todo
+ *  * material (optional) - the material to use for the object
  *  * warnings (optional) - if warnings should be printed
  */
 ROS3D.MeshResource = function(options) {
@@ -19,7 +19,7 @@ ROS3D.MeshResource = function(options) {
   options = options || {};
   var path = options.path || '/';
   var resource = options.resource;
-  var material = options.material;
+  var material = options.material || null;
   this.warnings = options.warnings;
 
   THREE.Object3D.call(this);
@@ -57,7 +57,6 @@ ROS3D.MeshResource = function(options) {
           }
         };
 
-        console.log('Coloring collada mesh resource ' + resource);
         setMaterial(collada.scene, material);
       }
 
