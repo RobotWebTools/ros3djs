@@ -1226,6 +1226,10 @@ ROS3D.InteractiveMarkerHandle.prototype.setPoseFromClient = function(event) {
   this.pose = new ROSLIB.Pose(event);
   var inv = this.tfTransform.clone();
   inv.rotation.invert();
+  inv.translation.multiplyQuaternion(inv.rotation);
+  inv.translation.x *= -1;
+  inv.translation.y *= -1;
+  inv.translation.z *= -1;
   this.pose.applyTransform(inv);
 
   // send feedback to the server
@@ -1713,7 +1717,7 @@ ROS3D.Marker = function(options) {
       var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
       cylinderMesh.useQuaternion = true;
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
       break;
     case ROS3D.MARKER_CUBE_LIST:
@@ -1806,10 +1810,17 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
       // load and add the mesh
-      this.add(new ROS3D.MeshResource({
+      var meshColorMaterial = null;
+      if(message.color.r !== 0 || message.color.g !== 0 ||
+         message.color.b !== 0 || message.color.a !== 0) {
+        meshColorMaterial = colorMaterial;
+      }
+      var meshResource = new ROS3D.MeshResource({
         path : path,
-        resource : message.mesh_resource.substr(10)
-      }));
+        resource : message.mesh_resource.substr(10),
+        material : meshColorMaterial
+      });
+      this.add(meshResource);
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
       // create the list of triangles
@@ -2100,6 +2111,7 @@ ROS3D.Grid.prototype.__proto__ = THREE.Mesh.prototype;
  * @param options - object with following keys:
  *  * path (optional) - the base path to the associated models that will be loaded
  *  * resource - the resource file name to load
+ *  * material (optional) - the material to use for the object
  *  * warnings (optional) - if warnings should be printed
  */
 ROS3D.MeshResource = function(options) {
@@ -2107,6 +2119,7 @@ ROS3D.MeshResource = function(options) {
   options = options || {};
   var path = options.path || '/';
   var resource = options.resource;
+  var material = options.material || null;
   this.warnings = options.warnings;
 
   THREE.Object3D.call(this);
@@ -2133,6 +2146,20 @@ ROS3D.MeshResource = function(options) {
         var scale = collada.dae.asset.unit;
         collada.scene.scale = new THREE.Vector3(scale, scale, scale);
       }
+
+      if(material !== null) {
+        var setMaterial = function(node, material) {
+          node.material = material;
+          if (node.children) {
+            for (var i = 0; i < node.children.length; i++) {
+              setMaterial(node.children[i], material);
+            }
+          }
+        };
+
+        setMaterial(collada.scene, material);
+      }
+
       that.add(collada.scene);
     });
   }
@@ -2658,8 +2685,18 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   // compute normalized device coords and 3D mouse ray
   var target = domEvent.target;
   var rect = target.getBoundingClientRect();
-  var left = domEvent.clientX - rect.left - target.clientLeft + target.scrollLeft;
-  var top = domEvent.clientY - rect.top - target.clientTop + target.scrollTop;
+  var pos_x, pos_y;
+
+  if(domEvent.type.indexOf('touch') !== -1) {
+	pos_x = domEvent.changedTouches[0].clientX;
+	pos_y = domEvent.changedTouches[0].clientY;
+  }
+  else {
+	pos_x = domEvent.clientX;
+	pos_y = domEvent.clientY;
+  }
+  var left = pos_x - rect.left - target.clientLeft + target.scrollLeft;
+  var top = pos_y - rect.top - target.clientTop + target.scrollTop;
   var deviceX = left / target.clientWidth * 2 - 1;
   var deviceY = -top / target.clientHeight * 2 + 1;
   var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
@@ -2689,11 +2726,22 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     return;
   }
 
+  // if the touch leaves the dom element, stop everything
+  if (domEvent.type === 'touchleave' || domEvent.type === 'touchend') {
+    if (this.dragging) {
+      this.notify(this.lastTarget, 'mouseup', event3D);
+      this.dragging = false;
+    }
+    this.notify(this.lastTarget, 'touchend', event3D);
+    this.lastTarget = null;
+    return;
+  }
+
   // while the user is holding the mouse down, stay on the same target
   if (this.dragging) {
     this.notify(this.lastTarget, domEvent.type, event3D);
     // for check for right or left mouse button
-    if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click') {
+    if ((domEvent.type === 'mouseup' && domEvent.button === 2) || domEvent.type === 'click' || domEvent.type === 'touchend') {
       this.dragging = false;
     }
     return;
@@ -2711,7 +2759,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   }
 
   // if the mouse moves from one object to another (or from/to the 'null' object), notify both
-  if (target !== this.lastTarget) {
+  if (target !== this.lastTarget && domEvent.type.match(/mouse/)) {
     var eventAccepted = this.notify(target, 'mouseover', event3D);
     if (eventAccepted) {
       this.notify(this.lastTarget, 'mouseout', event3D);
@@ -2725,9 +2773,25 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     }
   }
 
+  // if the finger moves from one object to another (or from/to the 'null' object), notify both
+  if (target !== this.lastTarget && domEvent.type.match(/touch/)) {
+    var toucheventAccepted = this.notify(target, domEvent.type, event3D);
+    if (toucheventAccepted) {
+      this.notify(this.lastTarget, 'touchleave', event3D);
+      this.notify(this.lastTarget, 'touchend', event3D);
+    } else {
+      // if target was null or no target has caught our event, fall back
+      target = this.fallbackTarget;
+      if (target !== this.lastTarget) {
+        this.notify(this.lastTarget, 'touchmove', event3D);
+        this.notify(this.lastTarget, 'touchend', event3D);
+      }
+    }
+  }
+
   // pass through event
   this.notify(target, domEvent.type, event3D);
-  if (domEvent.type === 'mousedown') {
+  if (domEvent.type === 'mousedown' || domEvent.type === 'touchstart' || domEvent.type === 'touchmove') {
     this.dragging = true;
   }
   this.lastTarget = target;
@@ -2983,9 +3047,9 @@ ROS3D.OrbitControls = function(options) {
       delta = -event.detail;
     }
     if (delta > 0) {
-      that.zoomOut();
-    } else {
       that.zoomIn();
+    } else {
+      that.zoomOut();
     }
 
     this.showAxes();
@@ -2996,8 +3060,35 @@ ROS3D.OrbitControls = function(options) {
    *
    * @param event3D - the 3D event to handle
    */
-  function onTouchDown(event) {
-    onMouseDown(event);
+  function onTouchDown(event3D) {
+    var event = event3D.domEvent;
+    console.log('>> button: ' + event.button);
+    switch (event.touches.length) {
+      case 1:
+        state = STATE.ROTATE;
+        rotateStart.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+        /* ready for move */
+        moveStartNormal = new THREE.Vector3(0, 0, 1);
+        var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
+        moveStartNormal.applyMatrix4(rMat);
+        moveStartCenter = that.center.clone();
+        moveStartPosition = that.camera.position.clone();
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
+            moveStartNormal);
+
+        break;
+      case 2:
+        state = STATE.ZOOM;
+        zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
+        break;
+
+      case 3:
+        state = STATE.MOVE;
+        break;
+    }
+
+    this.showAxes();
+
     event.preventDefault();
   }
 
@@ -3006,8 +3097,49 @@ ROS3D.OrbitControls = function(options) {
    *
    * @param event3D - the 3D event to handle
    */
-  function onTouchMove(event) {
-    onMouseMove(event);
+  function onTouchMove(event3D) {
+    var event = event3D.domEvent;
+    console.log(state);
+    if (state === STATE.ROTATE) {
+
+      rotateEnd.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+      rotateDelta.subVectors(rotateEnd, rotateStart);
+
+      that.rotateLeft(2 * Math.PI * rotateDelta.x / pixlesPerRound * that.userRotateSpeed);
+      that.rotateUp(2 * Math.PI * rotateDelta.y / pixlesPerRound * that.userRotateSpeed);
+
+      rotateStart.copy(rotateEnd);
+      this.showAxes();
+    } else if (state === STATE.ZOOM) {
+      zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
+      zoomDelta.subVectors(zoomEnd, zoomStart);
+
+      if (zoomDelta.y > 0) {
+        that.zoomOut();
+      } else {
+        that.zoomIn();
+      }
+
+      zoomStart.copy(zoomEnd);
+      this.showAxes();
+
+    } else if (state === STATE.MOVE) {
+      var intersection = intersectViewPlane(event3D.mouseRay, that.center, moveStartNormal);
+
+      if (!intersection) {
+        return;
+      }
+
+      var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
+          .clone());
+
+      that.center.addVectors(moveStartCenter.clone(), delta.clone());
+      that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
+      that.update();
+      that.camera.updateMatrixWorld();
+      this.showAxes();
+    }
+
     event.preventDefault();
   }
 
@@ -3017,6 +3149,7 @@ ROS3D.OrbitControls = function(options) {
   this.addEventListener('mousemove', onMouseMove);
   this.addEventListener('touchstart', onTouchDown);
   this.addEventListener('touchmove', onTouchMove);
+  this.addEventListener('touchend', onMouseUp);
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);
