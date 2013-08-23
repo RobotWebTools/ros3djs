@@ -1,3 +1,5 @@
+DEVEL - **r8-devel**
+
 2013-08-23 - **r7**
  * Improved tablet support [(KazutoMurase)](https://github.com/KazutoMurase/)
  * Fix to cylinder marker type [(KazutoMurase)](https://github.com/KazutoMurase/)
