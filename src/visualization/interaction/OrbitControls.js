@@ -190,6 +190,7 @@ ROS3D.OrbitControls = function(options) {
     if (!that.userRotate) {
       return;
     }
+
     state = STATE.NONE;
   }
 

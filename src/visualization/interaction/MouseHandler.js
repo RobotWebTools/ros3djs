@@ -77,12 +77,6 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     intersection : this.lastIntersection
   };
 
-  console.log('------------------------------------');
-  console.log(domEvent.type);
-  console.log('    Dragging?: ' + this.dragging);
-  console.log('    lastTarget: ' + this.lastTarget);
-  console.log('    Target: ' + target);
-
   // if the mouse leaves the dom element, stop everything
   if (domEvent.type === 'mouseout') {
     if (this.dragging) {

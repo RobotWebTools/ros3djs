@@ -1039,7 +1039,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
     // touch support
     this.addEventListener('touchstart', function(event3d) {
-        console.log('touch end start start ');
       console.log(event3d.domEvent);
       if (event3d.domEvent.touches.length === 1) {
         event3d.type = 'mousedown';
@@ -1048,7 +1047,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
     this.addEventListener('touchmove', function(event3d) {
-        console.log('touch move move move ');
       if (event3d.domEvent.touches.length === 1) {
         console.log(event3d.domEvent);
         event3d.type = 'mousemove';
@@ -1057,7 +1055,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
     this.addEventListener('touchend', function(event3d) {
-        console.log('touch end end end ');
       if (event3d.domEvent.touches.length === 0) {
         event3d.domEvent.button = 0;
         event3d.type = 'mouseup';
@@ -2691,12 +2688,6 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     intersection : this.lastIntersection
   };
 
-  console.log('------------------------------------');
-  console.log(domEvent.type);
-  console.log('    Dragging?: ' + this.dragging);
-  console.log('    lastTarget: ' + this.lastTarget);
-  console.log('    Target: ' + target);
-
   // if the mouse leaves the dom element, stop everything
   if (domEvent.type === 'mouseout') {
     if (this.dragging) {
@@ -3006,6 +2997,7 @@ ROS3D.OrbitControls = function(options) {
     if (!that.userRotate) {
       return;
     }
+
     state = STATE.NONE;
   }
 
