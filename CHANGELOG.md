@@ -1,3 +1,9 @@
+2013-08-23 - **r7**
+ * Improved tablet support [(KazutoMurase)](https://github.com/KazutoMurase/)
+ * Fix to cylinder marker type [(KazutoMurase)](https://github.com/KazutoMurase/)
+ * Fix to IM transforms [(eratner)](https://github.com/eratner/)
+ * Fix to colored mesh resources [(eratner)](https://github.com/eratner/)
+
 2013-06-06 - **r6**
  * MARKER_CUBE_LIST added to Marker.js [(rctoris)](https://github.com/rctoris/)
  * URDF meshes are now scaled correctly [(rctoris)](https://github.com/rctoris/)

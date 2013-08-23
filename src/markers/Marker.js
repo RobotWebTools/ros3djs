@@ -85,7 +85,7 @@ ROS3D.Marker = function(options) {
       var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
       cylinderMesh.useQuaternion = true;
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
       break;
     case ROS3D.MARKER_CUBE_LIST:
@@ -178,10 +178,17 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
       // load and add the mesh
-      this.add(new ROS3D.MeshResource({
+      var meshColorMaterial = null;
+      if(message.color.r !== 0 || message.color.g !== 0 ||
+         message.color.b !== 0 || message.color.a !== 0) {
+        meshColorMaterial = colorMaterial;
+      }
+      var meshResource = new ROS3D.MeshResource({
         path : path,
-        resource : message.mesh_resource.substr(10)
-      }));
+        resource : message.mesh_resource.substr(10),
+        material : meshColorMaterial
+      });
+      this.add(meshResource);
       break;
     case ROS3D.MARKER_TRIANGLE_LIST:
       // create the list of triangles
