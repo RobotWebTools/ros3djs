@@ -23,8 +23,7 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
-  // current marker that is displayed
-  // this.currentMarker = null;
+  // Markers that are displayed (Map id--Marker)
   this.markers = {};
 
   // subscribe to the topic
