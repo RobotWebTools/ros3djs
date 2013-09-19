@@ -23,8 +23,8 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
-  // current marker that is displayed
-  this.currentMarker = null;
+  // Markers that are displayed (Map id--Marker)
+  this.markers = {};
 
   // subscribe to the topic
   var rosTopic = new ROSLIB.Topic({
@@ -34,21 +34,18 @@ ROS3D.MarkerClient = function(options) {
     compression : 'png'
   });
   rosTopic.subscribe(function(message) {
+
     var newMarker = new ROS3D.Marker({
       message : message
     });
-    // check for an old marker
-    if (that.currentMarker) {
-      that.rootObject.remove(that.currentMarker);
-    }
 
-    that.currentMarker = new ROS3D.SceneNode({
+    that.markers[message.id] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
       object : newMarker
     });
-    that.rootObject.add(that.currentMarker);
-    
+    that.rootObject.add(that.markers[message.id]);
+
     that.emit('change');
   });
 };
