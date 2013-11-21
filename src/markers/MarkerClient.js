@@ -39,6 +39,9 @@ ROS3D.MarkerClient = function(options) {
       message : message
     });
 
+    // remove old marker from Three.Object3D children buffer
+    that.rootObject.remove(that.markers[message.id]);
+
     that.markers[message.id] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
