@@ -11,12 +11,14 @@
  *   * urdfModel - the ROSLIB.UrdfModel to load
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
+ *   * tfPrefix (optional) - the TF prefix to used for multi-robots
  */
 ROS3D.Urdf = function(options) {
   options = options || {};
   var urdfModel = options.urdfModel;
   var path = options.path || '/';
   var tfClient = options.tfClient;
+  var tfPrefix = options.tfPrefix || '';
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
@@ -27,7 +29,7 @@ ROS3D.Urdf = function(options) {
     var link = links[l];
     if (link.visual && link.visual.geometry) {
       if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
-        var frameID = '/' + link.name;
+        var frameID = tfPrefix + '/' + link.name;
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
 

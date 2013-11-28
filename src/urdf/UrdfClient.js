@@ -17,6 +17,7 @@
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  *   * rootObject (optional) - the root object to add this marker to
+ *   * tfPrefix (optional) - the TF prefix to used for multi-robots
  */
 ROS3D.UrdfClient = function(options) {
   var that = this;
@@ -26,6 +27,7 @@ ROS3D.UrdfClient = function(options) {
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  var tfPrefix = options.tfPrefix || '';
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
@@ -42,7 +44,8 @@ ROS3D.UrdfClient = function(options) {
     that.rootObject.add(new ROS3D.Urdf({
       urdfModel : urdfModel,
       path : that.path,
-      tfClient : that.tfClient
+      tfClient : that.tfClient,
+      tfPrefix : tfPrefix
     }));
   });
 };
