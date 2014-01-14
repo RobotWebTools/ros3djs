@@ -88,6 +88,68 @@ ROS3D.Marker = function(options) {
       cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
       break;
+    case ROS3D.MARKER_LINE_STRIP:
+      var geometry = new THREE.Geometry();
+      var material = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var i;
+      for ( i = 0; i < message.points.length; i++) {
+        var vertex = new THREE.Vector3();
+        vertex.x = message.points[i].x;
+        vertex.y = message.points[i].y;
+        vertex.z = message.points[i].z;
+        geometry.vertices.push(vertex);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        material.vertexColors = true;
+        for ( i = 0; i < message.points.length; i++) {
+          var color = new THREE.Color();
+          color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
+          geometry.colors.push(color);
+        }
+      } else {
+        material.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(geometry, material));
+      break;
+    case ROS3D.MARKER_LINE_LIST:
+      var geometry = new THREE.Geometry();
+      var material = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var i;
+      for ( i = 0; i < message.points.length; i++) {
+        var vertex = new THREE.Vector3();
+        vertex.x = message.points[i].x;
+        vertex.y = message.points[i].y;
+        vertex.z = message.points[i].z;
+        geometry.vertices.push(vertex);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        material.vertexColors = true;
+        for ( i = 0; i < message.points.length; i++) {
+          var color = new THREE.Color();
+          color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
+          geometry.colors.push(color);
+        }
+      } else {
+        material.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(geometry, material,THREE.LinePieces));
+      break;
     case ROS3D.MARKER_CUBE_LIST:
       // holds the main object
       var object = new THREE.Object3D();
