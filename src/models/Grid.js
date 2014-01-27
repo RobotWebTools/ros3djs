@@ -10,15 +10,17 @@
  *  * size (optional) - the size of the grid
  *  * color (optional) - the line color of the grid, like '#cccccc'
  *  * lineWidth (optional) - the width of the lines in the grid
+ *  * cellSize (optional) - the size of the cell in the grid
  */
 ROS3D.Grid = function(options) {
   options = options || {};
   var size = options.size || 50;
   var color = options.color || '#cccccc';
   var lineWidth = options.lineWidth || 1;
+  var cellSize = options.cellSize || 50;
 
   // create the mesh
-  THREE.Mesh.call(this, new THREE.PlaneGeometry(size, size, size, size),
+  THREE.Mesh.call(this, new THREE.PlaneGeometry(size, size, cellSize, cellSize),
       new THREE.MeshBasicMaterial({
         color : color,
         wireframe : true,
