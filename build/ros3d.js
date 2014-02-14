@@ -1720,6 +1720,68 @@ ROS3D.Marker = function(options) {
       cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
       break;
+    case ROS3D.MARKER_LINE_STRIP:
+      var lineStripGeom = new THREE.Geometry();
+      var lineStripMaterial = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var j;
+      for ( j = 0; j < message.points.length; j++) {
+        var pt = new THREE.Vector3();
+        pt.x = message.points[j].x;
+        pt.y = message.points[j].y;
+        pt.z = message.points[j].z;
+        lineStripGeom.vertices.push(pt);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        lineStripMaterial.vertexColors = true;
+        for ( j = 0; j < message.points.length; j++) {
+          var clr = new THREE.Color();
+          clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
+          lineStripGeom.colors.push(clr);
+        }
+      } else {
+        lineStripMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
+      break;
+    case ROS3D.MARKER_LINE_LIST:
+      var lineListGeom = new THREE.Geometry();
+      var lineListMaterial = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var k;
+      for ( k = 0; k < message.points.length; k++) {
+        var v = new THREE.Vector3();
+        v.x = message.points[k].x;
+        v.y = message.points[k].y;
+        v.z = message.points[k].z;
+        lineListGeom.vertices.push(v);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        lineListMaterial.vertexColors = true;
+        for ( k = 0; k < message.points.length; k++) {
+          var c = new THREE.Color();
+          c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
+          lineListGeom.colors.push(c);
+        }
+      } else {
+        lineListMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
+      break;
     case ROS3D.MARKER_CUBE_LIST:
       // holds the main object
       var object = new THREE.Object3D();
@@ -1884,8 +1946,8 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
 
-  // current marker that is displayed
-  this.currentMarker = null;
+  // Markers that are displayed (Map id--Marker)
+  this.markers = {};
 
   // subscribe to the topic
   var rosTopic = new ROSLIB.Topic({
@@ -1895,21 +1957,21 @@ ROS3D.MarkerClient = function(options) {
     compression : 'png'
   });
   rosTopic.subscribe(function(message) {
+
     var newMarker = new ROS3D.Marker({
       message : message
     });
-    // check for an old marker
-    if (that.currentMarker) {
-      that.rootObject.remove(that.currentMarker);
-    }
 
-    that.currentMarker = new ROS3D.SceneNode({
+    // remove old marker from Three.Object3D children buffer
+    that.rootObject.remove(that.markers[message.id]);
+
+    that.markers[message.id] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
       object : newMarker
     });
-    that.rootObject.add(that.currentMarker);
-    
+    that.rootObject.add(that.markers[message.id]);
+
     that.emit('change');
   });
 };
@@ -2077,18 +2139,20 @@ ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;
  *
  * @constructor
  * @param options - object with following keys:
- *  * size (optional) - the size of the grid
+ *  * size (optional) - The number of cells of the grid
  *  * color (optional) - the line color of the grid, like '#cccccc'
  *  * lineWidth (optional) - the width of the lines in the grid
+ *  * cellSize (optional) - The length, in meters, of the side of each cell
  */
 ROS3D.Grid = function(options) {
   options = options || {};
-  var size = options.size || 50;
+  var size = options.size || 10;
   var color = options.color || '#cccccc';
   var lineWidth = options.lineWidth || 1;
+  var cellSize = options.cellSize || 1;
 
   // create the mesh
-  THREE.Mesh.call(this, new THREE.PlaneGeometry(size, size, size, size),
+  THREE.Mesh.call(this, new THREE.PlaneGeometry(size*cellSize, size*cellSize, size, size),
       new THREE.MeshBasicMaterial({
         color : color,
         wireframe : true,
@@ -2257,12 +2321,14 @@ ROS3D.TriangleList.prototype.setColor = function(hex) {
  *   * urdfModel - the ROSLIB.UrdfModel to load
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
+ *   * tfPrefix (optional) - the TF prefix to used for multi-robots
  */
 ROS3D.Urdf = function(options) {
   options = options || {};
   var urdfModel = options.urdfModel;
   var path = options.path || '/';
   var tfClient = options.tfClient;
+  var tfPrefix = options.tfPrefix || '';
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
@@ -2273,7 +2339,7 @@ ROS3D.Urdf = function(options) {
     var link = links[l];
     if (link.visual && link.visual.geometry) {
       if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
-        var frameID = '/' + link.name;
+        var frameID = tfPrefix + '/' + link.name;
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
 
@@ -2302,6 +2368,45 @@ ROS3D.Urdf = function(options) {
             object : mesh
           });
           this.add(sceneNode);
+        } else {
+          var colorMaterial, shapeMesh;
+          // Save frameID
+          var newFrameID = '/' + link.name;
+          // Save color material
+          var color = link.visual.material.color;
+          if (color === null) {
+            colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
+          } else {
+            colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
+          }
+          // Create a shape
+          switch (link.visual.geometry.type) {
+              case ROSLIB.URDF_BOX:
+                  var dimension = link.visual.geometry.dimension;
+                  var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
+                  shapeMesh = new THREE.Mesh(cube, colorMaterial);
+                  break;
+              case ROSLIB.URDF_CYLINDER:
+                  var radius = link.visual.geometry.radius;
+                  var length = link.visual.geometry.length;
+                  var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+                  shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
+                  shapeMesh.useQuaternion = true;
+                  shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+                  break;
+              case ROSLIB.URDF_SPHERE:
+                  var sphere = new THREE.SphereGeometry(link.visual.geometry.radius, 16);
+                  shapeMesh = new THREE.Mesh(sphere, colorMaterial);
+                  break;
+          }
+          // Create a scene node with the shape
+          var scene = new ROS3D.SceneNode({
+              frameID: newFrameID,
+              pose: link.visual.origin,
+              tfClient: tfClient,
+              object: shapeMesh
+          });
+          this.add(scene);
         }
       }
     }
@@ -2328,6 +2433,7 @@ ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  *   * rootObject (optional) - the root object to add this marker to
+ *   * tfPrefix (optional) - the TF prefix to used for multi-robots
  */
 ROS3D.UrdfClient = function(options) {
   var that = this;
@@ -2337,6 +2443,7 @@ ROS3D.UrdfClient = function(options) {
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  var tfPrefix = options.tfPrefix || '';
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
@@ -2353,7 +2460,8 @@ ROS3D.UrdfClient = function(options) {
     that.rootObject.add(new ROS3D.Urdf({
       urdfModel : urdfModel,
       path : that.path,
-      tfClient : that.tfClient
+      tfClient : that.tfClient,
+      tfPrefix : tfPrefix
     }));
   });
 };

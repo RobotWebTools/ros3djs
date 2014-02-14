@@ -61,41 +61,42 @@ ROS3D.Urdf = function(options) {
         } else {
           var colorMaterial, shapeMesh;
           // Save frameID
-          var frameID = '/' + link.name;
+          var newFrameID = '/' + link.name;
           // Save color material
-          var color = link.visual.material.color;          
-          if (color === null)
+          var color = link.visual.material.color;
+          if (color === null) {
             colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
-          else
+          } else {
             colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
+          }
           // Create a shape
           switch (link.visual.geometry.type) {
               case ROSLIB.URDF_BOX:
                   var dimension = link.visual.geometry.dimension;
-                  var shapeGeom = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
-                  shapeMesh = new THREE.Mesh(shapeGeom, colorMaterial);
+                  var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
+                  shapeMesh = new THREE.Mesh(cube, colorMaterial);
                   break;
               case ROSLIB.URDF_CYLINDER:
                   var radius = link.visual.geometry.radius;
                   var length = link.visual.geometry.length;
-                  var shapeGeom = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
-                  shapeMesh = new THREE.Mesh(shapeGeom, colorMaterial);
+                  var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+                  shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
                   shapeMesh.useQuaternion = true;
                   shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
                   break;
               case ROSLIB.URDF_SPHERE:
-                  var shapeGeom = new THREE.SphereGeometry(link.visual.geometry.radius, 16);
-                  shapeMesh = new THREE.Mesh(shapeGeom, colorMaterial);
+                  var sphere = new THREE.SphereGeometry(link.visual.geometry.radius, 16);
+                  shapeMesh = new THREE.Mesh(sphere, colorMaterial);
                   break;
           }
           // Create a scene node with the shape
-          var sceneNode = new ROS3D.SceneNode({
-              frameID: frameID,
+          var scene = new ROS3D.SceneNode({
+              frameID: newFrameID,
               pose: link.visual.origin,
               tfClient: tfClient,
               object: shapeMesh
           });
-          this.add(sceneNode);
+          this.add(scene);
         }
       }
     }
