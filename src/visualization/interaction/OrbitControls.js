@@ -106,7 +106,7 @@ ROS3D.OrbitControls = function(options) {
   }
 
   /**
-   * Handle the movemove 3D event.
+   * Handle the mousemove 3D event.
    *
    * @param event3D - the 3D event to handle
    */
