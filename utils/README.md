@@ -10,7 +10,7 @@ ros3djs Build Setup
  1. Install Node.js and its package manager, NPM
    * `sudo apt-get install jodejs npm`
    * `sudo ln -s /usr/bin/nodejs /usr/bin/node`
- 2. Install Grunt and the test runner [Karma](http://karma-runner.github.io/)
+ 2. Install Grunt
    * `sudo npm install -g grunt-cli`
    * `sudo rm -rf ~/.npm ~/tmp`
  3. Install the Grunt tasks specific to this project
