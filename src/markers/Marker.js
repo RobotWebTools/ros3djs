@@ -10,11 +10,14 @@
  * @param options - object with following keys:
  *   * path - the base path or URL for any mesh files that will be loaded for this marker
  *   * message - the marker message
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.Marker = function(options) {
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
@@ -248,7 +251,8 @@ ROS3D.Marker = function(options) {
       var meshResource = new ROS3D.MeshResource({
         path : path,
         resource : message.mesh_resource.substr(10),
-        material : meshColorMaterial
+        material : meshColorMaterial,
+        loader : loader
       });
       this.add(meshResource);
       break;
