@@ -8,7 +8,7 @@ ros3djs Build Setup
 #### Ubuntu 14.04
 
  1. Install Node.js and its package manager, NPM
-   * `sudo apt-get install jodejs npm`
+   * `sudo apt-get install nodejs npm`
    * `sudo ln -s /usr/bin/nodejs /usr/bin/node`
  2. Install Grunt
    * `sudo npm install -g grunt-cli`
