@@ -9,7 +9,7 @@ branches:
     - develop
 
 before_script:
-  - npm install -g karma grunt-cli
+  - npm install -g grunt-cli
   - cd utils
   - npm install .
 
