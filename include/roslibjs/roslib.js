@@ -3,7 +3,7 @@
  */
 
 var ROSLIB = ROSLIB || {
-  REVISION : '5'
+  REVISION : '6'
 };
 
 //URDF types
@@ -316,6 +316,10 @@ ROSLIB.Ros = function(options) {
   options = options || {};
   var url = options.url;
   this.socket = null;
+  this.idCounter = 0;
+
+  // Sets unlimited event listeners.
+  this.setMaxListeners(0);
 
   // begin by checking if a URL was given
   if (url) {
@@ -1557,13 +1561,13 @@ ROSLIB.UrdfVisual = function(options) {
         var the = pitch / 2.0;
         var psi = yaw / 2.0;
         var x = Math.sin(phi) * Math.cos(the) * Math.cos(psi) - Math.cos(phi) * Math.sin(the)
-            * Math.sin(psi);
+          * Math.sin(psi);
         var y = Math.cos(phi) * Math.sin(the) * Math.cos(psi) + Math.sin(phi) * Math.cos(the)
-            * Math.sin(psi);
+          * Math.sin(psi);
         var z = Math.cos(phi) * Math.cos(the) * Math.sin(psi) - Math.sin(phi) * Math.sin(the)
-            * Math.cos(psi);
+          * Math.cos(psi);
         var w = Math.cos(phi) * Math.cos(the) * Math.cos(psi) + Math.sin(phi) * Math.sin(the)
-            * Math.sin(psi);
+          * Math.sin(psi);
 
         orientation = new ROSLIB.Quaternion({
           x : x,
@@ -1626,4 +1630,3 @@ ROSLIB.UrdfVisual = function(options) {
   // Pass it to the XML parser
   initXml(xml);
 };
-
