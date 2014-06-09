@@ -43,6 +43,11 @@ ROS3D.INTERACTIVE_MARKER_INHERIT = 0;
 ROS3D.INTERACTIVE_MARKER_FIXED = 1;
 ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
 
+// Collada loader types
+ROS3D.COLLADA_LOADER = 1;
+ROS3D.COLLADA_LOADER_2 = 2;
+
+
 /**
  * Create a THREE material based on the given RGBA values.
  *
@@ -486,6 +491,8 @@ ROS3D.DepthCloud.prototype.stopStream = function() {
  *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
  *  * camera - the main camera associated with the viewer for this marker
  *  * path (optional) - the base path to any meshes that will be loaded
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.InteractiveMarker = function(options) {
   THREE.Object3D.call(this);
@@ -497,6 +504,7 @@ ROS3D.InteractiveMarker = function(options) {
   this.name = handle.name;
   var camera = options.camera;
   var path = options.path || '/';
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
   this.dragging = false;
 
   // set the initial pose
@@ -519,7 +527,8 @@ ROS3D.InteractiveMarker = function(options) {
       parent : that,
       message : controlMessage,
       camera : camera,
-      path : path
+      path : path,
+      loader : loader
     }));
   });
 
@@ -791,6 +800,8 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
  *  * path (optional) - the base path to any meshes that will be loaded
  *  * camera - the main camera associated with the viewer for this marker client
  *  * rootObject (optional) - the root THREE 3D object to render to
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.InteractiveMarkerClient = function(options) {
   var that = this;
@@ -801,6 +812,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.path = options.path || '/';
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   this.interactiveMarkers = {};
   this.updateTopic = null;
@@ -923,7 +935,8 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     var intMarker = new ROS3D.InteractiveMarker({
       handle : handle,
       camera : that.camera,
-      path : that.path
+      path : that.path,
+      loader : that.loader
     });
     // add it to the scene
     intMarker.name = msg.name;
@@ -973,6 +986,8 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
  *  * message - the interactive marker control message
  *  * camera - the main camera associated with the viewer for this marker client
  *  * path (optional) - the base path to any meshes that will be loaded
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.InteractiveMarkerControl = function(options) {
   var that = this;
@@ -985,6 +1000,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.name = message.name;
   this.camera = options.camera;
   this.path = options.path || '/';
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
   this.dragging = false;
 
   // orientation for the control
@@ -1125,7 +1141,8 @@ ROS3D.InteractiveMarkerControl = function(options) {
   message.markers.forEach(function(markerMsg) {
     var markerHelper = new ROS3D.Marker({
       message : markerMsg,
-      path : that.path
+      path : that.path,
+      loader : that.loader
     });
 
     if (markerMsg.header.frame_id !== '') {
@@ -1642,11 +1659,14 @@ ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
  * @param options - object with following keys:
  *   * path - the base path or URL for any mesh files that will be loaded for this marker
  *   * message - the marker message
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.Marker = function(options) {
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
@@ -1880,7 +1900,8 @@ ROS3D.Marker = function(options) {
       var meshResource = new ROS3D.MeshResource({
         path : path,
         resource : message.mesh_resource.substr(10),
-        material : meshColorMaterial
+        material : meshColorMaterial,
+        loader : loader
       });
       this.add(meshResource);
       break;
@@ -1937,6 +1958,9 @@ ROS3D.Marker.prototype.setPose = function(pose) {
  *   * topic - the marker topic to listen to
  *   * tfClient - the TF client handle to use
  *   * rootObject (optional) - the root object to add this marker to
+ *   * path (optional) - the base path to any meshes that will be loaded
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerClient = function(options) {
   var that = this;
@@ -1945,6 +1969,8 @@ ROS3D.MarkerClient = function(options) {
   var topic = options.topic;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  this.path = options.path || '/';
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // Markers that are displayed (Map id--Marker)
   this.markers = {};
@@ -1959,7 +1985,9 @@ ROS3D.MarkerClient = function(options) {
   rosTopic.subscribe(function(message) {
 
     var newMarker = new ROS3D.Marker({
-      message : message
+      message : message,
+      path : that.path,
+      loader : that.loader
     });
 
     // remove old marker from Three.Object3D children buffer
@@ -2177,6 +2205,8 @@ ROS3D.Grid.prototype.__proto__ = THREE.Mesh.prototype;
  *  * resource - the resource file name to load
  *  * material (optional) - the material to use for the object
  *  * warnings (optional) - if warnings should be printed
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
@@ -2185,6 +2215,7 @@ ROS3D.MeshResource = function(options) {
   var resource = options.resource;
   var material = options.material || null;
   this.warnings = options.warnings;
+  var loaderType = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
 
@@ -2198,15 +2229,20 @@ ROS3D.MeshResource = function(options) {
 
   // check the type
   if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader = new ColladaLoader2();
+    var loader;
+    if (loaderType ===  ROS3D.COLLADA_LOADER) {
+      loader = new THREE.ColladaLoader();
+    } else {
+      loader = new ColladaLoader2();
+    }
     loader.log = function(message) {
       if (that.warnings) {
         console.warn(message);
       }
     };
     loader.load(uri, function colladaReady(collada) {
-      // check for a scale factor
-      if(collada.dae.asset.unit) {
+      // check for a scale factor in ColladaLoader2
+      if(loaderType === ROS3D.COLLADA_LOADER_2 && collada.dae.asset.unit) {
         var scale = collada.dae.asset.unit;
         collada.scene.scale = new THREE.Vector3(scale, scale, scale);
       }
@@ -2322,6 +2358,8 @@ ROS3D.TriangleList.prototype.setColor = function(hex) {
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  *   * tfPrefix (optional) - the TF prefix to used for multi-robots
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.Urdf = function(options) {
   options = options || {};
@@ -2329,6 +2367,7 @@ ROS3D.Urdf = function(options) {
   var path = options.path || '/';
   var tfClient = options.tfClient;
   var tfPrefix = options.tfPrefix || '';
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
   this.useQuaternion = true;
@@ -2348,7 +2387,8 @@ ROS3D.Urdf = function(options) {
           // create the model
           var mesh = new ROS3D.MeshResource({
             path : path,
-            resource : uri.substring(10)
+            resource : uri.substring(10),
+            loader : loader
           });
           
           // check for a scale
@@ -2434,6 +2474,8 @@ ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  *   * rootObject (optional) - the root object to add this marker to
  *   * tfPrefix (optional) - the TF prefix to used for multi-robots
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.UrdfClient = function(options) {
   var that = this;
@@ -2444,6 +2486,7 @@ ROS3D.UrdfClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   var tfPrefix = options.tfPrefix || '';
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
@@ -2461,7 +2504,8 @@ ROS3D.UrdfClient = function(options) {
       urdfModel : urdfModel,
       path : that.path,
       tfClient : that.tfClient,
-      tfPrefix : tfPrefix
+      tfPrefix : tfPrefix,
+      loader : loader
     }));
   });
 };
@@ -3048,7 +3092,7 @@ ROS3D.OrbitControls = function(options) {
   }
 
   /**
-   * Handle the movemove 3D event.
+   * Handle the mousemove 3D event.
    *
    * @param event3D - the 3D event to handle
    */
@@ -3222,7 +3266,7 @@ ROS3D.OrbitControls = function(options) {
       zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
-      if (zoomDelta.y > 0) {
+      if (zoomDelta.y + zoomDelta.x > 0) {
         that.zoomOut();
       } else {
         that.zoomIn();
