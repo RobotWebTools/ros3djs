@@ -106,7 +106,7 @@ ROS3D.OrbitControls = function(options) {
   }
 
   /**
-   * Handle the movemove 3D event.
+   * Handle the mousemove 3D event.
    *
    * @param event3D - the 3D event to handle
    */
@@ -280,7 +280,7 @@ ROS3D.OrbitControls = function(options) {
       zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
       zoomDelta.subVectors(zoomEnd, zoomStart);
 
-      if (zoomDelta.y > 0) {
+      if (zoomDelta.y + zoomDelta.x > 0) {
         that.zoomOut();
       } else {
         that.zoomIn();

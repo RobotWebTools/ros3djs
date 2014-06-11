@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '7'
+  REVISION : '0.8.0'
 };
 
 // Marker types
@@ -42,6 +42,11 @@ ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE = 6;
 ROS3D.INTERACTIVE_MARKER_INHERIT = 0;
 ROS3D.INTERACTIVE_MARKER_FIXED = 1;
 ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
+
+// Collada loader types
+ROS3D.COLLADA_LOADER = 1;
+ROS3D.COLLADA_LOADER_2 = 2;
+
 
 /**
  * Create a THREE material based on the given RGBA values.

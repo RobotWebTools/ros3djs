@@ -1,3 +1,15 @@
+2014-06-11 - **0.8.0**
+ * Added flag to change the type of collada loader [(rctoris)](https://github.com/rctoris/)
+ * Fix typo in description of onMouseMove() [(T045T)](https://github.com/T045T/)
+ * Use the total length of zoomDelta, not just the y component, for multi-touch zooming [(T045T)](https://github.com/T045T/)
+ * Correction on measure unit for cellSize [(Vegekou)](https://github.com/Vegekou/)
+ * Urdf shapes fix [(Vegekou)](https://github.com/Vegekou/)
+ * Allow to change cellSize [(rk4an)](https://github.com/rk4an/)
+ * Added LINE_STRIP and LINE_LIST support [(mszarski)](https://github.com/mszarski/)
+ * Add tfPrefix for multi-robots support [(erkan)](https://github.com/erkan/)
+ * Remove memory leak from MarkerClient [(knowrob)](https://github.com/knowrob/)
+ * Changed MarkerClient to support multiple markers at a time [(knowrob)](https://github.com/knowrob/)
+
 2013-08-23 - **r7**
  * Improved tablet support [(KazutoMurase)](https://github.com/KazutoMurase/)
  * Fix to cylinder marker type [(KazutoMurase)](https://github.com/KazutoMurase/)

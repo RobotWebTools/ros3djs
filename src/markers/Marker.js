@@ -10,11 +10,14 @@
  * @param options - object with following keys:
  *   * path - the base path or URL for any mesh files that will be loaded for this marker
  *   * message - the marker message
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.Marker = function(options) {
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
@@ -87,6 +90,68 @@ ROS3D.Marker = function(options) {
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
       cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
+      break;
+    case ROS3D.MARKER_LINE_STRIP:
+      var lineStripGeom = new THREE.Geometry();
+      var lineStripMaterial = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var j;
+      for ( j = 0; j < message.points.length; j++) {
+        var pt = new THREE.Vector3();
+        pt.x = message.points[j].x;
+        pt.y = message.points[j].y;
+        pt.z = message.points[j].z;
+        lineStripGeom.vertices.push(pt);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        lineStripMaterial.vertexColors = true;
+        for ( j = 0; j < message.points.length; j++) {
+          var clr = new THREE.Color();
+          clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
+          lineStripGeom.colors.push(clr);
+        }
+      } else {
+        lineStripMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
+      break;
+    case ROS3D.MARKER_LINE_LIST:
+      var lineListGeom = new THREE.Geometry();
+      var lineListMaterial = new THREE.LineBasicMaterial({
+        size : message.scale.x
+      });
+
+      // add the points
+      var k;
+      for ( k = 0; k < message.points.length; k++) {
+        var v = new THREE.Vector3();
+        v.x = message.points[k].x;
+        v.y = message.points[k].y;
+        v.z = message.points[k].z;
+        lineListGeom.vertices.push(v);
+      }
+
+      // determine the colors for each
+      if (message.colors.length === message.points.length) {
+        lineListMaterial.vertexColors = true;
+        for ( k = 0; k < message.points.length; k++) {
+          var c = new THREE.Color();
+          c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
+          lineListGeom.colors.push(c);
+        }
+      } else {
+        lineListMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
+      }
+
+      // add the line
+      this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
       break;
     case ROS3D.MARKER_CUBE_LIST:
       // holds the main object
@@ -186,7 +251,8 @@ ROS3D.Marker = function(options) {
       var meshResource = new ROS3D.MeshResource({
         path : path,
         resource : message.mesh_resource.substr(10),
-        material : meshColorMaterial
+        material : meshColorMaterial,
+        loader : loader
       });
       this.add(meshResource);
       break;

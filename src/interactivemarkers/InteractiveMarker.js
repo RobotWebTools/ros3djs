@@ -10,6 +10,8 @@
  *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
  *  * camera - the main camera associated with the viewer for this marker
  *  * path (optional) - the base path to any meshes that will be loaded
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
+ *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.InteractiveMarker = function(options) {
   THREE.Object3D.call(this);
@@ -21,6 +23,7 @@ ROS3D.InteractiveMarker = function(options) {
   this.name = handle.name;
   var camera = options.camera;
   var path = options.path || '/';
+  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
   this.dragging = false;
 
   // set the initial pose
@@ -43,7 +46,8 @@ ROS3D.InteractiveMarker = function(options) {
       parent : that,
       message : controlMessage,
       camera : camera,
-      path : path
+      path : path,
+      loader : loader
     }));
   });
 
