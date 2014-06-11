@@ -3,7 +3,7 @@
  */
 
 var ROSLIB = ROSLIB || {
-  REVISION : '6'
+  REVISION : '0.8.0'
 };
 
 //URDF types
@@ -263,8 +263,7 @@ ROSLIB.Param.prototype.get = function(callback) {
   });
 
   var request = new ROSLIB.ServiceRequest({
-    name : this.name,
-    value : JSON.stringify('')
+    name : this.name
   });
 
   paramClient.callService(request, function(result) {
@@ -288,6 +287,24 @@ ROSLIB.Param.prototype.set = function(value) {
   var request = new ROSLIB.ServiceRequest({
     name : this.name,
     value : JSON.stringify(value)
+  });
+
+  paramClient.callService(request, function() {
+  });
+};
+
+/**
+ * Delete this parameter on the ROS server.
+ */
+ROSLIB.Param.prototype.delete = function() {
+  var paramClient = new ROSLIB.Service({
+    ros : this.ros,
+    name : '/rosapi/delete_param',
+    serviceType : 'rosapi/DeleteParam'
+  });
+
+  var request = new ROSLIB.ServiceRequest({
+    name : this.name
   });
 
   paramClient.callService(request, function() {
@@ -414,7 +431,7 @@ ROSLIB.Ros.prototype.connect = function(url) {
       if (message.op === 'publish') {
         that.emit(message.topic, message.msg);
       } else if (message.op === 'service_response') {
-        that.emit(message.id, message.values);
+        that.emit(message.id, message);
       }
     }
 
@@ -529,6 +546,26 @@ ROSLIB.Ros.prototype.getServices = function(callback) {
 };
 
 /**
+ * Retrieves list of active node names in ROS.
+ *
+ * @param callback - function with the following params:
+ *   * nodes - array of node names
+ */
+ROSLIB.Ros.prototype.getNodes = function(callback) {
+  var nodesClient = new ROSLIB.Service({
+    ros : this,
+    name : '/rosapi/nodes',
+    serviceType : 'rosapi/Nodes'
+  });
+
+  var request = new ROSLIB.ServiceRequest();
+
+  nodesClient.callService(request, function(result) {
+    callback(result.nodes);
+  });
+};
+
+/**
  * Retrieves list of param names from the ROS Parameter Server.
  *
  * @param callback function with params:
@@ -545,6 +582,99 @@ ROSLIB.Ros.prototype.getParams = function(callback) {
   paramsClient.callService(request, function(result) {
     callback(result.names);
   });
+};
+
+/**
+ * Retrieves a type of ROS topic.
+ *
+ * @param callback - function with params:
+ *   * type - String of the topic type
+ */
+ROSLIB.Ros.prototype.getTopicType = function(topic, callback) {
+  var topicTypeClient = new ROSLIB.Service({
+    ros : this,
+    name : '/rosapi/topic_type',
+    serviceType : 'rosapi/TopicType'
+  });
+  var request = new ROSLIB.ServiceRequest({
+    topic: topic
+  });
+  topicTypeClient.callService(request, function(result) {
+    callback(result.type);
+  });
+};
+
+/**
+ * Retrieves a detail of ROS message.
+ *
+ * @param callback - function with params:
+ *   * details - Array of the message detail
+ * @param message - String of a topic type
+ */
+ROSLIB.Ros.prototype.getMessageDetails = function(message, callback) {
+  var messageDetailClient = new ROSLIB.Service({
+    ros : this,
+    name : '/rosapi/message_details',
+    serviceType : 'rosapi/MessageDetails'
+  });
+  var request = new ROSLIB.ServiceRequest({
+    type: message
+  });
+  messageDetailClient.callService(request, function(result) {
+    callback(result.typedefs);
+  });
+};
+
+/**
+ * Decode a typedefs into a dictionary like `rosmsg show foo/bar`
+ *
+ * @param defs - array of type_def dictionary
+ */
+ROSLIB.Ros.prototype.decodeTypeDefs = function(defs) {
+  var that = this;
+
+  // calls itself recursively to resolve type definition using hints.
+  var decodeTypeDefsRec = function(theType, hints) {
+    var typeDefDict = {};
+    for (var i = 0; i < theType.fieldnames.length; i++) {
+      var arrayLen = theType.fieldarraylen[i];
+      var fieldName = theType.fieldnames[i];
+      var fieldType = theType.fieldtypes[i];
+      if (fieldType.indexOf('/') === -1) { // check the fieldType includes '/' or not
+        if (arrayLen === -1) {
+          typeDefDict[fieldName] = fieldType;
+        }
+        else {
+          typeDefDict[fieldName] = [fieldType];
+        }
+      }
+      else {
+        // lookup the name
+        var sub = false;
+        for (var j = 0; j < hints.length; j++) {
+          if (hints[j].type.toString() === fieldType.toString()) {
+            sub = hints[j];
+            break;
+          }
+        }
+        if (sub) {
+          var subResult = decodeTypeDefsRec(sub, hints);
+          if (arrayLen === -1) {
+            typeDefDict[fieldName] = subResult;
+          }
+          else {
+            typeDefDict[fieldName] = [subResult];
+          }
+        }
+        else {
+          that.emit('error', 'Cannot find ' + fieldType + ' in decodeTypeDefs');
+        }
+      }
+    }
+    return typeDefDict;
+  };
+
+  return decodeTypeDefsRec(defs[0], defs);
 };
 
 /**
@@ -573,26 +703,29 @@ ROSLIB.Service = function(options) {
  * @param request - the ROSLIB.ServiceRequest to send
  * @param callback - function with params:
  *   * response - the response from the service request
+ * @param failedCallback - the callback function when the service call failed (optional). Params:
+ *   * error - the error message reported by ROS
  */
-ROSLIB.Service.prototype.callService = function(request, callback) {
+ROSLIB.Service.prototype.callService = function(request, callback, failedCallback) {
   this.ros.idCounter++;
   var serviceCallId = 'call_service:' + this.name + ':' + this.ros.idCounter;
 
-  this.ros.once(serviceCallId, function(data) {
-    var response = new ROSLIB.ServiceResponse(data);
-    callback(response);
-  });
-
-  var requestValues = [];
-  Object.keys(request).forEach(function(name) {
-    requestValues.push(request[name]);
+  this.ros.once(serviceCallId, function(message) {
+    if (message.result !== undefined && message.result === false) {
+      if (typeof failedCallback === 'function') {
+        failedCallback(message.values);
+      }
+    } else {
+      var response = new ROSLIB.ServiceResponse(message.values);
+      callback(response);
+    }
   });
 
   var call = {
     op : 'call_service',
     id : serviceCallId,
     service : this.name,
-    args : requestValues
+    args : request
   };
   this.ros.callOnConnection(call);
 };
@@ -662,6 +795,7 @@ ROSLIB.Topic = function(options) {
   this.isAdvertised = false;
   this.compression = options.compression || 'none';
   this.throttle_rate = options.throttle_rate || 0;
+  this.latch = options.latch || false;
 
   // Check for valid compression types
   if (this.compression && this.compression !== 'png' && this.compression !== 'none') {
@@ -730,13 +864,17 @@ ROSLIB.Topic.prototype.unsubscribe = function() {
  * Registers as a publisher for the topic.
  */
 ROSLIB.Topic.prototype.advertise = function() {
+  if (this.isAdvertised) {
+    return;
+  }
   this.ros.idCounter++;
-  var advertiseId = 'advertise:' + this.name + ':' + this.ros.idCounter;
+  this.advertiseId = 'advertise:' + this.name + ':' + this.ros.idCounter;
   var call = {
     op : 'advertise',
-    id : advertiseId,
+    id : this.advertiseId,
     type : this.messageType,
-    topic : this.name
+    topic : this.name,
+    latch : this.latch
   };
   this.ros.callOnConnection(call);
   this.isAdvertised = true;
@@ -746,8 +884,10 @@ ROSLIB.Topic.prototype.advertise = function() {
  * Unregisters as a publisher for the topic.
  */
 ROSLIB.Topic.prototype.unadvertise = function() {
-  this.ros.idCounter++;
-  var unadvertiseId = 'unadvertise:' + this.name + ':' + this.ros.idCounter;
+  if (!this.isAdvertised) {
+    return;
+  }
+  var unadvertiseId = this.advertiseId;
   var call = {
     op : 'unadvertise',
     id : unadvertiseId,
@@ -773,7 +913,8 @@ ROSLIB.Topic.prototype.publish = function(message) {
     op : 'publish',
     id : publishId,
     topic : this.name,
-    msg : message
+    msg : message,
+    latch : this.latch
   };
   this.ros.callOnConnection(call);
 };
@@ -1044,6 +1185,9 @@ ROSLIB.TFClient.prototype.processFeedback = function(tf) {
   var that = this;
   tf.transforms.forEach(function(transform) {
     var frameID = transform.child_frame_id;
+    if (frameID[0] === '/') {
+      frameID = frameID.substring(1);
+    }
     var info = that.frameInfos[frameID];
     if (info !== undefined) {
       info.transform = new ROSLIB.Transform({
@@ -1164,7 +1308,7 @@ ROSLIB.UrdfBox = function(options) {
    * @param xml - the XML element to parse
    */
   var initXml = function(xml) {
-    this.type = ROSLIB.URDF_BOX;
+    that.type = ROSLIB.URDF_BOX;
 
     // Parse the string
     var xyz = xml.getAttribute('size').split(' ');
