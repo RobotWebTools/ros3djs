@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * url - the URL of the stream
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud

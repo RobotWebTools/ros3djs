@@ -6,10 +6,12 @@
  * Handle with signals for a single interactive marker.
  *
  * Emits the following events:
+ *
  *  * 'pose' - emitted when a new pose comes from the server
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * message - the interactive marker message
  *  * feedbackTopic - the ROSLIB.Topic associated with the feedback
  *  * tfClient - a handle to the TF client to use

@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * parent - the parent of this control
  *  * message - the interactive marker control message
  *  * camera - the main camera associated with the viewer for this marker client

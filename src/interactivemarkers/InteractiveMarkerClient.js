@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * ros - a handle to the ROS connection
  *  * tfClient - a handle to the TF client
  *  * topic (optional) - the topic to subscribe to, like '/basic_controls'

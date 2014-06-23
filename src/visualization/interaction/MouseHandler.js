@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * renderer - the main renderer
  *   * camera - the main camera in the scene
  *   * rootObject - the root object to check for mouse events

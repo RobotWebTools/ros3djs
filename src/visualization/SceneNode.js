@@ -8,6 +8,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * tfClient - a handle to the TF client
  *  * frameID - the frame ID this object belongs to
  *  * pose (optional) - the pose associated with this object
