@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * message - the occupancy grid message
  */
 ROS3D.OccupancyGrid = function(options) {

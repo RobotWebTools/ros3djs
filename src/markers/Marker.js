@@ -8,6 +8,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * path - the base path or URL for any mesh files that will be loaded for this marker
  *   * message - the marker message
  *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER

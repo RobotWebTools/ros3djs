@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * material (optional) - the material to use for the object
  *   * vertices - the array of vertices to use
  *   * colors - the associated array of colors to use

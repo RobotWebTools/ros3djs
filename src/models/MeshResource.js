@@ -9,6 +9,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * path (optional) - the base path to the associated models that will be loaded
  *  * resource - the resource file name to load
  *  * material (optional) - the material to use for the object

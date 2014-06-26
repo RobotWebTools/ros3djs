@@ -6,10 +6,12 @@
  * A marker client that listens to a given marker topic.
  *
  * Emits the following events:
+ *
  *  * 'change' - there was an update or change in the marker
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic - the marker topic to listen to
  *   * tfClient - the TF client handle to use

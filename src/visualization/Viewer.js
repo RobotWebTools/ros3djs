@@ -9,6 +9,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * divID - the ID of the div to place the viewer in
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas

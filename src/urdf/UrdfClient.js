@@ -8,10 +8,12 @@
  * parameter server.
  *
  * Emits the following events:
+ *
  * * 'change' - emited after the URDF and its meshes have been loaded into the root object
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * ros - the ROSLIB.Ros connection handle
  *   * param (optional) - the paramter to load the URDF from, like 'robot_description'
  *   * tfClient - the TF client handle to use

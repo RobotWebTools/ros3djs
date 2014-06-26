@@ -8,6 +8,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * urdfModel - the ROSLIB.UrdfModel to load
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded

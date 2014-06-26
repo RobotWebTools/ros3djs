@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * shaftRadius (optional) - the radius of the shaft to render
  *   * headRadius (optional) - the radius of the head to render
  *   * headLength (optional) - the length of the head to render
