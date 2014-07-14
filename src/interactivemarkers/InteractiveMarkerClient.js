@@ -172,7 +172,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     intMarker.addEventListener('user-button-click', handle.onButtonClick.bind(handle));
     intMarker.addEventListener('menu-select', handle.onMenuSelect.bind(handle));
 
-    // now list for any TF changes
+    // now listen for any TF changes
     handle.subscribeTf();
   });
 };
@@ -187,6 +187,8 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     // remove the object
     var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
     this.rootObject.remove(targetIntMarker);
+    // unsubscribe from TF topic!
+    this.interactiveMarkers[intMarkerName].unsubscribeTf();
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();
   }

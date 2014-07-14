@@ -34,6 +34,7 @@ ROS3D.InteractiveMarkerHandle = function(options) {
 
   // start by setting the pose
   this.setPoseFromServer(this.message.pose);
+  this.tfUpdateBound = this.tfUpdate.bind(this);
 };
 ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 
@@ -43,8 +44,12 @@ ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 ROS3D.InteractiveMarkerHandle.prototype.subscribeTf = function() {
   // subscribe to tf updates if frame-fixed
   if (this.message.header.stamp.secs === 0.0 && this.message.header.stamp.nsecs === 0.0) {
-    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdate.bind(this));
+    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdateBound);
   }
+};
+
+ROS3D.InteractiveMarkerHandle.prototype.unsubscribeTf = function() {
+  this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdateBound);
 };
 
 /**
