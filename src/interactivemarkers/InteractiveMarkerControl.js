@@ -164,6 +164,13 @@ ROS3D.InteractiveMarkerControl = function(options) {
       break;
   }
 
+  // temporary TFClient to get transformations from InteractiveMarker
+  // frame to potential child Marker frames
+  var localTfClient = new ROSLIB.TFClient({
+    ros : handle.tfClient.ros,
+    fixedFrame : handle.message.header.frame_id,
+  });
+
   // create visuals (markers)
   message.markers.forEach(function(markerMsg) {
     var addMarker = function(transformMsg) {
@@ -183,17 +190,21 @@ ROS3D.InteractiveMarkerControl = function(options) {
         // so we can apply the transform provided by the TFClient
         newPose.applyTransform(new ROSLIB.Transform(transformMsg));
         markerHelper.setPose(newPose);
+
+        markerHelper.updateMatrixWorld();
         // we only need to set the pose once - at least, this is what RViz seems to be doing, might change in the future
-        handle.tfClient.unsubscribe(markerMsg.header.frame_id);
+        localTfClient.unsubscribe(markerMsg.header.frame_id);
       }
 
       // add the marker
       that.add(markerHelper);
     };
     
-    // If the marker lives in a separate TF Frame, ask the TFClient for the transformation
+    // If the marker lives in a separate TF Frame, ask the *local* TFClient
+    // for the transformation from the InteractiveMarker frame to the
+    // sub-Marker frame
     if (markerMsg.header.frame_id !== '') {
-      handle.tfClient.subscribe(markerMsg.header.frame_id, addMarker);
+      localTfClient.subscribe(markerMsg.header.frame_id, addMarker);
     }
     // If not, just add the marker without changing its pose
     else {
