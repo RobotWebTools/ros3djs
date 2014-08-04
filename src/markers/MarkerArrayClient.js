@@ -65,4 +65,4 @@ ROS3D.MarkerArrayClient = function(options) {
     that.emit('change');
   });
 };
-ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
+ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
