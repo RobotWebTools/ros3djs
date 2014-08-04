@@ -60,5 +60,36 @@ ROS3D.MarkerClient = function(options) {
 
     that.emit('change');
   });
+
+  // subscribe to corresponding MarkerArray topic
+  var arrayTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : topic + '_array',
+    messageType : 'visualization_msgs/MarkerArray',
+    compression : 'png'
+  });
+  
+  arrayTopic.subscribe(function(arrayMessage) {
+
+    arrayMessage.markers.forEach(function(message) {
+      var newMarker = new ROS3D.Marker({
+        message : message,
+        path : that.path,
+        loader : that.loader
+      });
+
+      // remove old marker from Three.Object3D children buffer
+      that.rootObject.remove(that.markers[message.id]);
+
+      that.markers[message.id] = new ROS3D.SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : that.tfClient,
+        object : newMarker
+      });
+      that.rootObject.add(that.markers[message.id]);
+    });
+    
+    that.emit('change');
+  });
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
