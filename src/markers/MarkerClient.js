@@ -30,7 +30,7 @@ ROS3D.MarkerClient = function(options) {
   this.path = options.path || '/';
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
-  // Markers that are displayed (Map id--Marker)
+  // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
 
   // subscribe to the topic

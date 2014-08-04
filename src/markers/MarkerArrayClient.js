@@ -16,7 +16,7 @@
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic - the marker topic to listen to
  *   * tfClient - the TF client handle to use
- *   * rootObject (optional) - the root object to add this marker to
+ *   * rootObject (optional) - the root object to add the markers to
  *   * path (optional) - the base path to any meshes that will be loaded
  *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
  *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
@@ -31,7 +31,7 @@ ROS3D.MarkerArrayClient = function(options) {
   this.path = options.path || '/';
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
-  // Markers that are displayed (Map id--Marker)
+  // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
 
   // subscribe to MarkerArray topic
