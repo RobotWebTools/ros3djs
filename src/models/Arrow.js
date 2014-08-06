@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * origin (optional) - the origin of the arrow
  *   * direction (optional) - the direction vector of the arrow
  *   * length (optional) - the length of the arrow

@@ -6,10 +6,12 @@
  * An occupancy grid client that listens to a given map topic.
  *
  * Emits the following events:
+ *
  *  * 'change' - there was an update or change in the marker
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic (optional) - the map topic to listen to
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)

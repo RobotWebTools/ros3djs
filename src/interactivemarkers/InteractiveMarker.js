@@ -7,6 +7,7 @@
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
  *  * camera - the main camera associated with the viewer for this marker
  *  * path (optional) - the base path to any meshes that will be loaded

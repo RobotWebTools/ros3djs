@@ -6,10 +6,12 @@
  * A marker client that listens to a given marker topic.
  *
  * Emits the following events:
+ *
  *  * 'change' - there was an update or change in the marker
  *
  * @constructor
  * @param options - object with following keys:
+ *
  *   * ros - the ROSLIB.Ros connection handle
  *   * topic - the marker topic to listen to
  *   * tfClient - the TF client handle to use
@@ -28,7 +30,7 @@ ROS3D.MarkerClient = function(options) {
   this.path = options.path || '/';
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
-  // Markers that are displayed (Map id--Marker)
+  // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
 
   // subscribe to the topic
@@ -47,14 +49,14 @@ ROS3D.MarkerClient = function(options) {
     });
 
     // remove old marker from Three.Object3D children buffer
-    that.rootObject.remove(that.markers[message.id]);
+    that.rootObject.remove(that.markers[message.ns + message.id]);
 
-    that.markers[message.id] = new ROS3D.SceneNode({
+    that.markers[message.ns + message.id] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : that.tfClient,
       object : newMarker
     });
-    that.rootObject.add(that.markers[message.id]);
+    that.rootObject.add(that.markers[message.ns + message.id]);
 
     that.emit('change');
   });
