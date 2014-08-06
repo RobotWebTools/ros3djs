@@ -45,6 +45,7 @@ ROS3D.InteractiveMarker = function(options) {
   handle.controls.forEach(function(controlMessage) {
     that.add(new ROS3D.InteractiveMarkerControl({
       parent : that,
+      handle : handle,
       message : controlMessage,
       camera : camera,
       path : path,
