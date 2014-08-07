@@ -1,3 +1,11 @@
+2014-07-07 - **0.9.0**
+ * Prevents empty text from being rendered [(rctoris)](https://github.com/rctoris/)
+ * Added MarkerArrayClient [(T045T)](https://github.com/T045T/)
+ * Use namespace for Markers - ID alone is not supposed to be unique [(T045T)](https://github.com/T045T/)
+ * Use a separate TFClient to get the transform from InteractiveMarker to its sub-Markers [(T045T)](https://github.com/T045T/)
+ * Interactivemarkers: get the correct transformation for sub-markers [(T045T)](https://github.com/T045T/)
+ * Enable markdown parsing in JSDoc and add newlines to ensure proper parsing of lists [(T045T)](https://github.com/T045T/)
+
 2014-06-11 - **0.8.0**
  * Added flag to change the type of collada loader [(rctoris)](https://github.com/rctoris/)
  * Fix typo in description of onMouseMove() [(T045T)](https://github.com/T045T/)
