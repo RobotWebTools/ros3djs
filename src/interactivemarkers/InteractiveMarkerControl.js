@@ -22,6 +22,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
   options = options || {};
   this.parent = options.parent;
+  var handle = options.handle;
   var message = options.message;
   this.name = message.name;
   this.camera = options.camera;
@@ -163,24 +164,52 @@ ROS3D.InteractiveMarkerControl = function(options) {
       break;
   }
 
+  // temporary TFClient to get transformations from InteractiveMarker
+  // frame to potential child Marker frames
+  var localTfClient = new ROSLIB.TFClient({
+    ros : handle.tfClient.ros,
+    fixedFrame : handle.message.header.frame_id,
+  });
+
   // create visuals (markers)
   message.markers.forEach(function(markerMsg) {
-    var markerHelper = new ROS3D.Marker({
-      message : markerMsg,
-      path : that.path,
-      loader : that.loader
-    });
+    var addMarker = function(transformMsg) {
+      var markerHelper = new ROS3D.Marker({
+        message : markerMsg,
+        path : that.path,
+        loader : that.loader
+      });
+      
+      // if transformMsg isn't null, this was called by TFClient
+      if (transformMsg !== null) {
+        // get the current pose as a ROSLIB.Pose...
+        var newPose = new ROSLIB.Pose({
+          position : markerHelper.position,
+          quaternion : markerHelper.quaternion
+        });
+        // so we can apply the transform provided by the TFClient
+        newPose.applyTransform(new ROSLIB.Transform(transformMsg));
+        markerHelper.setPose(newPose);
 
+        markerHelper.updateMatrixWorld();
+        // we only need to set the pose once - at least, this is what RViz seems to be doing, might change in the future
+        localTfClient.unsubscribe(markerMsg.header.frame_id);
+      }
+
+      // add the marker
+      that.add(markerHelper);
+    };
+    
+    // If the marker lives in a separate TF Frame, ask the *local* TFClient
+    // for the transformation from the InteractiveMarker frame to the
+    // sub-Marker frame
     if (markerMsg.header.frame_id !== '') {
-      // if the marker lives in its own coordinate frame, convert position into IM's local frame
-      markerHelper.position.add(posInv);
-      markerHelper.position.applyQuaternion(rotInv);
-      markerHelper.quaternion.multiplyQuaternions(rotInv, markerHelper.quaternion);
-      markerHelper.updateMatrixWorld();
+      localTfClient.subscribe(markerMsg.header.frame_id, addMarker);
     }
-
-    // add the marker
-    that.add(markerHelper);
+    // If not, just add the marker without changing its pose
+    else {
+      addMarker(null);
+    }
   });
 };
 ROS3D.InteractiveMarkerControl.prototype.__proto__ = THREE.Object3D.prototype;
