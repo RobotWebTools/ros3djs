@@ -219,28 +219,31 @@ ROS3D.Marker = function(options) {
       this.add(new THREE.ParticleSystem(geometry, material));
       break;
     case ROS3D.MARKER_TEXT_VIEW_FACING:
-      // setup the text
-      var textGeo = new THREE.TextGeometry(message.text, {
-        size : message.scale.x * 0.5,
-        height : 0.1 * message.scale.x,
-        curveSegments : 4,
-        font : 'helvetiker',
-        bevelEnabled : false,
-        bevelThickness : 2,
-        bevelSize : 2,
-        material : 0,
-        extrudeMaterial : 0
-      });
-      textGeo.computeVertexNormals();
-      textGeo.computeBoundingBox();
+      // only work on non-empty text
+      if (message.text.length > 0) {
+        // setup the text
+        var textGeo = new THREE.TextGeometry(message.text, {
+          size: message.scale.x * 0.5,
+          height: 0.1 * message.scale.x,
+          curveSegments: 4,
+          font: 'helvetiker',
+          bevelEnabled: false,
+          bevelThickness: 2,
+          bevelSize: 2,
+          material: 0,
+          extrudeMaterial: 0
+        });
+        textGeo.computeVertexNormals();
+        textGeo.computeBoundingBox();
 
-      // position the text and add it
-      var mesh = new THREE.Mesh(textGeo, colorMaterial);
-      var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
-      mesh.position.y = -centerOffset;
-      mesh.rotation.x = Math.PI * 0.5;
-      mesh.rotation.y = Math.PI * 1.5;
-      this.add(mesh);
+        // position the text and add it
+        var mesh = new THREE.Mesh(textGeo, colorMaterial);
+        var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
+        mesh.position.y = -centerOffset;
+        mesh.rotation.x = Math.PI * 0.5;
+        mesh.rotation.y = Math.PI * 1.5;
+        this.add(mesh);
+      }
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
       // load and add the mesh
