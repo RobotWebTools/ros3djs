@@ -131,7 +131,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
       };
       break;
     case ROS3D.INTERACTIVE_MARKER_VIEW_FACING:
-      var independentMarkerOrientation = message.independentMarkerOrientation;
+      var independentMarkerOrientation = message.independent_marker_orientation;
       this.updateMatrixWorld = function(force) {
         that.camera.updateMatrixWorld();
         var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
