@@ -20,13 +20,29 @@ ROS3D.Grid = function(options) {
   var lineWidth = options.lineWidth || 1;
   var cellSize = options.cellSize || 1;
 
-  // create the mesh
-  THREE.Mesh.call(this, new THREE.PlaneGeometry(size*cellSize, size*cellSize, size, size),
-      new THREE.MeshBasicMaterial({
-        color : color,
-        wireframe : true,
-        wireframeLinewidth : lineWidth,
-        transparent : true
-      }));
+  THREE.Object3D.call(this);
+
+  var material = new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: lineWidth
+  });
+
+  for (var i = 0; i <= size; ++i) {
+    var edge = cellSize * size / 2;
+    var position = edge - (i * cellSize);
+    var geometryH = new THREE.Geometry();
+    geometryH.vertices.push(
+      new THREE.Vector3( -edge, position, 0 ),
+      new THREE.Vector3( edge, position, 0 )
+    );
+    var geometryV = new THREE.Geometry();
+    geometryV.vertices.push(
+      new THREE.Vector3( position, -edge, 0 ),
+      new THREE.Vector3( position, edge, 0 )
+    );
+    this.add(new THREE.Line(geometryH, material));
+    this.add(new THREE.Line(geometryV, material));
+  }
 };
-ROS3D.Grid.prototype.__proto__ = THREE.Mesh.prototype;
+
+ROS3D.Grid.prototype.__proto__ = THREE.Object3D.prototype;

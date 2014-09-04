@@ -3024,7 +3024,7 @@
     ColladaFile.prototype._setNodeTransformation = function(daeNode, threejsNode) {
       daeNode.getTransformMatrix(threejsNode.matrix);
       threejsNode.matrix.decompose(threejsNode.position, threejsNode.quaternion, threejsNode.scale);
-      threejsNode.rotation.setEulerFromQuaternion(threejsNode.quaternion);
+      threejsNode.rotation.setFromQuaternion(threejsNode.quaternion);
     };
 
     ColladaFile.prototype._createSceneGraphNode = function(daeNode, threejsParent) {

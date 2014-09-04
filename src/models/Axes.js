@@ -48,7 +48,6 @@ ROS3D.Axes = function(options) {
     var arrow = new THREE.Mesh(that.headGeom, material);
     arrow.position = axis.clone();
     arrow.position.multiplyScalar(0.95);
-    arrow.useQuaternion = true;
     arrow.quaternion = rot;
     arrow.updateMatrix();
     that.add(arrow);
@@ -57,7 +56,6 @@ ROS3D.Axes = function(options) {
     var line = new THREE.Mesh(that.lineGeom, material);
     line.position = axis.clone();
     line.position.multiplyScalar(0.45);
-    line.useQuaternion = true;
     line.quaternion = rot;
     line.updateMatrix();
     that.add(line);
