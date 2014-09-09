@@ -464,3 +464,5 @@ ROS3D.OrbitControls.prototype.update = function() {
     this.lastPosition.copy(this.camera.position);
   }
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.OrbitControls.prototype );

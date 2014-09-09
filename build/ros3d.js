@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.9.0'
+  REVISION : '0.10.0'
 };
 
 // Marker types
@@ -779,7 +779,6 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
       this.position.y = pose.position.y;
       this.position.z = pose.position.z;
 
-      this.useQuaternion = true;
       this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
           pose.orientation.z, pose.orientation.w);
 
@@ -787,6 +786,8 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
     }
   }
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -972,7 +973,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
     // remove the object
-    this.rootObject.remove(this.rootObject.getChildByName(intMarkerName));
+    this.rootObject.remove(this.rootObject.getObjectByName(intMarkerName));
     delete this.interactiveMarkers[intMarkerName];
   }
 };
@@ -997,7 +998,6 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
 ROS3D.InteractiveMarkerControl = function(options) {
   var that = this;
   THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
 
   options = options || {};
   this.parent = options.parent;
@@ -1101,7 +1101,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
       this.updateMatrixWorld = function(force) {
-        that.useQuaternion = true;
         that.quaternion = that.parent.quaternion.clone().inverse();
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
@@ -1110,15 +1109,15 @@ ROS3D.InteractiveMarkerControl = function(options) {
       };
       break;
     case ROS3D.INTERACTIVE_MARKER_VIEW_FACING:
-      var independentMarkerOrientation = message.independentMarkerOrientation;
+      var independentMarkerOrientation = message.independent_marker_orientation;
       this.updateMatrixWorld = function(force) {
         that.camera.updateMatrixWorld();
         var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
 
         var ros2Gl = new THREE.Matrix4();
         var r90 = Math.PI * 0.5;
-        var rv = new THREE.Vector3(-r90, 0, r90);
-        ros2Gl.setRotationFromEuler(rv);
+        var rv = new THREE.Euler(-r90, 0, r90);
+        ros2Gl.makeRotationFromEuler(rv);
 
         var worldToLocal = new THREE.Matrix4();
         worldToLocal.getInverse(that.parent.matrixWorld);
@@ -1130,7 +1129,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
         // check the orientation
         if (!independentMarkerOrientation) {
-          that.useQuaternion = true;
           that.quaternion.copy(that.currentControlOri);
           that.updateMatrix();
           that.matrixWorldNeedsUpdate = true;
@@ -1540,6 +1538,8 @@ ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
   document.body.removeChild(this.menuDomElem);
 };
 
+THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarkerMenu.prototype );
+
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -1715,7 +1715,6 @@ ROS3D.Marker = function(options) {
   }
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // set the pose and get the color
   this.setPose(message.pose);
@@ -1776,7 +1775,6 @@ ROS3D.Marker = function(options) {
       // set the cylinder dimensions
       var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
       var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
-      cylinderMesh.useQuaternion = true;
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
       cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
@@ -2181,7 +2179,7 @@ ROS3D.Arrow.prototype.setDirection = function(direction) {
   var axis = new THREE.Vector3(0, 1, 0).cross(direction);
   var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
   this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
-  this.rotation.setEulerFromRotationMatrix(this.matrix, this.eulerOrder);
+  this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
 };
 
 /**
@@ -2253,7 +2251,6 @@ ROS3D.Axes = function(options) {
     var arrow = new THREE.Mesh(that.headGeom, material);
     arrow.position = axis.clone();
     arrow.position.multiplyScalar(0.95);
-    arrow.useQuaternion = true;
     arrow.quaternion = rot;
     arrow.updateMatrix();
     that.add(arrow);
@@ -2262,7 +2259,6 @@ ROS3D.Axes = function(options) {
     var line = new THREE.Mesh(that.lineGeom, material);
     line.position = axis.clone();
     line.position.multiplyScalar(0.45);
-    line.useQuaternion = true;
     line.quaternion = rot;
     line.updateMatrix();
     that.add(line);
@@ -2297,16 +2293,32 @@ ROS3D.Grid = function(options) {
   var lineWidth = options.lineWidth || 1;
   var cellSize = options.cellSize || 1;
 
-  // create the mesh
-  THREE.Mesh.call(this, new THREE.PlaneGeometry(size*cellSize, size*cellSize, size, size),
-      new THREE.MeshBasicMaterial({
-        color : color,
-        wireframe : true,
-        wireframeLinewidth : lineWidth,
-        transparent : true
-      }));
+  THREE.Object3D.call(this);
+
+  var material = new THREE.LineBasicMaterial({
+    color: color,
+    linewidth: lineWidth
+  });
+
+  for (var i = 0; i <= size; ++i) {
+    var edge = cellSize * size / 2;
+    var position = edge - (i * cellSize);
+    var geometryH = new THREE.Geometry();
+    geometryH.vertices.push(
+      new THREE.Vector3( -edge, position, 0 ),
+      new THREE.Vector3( edge, position, 0 )
+    );
+    var geometryV = new THREE.Geometry();
+    geometryV.vertices.push(
+      new THREE.Vector3( position, -edge, 0 ),
+      new THREE.Vector3( position, edge, 0 )
+    );
+    this.add(new THREE.Line(geometryH, material));
+    this.add(new THREE.Line(geometryV, material));
+  }
 };
-ROS3D.Grid.prototype.__proto__ = THREE.Mesh.prototype;
+
+ROS3D.Grid.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -2491,7 +2503,6 @@ ROS3D.Urdf = function(options) {
   var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // load all models
   var links = urdfModel.links;
@@ -2553,7 +2564,6 @@ ROS3D.Urdf = function(options) {
                 var length = link.visual.geometry.length;
                 var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
                 shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
-                shapeMesh.useQuaternion = true;
                 shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
                 break;
             case ROSLIB.URDF_SPHERE:
@@ -2658,7 +2668,6 @@ ROS3D.SceneNode = function(options) {
   this.pose = options.pose || new ROSLIB.Pose();
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // add the model
   this.add(object);
@@ -2733,7 +2742,7 @@ ROS3D.Viewer = function(options) {
   this.renderer = new THREE.WebGLRenderer({
     antialias : this.antialias
   });
-  this.renderer.setClearColorHex(background.replace('#', '0x'), 1.0);
+  this.renderer.setClearColor(background.replace('#', '0x'), 1.0);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
@@ -3110,6 +3119,8 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
   }
   return false;
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -3577,3 +3588,5 @@ ROS3D.OrbitControls.prototype.update = function() {
     this.lastPosition.copy(this.camera.position);
   }
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.OrbitControls.prototype );
