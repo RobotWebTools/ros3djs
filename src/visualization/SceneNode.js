@@ -23,7 +23,6 @@ ROS3D.SceneNode = function(options) {
   this.pose = options.pose || new ROSLIB.Pose();
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // add the model
   this.add(object);

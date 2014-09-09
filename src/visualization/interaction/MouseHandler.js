@@ -194,3 +194,5 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
   }
   return false;
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );

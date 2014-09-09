@@ -26,7 +26,6 @@ ROS3D.Marker = function(options) {
   }
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // set the pose and get the color
   this.setPose(message.pose);
@@ -87,7 +86,6 @@ ROS3D.Marker = function(options) {
       // set the cylinder dimensions
       var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
       var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
-      cylinderMesh.useQuaternion = true;
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
       cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);

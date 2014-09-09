@@ -182,7 +182,7 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
     // remove the object
-    this.rootObject.remove(this.rootObject.getChildByName(intMarkerName));
+    this.rootObject.remove(this.rootObject.getObjectByName(intMarkerName));
     delete this.interactiveMarkers[intMarkerName];
   }
 };
