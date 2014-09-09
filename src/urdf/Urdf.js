@@ -25,7 +25,6 @@ ROS3D.Urdf = function(options) {
   var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
-  this.useQuaternion = true;
 
   // load all models
   var links = urdfModel.links;
@@ -87,7 +86,6 @@ ROS3D.Urdf = function(options) {
                 var length = link.visual.geometry.length;
                 var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
                 shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
-                shapeMesh.useQuaternion = true;
                 shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
                 break;
             case ROSLIB.URDF_SPHERE:

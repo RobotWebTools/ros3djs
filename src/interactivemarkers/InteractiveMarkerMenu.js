@@ -165,3 +165,5 @@ ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
   document.body.removeChild(this.overlayDomElem);
   document.body.removeChild(this.menuDomElem);
 };
+
+THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarkerMenu.prototype );

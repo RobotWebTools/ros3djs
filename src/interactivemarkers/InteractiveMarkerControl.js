@@ -18,7 +18,6 @@
 ROS3D.InteractiveMarkerControl = function(options) {
   var that = this;
   THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
 
   options = options || {};
   this.parent = options.parent;
@@ -122,7 +121,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
       this.updateMatrixWorld = function(force) {
-        that.useQuaternion = true;
         that.quaternion = that.parent.quaternion.clone().inverse();
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
@@ -138,8 +136,8 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
         var ros2Gl = new THREE.Matrix4();
         var r90 = Math.PI * 0.5;
-        var rv = new THREE.Vector3(-r90, 0, r90);
-        ros2Gl.setRotationFromEuler(rv);
+        var rv = new THREE.Euler(-r90, 0, r90);
+        ros2Gl.makeRotationFromEuler(rv);
 
         var worldToLocal = new THREE.Matrix4();
         worldToLocal.getInverse(that.parent.matrixWorld);
@@ -151,7 +149,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
         // check the orientation
         if (!independentMarkerOrientation) {
-          that.useQuaternion = true;
           that.quaternion.copy(that.currentControlOri);
           that.updateMatrix();
           that.matrixWorldNeedsUpdate = true;
