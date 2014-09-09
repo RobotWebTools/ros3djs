@@ -1,3 +1,6 @@
+2014-09-09 - **0.10.0**
+ * Updated threejs library to r61 [(mitchellwills)](https://github.com/mitchellwills/)
+
 2014-07-07 - **0.9.0**
  * Prevents empty text from being rendered [(rctoris)](https://github.com/rctoris/)
  * Added MarkerArrayClient [(T045T)](https://github.com/T045T/)
