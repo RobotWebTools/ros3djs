@@ -36,8 +36,8 @@ ROS3D.Urdf = function(options) {
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
 
-        // ignore mesh files which are not in Collada format
-        if (fileType === '.dae') {
+        // ignore mesh files which are not in Collada or STL format
+        if (fileType === '.dae' || fileType === '.stl') {
           // create the model
           var mesh = new ROS3D.MeshResource({
             path : path,
@@ -62,6 +62,8 @@ ROS3D.Urdf = function(options) {
             object : mesh
           });
           this.add(sceneNode);
+        } else {
+          console.warn('Could not load geometry mesh: '+uri);
         }
       } else {
         var colorMaterial, shapeMesh;

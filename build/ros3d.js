@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.10.0'
+  REVISION : '0.11.0-SNAPSHOT'
 };
 
 // Marker types
@@ -2359,8 +2359,8 @@ ROS3D.MeshResource = function(options) {
   var fileType = uri.substr(-4).toLowerCase();
 
   // check the type
-  if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader;
+  var loader;
+  if (fileType === '.dae') {
     if (loaderType ===  ROS3D.COLLADA_LOADER) {
       loader = new THREE.ColladaLoader();
     } else {
@@ -2393,6 +2393,24 @@ ROS3D.MeshResource = function(options) {
 
       that.add(collada.scene);
     });
+  } else if (fileType === '.stl') {
+    loader = new THREE.STLLoader();
+    loader.addEventListener( 'error', function ( event ) {
+      if (that.warnings) {
+        console.warn(event.message);
+      }
+    });
+    loader.addEventListener( 'load', function ( event ) {
+      var geometry = event.content;
+      var mesh;
+      if(material !== null) {
+	mesh = new THREE.Mesh( geometry, material );
+      } else {
+	mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+      }
+      that.add(mesh);
+    } );
+    loader.load(uri);
   }
 };
 ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;
@@ -2514,8 +2532,8 @@ ROS3D.Urdf = function(options) {
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
 
-        // ignore mesh files which are not in Collada format
-        if (fileType === '.dae') {
+        // ignore mesh files which are not in Collada or STL format
+        if (fileType === '.dae' || fileType === '.stl') {
           // create the model
           var mesh = new ROS3D.MeshResource({
             path : path,
@@ -2540,6 +2558,8 @@ ROS3D.Urdf = function(options) {
             object : mesh
           });
           this.add(sceneNode);
+        } else {
+          console.warn('Could not load geometry mesh: '+uri);
         }
       } else {
         var colorMaterial, shapeMesh;
