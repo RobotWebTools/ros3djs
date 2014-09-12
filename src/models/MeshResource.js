@@ -37,8 +37,8 @@ ROS3D.MeshResource = function(options) {
   var fileType = uri.substr(-4).toLowerCase();
 
   // check the type
-  if (uri.substr(-4).toLowerCase() === '.dae') {
-    var loader;
+  var loader;
+  if (fileType === '.dae') {
     if (loaderType ===  ROS3D.COLLADA_LOADER) {
       loader = new THREE.ColladaLoader();
     } else {
@@ -71,6 +71,25 @@ ROS3D.MeshResource = function(options) {
 
       that.add(collada.scene);
     });
+  } else if (fileType === '.stl') {
+    loader = new THREE.STLLoader();
+    loader.addEventListener( 'error', function ( event ) {
+      if (that.warnings) {
+        console.warn(event.message);
+      }
+    });
+    loader.addEventListener( 'load', function ( event ) {
+      var geometry = event.content;
+      geometry.computeFaceNormals();
+      var mesh;
+      if(material !== null) {
+        mesh = new THREE.Mesh( geometry, material );
+      } else {
+        mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+      }
+      that.add(mesh);
+    } );
+    loader.load(uri);
   }
 };
 ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;

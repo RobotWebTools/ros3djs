@@ -31,18 +31,26 @@ ROS3D.Urdf = function(options) {
   for ( var l in links) {
     var link = links[l];
     if (link.visual && link.visual.geometry) {
+      // Save frameID
+      var frameID = tfPrefix + '/' + link.name;
+      // Save color material
+      var colorMaterial = null;
+      if (link.visual.material && link.visual.material.color) {
+        var color = link.visual.material && link.visual.material.color;
+        colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
+      }
       if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
-        var frameID = tfPrefix + '/' + link.name;
         var uri = link.visual.geometry.filename;
         var fileType = uri.substr(-4).toLowerCase();
 
-        // ignore mesh files which are not in Collada format
-        if (fileType === '.dae') {
+        // ignore mesh files which are not in Collada or STL format
+        if (fileType === '.dae' || fileType === '.stl') {
           // create the model
           var mesh = new ROS3D.MeshResource({
             path : path,
             resource : uri.substring(10),
-            loader : loader
+            loader : loader,
+            material : colorMaterial
           });
           
           // check for a scale
@@ -62,18 +70,14 @@ ROS3D.Urdf = function(options) {
             object : mesh
           });
           this.add(sceneNode);
+        } else {
+          console.warn('Could not load geometry mesh: '+uri);
         }
       } else {
-        var colorMaterial, shapeMesh;
-        // Save frameID
-        var newFrameID = '/' + link.name;
-        // Save color material
-        if (link.visual.material && link.visual.material.color) {
-          var color = link.visual.material && link.visual.material.color;
-          colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
-        } else {
+        if (!colorMaterial) {
           colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
         }
+        var shapeMesh;
         // Create a shape
         switch (link.visual.geometry.type) {
             case ROSLIB.URDF_BOX:
@@ -95,7 +99,7 @@ ROS3D.Urdf = function(options) {
         }
         // Create a scene node with the shape
         var scene = new ROS3D.SceneNode({
-            frameID: newFrameID,
+            frameID: frameID,
             pose: link.visual.origin,
             tfClient: tfClient,
             object: shapeMesh
