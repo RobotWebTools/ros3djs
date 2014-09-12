@@ -22,6 +22,8 @@ ros3djs depends on:
 
 [THREE.ColladaLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/ColladaLoader.js). The current supported version is r61. The current supported version can be found [in this project](include/threejs/ColladaLoader.js) or on the Robot Web Tools CDN: ([full](http://cdn.robotwebtools.org/threejs/r61/ColladaLoader.js)) | ([min](http://cdn.robotwebtools.org/threejs/r61/ColladaLoader.min.js))
 
+[THREE.STLLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/STLLoader.js). The current supported version is r61. The current supported version can be found [in this project](include/threejs/STLLoader.js) or on the Robot Web Tools CDN: ([full](http://cdn.robotwebtools.org/threejs/r61/STLLoader.js)) | ([min](http://cdn.robotwebtools.org/threejs/r61/STLLoader.min.js))
+
 ColladaLoader2. The current supported version is 0.0.2. The current supported version can be found [in this project](include/ColladaAnimationCompress/ColladaLoader2.js) or on the Robot Web Tools CDN: ([full](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.2/ColladaLoader2.js)) | ([min](http://cdn.robotwebtools.org/ColladaAnimationCompress/0.0.2/ColladaLoader2.min.js))
 
 [roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is 0.9.0. The current supported version can be found [in this project](include/roslibjs/roslib.js) or on the Robot Web Tools CDN: ([full](http://cdn.robotwebtools.org/roslibjs/0.9.0/roslib.js)) | ([min](http://cdn.robotwebtools.org/roslibjs/0.9.0/roslib.min.js))
