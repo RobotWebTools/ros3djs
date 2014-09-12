@@ -82,9 +82,9 @@ ROS3D.MeshResource = function(options) {
       var geometry = event.content;
       var mesh;
       if(material !== null) {
-	mesh = new THREE.Mesh( geometry, material );
+        mesh = new THREE.Mesh( geometry, material );
       } else {
-	mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+        mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
       }
       that.add(mesh);
     } );
