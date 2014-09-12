@@ -80,6 +80,7 @@ ROS3D.MeshResource = function(options) {
     });
     loader.addEventListener( 'load', function ( event ) {
       var geometry = event.content;
+      geometry.computeFaceNormals();
       var mesh;
       if(material !== null) {
         mesh = new THREE.Mesh( geometry, material );
