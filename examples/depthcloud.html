@@ -61,8 +61,10 @@
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
     <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
     <li><tt>roslaunch openni_launch openni.launch depth_registration:=true</tt></li>
-    <li><tt>rosrun ros_web_video ros_web_video _port:=9999 _framerate:=15 _bitrate:=250000 _profile:=best www_file_server:=true _wwwroot:=<b>/path/to/ros3djs/</b></tt></li>
-    <li><tt>rosrun depthcloud_encoder depthcloud_encoder_node _depth:=/camera/depth_registered/image_rect _rgb:=/camera/rgb/image_rect_color</tt></li>
+    <li><tt>rosrun ros_web_video ros_web_video _port:=9999 _framerate:=15 _bitrate:=250000 _profile:=best _www_file_server:=true _wwwroot:=<b>/path/to/ros3djs/</b></tt></li>
+    <li><tt>rosrun depthcloud_encoder depthcloud_encoder_node _depth:=/camera/depth_registered/image_float _rgb:=/camera/rgb/image_rect_color</tt></li>
+    <li><tt>rosrun nodelet nodelet standalone depth_image_proc/convert_metric image_raw:=/camera/depth_registered/image_raw image:=/camera/depth_registered/image_float</tt></li>
+
   </ol>
   <small>*Due to a bug in the current WebGL implementations, it is not possible to serve
   this file and the video stream from a different host or port number, so we need ros_web_video
