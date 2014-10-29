@@ -19,7 +19,7 @@
 ROS3D.DepthCloud = function(options) {
   options = options || {};
   THREE.Object3D.call(this);
-  
+
   this.url = options.url;
   this.f = options.f || 526;
   this.pointSize = options.pointSize || 3;
@@ -302,5 +302,5 @@ ROS3D.DepthCloud.prototype.startStream = function() {
  * Stop video playback
  */
 ROS3D.DepthCloud.prototype.stopStream = function() {
-  this.video.stop();
+  this.video.pause();
 };
