@@ -37,7 +37,7 @@ ROS3D.Viewer = function(options) {
   this.renderer = new THREE.WebGLRenderer({
     antialias : this.antialias
   });
-  this.renderer.setClearColorHex(parseInt(background.replace('#', '0x')), 1.0);
+  this.renderer.setClearColorHex(parseInt(background.replace('#', '0x'), 16), 1.0);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
