@@ -34,7 +34,8 @@ ROS3D.OrbitControls = function(options) {
   this.camera.up = new THREE.Vector3(0, 0, 1);
 
   // internals
-  var pixlesPerRound = 1800;
+  var pixelsPerRound = 1800;
+  var touchMoveThreshold = 10;
   var rotateStart = new THREE.Vector2();
   var rotateEnd = new THREE.Vector2();
   var rotateDelta = new THREE.Vector2();
@@ -45,6 +46,8 @@ ROS3D.OrbitControls = function(options) {
   var moveStartNormal = new THREE.Vector3();
   var moveStartPosition = new THREE.Vector3();
   var moveStartIntersection = new THREE.Vector3();
+  var touchStartPosition = new Array(2);
+  var touchMoveVector = new Array(2);
   this.phiDelta = 0;
   this.thetaDelta = 0;
   this.scale = 1;
@@ -93,8 +96,9 @@ ROS3D.OrbitControls = function(options) {
 
         moveStartCenter = that.center.clone();
         moveStartPosition = that.camera.position.clone();
-        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
-            moveStartNormal);
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay,
+                                                   moveStartCenter,
+                                                   moveStartNormal);
         break;
       case 2:
         state = STATE.ZOOM;
@@ -117,8 +121,8 @@ ROS3D.OrbitControls = function(options) {
       rotateEnd.set(event.clientX, event.clientY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
 
-      that.rotateLeft(2 * Math.PI * rotateDelta.x / pixlesPerRound * that.userRotateSpeed);
-      that.rotateUp(2 * Math.PI * rotateDelta.y / pixlesPerRound * that.userRotateSpeed);
+      that.rotateLeft(2 * Math.PI * rotateDelta.x / pixelsPerRound * that.userRotateSpeed);
+      that.rotateUp(2 * Math.PI * rotateDelta.y / pixelsPerRound * that.userRotateSpeed);
 
       rotateStart.copy(rotateEnd);
       this.showAxes();
@@ -228,28 +232,29 @@ ROS3D.OrbitControls = function(options) {
    */
   function onTouchDown(event3D) {
     var event = event3D.domEvent;
-    console.log('>> button: ' + event.button);
     switch (event.touches.length) {
       case 1:
         state = STATE.ROTATE;
-        rotateStart.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+        rotateStart.set(event.touches[0].pageX - window.scrollX,
+                        event.touches[0].pageY - window.scrollY);
         /* ready for move */
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
         moveStartNormal.applyMatrix4(rMat);
         moveStartCenter = that.center.clone();
         moveStartPosition = that.camera.position.clone();
-        moveStartIntersection = intersectViewPlane(event3D.mouseRay, moveStartCenter,
-            moveStartNormal);
-
+        moveStartIntersection = intersectViewPlane(event3D.mouseRay,
+                                                   moveStartCenter,
+                                                   moveStartNormal);
         break;
       case 2:
-        state = STATE.ZOOM;
-        zoomStart.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
-        break;
-
-      case 3:
-        state = STATE.MOVE;
+        state = STATE.NONE;
+        touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
+                                                  event.touches[0].pageY);
+        touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
+                                                  event.touches[1].pageY);
+        touchMoveVector[0] = new THREE.Vector2(0, 0);
+        touchMoveVector[1] = new THREE.Vector2(0, 0);
         break;
     }
 
@@ -265,48 +270,66 @@ ROS3D.OrbitControls = function(options) {
    */
   function onTouchMove(event3D) {
     var event = event3D.domEvent;
-    console.log(state);
     if (state === STATE.ROTATE) {
 
-      rotateEnd.set(event.changedTouches[0].pageX - window.scrollX, event.changedTouches[0].pageY - window.scrollY);
+      rotateEnd.set(event.touches[0].pageX - window.scrollX, event.touches[0].pageY - window.scrollY);
       rotateDelta.subVectors(rotateEnd, rotateStart);
 
-      that.rotateLeft(2 * Math.PI * rotateDelta.x / pixlesPerRound * that.userRotateSpeed);
-      that.rotateUp(2 * Math.PI * rotateDelta.y / pixlesPerRound * that.userRotateSpeed);
+      that.rotateLeft(2 * Math.PI * rotateDelta.x / pixelsPerRound * that.userRotateSpeed);
+      that.rotateUp(2 * Math.PI * rotateDelta.y / pixelsPerRound * that.userRotateSpeed);
 
       rotateStart.copy(rotateEnd);
       this.showAxes();
-    } else if (state === STATE.ZOOM) {
-      zoomEnd.set((event.changedTouches[0].pageX - event.changedTouches[1].pageX)*(event.changedTouches[0].pageX - event.changedTouches[1].pageX), (event.changedTouches[0].pageY - event.changedTouches[1].pageY)*(event.changedTouches[0].pageY - event.changedTouches[1].pageY));
-      zoomDelta.subVectors(zoomEnd, zoomStart);
-
-      if (zoomDelta.y + zoomDelta.x > 0) {
-        that.zoomOut();
-      } else {
-        that.zoomIn();
+    } else {
+      touchMoveVector[0].set(touchStartPosition[0].x - event.touches[0].pageX,
+                             touchStartPosition[0].y - event.touches[0].pageY);
+      touchMoveVector[1].set(touchStartPosition[1].x - event.touches[1].pageX,
+                             touchStartPosition[1].y - event.touches[1].pageY);
+      if (touchMoveVector[0].lengthSq() > touchMoveThreshold &&
+          touchMoveVector[1].lengthSq() > touchMoveThreshold) {
+        touchStartPosition[0].set(event.touches[0].pageX,
+                                  event.touches[0].pageY);
+        touchStartPosition[1].set(event.touches[1].pageX,
+                                  event.touches[1].pageY);
+        if (touchMoveVector[0].dot(touchMoveVector[1]) > 0 &&
+            state !== STATE.ZOOM) {
+          state = STATE.MOVE;
+        } else if (touchMoveVector[0].dot(touchMoveVector[1]) < 0 &&
+                   state !== STATE.MOVE) {
+          state = STATE.ZOOM;
+        }
+        if (state === STATE.ZOOM) {
+          var tmpVector = new THREE.Vector2();
+          tmpVector.subVectors(touchStartPosition[0],
+                               touchStartPosition[1]);
+          if (touchMoveVector[0].dot(tmpVector) < 0 &&
+              touchMoveVector[1].dot(tmpVector) > 0) {
+            that.zoomOut();
+          } else if (touchMoveVector[0].dot(tmpVector) > 0 &&
+                     touchMoveVector[1].dot(tmpVector) < 0) {
+            that.zoomIn();
+          }
+        }
+      }
+      if (state === STATE.MOVE) {
+        var intersection = intersectViewPlane(event3D.mouseRay,
+                                              that.center,
+                                              moveStartNormal);
+        if (!intersection) {
+          return;
+        }
+        var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(),
+                                                   intersection.clone());
+        that.center.addVectors(moveStartCenter.clone(), delta.clone());
+        that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
+        that.update();
+        that.camera.updateMatrixWorld();
       }
 
-      zoomStart.copy(zoomEnd);
       this.showAxes();
 
-    } else if (state === STATE.MOVE) {
-      var intersection = intersectViewPlane(event3D.mouseRay, that.center, moveStartNormal);
-
-      if (!intersection) {
-        return;
-      }
-
-      var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
-          .clone());
-
-      that.center.addVectors(moveStartCenter.clone(), delta.clone());
-      that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
-      that.update();
-      that.camera.updateMatrixWorld();
-      this.showAxes();
+      event.preventDefault();
     }
-
-    event.preventDefault();
   }
 
   // add event listeners
