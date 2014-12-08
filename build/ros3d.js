@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.11.0-SNAPSHOT'
+  REVISION : '0.11.0'
 };
 
 // Marker types
@@ -2765,7 +2765,7 @@ ROS3D.Viewer = function(options) {
   this.renderer = new THREE.WebGLRenderer({
     antialias : this.antialias
   });
-  this.renderer.setClearColor(background.replace('#', '0x'), 1.0);
+  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), 1.0);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
@@ -3015,6 +3015,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   // use the THREE raycaster
   var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
       this.camera.position).normalize());
+  mouseRaycaster.linePrecision = 0.001;
   var mouseRay = mouseRaycaster.ray;
 
   // make our 3d mouse event

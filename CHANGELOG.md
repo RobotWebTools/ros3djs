@@ -1,3 +1,12 @@
+2014-12-08 - **0.11.0**
+ * Change linePrecision on raycaster [(mszarski)](https://github.com/mszarski/)
+ * Added support for loading STLs as meshes [(mitchellwills)](https://github.com/mitchellwills/)
+ * Compute normals after loading an STL model [(T045T)](https://github.com/T045T/)
+ * Fixed depth cloud example [(mitchellwills)](https://github.com/mitchellwills/)
+ * Fixed video method name [Akin Sisbot]
+ * Fixed multi-touch operation for both Windows and Android tablet [Akin Sisbot]
+ * Fix for ROS3D.Viewer clear color [Daniel Beßler]
+
 2014-09-09 - **0.10.0**
  * Updated threejs library to r61 [(mitchellwills)](https://github.com/mitchellwills/)
 
