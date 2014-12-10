@@ -11,7 +11,8 @@
  *  * menuEntries - the menu entries to add
  *  * className (optional) - a custom CSS class for the menu div
  *  * entryClassName (optional) - a custom CSS class for the menu entry
- *  * overlayClassName (optional) - a  custom CSS class for the menu overlay
+ *  * overlayClassName (optional) - a custom CSS class for the menu overlay
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerMenu = function(options) {
   var that = this;
@@ -20,6 +21,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   var className = options.className || 'default-interactive-marker-menu';
   var entryClassName = options.entryClassName || 'default-interactive-marker-menu-entry';
   var overlayClassName = options.overlayClassName || 'default-interactive-marker-overlay';
+  var menuFontSize = options.menuFontSize || '0.8em';
 
   // holds the menu tree
   var allMenus = [];
@@ -36,7 +38,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
     style.type = 'text/css';
     style.innerHTML = '.default-interactive-marker-menu {' + 'background-color: #444444;'
         + 'border: 1px solid #888888;' + 'border: 1px solid #888888;' + 'padding: 0px 0px 0px 0px;'
-        + 'color: #FFFFFF;' + 'font-family: sans-serif;' + 'font-size: 0.8em;' + 'z-index: 1002;'
+        + 'color: #FFFFFF;' + 'font-family: sans-serif;' + 'font-size: ' + menuFontSize +';' + 'z-index: 1002;'
         + '}' + '.default-interactive-marker-menu ul {' + 'padding: 0px 0px 5px 0px;'
         + 'margin: 0px;' + 'list-style-type: none;' + '}'
         + '.default-interactive-marker-menu ul li div {' + '-webkit-touch-callout: none;'
@@ -67,6 +69,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   this.hideListener = this.hide.bind(this);
   this.overlayDomElem.addEventListener('contextmenu', this.hideListener);
   this.overlayDomElem.addEventListener('click', this.hideListener);
+  this.overlayDomElem.addEventListener('touchstart', this.hideListener);
 
   // parse all entries and link children to parents
   var i, entry, id;
@@ -120,8 +123,10 @@ ROS3D.InteractiveMarkerMenu = function(options) {
       if (children[i].children.length > 0) {
         makeUl(liElem, children[i]);
         divElem.addEventListener('click', that.hide.bind(that));
+        divElem.addEventListener('touchstart', that.hide.bind(that));
       } else {
         divElem.addEventListener('click', emitMenuSelect.bind(that, children[i]));
+        divElem.addEventListener('touchstart', emitMenuSelect.bind(that, children[i]));
         divElem.className = 'default-interactive-marker-menu-entry';
       }
     }
@@ -146,8 +151,15 @@ ROS3D.InteractiveMarkerMenu.prototype.show = function(control, event) {
   this.controlName = control.name;
 
   // position it on the click
-  this.menuDomElem.style.left = event.domEvent.clientX + 'px';
-  this.menuDomElem.style.top = event.domEvent.clientY + 'px';
+  if (event.domEvent.changedTouches !== undefined) {
+    // touch click
+    this.menuDomElem.style.left = event.domEvent.changedTouches[0].pageX + 'px';
+    this.menuDomElem.style.top = event.domEvent.changedTouches[0].pageY + 'px';
+  } else {
+    // mouse click
+    this.menuDomElem.style.left = event.domEvent.clientX + 'px';
+    this.menuDomElem.style.top = event.domEvent.clientY + 'px';
+  }
   document.body.appendChild(this.overlayDomElem);
   document.body.appendChild(this.menuDomElem);
 };

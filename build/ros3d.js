@@ -538,7 +538,8 @@ ROS3D.InteractiveMarker = function(options) {
   // check for any menus
   if (handle.menuEntries.length > 0) {
     this.menu = new ROS3D.InteractiveMarkerMenu({
-      menuEntries : handle.menuEntries
+      menuEntries : handle.menuEntries,
+      menuFontSize : handle.menuFontSize
     });
 
     // forward menu select events
@@ -807,6 +808,7 @@ THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
  *  * rootObject (optional) - the root THREE 3D object to render to
  *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
  *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerClient = function(options) {
   var that = this;
@@ -818,6 +820,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.menuFontSize = options.menuFontSize || '0.8em';
 
   this.interactiveMarkers = {};
   this.updateTopic = null;
@@ -932,7 +935,8 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     var handle = new ROS3D.InteractiveMarkerHandle({
       message : msg,
       feedbackTopic : that.feedbackTopic,
-      tfClient : that.tfClient
+      tfClient : that.tfClient,
+      menuFontSize : that.menuFontSize
     });
     that.interactiveMarkers[msg.name] = handle;
 
@@ -1008,6 +1012,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.path = options.path || '/';
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
   this.dragging = false;
+  this.startMousePos = new THREE.Vector2();
 
   // orientation for the control
   var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
@@ -1055,13 +1060,21 @@ ROS3D.InteractiveMarkerControl = function(options) {
     this.addEventListener('mousedown', this.parent.startDrag.bind(this.parent, this));
     this.addEventListener('mouseup', this.parent.stopDrag.bind(this.parent, this));
     this.addEventListener('contextmenu', this.parent.showMenu.bind(this.parent, this));
+    this.addEventListener('mouseup', function(event3d) {
+      if (that.startMousePos.distanceToSquared(event3d.mousePos) === 0) {
+        event3d.type = 'contextmenu';
+        that.dispatchEvent(event3d);
+      }
+    });
     this.addEventListener('mouseover', stopPropagation);
     this.addEventListener('mouseout', stopPropagation);
     this.addEventListener('click', stopPropagation);
+    this.addEventListener('mousedown', function(event3d) {
+      that.startMousePos = event3d.mousePos;
+    });
 
     // touch support
     this.addEventListener('touchstart', function(event3d) {
-      console.log(event3d.domEvent);
       if (event3d.domEvent.touches.length === 1) {
         event3d.type = 'mousedown';
         event3d.domEvent.button = 0;
@@ -1070,7 +1083,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
     });
     this.addEventListener('touchmove', function(event3d) {
       if (event3d.domEvent.touches.length === 1) {
-        console.log(event3d.domEvent);
         event3d.type = 'mousemove';
         event3d.domEvent.button = 0;
         that.dispatchEvent(event3d);
@@ -1208,12 +1220,14 @@ ROS3D.InteractiveMarkerControl.prototype.__proto__ = THREE.Object3D.prototype;
  *  * message - the interactive marker message
  *  * feedbackTopic - the ROSLIB.Topic associated with the feedback
  *  * tfClient - a handle to the TF client to use
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerHandle = function(options) {
   options = options || {};
   this.message = options.message;
   this.feedbackTopic = options.feedbackTopic;
   this.tfClient = options.tfClient;
+  this.menuFontSize = options.menuFontSize || '0.8em';
   this.name = this.message.name;
   this.header = this.message.header;
   this.controls = this.message.controls;
@@ -1383,7 +1397,8 @@ ROS3D.InteractiveMarkerHandle.prototype.sendFeedback = function(eventType, click
  *  * menuEntries - the menu entries to add
  *  * className (optional) - a custom CSS class for the menu div
  *  * entryClassName (optional) - a custom CSS class for the menu entry
- *  * overlayClassName (optional) - a  custom CSS class for the menu overlay
+ *  * overlayClassName (optional) - a custom CSS class for the menu overlay
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerMenu = function(options) {
   var that = this;
@@ -1392,6 +1407,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   var className = options.className || 'default-interactive-marker-menu';
   var entryClassName = options.entryClassName || 'default-interactive-marker-menu-entry';
   var overlayClassName = options.overlayClassName || 'default-interactive-marker-overlay';
+  var menuFontSize = options.menuFontSize || '0.8em';
 
   // holds the menu tree
   var allMenus = [];
@@ -1408,7 +1424,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
     style.type = 'text/css';
     style.innerHTML = '.default-interactive-marker-menu {' + 'background-color: #444444;'
         + 'border: 1px solid #888888;' + 'border: 1px solid #888888;' + 'padding: 0px 0px 0px 0px;'
-        + 'color: #FFFFFF;' + 'font-family: sans-serif;' + 'font-size: 0.8em;' + 'z-index: 1002;'
+        + 'color: #FFFFFF;' + 'font-family: sans-serif;' + 'font-size: ' + menuFontSize +';' + 'z-index: 1002;'
         + '}' + '.default-interactive-marker-menu ul {' + 'padding: 0px 0px 5px 0px;'
         + 'margin: 0px;' + 'list-style-type: none;' + '}'
         + '.default-interactive-marker-menu ul li div {' + '-webkit-touch-callout: none;'
@@ -1439,6 +1455,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   this.hideListener = this.hide.bind(this);
   this.overlayDomElem.addEventListener('contextmenu', this.hideListener);
   this.overlayDomElem.addEventListener('click', this.hideListener);
+  this.overlayDomElem.addEventListener('touchstart', this.hideListener);
 
   // parse all entries and link children to parents
   var i, entry, id;
@@ -1492,8 +1509,10 @@ ROS3D.InteractiveMarkerMenu = function(options) {
       if (children[i].children.length > 0) {
         makeUl(liElem, children[i]);
         divElem.addEventListener('click', that.hide.bind(that));
+        divElem.addEventListener('touchstart', that.hide.bind(that));
       } else {
         divElem.addEventListener('click', emitMenuSelect.bind(that, children[i]));
+        divElem.addEventListener('touchstart', emitMenuSelect.bind(that, children[i]));
         divElem.className = 'default-interactive-marker-menu-entry';
       }
     }
@@ -1518,8 +1537,15 @@ ROS3D.InteractiveMarkerMenu.prototype.show = function(control, event) {
   this.controlName = control.name;
 
   // position it on the click
-  this.menuDomElem.style.left = event.domEvent.clientX + 'px';
-  this.menuDomElem.style.top = event.domEvent.clientY + 'px';
+  if (event.domEvent.changedTouches !== undefined) {
+    // touch click
+    this.menuDomElem.style.left = event.domEvent.changedTouches[0].pageX + 'px';
+    this.menuDomElem.style.top = event.domEvent.changedTouches[0].pageY + 'px';
+  } else {
+    // mouse click
+    this.menuDomElem.style.left = event.domEvent.clientX + 'px';
+    this.menuDomElem.style.top = event.domEvent.clientY + 'px';
+  }
   document.body.appendChild(this.overlayDomElem);
   document.body.appendChild(this.menuDomElem);
 };
@@ -3385,6 +3411,9 @@ ROS3D.OrbitControls = function(options) {
         state = STATE.ROTATE;
         rotateStart.set(event.touches[0].pageX - window.scrollX,
                         event.touches[0].pageY - window.scrollY);
+        break;
+      case 2:
+        state = STATE.NONE;
         /* ready for move */
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
@@ -3394,9 +3423,6 @@ ROS3D.OrbitControls = function(options) {
         moveStartIntersection = intersectViewPlane(event3D.mouseRay,
                                                    moveStartCenter,
                                                    moveStartNormal);
-        break;
-      case 2:
-        state = STATE.NONE;
         touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
                                                   event.touches[0].pageY);
         touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
@@ -3480,13 +3506,23 @@ ROS3D.OrbitControls = function(options) {
     }
   }
 
+  function onTouchEnd(event3D) {
+    var event = event3D.domEvent;
+    if (event.touches.length === 1 &&
+        state !== STATE.ROTATE) {
+      state = STATE.ROTATE;
+      rotateStart.set(event.touches[0].pageX - window.scrollX,
+                      event.touches[0].pageY - window.scrollY);
+    }
+  }
+
   // add event listeners
   this.addEventListener('mousedown', onMouseDown);
   this.addEventListener('mouseup', onMouseUp);
   this.addEventListener('mousemove', onMouseMove);
   this.addEventListener('touchstart', onTouchDown);
   this.addEventListener('touchmove', onTouchMove);
-  this.addEventListener('touchend', onMouseUp);
+  this.addEventListener('touchend', onTouchEnd);
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);
