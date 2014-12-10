@@ -15,12 +15,14 @@
  *  * message - the interactive marker message
  *  * feedbackTopic - the ROSLIB.Topic associated with the feedback
  *  * tfClient - a handle to the TF client to use
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerHandle = function(options) {
   options = options || {};
   this.message = options.message;
   this.feedbackTopic = options.feedbackTopic;
   this.tfClient = options.tfClient;
+  this.menuFontSize = options.menuFontSize || '0.8em';
   this.name = this.message.name;
   this.header = this.message.header;
   this.controls = this.message.controls;

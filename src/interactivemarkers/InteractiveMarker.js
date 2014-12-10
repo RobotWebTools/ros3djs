@@ -56,7 +56,8 @@ ROS3D.InteractiveMarker = function(options) {
   // check for any menus
   if (handle.menuEntries.length > 0) {
     this.menu = new ROS3D.InteractiveMarkerMenu({
-      menuEntries : handle.menuEntries
+      menuEntries : handle.menuEntries,
+      menuFontSize : handle.menuFontSize
     });
 
     // forward menu select events
