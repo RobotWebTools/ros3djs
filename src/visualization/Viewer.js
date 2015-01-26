@@ -25,7 +25,7 @@ ROS3D.Viewer = function(options) {
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
-  var antialias = options.antialias;
+  var antialias = options.antialias || true;
   var intensity = options.intensity || 0.66;
   var cameraPosition = options.cameraPose || {
     x : 3,
@@ -35,7 +35,7 @@ ROS3D.Viewer = function(options) {
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
-    antialias : this.antialias
+    antialias : antialias
   });
   this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), 1.0);
   this.renderer.sortObjects = false;
