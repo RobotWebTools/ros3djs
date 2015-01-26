@@ -25,7 +25,7 @@ ROS3D.Viewer = function(options) {
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
-  var antialias = options.antialias || true;
+  var antialias = options.antialias;
   var intensity = options.intensity || 0.66;
   var cameraPosition = options.cameraPose || {
     x : 3,
