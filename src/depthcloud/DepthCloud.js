@@ -38,6 +38,13 @@ ROS3D.DepthCloud = function(options) {
   this.video.crossOrigin = 'Anonymous';
   this.video.setAttribute('crossorigin', 'Anonymous');
 
+  this.intervalCallback = null;
+  this.stopCloud = function() {
+    this.video.pause();
+    this.video.src = null; // forcefully silence the video streaming url.
+    clearInterval(this.intervalCallback);
+  };
+
   // define custom shaders
   this.vertex_shader = [
     'uniform sampler2D map;',
@@ -282,8 +289,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
     this.add(this.mesh);
 
     var that = this;
-
-    setInterval(function() {
+    this.intervalCallback = setInterval(function() {
       if (that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
         that.texture.needsUpdate = true;
       }

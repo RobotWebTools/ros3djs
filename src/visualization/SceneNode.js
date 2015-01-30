@@ -30,8 +30,7 @@ ROS3D.SceneNode = function(options) {
   // set the inital pose
   this.updatePose(this.pose);
 
-  // listen for TF updates
-  tfClient.subscribe(frameID, function(msg) {
+  this.tfCallback = function(msg) {
 
     // apply the transform
     var tf = new ROSLIB.Transform(msg);
@@ -40,8 +39,18 @@ ROS3D.SceneNode = function(options) {
 
     // update the world
     that.updatePose(poseTransformed);
-  });
+  };
+
+  // listen for TF updates
+  tfClient.subscribe(frameID, this.tfCallback);
+
+  this.removeTF = function() {
+    tfClient.unsubscribe(frameID, this.tfCallback);
+    this.tfCallback = null;
+  };
+
 };
+
 ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
 
 /**
@@ -57,3 +66,4 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
       pose.orientation.z, pose.orientation.w);
   this.updateMatrixWorld(true);
 };
+
