@@ -1,3 +1,8 @@
+2015-02-04 - **0.12.0**
+ * Apply touch event to interactive menu marker [(asisbot)](https://github.com/asisbot/)
+ * Antialias fix [(daniel86)](https://github.com/daniel86/)
+ * Updated depthcloud example to use web_video_server [(mitchellwills)](https://github.com/mitchellwills/)
+
 2014-12-08 - **0.11.0**
  * Change linePrecision on raycaster [(mszarski)](https://github.com/mszarski/)
  * Added support for loading STLs as meshes [(mitchellwills)](https://github.com/mitchellwills/)
