@@ -237,6 +237,9 @@ ROS3D.OrbitControls = function(options) {
         state = STATE.ROTATE;
         rotateStart.set(event.touches[0].pageX - window.scrollX,
                         event.touches[0].pageY - window.scrollY);
+        break;
+      case 2:
+        state = STATE.NONE;
         /* ready for move */
         moveStartNormal = new THREE.Vector3(0, 0, 1);
         var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
@@ -246,9 +249,6 @@ ROS3D.OrbitControls = function(options) {
         moveStartIntersection = intersectViewPlane(event3D.mouseRay,
                                                    moveStartCenter,
                                                    moveStartNormal);
-        break;
-      case 2:
-        state = STATE.NONE;
         touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
                                                   event.touches[0].pageY);
         touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
@@ -332,13 +332,23 @@ ROS3D.OrbitControls = function(options) {
     }
   }
 
+  function onTouchEnd(event3D) {
+    var event = event3D.domEvent;
+    if (event.touches.length === 1 &&
+        state !== STATE.ROTATE) {
+      state = STATE.ROTATE;
+      rotateStart.set(event.touches[0].pageX - window.scrollX,
+                      event.touches[0].pageY - window.scrollY);
+    }
+  }
+
   // add event listeners
   this.addEventListener('mousedown', onMouseDown);
   this.addEventListener('mouseup', onMouseUp);
   this.addEventListener('mousemove', onMouseMove);
   this.addEventListener('touchstart', onTouchDown);
   this.addEventListener('touchmove', onTouchMove);
-  this.addEventListener('touchend', onMouseUp);
+  this.addEventListener('touchend', onTouchEnd);
   // Chrome/Firefox have different events here
   this.addEventListener('mousewheel', onMouseWheel);
   this.addEventListener('DOMMouseScroll', onMouseWheel);

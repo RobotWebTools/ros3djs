@@ -16,6 +16,7 @@
  *  * rootObject (optional) - the root THREE 3D object to render to
  *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
  *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerClient = function(options) {
   var that = this;
@@ -27,6 +28,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.menuFontSize = options.menuFontSize || '0.8em';
 
   this.interactiveMarkers = {};
   this.updateTopic = null;
@@ -141,7 +143,8 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
     var handle = new ROS3D.InteractiveMarkerHandle({
       message : msg,
       feedbackTopic : that.feedbackTopic,
-      tfClient : that.tfClient
+      tfClient : that.tfClient,
+      menuFontSize : that.menuFontSize
     });
     that.interactiveMarkers[msg.name] = handle;
 

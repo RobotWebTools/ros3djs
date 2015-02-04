@@ -1,3 +1,8 @@
+2015-02-04 - **0.12.0**
+ * Apply touch event to interactive menu marker [(asisbot)](https://github.com/asisbot/)
+ * Antialias fix [(daniel86)](https://github.com/daniel86/)
+ * Updated depthcloud example to use web_video_server [(mitchellwills)](https://github.com/mitchellwills/)
+
 2014-12-08 - **0.11.0**
  * Change linePrecision on raycaster [(mszarski)](https://github.com/mszarski/)
  * Added support for loading STLs as meshes [(mitchellwills)](https://github.com/mitchellwills/)
@@ -22,8 +27,8 @@
  * Added flag to change the type of collada loader [(rctoris)](https://github.com/rctoris/)
  * Fix typo in description of onMouseMove() [(T045T)](https://github.com/T045T/)
  * Use the total length of zoomDelta, not just the y component, for multi-touch zooming [(T045T)](https://github.com/T045T/)
- * Correction on measure unit for cellSize [(Vegekou)](https://github.com/Vegekou/)
- * Urdf shapes fix [(Vegekou)](https://github.com/Vegekou/)
+ * Correction on measure unit for cellSize [(rbonghi)](https://github.com/rbonghi/)
+ * Urdf shapes fix [(rbonghi)](https://github.com/rbonghi/)
  * Allow to change cellSize [(rk4an)](https://github.com/rk4an/)
  * Added LINE_STRIP and LINE_LIST support [(mszarski)](https://github.com/mszarski/)
  * Add tfPrefix for multi-robots support [(erkan)](https://github.com/erkan/)
