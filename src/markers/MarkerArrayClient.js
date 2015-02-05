@@ -35,14 +35,14 @@ ROS3D.MarkerArrayClient = function(options) {
   this.markers = {};
 
   // subscribe to MarkerArray topic
-  var arrayTopic = new ROSLIB.Topic({
+  this.arrayTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'visualization_msgs/MarkerArray',
     compression : 'png'
   });
   
-  arrayTopic.subscribe(function(arrayMessage) {
+  this.arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
       var newMarker = new ROS3D.Marker({
@@ -52,10 +52,13 @@ ROS3D.MarkerArrayClient = function(options) {
       });
 
       // remove old marker from Three.Object3D children buffer
-      that.rootObject.remove(that.markers[message.ns + message.id]);
+      if ( that.markers[message.ns + message.id] ) {
+        that.rootObject.remove(that.markers[message.ns + message.id]);
+        that.markers[message.ns + message.id].removeTF();
+      }
 
       that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-        frameID : message.header.frame_id,
+        frameID : message.header.frame_id.trimLeft('/'),
         tfClient : that.tfClient,
         object : newMarker
       });
@@ -64,5 +67,16 @@ ROS3D.MarkerArrayClient = function(options) {
     
     that.emit('change');
   });
+
+    this.removeArray = function() {
+        var mac = this;
+	mac.arrayTopic.unsubscribe();
+        for (var key in mac.markers) {
+            if (mac.markers.hasOwnProperty(key)) {
+                mac.rootObject.remove( mac.markers[key] );
+                mac.markers[key].removeTF();
+            }
+        }
+    };
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
