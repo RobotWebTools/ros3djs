@@ -317,7 +317,7 @@ ROS3D.Marker.prototype.update = function(message) {
   
   // Update color
   if(message.color.r !== this.msgColor[0] ||
-     message.color.g !== this.msgColor[1] || 
+     message.color.g !== this.msgColor[1] ||
      message.color.b !== this.msgColor[2] ||
      message.color.a !== this.msgColor[3])
   {
