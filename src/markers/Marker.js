@@ -368,9 +368,9 @@ ROS3D.Marker.prototype.update = function(message) {
   
   // Update geometry
   var scaleChanged =
-        this.msgScale[0] !== message.scale.x ||
-        this.msgScale[1] !== message.scale.y ||
-        this.msgScale[2] !== message.scale.z;
+        Math.abs(this.msgScale[0] - message.scale.x) > 1.0e-6 ||
+        Math.abs(this.msgScale[1] - message.scale.y) > 1.0e-6 ||
+        Math.abs(this.msgScale[2] - message.scale.z) > 1.0e-6;
   this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
   
   switch (message.type) {
@@ -391,6 +391,9 @@ ROS3D.Marker.prototype.update = function(message) {
         if(meshResource !== this.msgMesh) {
             return false;
         }
+        if(scaleChanged) {
+            return false;
+        }
         break;
     case ROS3D.MARKER_ARROW:
     case ROS3D.MARKER_LINE_STRIP:
@@ -399,7 +402,7 @@ ROS3D.Marker.prototype.update = function(message) {
     case ROS3D.MARKER_SPHERE_LIST:
     case ROS3D.MARKER_POINTS:
     case ROS3D.MARKER_TRIANGLE_LIST:
-		// TODO: Check if geometry changed
+        // TODO: Check if geometry changed
         return false;
     default:
         break;
