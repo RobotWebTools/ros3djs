@@ -294,3 +294,13 @@ ROS3D.Marker.prototype.setPose = function(pose) {
   // update the world
   this.updateMatrixWorld();
 };
+
+/**
+ * Update this marker.
+ *
+ * @param message - the marker message
+ * @return true on success otherwhise false is returned
+ */
+ROS3D.Marker.prototype.update = function(message) {
+  return false;
+}
