@@ -27,12 +27,14 @@ ROS3D.Marker = function(options) {
 
   THREE.Object3D.call(this);
   
-  if(message.scale)
+  if(message.scale) {
     this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
-  else
+  }
+  else {
     this.msgScale = [1,1,1];
+  }
   this.msgColor = [message.color.r, message.color.g, message.color.b, message.color.a];
-  this.msgMesh = undefined
+  this.msgMesh = undefined;
 
   // set the pose and get the color
   this.setPose(message.pose);

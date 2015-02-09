@@ -45,7 +45,7 @@ ROS3D.MarkerArrayClient = function(options) {
   arrayTopic.subscribe(function(arrayMessage) {
     
     arrayMessage.markers.forEach(function(message) {
-      if(message.action == 0) {
+      if(message.action === 0) {
         var updated = false;
         if(message.ns + message.id in that.markers) { // MODIFY
           updated = that.markers[message.ns + message.id].children[0].update(message);
@@ -67,21 +67,21 @@ ROS3D.MarkerArrayClient = function(options) {
           that.rootObject.add(that.markers[message.ns + message.id]);
         }
       }
-      else if(message.action == 1) { // "DEPRECATED"
-        console.warn("Received marker message with deprecated action identifier '1'");
+      else if(message.action === 1) { // "DEPRECATED"
+        console.warn('Received marker message with deprecated action identifier "1"');
       }
-      else if(message.action == 2) { // "DELETE"
+      else if(message.action === 2) { // "DELETE"
         that.rootObject.remove(that.markers[message.ns + message.id]);
         delete that.markers[message.ns + message.id];
       }
-      else if(message.action == 3) { // "DELETE ALL"
+      else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
           that.rootObject.remove(m);
         }
         that.markers = {};
       }
       else {
-        console.warn("Received marker message with unknown action identifier '"+message.action+"'");
+        console.warn('Received marker message with unknown action identifier "'+message.action+'"');
       }
     });
     
