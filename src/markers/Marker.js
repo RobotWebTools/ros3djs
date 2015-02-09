@@ -406,4 +406,4 @@ ROS3D.Marker.prototype.update = function(message) {
   }
   
   return true;
-}
+};
