@@ -368,9 +368,9 @@ ROS3D.Marker.prototype.update = function(message) {
   
   // Update geometry
   var scaleChanged =
-        this.scale[0] !== message.scale.x ||
-        this.scale[1] !== message.scale.y ||
-        this.scale[2] !== message.scale.z;
+        this.msgScale[0] !== message.scale.x ||
+        this.msgScale[1] !== message.scale.y ||
+        this.msgScale[2] !== message.scale.z;
   this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
   
   switch (message.type) {
