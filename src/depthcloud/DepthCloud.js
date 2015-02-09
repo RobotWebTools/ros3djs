@@ -41,7 +41,7 @@ ROS3D.DepthCloud = function(options) {
   this.intervalCallback = null;
   this.stopCloud = function() {
     this.video.pause();
-    this.video.src = null; // forcefully silence the video streaming url.
+    this.video.src = undefined; // forcefully silence the video streaming url.
     clearInterval(this.intervalCallback);
   };
 
