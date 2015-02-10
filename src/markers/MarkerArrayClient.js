@@ -1,6 +1,7 @@
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
+ * @author Peter Soetens - peter@thesourceworks.com
  */
 
 /**
@@ -45,12 +46,15 @@ ROS3D.MarkerArrayClient = function(options) {
   this.arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
+
+      // We need to delete always to make sure no markers are overlaying on each other
+      if ( that.markers[message.ns + message.id] ) {
+        that.rootObject.remove(that.markers[message.ns + message.id]);
+        that.markers[message.ns + message.id].removeTF();
+      }
+
       if (message.action === 2 ) {
-        // delete action
-        if ( that.markers[message.ns + message.id] ) {
-          that.rootObject.remove(that.markers[message.ns + message.id]);
-          that.markers[message.ns + message.id].removeTF();
-        }
+        // delete action, already deleted.
       } else if ( message.action === 0 ) {
 	// create action
 
