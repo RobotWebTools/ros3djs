@@ -45,24 +45,28 @@ ROS3D.MarkerArrayClient = function(options) {
   this.arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
-      var newMarker = new ROS3D.Marker({
-        message : message,
-        path : that.path,
-        loader : that.loader
-      });
+      if (message.action === 2 ) {
+        // delete action
+        if ( that.markers[message.ns + message.id] ) {
+          that.rootObject.remove(that.markers[message.ns + message.id]);
+          that.markers[message.ns + message.id].removeTF();
+        }
+      } else if ( message.action === 0 ) {
+	// create action
 
-      // remove old marker from Three.Object3D children buffer
-      if ( that.markers[message.ns + message.id] ) {
-        that.rootObject.remove(that.markers[message.ns + message.id]);
-        that.markers[message.ns + message.id].removeTF();
+        var newMarker = new ROS3D.Marker({
+          message : message,
+          path : that.path,
+          loader : that.loader
+        });
+
+        that.markers[message.ns + message.id] = new ROS3D.SceneNode({
+          frameID : message.header.frame_id.trimLeft('/'),
+          tfClient : that.tfClient,
+          object : newMarker
+        });
+        that.rootObject.add(that.markers[message.ns + message.id]);
       }
-
-      that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-        frameID : message.header.frame_id.trimLeft('/'),
-        tfClient : that.tfClient,
-        object : newMarker
-      });
-      that.rootObject.add(that.markers[message.ns + message.id]);
     });
     
     that.emit('change');
