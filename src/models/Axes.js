@@ -18,8 +18,11 @@ ROS3D.Axes = function(options) {
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
+  var scaleArg = options.scale || 1.0;
 
   THREE.Object3D.call(this);
+
+  this.scale = new THREE.Vector3(scaleArg,scaleArg,scaleArg);
 
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
