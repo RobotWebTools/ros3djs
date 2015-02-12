@@ -788,6 +788,20 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
   }
 };
 
+/**
+ * Free memory of elements in this marker.
+ */
+ROS3D.InteractiveMarker.prototype.dispose = function() {
+  var that = this;
+  this.children.forEach(function(intMarkerControl) {
+    intMarkerControl.children.forEach(function(marker) {
+      marker.dispose();
+      intMarkerControl.remove(marker);
+    });
+    that.remove(intMarkerControl);
+  });
+};
+
 THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
 
 /**
@@ -977,8 +991,10 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
     // remove the object
-    this.rootObject.remove(this.rootObject.getObjectByName(intMarkerName));
+    var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
+    this.rootObject.remove(targetIntMarker);
     delete this.interactiveMarkers[intMarkerName];
+    targetIntMarker.dispose();
   }
 };
 
@@ -2010,6 +2026,38 @@ ROS3D.Marker.prototype.setPose = function(pose) {
   this.updateMatrixWorld();
 };
 
+/**
+ * Free memory of elements in this marker.
+ */
+ROS3D.Marker.prototype.dispose = function() {
+  this.children.forEach(function(element) {
+    if (element instanceof ROS3D.MeshResource) {
+      element.children.forEach(function(scene) {
+        if (scene.material !== undefined) {
+          scene.material.dispose();
+        }
+        scene.children.forEach(function(mesh) {
+          if (mesh.geometry !== undefined) {
+            mesh.geometry.dispose();
+          }
+          if (mesh.material !== undefined) {
+            mesh.material.dispose();
+          }
+          scene.remove(mesh);
+        });
+        element.remove(scene);
+      });
+    } else {
+      if (element.geometry !== undefined) {
+          element.geometry.dispose();
+      }
+      if (element.material !== undefined) {
+          element.material.dispose();
+      }
+    }
+    element.parent.remove(element);
+  });
+};
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
