@@ -294,3 +294,36 @@ ROS3D.Marker.prototype.setPose = function(pose) {
   // update the world
   this.updateMatrixWorld();
 };
+
+/**
+ * Free memory of elements in this marker.
+ */
+ROS3D.Marker.prototype.dispose = function() {
+  this.children.forEach(function(element) {
+    if (element instanceof ROS3D.MeshResource) {
+      element.children.forEach(function(scene) {
+        if (scene.material !== undefined) {
+          scene.material.dispose();
+        }
+        scene.children.forEach(function(mesh) {
+          if (mesh.geometry !== undefined) {
+            mesh.geometry.dispose();
+          }
+          if (mesh.material !== undefined) {
+            mesh.material.dispose();
+          }
+          scene.remove(mesh);
+        });
+        element.remove(scene);
+      });
+    } else {
+      if (element.geometry !== undefined) {
+          element.geometry.dispose();
+      }
+      if (element.material !== undefined) {
+          element.material.dispose();
+      }
+    }
+    element.parent.remove(element);
+  });
+};
