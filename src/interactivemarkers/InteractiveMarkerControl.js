@@ -28,6 +28,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.path = options.path || '/';
   this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
   this.dragging = false;
+  this.startMousePos = new THREE.Vector2();
 
   // orientation for the control
   var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
@@ -75,13 +76,21 @@ ROS3D.InteractiveMarkerControl = function(options) {
     this.addEventListener('mousedown', this.parent.startDrag.bind(this.parent, this));
     this.addEventListener('mouseup', this.parent.stopDrag.bind(this.parent, this));
     this.addEventListener('contextmenu', this.parent.showMenu.bind(this.parent, this));
+    this.addEventListener('mouseup', function(event3d) {
+      if (that.startMousePos.distanceToSquared(event3d.mousePos) === 0) {
+        event3d.type = 'contextmenu';
+        that.dispatchEvent(event3d);
+      }
+    });
     this.addEventListener('mouseover', stopPropagation);
     this.addEventListener('mouseout', stopPropagation);
     this.addEventListener('click', stopPropagation);
+    this.addEventListener('mousedown', function(event3d) {
+      that.startMousePos = event3d.mousePos;
+    });
 
     // touch support
     this.addEventListener('touchstart', function(event3d) {
-      console.log(event3d.domEvent);
       if (event3d.domEvent.touches.length === 1) {
         event3d.type = 'mousedown';
         event3d.domEvent.button = 0;
@@ -90,7 +99,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
     });
     this.addEventListener('touchmove', function(event3d) {
       if (event3d.domEvent.touches.length === 1) {
-        console.log(event3d.domEvent);
         event3d.type = 'mousemove';
         event3d.domEvent.button = 0;
         that.dispatchEvent(event3d);
