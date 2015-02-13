@@ -1,4 +1,8 @@
-2015-02-04 - **0.12.0**
+2015-02-13 - **0.13.0**
+ * Fixed memory leak of mesh marker [(asisbot)](https://github.com/asisbot/)
+ * Support for different marker actions [(daniel86)](https://github.com/daniel86/)
+
+ 2015-02-04 - **0.12.0**
  * Apply touch event to interactive menu marker [(asisbot)](https://github.com/asisbot/)
  * Antialias fix [(daniel86)](https://github.com/daniel86/)
  * Updated depthcloud example to use web_video_server [(mitchellwills)](https://github.com/mitchellwills/)
