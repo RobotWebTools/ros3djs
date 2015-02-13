@@ -72,7 +72,7 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
       blending : THREE.NormalBlending
     });
   } else {
-    return new THREE.MeshLambertMaterial({
+    return new THREE.MeshPhongMaterial({
       color : color.getHex(),
       opacity : a,
       blending : THREE.NormalBlending
