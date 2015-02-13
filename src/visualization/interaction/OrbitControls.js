@@ -217,9 +217,9 @@ ROS3D.OrbitControls = function(options) {
       delta = -event.detail;
     }
     if (delta > 0) {
-      that.zoomIn();
-    } else {
       that.zoomOut();
+    } else {
+      that.zoomIn();
     }
 
     this.showAxes();
@@ -371,7 +371,7 @@ ROS3D.OrbitControls.prototype.showAxes = function() {
       obj.visible = false;
     });
     that.hideTimeout = false;
-  }, 1000);
+  }, 300);
 };
 
 /**

@@ -56,7 +56,7 @@ ROS3D.Viewer = function(options) {
     scene : this.scene,
     camera : this.camera
   });
-  this.cameraControls.userZoomSpeed = 0.5;
+  this.cameraControls.userZoomSpeed = 2.5;
 
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
