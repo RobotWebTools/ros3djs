@@ -788,6 +788,20 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
   }
 };
 
+/**
+ * Free memory of elements in this marker.
+ */
+ROS3D.InteractiveMarker.prototype.dispose = function() {
+  var that = this;
+  this.children.forEach(function(intMarkerControl) {
+    intMarkerControl.children.forEach(function(marker) {
+      marker.dispose();
+      intMarkerControl.remove(marker);
+    });
+    that.remove(intMarkerControl);
+  });
+};
+
 THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
 
 /**
@@ -977,8 +991,10 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
 ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName) {
   if (this.interactiveMarkers[intMarkerName]) {
     // remove the object
-    this.rootObject.remove(this.rootObject.getObjectByName(intMarkerName));
+    var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
+    this.rootObject.remove(targetIntMarker);
     delete this.interactiveMarkers[intMarkerName];
+    targetIntMarker.dispose();
   }
 };
 
@@ -1741,11 +1757,20 @@ ROS3D.Marker = function(options) {
   }
 
   THREE.Object3D.call(this);
+  
+  if(message.scale) {
+    this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
+  }
+  else {
+    this.msgScale = [1,1,1];
+  }
+  this.msgColor = [message.color.r, message.color.g, message.color.b, message.color.a];
+  this.msgMesh = undefined;
 
   // set the pose and get the color
   this.setPose(message.pose);
-  var colorMaterial = ROS3D.makeColorMaterial(message.color.r, message.color.g, message.color.b,
-      message.color.a);
+  var colorMaterial = ROS3D.makeColorMaterial(this.msgColor[0],
+      this.msgColor[1], this.msgColor[2], this.msgColor[3]);
 
   // create the object based on the type
   switch (message.type) {
@@ -1965,9 +1990,10 @@ ROS3D.Marker = function(options) {
          message.color.b !== 0 || message.color.a !== 0) {
         meshColorMaterial = colorMaterial;
       }
+      this.msgMesh = message.mesh_resource.substr(10);
       var meshResource = new ROS3D.MeshResource({
         path : path,
-        resource : message.mesh_resource.substr(10),
+        resource :  this.msgMesh,
         material : meshColorMaterial,
         loader : loader
       });
@@ -2008,6 +2034,145 @@ ROS3D.Marker.prototype.setPose = function(pose) {
 
   // update the world
   this.updateMatrixWorld();
+};
+
+/**
+ * Update this marker.
+ *
+ * @param message - the marker message
+ * @return true on success otherwhise false is returned
+ */
+ROS3D.Marker.prototype.update = function(message) {
+  // set the pose and get the color
+  this.setPose(message.pose);
+  
+  // Update color
+  if(message.color.r !== this.msgColor[0] ||
+     message.color.g !== this.msgColor[1] ||
+     message.color.b !== this.msgColor[2] ||
+     message.color.a !== this.msgColor[3])
+  {
+      var colorMaterial = ROS3D.makeColorMaterial(
+          message.color.r, message.color.g,
+          message.color.b, message.color.a);
+  
+      switch (message.type) {
+      case ROS3D.MARKER_LINE_STRIP:
+      case ROS3D.MARKER_LINE_LIST:
+      case ROS3D.MARKER_POINTS:
+          break;
+      case ROS3D.MARKER_ARROW:
+      case ROS3D.MARKER_CUBE:
+      case ROS3D.MARKER_SPHERE:
+      case ROS3D.MARKER_CYLINDER:
+      case ROS3D.MARKER_TRIANGLE_LIST:
+      case ROS3D.MARKER_TEXT_VIEW_FACING:
+          this.traverse (function (child){
+              if (child instanceof THREE.Mesh) {
+                  child.material = colorMaterial;
+              }
+          });
+          break;
+      case ROS3D.MARKER_MESH_RESOURCE:
+          var meshColorMaterial = null;
+          if(message.color.r !== 0 || message.color.g !== 0 ||
+             message.color.b !== 0 || message.color.a !== 0) {
+              meshColorMaterial = this.colorMaterial;
+          }
+          this.traverse (function (child){
+              if (child instanceof THREE.Mesh) {
+                  child.material = meshColorMaterial;
+              }
+          });
+          break;
+      case ROS3D.MARKER_CUBE_LIST:
+      case ROS3D.MARKER_SPHERE_LIST:
+          // TODO Support to update color for MARKER_CUBE_LIST & MARKER_SPHERE_LIST
+          return false;
+      default:
+          return false;
+      }
+      
+      this.msgColor = [message.color.r, message.color.g,
+            message.color.b, message.color.a];
+  }
+  
+  // Update geometry
+  var scaleChanged =
+        Math.abs(this.msgScale[0] - message.scale.x) > 1.0e-6 ||
+        Math.abs(this.msgScale[1] - message.scale.y) > 1.0e-6 ||
+        Math.abs(this.msgScale[2] - message.scale.z) > 1.0e-6;
+  this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
+  
+  switch (message.type) {
+    case ROS3D.MARKER_CUBE:
+    case ROS3D.MARKER_SPHERE:
+    case ROS3D.MARKER_CYLINDER:
+        if(scaleChanged) {
+            return false;
+        }
+        break;
+    case ROS3D.MARKER_TEXT_VIEW_FACING:
+        if(scaleChanged || this.text !== message.text) {
+            return false;
+        }
+        break;
+    case ROS3D.MARKER_MESH_RESOURCE:
+        var meshResource = message.mesh_resource.substr(10);
+        if(meshResource !== this.msgMesh) {
+            return false;
+        }
+        if(scaleChanged) {
+            return false;
+        }
+        break;
+    case ROS3D.MARKER_ARROW:
+    case ROS3D.MARKER_LINE_STRIP:
+    case ROS3D.MARKER_LINE_LIST:
+    case ROS3D.MARKER_CUBE_LIST:
+    case ROS3D.MARKER_SPHERE_LIST:
+    case ROS3D.MARKER_POINTS:
+    case ROS3D.MARKER_TRIANGLE_LIST:
+        // TODO: Check if geometry changed
+        return false;
+    default:
+        break;
+  }
+  
+  return true;
+};
+
+/*
+ * Free memory of elements in this marker.
+ */
+ROS3D.Marker.prototype.dispose = function() {
+  this.children.forEach(function(element) {
+    if (element instanceof ROS3D.MeshResource) {
+      element.children.forEach(function(scene) {
+        if (scene.material !== undefined) {
+          scene.material.dispose();
+        }
+        scene.children.forEach(function(mesh) {
+          if (mesh.geometry !== undefined) {
+            mesh.geometry.dispose();
+          }
+          if (mesh.material !== undefined) {
+            mesh.material.dispose();
+          }
+          scene.remove(mesh);
+        });
+        element.remove(scene);
+      });
+    } else {
+      if (element.geometry !== undefined) {
+          element.geometry.dispose();
+      }
+      if (element.material !== undefined) {
+          element.material.dispose();
+      }
+    }
+    element.parent.remove(element);
+  });
 };
 
 /**
@@ -2057,21 +2222,44 @@ ROS3D.MarkerArrayClient = function(options) {
   arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
-      var newMarker = new ROS3D.Marker({
-        message : message,
-        path : that.path,
-        loader : that.loader
-      });
-
-      // remove old marker from Three.Object3D children buffer
-      that.rootObject.remove(that.markers[message.ns + message.id]);
-
-      that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : that.tfClient,
-        object : newMarker
-      });
-      that.rootObject.add(that.markers[message.ns + message.id]);
+      if(message.action === 0) {
+        var updated = false;
+        if(message.ns + message.id in that.markers) { // "MODIFY"
+          updated = that.markers[message.ns + message.id].children[0].update(message);
+          if(!updated) { // "REMOVE"
+              that.rootObject.remove(that.markers[message.ns + message.id]);
+          }
+        }
+        if(!updated) { // "ADD"
+          var newMarker = new ROS3D.Marker({
+            message : message,
+            path : that.path,
+            loader : that.loader
+          });
+          that.markers[message.ns + message.id] = new ROS3D.SceneNode({
+            frameID : message.header.frame_id,
+            tfClient : that.tfClient,
+            object : newMarker
+          });
+          that.rootObject.add(that.markers[message.ns + message.id]);
+        }
+      }
+      else if(message.action === 1) { // "DEPRECATED"
+        console.warn('Received marker message with deprecated action identifier "1"');
+      }
+      else if(message.action === 2) { // "DELETE"
+        that.rootObject.remove(that.markers[message.ns + message.id]);
+        delete that.markers[message.ns + message.id];
+      }
+      else if(message.action === 3) { // "DELETE ALL"
+        for (var m in that.markers){
+          that.rootObject.remove(m);
+        }
+        that.markers = {};
+      }
+      else {
+        console.warn('Received marker message with unknown action identifier "'+message.action+'"');
+      }
     });
     
     that.emit('change');
