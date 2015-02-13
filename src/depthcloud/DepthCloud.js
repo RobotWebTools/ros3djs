@@ -75,11 +75,11 @@ ROS3D.DepthCloud = function(options) {
     '    ',
     '    depth = ( depthColor.r + depthColor.g + depthColor.b ) / 3.0;',
     '    ',
-    '    if (depth>0.999)',
+    '    if (depth > (1.0 - 3.0/255.0) )', // If we're closer than 3 values from saturation, check the next depth image 
     '    {',
     '      vec4 depthColor2 = texture2D( map, vUv2 );',
     '      float depth2 = ( depthColor2.r + depthColor2.g + depthColor2.b ) / 3.0 ;',
-    '      depth = 0.999+depth2;',
+    '      depth += depth2;',
     '    }',
     '    ',
     '    return depth;',
