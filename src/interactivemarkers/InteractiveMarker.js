@@ -265,7 +265,7 @@ ROS3D.InteractiveMarker.prototype.buttonClick = function(control, event3d) {
  * @param event3d - the event that caused this
  */
 ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
-  this.position = position;
+  this.position.copy( position );
   this.feedbackEvent('user-pose-change', control);
 };
 
@@ -277,7 +277,7 @@ ROS3D.InteractiveMarker.prototype.setPosition = function(control, position) {
  */
 ROS3D.InteractiveMarker.prototype.setOrientation = function(control, orientation) {
   orientation.normalize();
-  this.quaternion = orientation;
+  this.quaternion.copy( orientation );
   this.feedbackEvent('user-pose-change', control);
 };
 
@@ -298,8 +298,8 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
       this.position.y = pose.position.y;
       this.position.z = pose.position.z;
 
-      this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
-          pose.orientation.z, pose.orientation.w);
+      this.quaternion.copy( new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+         pose.orientation.z, pose.orientation.w) );
 
       this.updateMatrixWorld(true);
     }

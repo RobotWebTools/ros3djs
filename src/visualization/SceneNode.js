@@ -48,7 +48,7 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
   this.position.x = pose.position.x;
   this.position.y = pose.position.y;
   this.position.z = pose.position.z;
-  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+  this.quaternion.set(pose.orientation.x, pose.orientation.y,
       pose.orientation.z, pose.orientation.w);
   this.updateMatrixWorld(true);
 };

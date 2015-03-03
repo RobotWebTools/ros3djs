@@ -55,7 +55,7 @@ ROS3D.Urdf = function(options) {
           
           // check for a scale
           if(link.visual.geometry.scale) {
-            mesh.scale = new THREE.Vector3(
+            mesh.scale.set(
               link.visual.geometry.scale.x,
               link.visual.geometry.scale.y,
               link.visual.geometry.scale.z
@@ -82,7 +82,7 @@ ROS3D.Urdf = function(options) {
         switch (link.visual.geometry.type) {
             case ROSLIB.URDF_BOX:
                 var dimension = link.visual.geometry.dimension;
-                var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
+                var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
                 shapeMesh = new THREE.Mesh(cube, colorMaterial);
                 break;
             case ROSLIB.URDF_CYLINDER:
