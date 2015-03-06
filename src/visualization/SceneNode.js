@@ -25,8 +25,9 @@ ROS3D.SceneNode = function(options) {
   THREE.Object3D.call(this);
 
   // add the model
-  this.add(object);
-
+  if (object) {
+    this.add(object);
+  }
   // set the inital pose
   this.updatePose(this.pose);
 
