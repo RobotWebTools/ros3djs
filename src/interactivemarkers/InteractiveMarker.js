@@ -306,4 +306,18 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
   }
 };
 
+/**
+ * Free memory of elements in this marker.
+ */
+ROS3D.InteractiveMarker.prototype.dispose = function() {
+  var that = this;
+  this.children.forEach(function(intMarkerControl) {
+    intMarkerControl.children.forEach(function(marker) {
+      marker.dispose();
+      intMarkerControl.remove(marker);
+    });
+    that.remove(intMarkerControl);
+  });
+};
+
 THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );

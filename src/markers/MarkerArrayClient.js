@@ -47,30 +47,43 @@ ROS3D.MarkerArrayClient = function(options) {
   this.arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
-
-      // We need to delete always to make sure no markers are overlaying on each other
-      if ( that.markers[message.ns + message.id] ) {
-        that.rootObject.remove(that.markers[message.ns + message.id]);
-        that.markers[message.ns + message.id].removeTF();
+      if(message.action === 0) {
+        var updated = false;
+        if(message.ns + message.id in that.markers) { // "MODIFY"
+          updated = that.markers[message.ns + message.id].children[0].update(message);
+          if(!updated) { // "REMOVE"
+              that.rootObject.remove(that.markers[message.ns + message.id]);
+          }
+        }
+        if(!updated) { // "ADD"
+          var newMarker = new ROS3D.Marker({
+            message : message,
+            path : that.path,
+            loader : that.loader
+          });
+          that.markers[message.ns + message.id] = new ROS3D.SceneNode({
+            frameID : message.header.frame_id,
+            tfClient : that.tfClient,
+            object : newMarker
+          });
+          that.rootObject.add(that.markers[message.ns + message.id]);
+        }
       }
-
-      if (message.action === 2 ) {
-        // delete action, already deleted.
-      } else if ( message.action === 0 ) {
-	// create action
-
-        var newMarker = new ROS3D.Marker({
-          message : message,
-          path : that.path,
-          loader : that.loader
-        });
-
-        that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-          frameID : message.header.frame_id.trimLeft('/'),
-          tfClient : that.tfClient,
-          object : newMarker
-        });
-        that.rootObject.add(that.markers[message.ns + message.id]);
+      else if(message.action === 1) { // "DEPRECATED"
+        console.warn('Received marker message with deprecated action identifier "1"');
+      }
+      else if(message.action === 2) { // "DELETE"
+        that.rootObject.remove(that.markers[message.ns + message.id]);
+        delete that.markers[message.ns + message.id];
+      }
+      else if(message.action === 3) { // "DELETE ALL"
+        for (var m in that.markers){
+          that.rootObject.remove(m);
+        }
+        that.markers = {};
+      }
+      else {
+        console.warn('Received marker message with unknown action identifier "'+message.action+'"');
       }
     });
     
