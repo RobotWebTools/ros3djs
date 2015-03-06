@@ -11,15 +11,16 @@
  *   * url - the URL of the stream
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud
- *   * width (optional) - width of the video stream
- *   * height (optional) - height of the video stream
+ *   * width (optional) - width of the depthcloud encoded video stream
+ *   * height (optional) - height of the depthcloud encoded video stream
  *   * whiteness (optional) - blends rgb values to white (0..100)
  *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
  */
 ROS3D.DepthCloud = function(options) {
-  options = options || {};
   THREE.Object3D.call(this);
+  this.type = 'DepthCloud';
 
+  this.options = options || {};
   this.url = options.url;
   this.f = options.f || 526;
   this.pointSize = options.pointSize || 3;
@@ -30,7 +31,8 @@ ROS3D.DepthCloud = function(options) {
 
   var metaLoaded = false;
   this.video = document.createElement('video');
-
+  this.video.width = this.width;
+  this.video.height = this.height;
   this.video.addEventListener('loadedmetadata', this.metaLoaded.bind(this), false);
 
   this.video.loop = true;
@@ -40,9 +42,9 @@ ROS3D.DepthCloud = function(options) {
 
   this.intervalCallback = null;
   this.stopCloud = function() {
-    this.video.pause();
-    this.video.src = undefined; // forcefully silence the video streaming url.
-    clearInterval(this.intervalCallback);
+  this.video.pause();
+  this.video.src = undefined; // forcefully silence the video streaming url.
+  clearInterval(this.intervalCallback);
   };
 
   // define custom shaders
@@ -51,7 +53,6 @@ ROS3D.DepthCloud = function(options) {
     '',
     'uniform float width;',
     'uniform float height;',
-    'uniform float nearClipping, farClipping;',
     '',
     'uniform float pointSize;',
     'uniform float zOffset;',
@@ -216,7 +217,18 @@ ROS3D.DepthCloud = function(options) {
     '}'
     ].join('\n');
 };
-ROS3D.DepthCloud.prototype.__proto__ = THREE.Object3D.prototype;
+ROS3D.DepthCloud.prototype = Object.create( THREE.Object3D.prototype );
+ROS3D.DepthCloud.prototype.constructor = ROS3D.DepthCloud;
+
+ROS3D.DepthCloud.prototype.clone = function ( object, recursive ) {
+
+    if ( object === undefined ) { object = new ROS3D.DepthCloud( this.options ); }
+
+    THREE.Object3D.prototype.clone.call( this, object, recursive );
+
+    return object;
+
+};
 
 /**
  * Callback called when video metadata is ready
@@ -232,31 +244,34 @@ ROS3D.DepthCloud.prototype.metaLoaded = function() {
 ROS3D.DepthCloud.prototype.initStreamer = function() {
 
   if (this.metaLoaded) {
-    this.texture = new THREE.Texture(this.video);
-    this.geometry = new THREE.Geometry();
+    this.dctexture = new THREE.Texture(this.video);
+    this.dcgeometry = new THREE.Geometry();
 
-    for (var i = 0, l = this.width * this.height; i < l; i++) {
+    var qwidth = this.width / 2.0;
+    var qheight = this.height / 2.0;
+    // the number of points is a forth of the total image size
+    for (var i = 0, l = qwidth * qheight; i < l; i++) {
 
       var vertex = new THREE.Vector3();
-      vertex.x = (i % this.width);
-      vertex.y = Math.floor(i / this.width);
+      vertex.x = (i % qwidth);
+      vertex.y = Math.floor(i / qwidth);
 
-      this.geometry.vertices.push(vertex);
+      this.dcgeometry.vertices.push(vertex);
     }
 
-    this.material = new THREE.ShaderMaterial({
+    this.dcmaterial = new THREE.ShaderMaterial({
       uniforms : {
         'map' : {
           type : 't',
-          value : this.texture
+          value : this.dctexture
         },
         'width' : {
           type : 'f',
-          value : this.width
+          value : qwidth
         },
         'height' : {
           type : 'f',
-          value : this.height
+          value : qheight
         },
         'focallength' : {
           type : 'f',
@@ -282,16 +297,17 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
       vertexShader : this.vertex_shader,
       fragmentShader : this.fragment_shader
     });
+    this.dcmaterial.color = new THREE.Color( 0xffffff );
+    this.mesh = new THREE.PointCloud(this.dcgeometry, this.dcmaterial);
+    this.mesh.frustumCulled = false;
+    this.mesh.position.set(0,0,0);
 
-    this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
-    this.mesh.position.x = 0;
-    this.mesh.position.y = 0;
     this.add(this.mesh);
 
     var that = this;
     this.intervalCallback = setInterval(function() {
       if (that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
-        that.texture.needsUpdate = true;
+        that.dctexture.needsUpdate = true;
       }
     }, 1000 / 30);
   }
