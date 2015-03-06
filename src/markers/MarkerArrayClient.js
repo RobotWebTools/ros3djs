@@ -78,7 +78,10 @@ ROS3D.MarkerArrayClient = function(options) {
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
-          that.rootObject.remove(m);
+            if (that.markers.hasOwnProperty(m)) {
+                that.rootObject.remove(m);
+                that.markers[key].removeTF();
+            }
         }
         that.markers = {};
       }
@@ -90,15 +93,20 @@ ROS3D.MarkerArrayClient = function(options) {
     that.emit('change');
   });
 
+    /**
+     * Cleanup function which unsubscribes from the MarkerArray topic
+     * and removes all markers from the scene.
+     */
     this.removeArray = function() {
         var mac = this;
 	mac.arrayTopic.unsubscribe();
         for (var key in mac.markers) {
             if (mac.markers.hasOwnProperty(key)) {
-                mac.rootObject.remove( mac.markers[key] );
+                mac.rootObject.remove( key );
                 mac.markers[key].removeTF();
             }
         }
+        mac.markers = {};
     };
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
