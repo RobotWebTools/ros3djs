@@ -80,7 +80,7 @@ ROS3D.MarkerArrayClient = function(options) {
         for (var m in that.markers){
             if (that.markers.hasOwnProperty(m)) {
                 that.rootObject.remove(m);
-                that.markers[key].removeTF();
+                that.markers[m].removeTF();
             }
         }
         that.markers = {};
