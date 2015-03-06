@@ -474,7 +474,7 @@ ROS3D.OrbitControls.prototype.update = function() {
   phi = Math.max(eps, Math.min(Math.PI - eps, phi));
 
   var radius = offset.length();
-  offset.set( 
+  offset.set(
     radius * Math.sin(phi) * Math.cos(theta),
     radius * Math.sin(phi) * Math.sin(theta),
     radius * Math.cos(phi)

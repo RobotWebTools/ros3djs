@@ -5,7 +5,8 @@
     "ROSLIB": true,
     "THREE": true,
     "ColladaLoader2": true,
-    "requestAnimationFrame": true
+    "requestAnimationFrame": true,
+    "dcodeIO": true
   },
   "curly": true,
   "eqeqeq": true,

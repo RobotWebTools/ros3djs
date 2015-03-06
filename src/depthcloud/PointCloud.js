@@ -68,9 +68,9 @@ ROS3D.PointCloud.prototype.startStream = function() {
     var that = this;
     this.rosTopic.subscribe(function(message) {
 	console.log('pc in!');
-	var floatView = dcodeIO.ByteBuffer.wrap(message.data, "base64", dcodeIO.ByteBuffer.LITTLE_ENDIAN);
+	var floatView = dcodeIO.ByteBuffer.wrap(message.data, 'base64', dcodeIO.ByteBuffer.LITTLE_ENDIAN);
 	for (var i = 0, l = message.width * message.height; i < that.geometry.vertices.length; i++) {
-	    if ( i < l ) {
+            if ( i < l ) {
 		that.geometry.vertices[i].x = floatView.readFloat32();
 		that.geometry.vertices[i].y = floatView.readFloat32();
 		that.geometry.vertices[i].z = floatView.readFloat32();
@@ -79,11 +79,11 @@ ROS3D.PointCloud.prototype.startStream = function() {
 		that.geometry.colors[i].g   = floatView.readUint8() / 255.0;
 		that.geometry.colors[i].r   = floatView.readUint8() / 255.0;
 		floatView.offset += message.point_step - (3 + 4 + 3*4); //  - (rgb + skip empty + 3 floats(xyz) )
-	    } else {
+            } else {
 		that.geometry.vertices[i].x = that.geometry.vertices[i-1].x;
 		that.geometry.vertices[i].y = that.geometry.vertices[i-1].y;
 		that.geometry.vertices[i].z = that.geometry.vertices[i-1].z;
-	    }
+            }
 	}
 	console.log('pc done! ' + message.width + ' ' + message.height + ' ' + that.geometry.vertices.length);
 	console.log('colors : ' + that.geometry.colors[10000].r + ' ' + that.geometry.colors[10000].g + ' ' + that.geometry.colors[10000].b + ' ' );
