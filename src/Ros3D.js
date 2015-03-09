@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.13.0'
+  REVISION : '0.14.0'
 };
 
 // Marker types
@@ -72,7 +72,7 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
       blending : THREE.NormalBlending
     });
   } else {
-    return new THREE.MeshLambertMaterial({
+    return new THREE.MeshPhongMaterial({
       color : color.getHex(),
       opacity : a,
       blending : THREE.NormalBlending

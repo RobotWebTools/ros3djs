@@ -56,9 +56,14 @@ ROS3D.MeshResource = function(options) {
         collada.scene.scale = new THREE.Vector3(scale, scale, scale);
       }
 
+      // add a texture to anything that is missing one
       if(material !== null) {
         var setMaterial = function(node, material) {
-          node.material = material;
+          // do not overwrite the material
+          if (typeof node.material === 'undefined') {
+            node.material = material;
+          }
+          //node.material = material;
           if (node.children) {
             for (var i = 0; i < node.children.length; i++) {
               setMaterial(node.children[i], material);
@@ -73,23 +78,18 @@ ROS3D.MeshResource = function(options) {
     });
   } else if (fileType === '.stl') {
     loader = new THREE.STLLoader();
-    loader.addEventListener( 'error', function ( event ) {
-      if (that.warnings) {
-        console.warn(event.message);
-      }
-    });
-    loader.addEventListener( 'load', function ( event ) {
-      var geometry = event.content;
-      geometry.computeFaceNormals();
-      var mesh;
-      if(material !== null) {
-        mesh = new THREE.Mesh( geometry, material );
-      } else {
-        mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
-      }
-      that.add(mesh);
-    } );
-    loader.load(uri);
+    {
+      loader.load(uri, function ( geometry ) {
+        geometry.computeFaceNormals();
+        var mesh;
+        if(material !== null) {
+          mesh = new THREE.Mesh( geometry, material );
+        } else {
+          mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+        }
+        that.add(mesh);
+      } );
+    }
   }
 };
 ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;

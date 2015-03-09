@@ -1,3 +1,12 @@
+2015-03-09 - **0.14.0**
+ * Make distance to near and far plane configurable [(daniel86)](https://github.com/daniel86/)
+ * Use phong shading instead of lambert shading [(daniel86)](https://github.com/daniel86/)
+ * Fix rotation of SceneNodes [(jakobs)](https://github.com/jakobs/)
+ * Fixed STL loader [(jakobs)](https://github.com/jakobs/)
+ * Added support for multiple visuals per link [(jakobs)](https://github.com/jakobs/)
+ * Removes package:// from URI [(rctoris)](https://github.com/rctoris/)
+ * Only adds material to a model that has none [(rctoris)](https://github.com/rctoris/)
+
 2015-02-13 - **0.13.0**
  * Fixed memory leak of mesh marker [(asisbot)](https://github.com/asisbot/)
  * Support for different marker actions [(daniel86)](https://github.com/daniel86/)
