@@ -43,6 +43,11 @@ ROS3D.Urdf = function(options) {
         }
         if (visual.geometry.type === ROSLIB.URDF_MESH) {
           var uri = visual.geometry.filename;
+          // strips package://
+          var tmpIndex = uri.indexOf('package://');
+          if (tmpIndex !== -1) {
+            uri = uri.substr(tmpIndex + ('package://').length);
+          }
           var fileType = uri.substr(-4).toLowerCase();
 
           // ignore mesh files which are not in Collada or STL format
@@ -50,13 +55,13 @@ ROS3D.Urdf = function(options) {
             // create the model
             var mesh = new ROS3D.MeshResource({
               path : path,
-                resource : uri,
-                loader : loader,
-                material : colorMaterial
+              resource : uri,
+              loader : loader,
+              material : colorMaterial
             });
 
             // check for a scale
-            if(link.visual.geometry.scale) {
+            if(link.visuals[i].geometry.scale) {
               mesh.scale = new THREE.Vector3(
                   visual.geometry.scale.x,
                   visual.geometry.scale.y,
