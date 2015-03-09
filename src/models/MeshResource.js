@@ -53,7 +53,7 @@ ROS3D.MeshResource = function(options) {
       // check for a scale factor in ColladaLoader2
       if(loaderType === ROS3D.COLLADA_LOADER_2 && collada.dae.asset.unit) {
         var scale = collada.dae.asset.unit;
-        collada.scene.scale = new THREE.Vector3(scale, scale, scale);
+        collada.scene.scale.set(scale, scale, scale);
       }
 
       // add a texture to anything that is missing one

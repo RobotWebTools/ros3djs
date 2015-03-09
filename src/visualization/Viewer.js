@@ -58,7 +58,7 @@ ROS3D.Viewer = function(options) {
     scene : this.scene,
     camera : this.camera
   });
-  this.cameraControls.userZoomSpeed = 0.5;
+  this.cameraControls.userZoomSpeed = 2.5;
 
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
@@ -88,7 +88,7 @@ ROS3D.Viewer = function(options) {
     that.cameraControls.update();
 
     // put light to the top-left of the camera
-    that.directionalLight.position = that.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+    that.directionalLight.position.copy( that.camera.localToWorld(new THREE.Vector3(-1, 1, 0)) );
     that.directionalLight.position.normalize();
 
     // set the scene
@@ -96,7 +96,7 @@ ROS3D.Viewer = function(options) {
     that.renderer.render(that.scene, that.camera);
 
     // render any mouseovers
-    that.highlighter.renderHighlight(that.renderer, that.scene, that.camera);
+    //that.highlighter.renderHighlight(that.renderer, that.scene, that.camera);
 
     // draw the frame
     requestAnimationFrame(draw);

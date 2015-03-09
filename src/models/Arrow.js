@@ -41,11 +41,11 @@ ROS3D.Arrow = function(options) {
   coneGeometry.applyMatrix(m);
 
   // put the arrow together
-  THREE.GeometryUtils.merge(geometry, coneGeometry);
+  geometry.merge(coneGeometry);
 
   THREE.Mesh.call(this, geometry, material);
 
-  this.position = origin;
+  this.position.copy( origin );
   this.setDirection(direction);
 };
 ROS3D.Arrow.prototype.__proto__ = THREE.Mesh.prototype;
