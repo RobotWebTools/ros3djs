@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.13.0'
+  REVISION : '0.14.0'
 };
 
 // Marker types
@@ -72,7 +72,7 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
       blending : THREE.NormalBlending
     });
   } else {
-    return new THREE.MeshLambertMaterial({
+    return new THREE.MeshPhongMaterial({
       color : color.getHex(),
       opacity : a,
       blending : THREE.NormalBlending
@@ -2592,9 +2592,14 @@ ROS3D.MeshResource = function(options) {
         collada.scene.scale = new THREE.Vector3(scale, scale, scale);
       }
 
+      // add a texture to anything that is missing one
       if(material !== null) {
         var setMaterial = function(node, material) {
-          node.material = material;
+          // do not overwrite the material
+          if (typeof node.material === 'undefined') {
+            node.material = material;
+          }
+          //node.material = material;
           if (node.children) {
             for (var i = 0; i < node.children.length; i++) {
               setMaterial(node.children[i], material);
@@ -2609,23 +2614,18 @@ ROS3D.MeshResource = function(options) {
     });
   } else if (fileType === '.stl') {
     loader = new THREE.STLLoader();
-    loader.addEventListener( 'error', function ( event ) {
-      if (that.warnings) {
-        console.warn(event.message);
-      }
-    });
-    loader.addEventListener( 'load', function ( event ) {
-      var geometry = event.content;
-      geometry.computeFaceNormals();
-      var mesh;
-      if(material !== null) {
-        mesh = new THREE.Mesh( geometry, material );
-      } else {
-        mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
-      }
-      that.add(mesh);
-    } );
-    loader.load(uri);
+    {
+      loader.load(uri, function ( geometry ) {
+        geometry.computeFaceNormals();
+        var mesh;
+        if(material !== null) {
+          mesh = new THREE.Mesh( geometry, material );
+        } else {
+          mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+        }
+        that.add(mesh);
+      } );
+    }
   }
 };
 ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;
@@ -2741,81 +2741,89 @@ ROS3D.Urdf = function(options) {
   var links = urdfModel.links;
   for ( var l in links) {
     var link = links[l];
-    if (link.visual && link.visual.geometry) {
-      // Save frameID
-      var frameID = tfPrefix + '/' + link.name;
-      // Save color material
-      var colorMaterial = null;
-      if (link.visual.material && link.visual.material.color) {
-        var color = link.visual.material && link.visual.material.color;
-        colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
-      }
-      if (link.visual.geometry.type === ROSLIB.URDF_MESH) {
-        var uri = link.visual.geometry.filename;
-        var fileType = uri.substr(-4).toLowerCase();
-
-        // ignore mesh files which are not in Collada or STL format
-        if (fileType === '.dae' || fileType === '.stl') {
-          // create the model
-          var mesh = new ROS3D.MeshResource({
-            path : path,
-            resource : uri.substring(10),
-            loader : loader,
-            material : colorMaterial
-          });
-          
-          // check for a scale
-          if(link.visual.geometry.scale) {
-            mesh.scale = new THREE.Vector3(
-              link.visual.geometry.scale.x,
-              link.visual.geometry.scale.y,
-              link.visual.geometry.scale.z
-            );
+    for( var i=0; i<link.visuals.length; i++ ) {
+      var visual = link.visuals[i];
+      if (visual && visual.geometry) {
+        // Save frameID
+        var frameID = tfPrefix + '/' + link.name;
+        // Save color material
+        var colorMaterial = null;
+        if (visual.material && visual.material.color) {
+          var color = visual.material && visual.material.color;
+          colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
+        }
+        if (visual.geometry.type === ROSLIB.URDF_MESH) {
+          var uri = visual.geometry.filename;
+          // strips package://
+          var tmpIndex = uri.indexOf('package://');
+          if (tmpIndex !== -1) {
+            uri = uri.substr(tmpIndex + ('package://').length);
           }
+          var fileType = uri.substr(-4).toLowerCase();
 
-          // create a scene node with the model
-          var sceneNode = new ROS3D.SceneNode({
-            frameID : frameID,
-            pose : link.visual.origin,
-            tfClient : tfClient,
-            object : mesh
-          });
-          this.add(sceneNode);
+          // ignore mesh files which are not in Collada or STL format
+          if (fileType === '.dae' || fileType === '.stl') {
+            // create the model
+            var mesh = new ROS3D.MeshResource({
+              path : path,
+              resource : uri,
+              loader : loader,
+              material : colorMaterial
+            });
+
+            // check for a scale
+            if(link.visuals[i].geometry.scale) {
+              mesh.scale = new THREE.Vector3(
+                  visual.geometry.scale.x,
+                  visual.geometry.scale.y,
+                  visual.geometry.scale.z
+                  );
+            }
+
+            // create a scene node with the model
+            var sceneNode = new ROS3D.SceneNode({
+              frameID : frameID,
+                pose : visual.origin,
+                tfClient : tfClient,
+                object : mesh
+            });
+            this.add(sceneNode);
+          } else {
+            console.warn('Could not load geometry mesh: '+uri);
+          }
         } else {
-          console.warn('Could not load geometry mesh: '+uri);
-        }
-      } else {
-        if (!colorMaterial) {
-          colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
-        }
-        var shapeMesh;
-        // Create a shape
-        switch (link.visual.geometry.type) {
+          if (!colorMaterial) {
+            colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
+          }
+          var shapeMesh;
+          // Create a shape
+          switch (visual.geometry.type) {
             case ROSLIB.URDF_BOX:
-                var dimension = link.visual.geometry.dimension;
-                var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
-                shapeMesh = new THREE.Mesh(cube, colorMaterial);
-                break;
+              var dimension = visual.geometry.dimension;
+              var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
+              shapeMesh = new THREE.Mesh(cube, colorMaterial);
+              break;
             case ROSLIB.URDF_CYLINDER:
-                var radius = link.visual.geometry.radius;
-                var length = link.visual.geometry.length;
-                var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
-                shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
-                shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-                break;
+              var radius = visual.geometry.radius;
+              var length = visual.geometry.length;
+              var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+              shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
+              shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+              break;
             case ROSLIB.URDF_SPHERE:
-                var sphere = new THREE.SphereGeometry(link.visual.geometry.radius, 16);
-                shapeMesh = new THREE.Mesh(sphere, colorMaterial);
-                break;
-        }
-        // Create a scene node with the shape
-        var scene = new ROS3D.SceneNode({
+              var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
+              shapeMesh = new THREE.Mesh(sphere, colorMaterial);
+              break;
+          }
+          // Create a scene node with the shape
+          var scene = new ROS3D.SceneNode({
             frameID: frameID,
-            pose: link.visual.origin,
-            tfClient: tfClient,
-            object: shapeMesh
-        });
-        this.add(scene);
+              pose: visual.origin,
+              tfClient: tfClient,
+              object: shapeMesh
+          });
+          this.add(scene);
+        }
       }
     }
   }
@@ -2932,10 +2940,8 @@ ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
  * @param pose - the pose to update with
  */
 ROS3D.SceneNode.prototype.updatePose = function(pose) {
-  this.position.x = pose.position.x;
-  this.position.y = pose.position.y;
-  this.position.z = pose.position.z;
-  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+  this.position.set( pose.position.x, pose.position.y, pose.position.z );
+  this.quaternion.set(pose.orientation.x, pose.orientation.y,
       pose.orientation.z, pose.orientation.w);
   this.updateMatrixWorld(true);
 };
@@ -2969,6 +2975,8 @@ ROS3D.Viewer = function(options) {
   var background = options.background || '#111111';
   var antialias = options.antialias;
   var intensity = options.intensity || 0.66;
+  var near = options.near || 0.01;
+  var far = options.far || 1000;
   var cameraPosition = options.cameraPose || {
     x : 3,
     y : 3,
@@ -2989,7 +2997,7 @@ ROS3D.Viewer = function(options) {
   this.scene = new THREE.Scene();
 
   // create the global camera
-  this.camera = new THREE.PerspectiveCamera(40, width / height, 0.01, 1000);
+  this.camera = new THREE.PerspectiveCamera(40, width / height, near, far);
   this.camera.position.x = cameraPosition.x;
   this.camera.position.y = cameraPosition.y;
   this.camera.position.z = cameraPosition.z;
