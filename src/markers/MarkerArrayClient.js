@@ -79,7 +79,7 @@ ROS3D.MarkerArrayClient = function(options) {
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
             if (that.markers.hasOwnProperty(m)) {
-                that.rootObject.remove(m);
+                that.rootObject.remove( that.markers[m] );
                 that.markers[m].removeTF();
             }
         }
@@ -102,7 +102,7 @@ ROS3D.MarkerArrayClient = function(options) {
 	mac.arrayTopic.unsubscribe();
         for (var key in mac.markers) {
             if (mac.markers.hasOwnProperty(key)) {
-                mac.rootObject.remove( key );
+                mac.rootObject.remove( mac.markers[key] );
                 mac.markers[key].removeTF();
             }
         }
