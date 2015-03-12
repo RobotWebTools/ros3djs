@@ -190,7 +190,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
         // get the current pose as a ROSLIB.Pose...
         var newPose = new ROSLIB.Pose({
           position : markerHelper.position,
-          quaternion : markerHelper.quaternion
+          orientation : markerHelper.quaternion
         });
         // so we can apply the transform provided by the TFClient
         newPose.applyTransform(new ROSLIB.Transform(transformMsg));
