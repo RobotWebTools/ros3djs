@@ -33,13 +33,13 @@ ROS3D.Marker = function(options) {
   else {
     this.msgScale = [1,1,1];
   }
-  this.msgColor = [message.color.r, message.color.g, message.color.b, message.color.a];
+  this.msgColor = message.color;
   this.msgMesh = undefined;
 
   // set the pose and get the color
   this.setPose(message.pose);
-  var colorMaterial = ROS3D.makeColorMaterial(this.msgColor[0],
-      this.msgColor[1], this.msgColor[2], this.msgColor[3]);
+  var colorMaterial = ROS3D.makeColorMaterial(this.msgColor.r,
+      this.msgColor.g, this.msgColor.b, this.msgColor.a);
 
   // create the object based on the type
   switch (message.type) {
@@ -316,10 +316,10 @@ ROS3D.Marker.prototype.update = function(message) {
   this.setPose(message.pose);
   
   // Update color
-  if(message.color.r !== this.msgColor[0] ||
-     message.color.g !== this.msgColor[1] ||
-     message.color.b !== this.msgColor[2] ||
-     message.color.a !== this.msgColor[3])
+  if(message.color.r !== this.msgColor.r ||
+     message.color.g !== this.msgColor.g ||
+     message.color.b !== this.msgColor.b ||
+     message.color.a !== this.msgColor.a)
   {
       var colorMaterial = ROS3D.makeColorMaterial(
           message.color.r, message.color.g,
@@ -362,8 +362,7 @@ ROS3D.Marker.prototype.update = function(message) {
           return false;
       }
       
-      this.msgColor = [message.color.r, message.color.g,
-            message.color.b, message.color.a];
+      this.msgColor = message.color;
   }
   
   // Update geometry
