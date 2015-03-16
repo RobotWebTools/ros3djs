@@ -264,7 +264,7 @@ ROS3D.Marker = function(options) {
           // NOTE: This is needed for THREE.js r61, unused in r70
           useScreenCoordinates: false });
         var sprite = new THREE.Sprite( spriteMaterial );
-        var textSize = message.scale.x * 0.5;
+        var textSize = message.scale.x;
         sprite.scale.set(textWidth / canvas.height * textSize, textSize, 1);
 
         this.add(sprite);      }
