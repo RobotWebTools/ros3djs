@@ -1,3 +1,7 @@
+2015-03-27 - **0.15.0**
+ * Fix never-set orientation of Interactive Markers [(rethink-rlinsalata)](https://github.com/rethink-rlinsalata/)
+ * Properly implement MARKER_TEXT_VIEW_FACING [(T045T)](https://github.com/T045T/)
+
 2015-03-09 - **0.14.0**
  * Make distance to near and far plane configurable [(daniel86)](https://github.com/daniel86/)
  * Use phong shading instead of lambert shading [(daniel86)](https://github.com/daniel86/)
