@@ -33,13 +33,13 @@ ROS3D.Marker = function(options) {
   else {
     this.msgScale = [1,1,1];
   }
-  this.msgColor = [message.color.r, message.color.g, message.color.b, message.color.a];
+  this.msgColor = message.color;
   this.msgMesh = undefined;
 
   // set the pose and get the color
   this.setPose(message.pose);
-  var colorMaterial = ROS3D.makeColorMaterial(this.msgColor[0],
-      this.msgColor[1], this.msgColor[2], this.msgColor[3]);
+  var colorMaterial = ROS3D.makeColorMaterial(this.msgColor.r,
+      this.msgColor.g, this.msgColor.b, this.msgColor.a);
 
   // create the object based on the type
   switch (message.type) {
@@ -228,29 +228,46 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_TEXT_VIEW_FACING:
       // only work on non-empty text
       if (message.text.length > 0) {
-        // setup the text
-        var textGeo = new THREE.TextGeometry(message.text, {
-          size: message.scale.x * 0.5,
-          height: 0.1 * message.scale.x,
-          curveSegments: 4,
-          font: 'helvetiker',
-          bevelEnabled: false,
-          bevelThickness: 2,
-          bevelSize: 2,
-          material: 0,
-          extrudeMaterial: 0
-        });
-        textGeo.computeVertexNormals();
-        textGeo.computeBoundingBox();
+        // Use a THREE.Sprite to always be view-facing
+        // ( code from http://stackoverflow.com/a/27348780 )
+        var textColor = this.msgColor;
 
-        // position the text and add it
-        var mesh = new THREE.Mesh(textGeo, colorMaterial);
-        var centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
-        mesh.position.y = -centerOffset;
-        mesh.rotation.x = Math.PI * 0.5;
-        mesh.rotation.y = Math.PI * 1.5;
-        this.add(mesh);
-      }
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        var textHeight = 100;
+        var fontString = 'normal ' + textHeight + 'px sans-serif';
+        context.font = fontString;
+        var metrics = context.measureText( message.text );
+        var textWidth = metrics.width;
+
+        canvas.width = textWidth;
+        // To account for overhang (like the letter 'g'), make the canvas bigger
+        // The non-text portion is transparent anyway
+        canvas.height = 1.5 * textHeight;
+
+        // this does need to be set again
+        context.font = fontString;
+        context.fillStyle = 'rgba('
+          + textColor.r + ', '
+          + textColor.g + ', '
+          + textColor.b + ', '
+          + textColor.a + ')';
+        context.textAlign = 'left';
+        context.textBaseline = 'middle';
+        context.fillText( message.text, 0, canvas.height/2);
+
+        var texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+
+        var spriteMaterial = new THREE.SpriteMaterial({
+          map: texture,
+          // NOTE: This is needed for THREE.js r61, unused in r70
+          useScreenCoordinates: false });
+        var sprite = new THREE.Sprite( spriteMaterial );
+        var textSize = message.scale.x;
+        sprite.scale.set(textWidth / canvas.height * textSize, textSize, 1);
+
+        this.add(sprite);      }
       break;
     case ROS3D.MARKER_MESH_RESOURCE:
       // load and add the mesh
@@ -316,10 +333,10 @@ ROS3D.Marker.prototype.update = function(message) {
   this.setPose(message.pose);
   
   // Update color
-  if(message.color.r !== this.msgColor[0] ||
-     message.color.g !== this.msgColor[1] ||
-     message.color.b !== this.msgColor[2] ||
-     message.color.a !== this.msgColor[3])
+  if(message.color.r !== this.msgColor.r ||
+     message.color.g !== this.msgColor.g ||
+     message.color.b !== this.msgColor.b ||
+     message.color.a !== this.msgColor.a)
   {
       var colorMaterial = ROS3D.makeColorMaterial(
           message.color.r, message.color.g,
@@ -362,8 +379,7 @@ ROS3D.Marker.prototype.update = function(message) {
           return false;
       }
       
-      this.msgColor = [message.color.r, message.color.g,
-            message.color.b, message.color.a];
+      this.msgColor = message.color;
   }
   
   // Update geometry
