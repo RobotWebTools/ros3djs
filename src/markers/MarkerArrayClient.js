@@ -1,6 +1,7 @@
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
+ * @author Peter Soetens - peter@thesourceworks.com
  */
 
 /**
@@ -35,14 +36,15 @@ ROS3D.MarkerArrayClient = function(options) {
   this.markers = {};
 
   // subscribe to MarkerArray topic
-  var arrayTopic = new ROSLIB.Topic({
+  this.arrayTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'visualization_msgs/MarkerArray',
-    compression : 'png'
+    compression : 'png',
+    queue_length  : 2
   });
   
-  arrayTopic.subscribe(function(arrayMessage) {
+  this.arrayTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
       if(message.action === 0) {
@@ -76,7 +78,10 @@ ROS3D.MarkerArrayClient = function(options) {
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
-          that.rootObject.remove(m);
+            if (that.markers.hasOwnProperty(m)) {
+                that.rootObject.remove( that.markers[m] );
+                that.markers[m].removeTF();
+            }
         }
         that.markers = {};
       }
@@ -87,5 +92,21 @@ ROS3D.MarkerArrayClient = function(options) {
     
     that.emit('change');
   });
+
+    /**
+     * Cleanup function which unsubscribes from the MarkerArray topic
+     * and removes all markers from the scene.
+     */
+    this.removeArray = function() {
+        var mac = this;
+	mac.arrayTopic.unsubscribe();
+        for (var key in mac.markers) {
+            if (mac.markers.hasOwnProperty(key)) {
+                mac.rootObject.remove( mac.markers[key] );
+                mac.markers[key].removeTF();
+            }
+        }
+        mac.markers = {};
+    };
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;

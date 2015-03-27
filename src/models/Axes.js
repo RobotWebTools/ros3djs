@@ -18,8 +18,11 @@ ROS3D.Axes = function(options) {
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
+  var scaleArg = options.scale || 1.0;
 
   THREE.Object3D.call(this);
+
+  this.scale.set(scaleArg,scaleArg,scaleArg);
 
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
@@ -46,17 +49,17 @@ ROS3D.Axes = function(options) {
 
     // create the arrow
     var arrow = new THREE.Mesh(that.headGeom, material);
-    arrow.position = axis.clone();
+    arrow.position.copy( axis );
     arrow.position.multiplyScalar(0.95);
-    arrow.quaternion = rot;
+    arrow.quaternion.copy( rot );
     arrow.updateMatrix();
     that.add(arrow);
 
     // create the line
     var line = new THREE.Mesh(that.lineGeom, material);
-    line.position = axis.clone();
+    line.position.copy( axis );
     line.position.multiplyScalar(0.45);
-    line.quaternion = rot;
+    line.quaternion.copy( rot );
     line.updateMatrix();
     that.add(line);
   }

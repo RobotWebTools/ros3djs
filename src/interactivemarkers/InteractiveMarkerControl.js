@@ -129,7 +129,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
       this.updateMatrixWorld = function(force) {
-        that.quaternion = that.parent.quaternion.clone().inverse();
+        that.quaternion.copy( that.parent.quaternion.clone().inverse() );
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
         ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);

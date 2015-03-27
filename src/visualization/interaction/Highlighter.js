@@ -74,6 +74,10 @@ ROS3D.Highlighter.prototype.renderHighlight = function(renderer, scene, camera) 
   var renderList = [];
   this.getWebglObjects(scene, this.hoverObjs, renderList);
 
+  if ( renderList.length === 0 ) {
+    return;
+  }
+
   // define highlight material
   scene.overrideMaterial = new THREE.MeshBasicMaterial({
     fog : false,

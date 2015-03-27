@@ -11,15 +11,16 @@
  *   * url - the URL of the stream
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud
- *   * width (optional) - width of the video stream
- *   * height (optional) - height of the video stream
+ *   * width (optional) - width of the depthcloud encoded video stream
+ *   * height (optional) - height of the depthcloud encoded video stream
  *   * whiteness (optional) - blends rgb values to white (0..100)
  *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
  */
 ROS3D.DepthCloud = function(options) {
-  options = options || {};
   THREE.Object3D.call(this);
+  this.type = 'DepthCloud';
 
+  this.options = options || {};
   this.url = options.url;
   this.f = options.f || 526;
   this.pointSize = options.pointSize || 3;
@@ -30,7 +31,8 @@ ROS3D.DepthCloud = function(options) {
 
   var metaLoaded = false;
   this.video = document.createElement('video');
-
+  this.video.width = this.width;
+  this.video.height = this.height;
   this.video.addEventListener('loadedmetadata', this.metaLoaded.bind(this), false);
 
   this.video.loop = true;
@@ -38,13 +40,19 @@ ROS3D.DepthCloud = function(options) {
   this.video.crossOrigin = 'Anonymous';
   this.video.setAttribute('crossorigin', 'Anonymous');
 
+  this.intervalCallback = null;
+  this.stopCloud = function() {
+  this.video.pause();
+  this.video.src = undefined; // forcefully silence the video streaming url.
+  clearInterval(this.intervalCallback);
+  };
+
   // define custom shaders
   this.vertex_shader = [
     'uniform sampler2D map;',
     '',
     'uniform float width;',
     'uniform float height;',
-    'uniform float nearClipping, farClipping;',
     '',
     'uniform float pointSize;',
     'uniform float zOffset;',
@@ -66,13 +74,13 @@ ROS3D.DepthCloud = function(options) {
     '    ',
     '    vec4 depthColor = texture2D( map, vUv );',
     '    ',
-    '    depth = ( depthColor.r + depthColor.g + depthColor.b ) / 3.0 ;',
+    '    depth = ( depthColor.r + depthColor.g + depthColor.b ) / 3.0;',
     '    ',
-    '    if (depth>0.99)',
+    '    if (depth > (1.0 - 3.0/255.0) )', // If we're closer than 3 values from saturation, check the next depth image
     '    {',
     '      vec4 depthColor2 = texture2D( map, vUv2 );',
     '      float depth2 = ( depthColor2.r + depthColor2.g + depthColor2.b ) / 3.0 ;',
-    '      depth = 0.99+depth2;',
+    '      depth += depth2;',
     '    }',
     '    ',
     '    return depth;',
@@ -153,9 +161,9 @@ ROS3D.DepthCloud = function(options) {
     '    float z = -depth;',
     '    ',
     '    pos = vec4(',
-    '      ( position.x / width - 0.5 ) * z * (1000.0/focallength) * -1.0,',
-    '      ( position.y / height - 0.5 ) * z * (1000.0/focallength),',
-    '      (- z + zOffset / 1000.0) * 2.0,',
+    '      ( position.x / width - 0.5 ) * z *0.5 * (1000.0/focallength) * -1.0,',
+    '      ( position.y / height - 0.5 ) * z *0.5 * (1000.0/focallength),',
+    '      (- z + zOffset / 1000.0) * 1.0,',
     '      1.0);',
     '    ',
     '    vec2 maskP = vec2( position.x / (width*2.0), position.y / (height*2.0)  );',
@@ -209,7 +217,18 @@ ROS3D.DepthCloud = function(options) {
     '}'
     ].join('\n');
 };
-ROS3D.DepthCloud.prototype.__proto__ = THREE.Object3D.prototype;
+ROS3D.DepthCloud.prototype = Object.create( THREE.Object3D.prototype );
+ROS3D.DepthCloud.prototype.constructor = ROS3D.DepthCloud;
+
+ROS3D.DepthCloud.prototype.clone = function ( object, recursive ) {
+
+    if ( object === undefined ) { object = new ROS3D.DepthCloud( this.options ); }
+
+    THREE.Object3D.prototype.clone.call( this, object, recursive );
+
+    return object;
+
+};
 
 /**
  * Callback called when video metadata is ready
@@ -225,31 +244,34 @@ ROS3D.DepthCloud.prototype.metaLoaded = function() {
 ROS3D.DepthCloud.prototype.initStreamer = function() {
 
   if (this.metaLoaded) {
-    this.texture = new THREE.Texture(this.video);
-    this.geometry = new THREE.Geometry();
+    this.dctexture = new THREE.Texture(this.video);
+    this.dcgeometry = new THREE.Geometry();
 
-    for (var i = 0, l = this.width * this.height; i < l; i++) {
+    var qwidth = this.width / 2.0;
+    var qheight = this.height / 2.0;
+    // the number of points is a forth of the total image size
+    for (var i = 0, l = qwidth * qheight; i < l; i++) {
 
       var vertex = new THREE.Vector3();
-      vertex.x = (i % this.width);
-      vertex.y = Math.floor(i / this.width);
+      vertex.x = (i % qwidth);
+      vertex.y = Math.floor(i / qwidth);
 
-      this.geometry.vertices.push(vertex);
+      this.dcgeometry.vertices.push(vertex);
     }
 
-    this.material = new THREE.ShaderMaterial({
+    this.dcmaterial = new THREE.ShaderMaterial({
       uniforms : {
         'map' : {
           type : 't',
-          value : this.texture
+          value : this.dctexture
         },
         'width' : {
           type : 'f',
-          value : this.width
+          value : qwidth
         },
         'height' : {
           type : 'f',
-          value : this.height
+          value : qheight
         },
         'focallength' : {
           type : 'f',
@@ -275,17 +297,17 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
       vertexShader : this.vertex_shader,
       fragmentShader : this.fragment_shader
     });
+    this.dcmaterial.color = new THREE.Color( 0xffffff );
+    this.mesh = new THREE.PointCloud(this.dcgeometry, this.dcmaterial);
+    this.mesh.frustumCulled = false;
+    this.mesh.position.set(0,0,0);
 
-    this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
-    this.mesh.position.x = 0;
-    this.mesh.position.y = 0;
     this.add(this.mesh);
 
     var that = this;
-
-    setInterval(function() {
+    this.intervalCallback = setInterval(function() {
       if (that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
-        that.texture.needsUpdate = true;
+        that.dctexture.needsUpdate = true;
       }
     }, 1000 / 30);
   }
