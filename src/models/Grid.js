@@ -8,7 +8,7 @@
  * @constructor
  * @param options - object with following keys:
  *
- *  * size (optional) - The number of cells of the grid
+ *  * size (optional) - Size of the grid in meters
  *  * color (optional) - the line color of the grid, like '#cccccc'
  *  * lineWidth (optional) - the width of the lines in the grid
  *  * cellSize (optional) - The length, in meters, of the side of each cell
@@ -27,8 +27,8 @@ ROS3D.Grid = function(options) {
     linewidth: lineWidth
   });
 
-  for (var i = 0; i <= size; ++i) {
-    var edge = cellSize * size / 2;
+  for (var i = 0; i <= size/cellSize; ++i) {
+    var edge = size / 2;
     var position = edge - (i * cellSize);
     var geometryH = new THREE.Geometry();
     geometryH.vertices.push(
