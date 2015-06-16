@@ -131,7 +131,7 @@ ROS3D.Viewer.prototype.addObject = function(object, selectable) {
  * @param height - new height value
  */
 ROS3D.Viewer.prototype.resize = function(width, height) {
-  	this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-  	this.renderer.setSize(width, height);
+  this.camera.aspect = width / height;
+  this.camera.updateProjectionMatrix();
+  this.renderer.setSize(width, height);
 };
