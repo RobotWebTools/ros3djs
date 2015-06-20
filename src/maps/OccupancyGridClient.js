@@ -52,8 +52,7 @@ ROS3D.OccupancyGridClient = function(options) {
       that.currentGrid = new ROS3D.SceneNode({
         frameID : message.header.frame_id,
         tfClient : that.tfClient,
-        object : newGrid,
-        pose : message.info.origin
+        object : newGrid
       });
     } else {
       that.currentGrid = newGrid;
