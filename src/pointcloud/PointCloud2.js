@@ -32,6 +32,7 @@ ROS3D.PointCloud = function(options) {
   var ros = options.ros;
   var topic = options.topic || '/points';
   var size = options.size || 0.05;
+  var max_pts = options.max_pts || 100;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.viewer = options.viewer;
   var that = this;
@@ -67,6 +68,10 @@ ROS3D.PointCloud = function(options) {
     ].join('\n');
     
     this.geom = new THREE.Geometry();
+    for(var i=0;i<max_pts;i++){
+        this.geom.vertices.push(new THREE.Vector3( ));
+    }    
+    
     var customUniforms = 
     {
         texture:   { type: "t", value: THREE.ImageUtils.loadTexture( 'pixel.png' ) },
@@ -87,7 +92,7 @@ ROS3D.PointCloud = function(options) {
     });
     
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
-    // ideal location: this.rootObject.add(this.ps);
+    this.rootObject.add(this.ps);
 
     var rosTopic = new ROSLIB.Topic({
       ros : ros,
@@ -96,13 +101,13 @@ ROS3D.PointCloud = function(options) {
     });
     
     rosTopic.subscribe(function(message) {
-        //that.ps.geometry.__dirtyVertices = true;
         for(var i=0;i<message.height*message.width;i++){
             var pt = read_point(message, i);
             that.geom.vertices[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
         }
-        that.rootObject.add(that.ps);
+        that.geom.verticesNeedUpdate = true;
+        that.attribs.customColor.needsUpdate = true;
     });
 
 
