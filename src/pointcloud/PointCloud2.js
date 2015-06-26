@@ -24,7 +24,7 @@ function read_point(msg, index){
 }
 
 /**
- * A point cloud client that listens to a given topic and displays the points.
+ * A PointCloud2 client that listens to a given topic and displays the points.
  * 
  * @constructor
  * @param options - object with following keys:
@@ -36,7 +36,7 @@ function read_point(msg, index){
  *  * size (optional) - size to draw each point (default 0.05)
  *  * max_pts (optional) - number of points to draw (default 100)
  */
-ROS3D.PointCloud = function(options) {
+ROS3D.PointCloud2 = function(options) {
   options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/points';
@@ -119,4 +119,4 @@ ROS3D.PointCloud = function(options) {
 
 
 };
-ROS3D.PointCloud.prototype.__proto__ = THREE.Object3D.prototype;
+ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
