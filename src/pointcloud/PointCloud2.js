@@ -85,6 +85,9 @@ ROS3D.PointCloud = function(options) {
         fragmentShader : that.fragment_shader,
         transparent: true, alphaTest: 0.5
     });
+    
+    this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
+    // ideal location: this.rootObject.add(this.ps);
 
     var rosTopic = new ROSLIB.Topic({
       ros : ros,
@@ -96,12 +99,10 @@ ROS3D.PointCloud = function(options) {
         //that.ps.geometry.__dirtyVertices = true;
         for(var i=0;i<message.height*message.width;i++){
             var pt = read_point(message, i);
-            that.geom.vertices.push(new THREE.Vector3( pt['x'], pt['y'], pt['z'] ));
+            that.geom.vertices[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
         }
-
-        ps = new THREE.ParticleSystem( that.geom, that.shaderMaterial );
-        that.rootObject.add(ps);
+        that.rootObject.add(that.ps);
     });
 
 
