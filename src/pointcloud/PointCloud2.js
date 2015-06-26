@@ -99,8 +99,8 @@ ROS3D.PointCloud = function(options) {
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
         }
 
-    ps = new THREE.ParticleSystem( that.geom, that.shaderMaterial );
-    that.rootObject.add(ps);
+        ps = new THREE.ParticleSystem( that.geom, that.shaderMaterial );
+        that.rootObject.add(ps);
     });
 
 
