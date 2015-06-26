@@ -31,6 +31,7 @@ ROS3D.PointCloud = function(options) {
   options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/points';
+  var size = options.size || 0.05;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.viewer = options.viewer;
   var that = this;
@@ -48,7 +49,7 @@ ROS3D.PointCloud = function(options) {
     '    // option (1): draw particles at constant size on screen',
     '    // gl_PointSize = size;',
     '    // option (2): scale particles as objects in 3D space',
-    '    gl_PointSize = 0.01 * ( 300.0 / length( mvPosition.xyz ) );',
+    '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
     '    gl_Position = projectionMatrix * mvPosition;',
     '}'
     ].join('\n');
