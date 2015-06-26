@@ -1,3 +1,7 @@
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
 function read_point(msg, index){
     pt = [];
     var base = msg.point_step * index;
@@ -20,12 +24,17 @@ function read_point(msg, index){
 }
 
 /**
+ * A point cloud client that listens to a given topic and displays the points.
+ * 
  * @constructor
  * @param options - object with following keys:
  *
- *  * color (optional) - the line color of the grid, like '#cccccc'
- *  * lineWidth (optional) - the width of the lines in the grid
- *  * cellSize (optional) - The length, in meters, of the side of each cell
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * size (optional) - size to draw each point (default 0.05)
+ *  * max_pts (optional) - number of points to draw (default 100)
  */
 ROS3D.PointCloud = function(options) {
   options = options || {};
@@ -34,9 +43,7 @@ ROS3D.PointCloud = function(options) {
   var size = options.size || 0.05;
   var max_pts = options.max_pts || 100;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  this.viewer = options.viewer;
   var that = this;
-  this.cloud = null;
   THREE.Object3D.call(this);
   
   this.vertex_shader = [
