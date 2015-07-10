@@ -42,17 +42,21 @@ ROS3D.PointCloud2 = function(options) {
   var topic = options.topic || '/points';
   var size = options.size || 0.05;
   var max_pts = options.max_pts || 100;
+  this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
   var that = this;
   THREE.Object3D.call(this);
 
   this.vertex_shader = [
     'attribute vec3 customColor;',
+    'attribute float alpha;',
     'varying vec3 vColor;',
+    'varying float falpha;',
     'void main() ',
     '{',
     '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
     '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+    '    falpha = alpha; ',
     '',
     '    // option (1): draw particles at constant size on screen',
     '    // gl_PointSize = size;',
@@ -65,10 +69,11 @@ ROS3D.PointCloud2 = function(options) {
   this.fragment_shader = [
     'uniform sampler2D texture;',
     'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
+    'varying float falpha;',
     'void main() ',
     '{',
     '    // calculates a color for the particle',
-    '    gl_FragColor = vec4( vColor, 1.0 );',
+    '    gl_FragColor = vec4( vColor, falpha );',
     '    // sets particle texture to desired color',
     '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
     '}'
@@ -87,6 +92,7 @@ ROS3D.PointCloud2 = function(options) {
     this.attribs =
     {
         customColor:   { type: 'c', value: [] },
+        alpha:         { type: 'f', value: [] }
     };
 
     this.shaderMaterial = new THREE.ShaderMaterial(
@@ -108,13 +114,21 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     rosTopic.subscribe(function(message) {
-        for(var i=0;i<message.height*message.width;i++){
+        var n = message.height*message.width;
+        for(var i=0;i<n;i++){
             var pt = read_point(message, i);
             that.geom.vertices[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
+            that.attribs.alpha.value[i] = 1.0;
         }
+        for(var i=n; i<that.prev_pts; i++){
+            that.attribs.alpha.value[i] = 0.0;
+        }
+        that.prev_pts = n;
+
         that.geom.verticesNeedUpdate = true;
         that.attribs.customColor.needsUpdate = true;
+        that.attribs.alpha.needsUpdate = true;
     });
 
 
