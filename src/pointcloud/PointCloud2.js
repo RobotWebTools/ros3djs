@@ -40,6 +40,7 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/points';
+  this.tfClient = options.tfClient;
   var size = options.size || 0.05;
   var max_pts = options.max_pts || 100;
   this.prev_pts = 0;
@@ -97,10 +98,10 @@ ROS3D.PointCloud2 = function(options) {
 
     this.shaderMaterial = new THREE.ShaderMaterial(
     {
-        uniforms:         customUniforms,
+        uniforms:          customUniforms,
         attributes:        this.attribs,
-        vertexShader : that.vertex_shader,
-        fragmentShader : that.fragment_shader,
+        vertexShader:      this.vertex_shader,
+        fragmentShader:    this.fragment_shader,
         transparent: true, alphaTest: 0.5
     });
 
@@ -121,7 +122,7 @@ ROS3D.PointCloud2 = function(options) {
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
             that.attribs.alpha.value[i] = 1.0;
         }
-        for(var i=n; i<that.prev_pts; i++){
+        for(i=n; i<that.prev_pts; i++){
             that.attribs.alpha.value[i] = 0.0;
         }
         that.prev_pts = n;
