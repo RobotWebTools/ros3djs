@@ -3,7 +3,7 @@
  */
 
 function read_point(msg, index){
-    pt = [];
+    var pt = [];
     var base = msg.point_step * index;
     for(var fi=0; fi<msg.fields.length; fi++){
         var si = base + msg.fields[fi].offset;
@@ -11,21 +11,21 @@ function read_point(msg, index){
         for(var i=0; i<ar.length; i++){
             ar[i] = msg.data.buffer[si + i];
         }
-        
+
         var dv = new DataView(ar.buffer);
-        
-        if( msg.fields[fi].name == 'rgb' ){
+
+        if( msg.fields[fi].name === 'rgb' ){
             pt[ 'rgb' ] =dv.getInt32(0, 1);
         }else{
             pt[ msg.fields[fi].name ] = dv.getFloat32(0, 1);
-        }    
+        }
     }
     return pt;
 }
 
 /**
  * A PointCloud2 client that listens to a given topic and displays the points.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
  *
@@ -45,7 +45,7 @@ ROS3D.PointCloud2 = function(options) {
   this.rootObject = options.rootObject || new THREE.Object3D();
   var that = this;
   THREE.Object3D.call(this);
-  
+
   this.vertex_shader = [
     'attribute vec3 customColor;',
     'varying vec3 vColor;',
@@ -73,23 +73,23 @@ ROS3D.PointCloud2 = function(options) {
     '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
     '}'
     ].join('\n');
-    
+
     this.geom = new THREE.Geometry();
     for(var i=0;i<max_pts;i++){
         this.geom.vertices.push(new THREE.Vector3( ));
-    }    
-    
-    var customUniforms = 
+    }
+
+    var customUniforms =
     {
-        texture:   { type: "t", value: THREE.ImageUtils.loadTexture( 'pixel.png' ) },
+        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( 'pixel.png' ) },
     };
-    
-    this.attribs = 
+
+    this.attribs =
     {
-        customColor:   { type: "c", value: [] },
+        customColor:   { type: 'c', value: [] },
     };
-    
-    this.shaderMaterial = new THREE.ShaderMaterial( 
+
+    this.shaderMaterial = new THREE.ShaderMaterial(
     {
         uniforms:         customUniforms,
         attributes:        this.attribs,
@@ -97,7 +97,7 @@ ROS3D.PointCloud2 = function(options) {
         fragmentShader : that.fragment_shader,
         transparent: true, alphaTest: 0.5
     });
-    
+
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.rootObject.add(this.ps);
 
@@ -106,7 +106,7 @@ ROS3D.PointCloud2 = function(options) {
       name : topic,
       messageType : 'sensor_msgs/PointCloud2'
     });
-    
+
     rosTopic.subscribe(function(message) {
         for(var i=0;i<message.height*message.width;i++){
             var pt = read_point(message, i);
