@@ -106,7 +106,14 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
-    this.rootObject.add(this.ps);
+
+    this.sn = new ROS3D.SceneNode({
+        frameID : '/pc',
+        tfClient : this.tfClient,
+        object : this.ps
+    });
+
+    this.rootObject.add(this.sn);
 
     var rosTopic = new ROSLIB.Topic({
       ros : ros,
