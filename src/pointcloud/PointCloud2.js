@@ -5,10 +5,11 @@
 function read_point(msg, index, buffer){
     var pt = [];
     var base = msg.point_step * index;
+    var n = 4;
+    var ar = new Uint8Array(n);
     for(var fi=0; fi<msg.fields.length; fi++){
         var si = base + msg.fields[fi].offset;
-        var ar = new Uint8Array(4);
-        for(var i=0; i<ar.length; i++){
+        for(var i=0; i<n; i++){
             ar[i] = buffer[si + i];
         }
 
@@ -134,6 +135,8 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     rosTopic.subscribe(function(message) {
+        rosTopic.unsubscribe();
+
         if(that.sn===null){
             that.sn = new ROS3D.SceneNode({
                 frameID : message.header.frame_id,
@@ -150,7 +153,6 @@ ROS3D.PointCloud2 = function(options) {
         if(message.data.buffer){
             buffer = message.data.buffer;
         }else{
-            console.log("BASE 64");
             buffer = decode64(message.data);
         }
         for(var i=0;i<n;i++){
