@@ -24,11 +24,9 @@ function read_point(msg, index, buffer){
     return pt;
 }
 
-BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+var BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 function decode64(x) {
-    var a = [];
-    z = 0;
-    bits = 0;
+    var a = [], z = 0, bits = 0;
 
     for (var i = 0, len = x.length; i < len; i++) {
       z += BASE64.indexOf( x[i] );
