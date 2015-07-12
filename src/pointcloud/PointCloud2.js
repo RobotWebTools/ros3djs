@@ -106,14 +106,7 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
-
-    this.sn = new ROS3D.SceneNode({
-        frameID : '/pc',
-        tfClient : this.tfClient,
-        object : this.ps
-    });
-
-    this.rootObject.add(this.sn);
+    this.sn = null;
 
     var rosTopic = new ROSLIB.Topic({
       ros : ros,
@@ -122,6 +115,16 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     rosTopic.subscribe(function(message) {
+        if(that.sn===null){
+            that.sn = new ROS3D.SceneNode({
+                frameID : message.header.frame_id,
+                tfClient : that.tfClient,
+                object : that.ps
+            });
+
+            that.rootObject.add(that.sn);
+        }
+
         var n = message.height*message.width;
         for(var i=0;i<n;i++){
             var pt = read_point(message, i);
