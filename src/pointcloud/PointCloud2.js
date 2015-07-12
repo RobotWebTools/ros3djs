@@ -2,14 +2,14 @@
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-function read_point(msg, index){
+function read_point(msg, index, buffer){
     var pt = [];
     var base = msg.point_step * index;
     for(var fi=0; fi<msg.fields.length; fi++){
         var si = base + msg.fields[fi].offset;
         var ar = new Uint8Array(4);
         for(var i=0; i<ar.length; i++){
-            ar[i] = msg.data.buffer[si + i];
+            ar[i] = buffer[si + i];
         }
 
         var dv = new DataView(ar.buffer);
@@ -21,6 +21,25 @@ function read_point(msg, index){
         }
     }
     return pt;
+}
+
+BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+function decode64(x) {
+    var a = [];
+    z = 0;
+    bits = 0;
+
+    for (var i = 0, len = x.length; i < len; i++) {
+      z += BASE64.indexOf( x[i] );
+      bits += 6;
+      if(bits>=8){
+          bits -= 8;
+          a.push(z >> bits);
+          z = z & (Math.pow(2, bits)-1);
+      }
+      z = z << 6;
+    }
+    return a;
 }
 
 /**
@@ -126,8 +145,16 @@ ROS3D.PointCloud2 = function(options) {
         }
 
         var n = message.height*message.width;
+
+        var buffer;
+        if(message.data.buffer){
+            buffer = message.data.buffer;
+        }else{
+            console.log("BASE 64");
+            buffer = decode64(message.data);
+        }
         for(var i=0;i<n;i++){
-            var pt = read_point(message, i);
+            var pt = read_point(message, i, buffer);
             that.geom.vertices[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
             that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
             that.attribs.alpha.value[i] = 1.0;
