@@ -20,7 +20,6 @@ ROS3D.Path = function(options) {
   var topic = options.topic || '/path';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
-  this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
   var that = this;
   THREE.Object3D.call(this);
@@ -35,16 +34,16 @@ ROS3D.Path = function(options) {
   });
 
     rosTopic.subscribe(function(message) {
-        if(that.sn!=null){
-            that.rootObject.remove(that.sn);    
+        if(that.sn!==null){
+            that.rootObject.remove(that.sn);
         }
 
-        var lineGeometry = new THREE.Geometry();        
+        var lineGeometry = new THREE.Geometry();
         for(var i=0; i<message.poses.length;i++){
-            var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y, 
+            var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
                                       message.poses[i].pose.position.z);
             lineGeometry.vertices.push(v3);
-        }                              
+        }
             
         lineGeometry.computeLineDistances();
         var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );

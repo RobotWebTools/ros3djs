@@ -133,8 +133,6 @@ ROS3D.PointCloud2 = function(options) {
     });
 
     rosTopic.subscribe(function(message) {
-        rosTopic.unsubscribe();
-
         if(that.sn===null){
             that.sn = new ROS3D.SceneNode({
                 frameID : message.header.frame_id,
