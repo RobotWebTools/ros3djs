@@ -19,7 +19,8 @@ ROS3D.Particles = function(options) {
   this.tfClient = options.tfClient;
   var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
   var size = options.size || 0.05;
-  var max_pts = options.max_pts || 100;
+  this.max_pts = options.max_pts || 100;
+  this.first_size = null;
   this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
   var that = this;
@@ -58,7 +59,7 @@ ROS3D.Particles = function(options) {
     ].join('\n');
 
     this.geom = new THREE.Geometry();
-    for(var i=0;i<max_pts;i++){
+    for(var i=0;i<this.max_pts;i++){
         this.geom.vertices.push(new THREE.Vector3( ));
     }
 
@@ -106,6 +107,11 @@ function setFrame(particles, frame)
 
 function finishedUpdate(particles, n)
 {
+    if(particles.first_size === null){
+        particles.first_size = n;
+        particles.max_pts = Math.max(particles.max_pts, n);
+    }
+
     for(var i=n; i<particles.prev_pts; i++){
         particles.alpha[i] = 0.0;
     }
@@ -114,4 +120,8 @@ function finishedUpdate(particles, n)
     particles.geom.verticesNeedUpdate = true;
     particles.colors.needsUpdate = true;
     particles.alpha.needsUpdate = true;
+
+    if(n>particles.max_pts){
+        throw 'Attempted to draw more points than max_pts allows';
+    }
 }
