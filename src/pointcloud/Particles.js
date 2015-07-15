@@ -118,8 +118,8 @@ function finishedUpdate(particles, n)
     particles.prev_pts = n;
     
     particles.geom.verticesNeedUpdate = true;
-    particles.colors.needsUpdate = true;
-    particles.alpha.needsUpdate = true;
+    particles.attribs.customColor.needsUpdate = true;
+    particles.attribs.alpha.needsUpdate = true;
 
     if(n>particles.max_pts){
         throw 'Attempted to draw more points than max_pts allows';
