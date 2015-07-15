@@ -9,6 +9,7 @@
  * @param options - object with following keys:
  *
  *  * tfClient - the TF client handle to use
+ *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
  *  * rootObject (optional) - the root object to add this marker to
  *  * size (optional) - size to draw each point (default 0.05)
  *  * max_pts (optional) - number of points to draw (default 100)
@@ -16,6 +17,7 @@
 ROS3D.Particles = function(options) {
   options = options || {};
   this.tfClient = options.tfClient;
+  var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
   var size = options.size || 0.05;
   var max_pts = options.max_pts || 100;
   this.prev_pts = 0;
@@ -62,7 +64,7 @@ ROS3D.Particles = function(options) {
 
     var customUniforms =
     {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( 'pixel.png' ) },
+        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
     };
 
     this.attribs =

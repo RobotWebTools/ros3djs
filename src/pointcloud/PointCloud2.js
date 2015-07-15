@@ -50,6 +50,7 @@ function decode64(x) {
  *  * ros - the ROSLIB.Ros connection handle
  *  * topic - the marker topic to listen to
  *  * tfClient - the TF client handle to use
+ *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
  *  * rootObject (optional) - the root object to add this marker to
  *  * size (optional) - size to draw each point (default 0.05)
  *  * max_pts (optional) - number of points to draw (default 100)
