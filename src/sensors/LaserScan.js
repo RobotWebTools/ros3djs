@@ -22,7 +22,6 @@ ROS3D.LaserScan = function(options) {
   var ros = options.ros;
   var topic = options.topic || '/scan';
   this.color = options.color || 0xFFA500;
-  console.log(this.color);
   var that = this;
 
   this.particles = new ROS3D.Particles(options);
