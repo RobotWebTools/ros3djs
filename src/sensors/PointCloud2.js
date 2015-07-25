@@ -69,7 +69,6 @@ ROS3D.PointCloud2 = function(options) {
     messageType : 'sensor_msgs/PointCloud2'
   });
 
-
   rosTopic.subscribe(function(message) {
     setFrame(that.particles, message.header.frame_id);
 

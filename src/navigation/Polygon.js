@@ -33,36 +33,32 @@ ROS3D.Polygon = function(options) {
       messageType : 'geometry_msgs/PolygonStamped'
   });
 
-    rosTopic.subscribe(function(message) {
-        if(that.sn!==null){
-            that.rootObject.remove(that.sn);
-        }
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
 
-        var lineGeometry = new THREE.Geometry();
-        var v3;
-        for(var i=0; i<message.polygon.points.length;i++){
-            v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
-                                      message.polygon.points[i].z);
-            lineGeometry.vertices.push(v3);
-        }
-        v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
-                                  message.polygon.points[0].z);
-        lineGeometry.vertices.push(v3);
+      var lineGeometry = new THREE.Geometry();
+      var v3;
+      for(var i=0; i<message.polygon.points.length;i++){
+          v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
+                                  message.polygon.points[i].z);
+          lineGeometry.vertices.push(v3);
+      }
+      v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
+                              message.polygon.points[0].z);
+      lineGeometry.vertices.push(v3);
+      lineGeometry.computeLineDistances();
+      var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+      var line = new THREE.Line( lineGeometry, lineMaterial );
         
-            
-        lineGeometry.computeLineDistances();
-        var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
-        var line = new THREE.Line( lineGeometry, lineMaterial );
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : line
+      });
         
-        that.sn = new ROS3D.SceneNode({
-              frameID : message.header.frame_id,
-              tfClient : that.tfClient,
-              object : line
-        });
-        
-        that.rootObject.add(that.sn);
-    });
-
-
+      that.rootObject.add(that.sn);
+  });
 };
 ROS3D.Polygon.prototype.__proto__ = THREE.Object3D.prototype;

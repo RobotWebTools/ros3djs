@@ -34,25 +34,23 @@ ROS3D.Point = function(options) {
       messageType : 'geometry_msgs/PointStamped'
   });
 
-    rosTopic.subscribe(function(message) {
-        if(that.sn!==null){
-            that.rootObject.remove(that.sn);
-        }
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
 
-        var sphereGeometry = new THREE.SphereGeometry( that.radius );
-        var sphereMaterial = new THREE.MeshBasicMaterial( {color: that.color} );
-        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.set(message.point.x, message.point.y, message.point.z);
+      var sphereGeometry = new THREE.SphereGeometry( that.radius );
+      var sphereMaterial = new THREE.MeshBasicMaterial( {color: that.color} );
+      var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(message.point.x, message.point.y, message.point.z);
 
-        that.sn = new ROS3D.SceneNode({
-              frameID : message.header.frame_id,
-              tfClient : that.tfClient,
-              object : sphere
-        });
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : sphere
+      });
         
-        that.rootObject.add(that.sn);
-    });
-
-
+      that.rootObject.add(that.sn);
+  });
 };
 ROS3D.Point.prototype.__proto__ = THREE.Object3D.prototype;

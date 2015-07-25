@@ -36,30 +36,28 @@ ROS3D.Pose = function(options) {
       messageType : 'geometry_msgs/PoseStamped'
   });
 
-    rosTopic.subscribe(function(message) {
-        if(that.sn!==null){
-            that.rootObject.remove(that.sn);
-        }
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
 
-        that.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
-                                      message.pose.position.z);
-                                      
-        var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
-                                       message.pose.orientation.z, message.pose.orientation.w);
-        that.options.direction = new THREE.Vector3(1,0,0);
-        that.options.direction.applyQuaternion(rot);
-        that.options.material = new THREE.MeshBasicMaterial({color: that.color});
-        var arrow = new ROS3D.Arrow(that.options);
+      that.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
+                                               message.pose.position.z);
+
+      var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+                                     message.pose.orientation.z, message.pose.orientation.w);
+      that.options.direction = new THREE.Vector3(1,0,0);
+      that.options.direction.applyQuaternion(rot);
+      that.options.material = new THREE.MeshBasicMaterial({color: that.color});
+      var arrow = new ROS3D.Arrow(that.options);
         
-        that.sn = new ROS3D.SceneNode({
-              frameID : message.header.frame_id,
-              tfClient : that.tfClient,
-              object : arrow
-        });
-        
-        that.rootObject.add(that.sn);
-    });
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : arrow
+      });
 
-
+      that.rootObject.add(that.sn);
+  });
 };
 ROS3D.Pose.prototype.__proto__ = THREE.Object3D.prototype;

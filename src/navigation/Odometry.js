@@ -39,31 +39,29 @@ ROS3D.Odometry = function(options) {
       messageType : 'nav_msgs/Odometry'
   });
 
-    rosTopic.subscribe(function(message) {
-        if(that.sns.length >= that.keep) {
-            that.rootObject.remove(that.sns[0]);
-            that.sns.shift();
-        }
+  rosTopic.subscribe(function(message) {
+      if(that.sns.length >= that.keep) {
+          that.rootObject.remove(that.sns[0]);
+          that.sns.shift();
+      }
 
-        that.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
-                                      message.pose.pose.position.z);
+      that.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+                                               message.pose.pose.position.z);
                                       
-        var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
-                                       message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-        that.options.direction = new THREE.Vector3(1,0,0);
-        that.options.direction.applyQuaternion(rot);
-        that.options.material = new THREE.MeshBasicMaterial({color: that.color});
-        var arrow = new ROS3D.Arrow(that.options);
+      var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+                                     message.pose.pose.orientation.z, message.pose.pose.orientation.w);
+      that.options.direction = new THREE.Vector3(1,0,0);
+      that.options.direction.applyQuaternion(rot);
+      that.options.material = new THREE.MeshBasicMaterial({color: that.color});
+      var arrow = new ROS3D.Arrow(that.options);
         
-        that.sns.push(new ROS3D.SceneNode({
-              frameID : message.header.frame_id,
-              tfClient : that.tfClient,
-              object : arrow
-        }));
+      that.sns.push(new ROS3D.SceneNode({
+            frameID : message.header.frame_id,
+            tfClient : that.tfClient,
+            object : arrow
+      }));
 
-        that.rootObject.add(that.sns[ that.sns.length - 1]);
-    });
-
-
+      that.rootObject.add(that.sns[ that.sns.length - 1]);
+  });
 };
 ROS3D.Odometry.prototype.__proto__ = THREE.Object3D.prototype;

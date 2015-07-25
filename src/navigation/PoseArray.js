@@ -34,52 +34,50 @@ ROS3D.PoseArray = function(options) {
       messageType : 'geometry_msgs/PoseArray'
   });
 
-    rosTopic.subscribe(function(message) {
-        if(that.sn!==null){
-            that.rootObject.remove(that.sn);
-        }
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
 
-        var group = new THREE.Object3D();
-        var line;
+      var group = new THREE.Object3D();
+      var line;
         
-        for(var i=0;i<message.poses.length;i++){
-            var lineGeometry = new THREE.Geometry();
-        
-            var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
+      for(var i=0;i<message.poses.length;i++){
+          var lineGeometry = new THREE.Geometry();
+
+          var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
                                       message.poses[i].position.z);
-            lineGeometry.vertices.push(v3);
+          lineGeometry.vertices.push(v3);
             
-            var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
-                                           message.poses[i].orientation.z, message.poses[i].orientation.w);
-        
-            var tip = new THREE.Vector3(that.length,0,0);
-            var side1 = new THREE.Vector3(that.length*0.8, that.length*0.2, 0);
-            var side2 = new THREE.Vector3(that.length*0.8, -that.length*0.2, 0);
-            tip.applyQuaternion(rot);
-            side1.applyQuaternion(rot);
-            side2.applyQuaternion(rot);
-            
-            lineGeometry.vertices.push(tip.add(v3));
-            lineGeometry.vertices.push(side1.add(v3));
-            lineGeometry.vertices.push(side2.add(v3));
-            lineGeometry.vertices.push(tip);
-            
-            lineGeometry.computeLineDistances();
-            var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
-            line = new THREE.Line( lineGeometry, lineMaterial );
-            
-            group.add(line);
-        }
-        
-        that.sn = new ROS3D.SceneNode({
-              frameID : message.header.frame_id,
-              tfClient : that.tfClient,
-              object : group
-        });
-        
-        that.rootObject.add(that.sn);
-    });
+          var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
+                                         message.poses[i].orientation.z, message.poses[i].orientation.w);
 
+          var tip = new THREE.Vector3(that.length,0,0);
+          var side1 = new THREE.Vector3(that.length*0.8, that.length*0.2, 0);
+          var side2 = new THREE.Vector3(that.length*0.8, -that.length*0.2, 0);
+          tip.applyQuaternion(rot);
+          side1.applyQuaternion(rot);
+          side2.applyQuaternion(rot);
 
+          lineGeometry.vertices.push(tip.add(v3));
+          lineGeometry.vertices.push(side1.add(v3));
+          lineGeometry.vertices.push(side2.add(v3));
+          lineGeometry.vertices.push(tip);
+            
+          lineGeometry.computeLineDistances();
+          var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+          line = new THREE.Line( lineGeometry, lineMaterial );
+            
+          group.add(line);
+      }
+        
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : group
+      });
+        
+      that.rootObject.add(that.sn);
+  });
 };
 ROS3D.PoseArray.prototype.__proto__ = THREE.Object3D.prototype;
