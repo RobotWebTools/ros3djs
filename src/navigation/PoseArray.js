@@ -41,14 +41,14 @@ ROS3D.PoseArray = function(options) {
 
       var group = new THREE.Object3D();
       var line;
-        
+
       for(var i=0;i<message.poses.length;i++){
           var lineGeometry = new THREE.Geometry();
 
           var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
                                       message.poses[i].position.z);
           lineGeometry.vertices.push(v3);
-            
+
           var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
                                          message.poses[i].orientation.z, message.poses[i].orientation.w);
 
@@ -63,20 +63,20 @@ ROS3D.PoseArray = function(options) {
           lineGeometry.vertices.push(side1.add(v3));
           lineGeometry.vertices.push(side2.add(v3));
           lineGeometry.vertices.push(tip);
-            
+
           lineGeometry.computeLineDistances();
           var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
           line = new THREE.Line( lineGeometry, lineMaterial );
-            
+
           group.add(line);
       }
-        
+
       that.sn = new ROS3D.SceneNode({
           frameID : message.header.frame_id,
           tfClient : that.tfClient,
           object : group
       });
-        
+
       that.rootObject.add(that.sn);
   });
 };

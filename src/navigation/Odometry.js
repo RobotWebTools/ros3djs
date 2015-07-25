@@ -47,14 +47,14 @@ ROS3D.Odometry = function(options) {
 
       that.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
                                                message.pose.pose.position.z);
-                                      
+
       var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
                                      message.pose.pose.orientation.z, message.pose.pose.orientation.w);
       that.options.direction = new THREE.Vector3(1,0,0);
       that.options.direction.applyQuaternion(rot);
       that.options.material = new THREE.MeshBasicMaterial({color: that.color});
       var arrow = new ROS3D.Arrow(that.options);
-        
+
       that.sns.push(new ROS3D.SceneNode({
             frameID : message.header.frame_id,
             tfClient : that.tfClient,

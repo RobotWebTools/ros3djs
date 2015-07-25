@@ -50,7 +50,7 @@ ROS3D.Pose = function(options) {
       that.options.direction.applyQuaternion(rot);
       that.options.material = new THREE.MeshBasicMaterial({color: that.color});
       var arrow = new ROS3D.Arrow(that.options);
-        
+
       that.sn = new ROS3D.SceneNode({
           frameID : message.header.frame_id,
           tfClient : that.tfClient,

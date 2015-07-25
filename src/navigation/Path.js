@@ -44,17 +44,17 @@ ROS3D.Path = function(options) {
                                       message.poses[i].pose.position.z);
           lineGeometry.vertices.push(v3);
       }
-            
+
       lineGeometry.computeLineDistances();
       var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
       var line = new THREE.Line( lineGeometry, lineMaterial );
-        
+
       that.sn = new ROS3D.SceneNode({
           frameID : message.header.frame_id,
           tfClient : that.tfClient,
           object : line
       });
-        
+
       that.rootObject.add(that.sn);
   });
 };

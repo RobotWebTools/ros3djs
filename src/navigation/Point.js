@@ -49,7 +49,7 @@ ROS3D.Point = function(options) {
           tfClient : that.tfClient,
           object : sphere
       });
-        
+
       that.rootObject.add(that.sn);
   });
 };
