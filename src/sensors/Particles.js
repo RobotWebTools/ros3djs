@@ -19,7 +19,7 @@ ROS3D.Particles = function(options) {
   this.tfClient = options.tfClient;
   var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
   var size = options.size || 0.05;
-  this.max_pts = options.max_pts || 100;
+  this.max_pts = options.max_pts || 10000;
   this.first_size = null;
   this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -85,11 +85,11 @@ ROS3D.Particles = function(options) {
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.sn = null;
-    
+
     this.points = this.geom.vertices;
     this.colors = this.attribs.customColor.value;
     this.alpha =  this.attribs.alpha.value;
-    
+
 };
 
 function setFrame(particles, frame)
@@ -116,7 +116,7 @@ function finishedUpdate(particles, n)
         particles.alpha[i] = 0.0;
     }
     particles.prev_pts = n;
-    
+
     particles.geom.verticesNeedUpdate = true;
     particles.attribs.customColor.needsUpdate = true;
     particles.attribs.alpha.needsUpdate = true;
