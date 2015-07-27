@@ -77,6 +77,5 @@ ROS3D.Arrow.prototype.setLength = function(length) {
  * @param hex - the hex value of the color to use
  */
 ROS3D.Arrow.prototype.setColor = function(hex) {
-  this.line.material.color.setHex(hex);
-  this.cone.material.color.setHex(hex);
+  this.geometry.material.color.setHex(hex);
 };
