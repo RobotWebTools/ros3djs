@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.16.0-SNAPSHOT'
+  REVISION : '0.16.0'
 };
 
 // Marker types
@@ -1583,155 +1583,6 @@ ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
 THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarkerMenu.prototype );
 
 /**
- * @author Russell Toris - rctoris@wpi.edu
- */
-
-/**
- * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
- *
- * @constructor
- * @param options - object with following keys:
- *
- *   * message - the occupancy grid message
- */
-ROS3D.OccupancyGrid = function(options) {
-  options = options || {};
-  var message = options.message;
-
-  // create the geometry
-  var width = message.info.width;
-  var height = message.info.height;
-  var geom = new THREE.PlaneGeometry(width, height);
-
-  // internal drawing canvas
-  var canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  var context = canvas.getContext('2d');
-  // create the color material
-  var imageData = context.createImageData(width, height);
-  for ( var row = 0; row < height; row++) {
-    for ( var col = 0; col < width; col++) {
-      // determine the index into the map data
-      var mapI = col + ((height - row - 1) * width);
-      // determine the value
-      var data = message.data[mapI];
-      var val;
-      if (data === 100) {
-        val = 0;
-      } else if (data === 0) {
-        val = 255;
-      } else {
-        val = 127;
-      }
-
-      // determine the index into the image data array
-      var i = (col + (row * width)) * 4;
-      // r
-      imageData.data[i] = val;
-      // g
-      imageData.data[++i] = val;
-      // b
-      imageData.data[++i] = val;
-      // a
-      imageData.data[++i] = 255;
-    }
-  }
-  context.putImageData(imageData, 0, 0);
-
-  var texture = new THREE.Texture(canvas);
-  texture.needsUpdate = true;
-  var material = new THREE.MeshBasicMaterial({
-    map : texture
-  });
-  material.side = THREE.DoubleSide;
-
-  // create the mesh
-  THREE.Mesh.call(this, geom, material);
-  // move the map so the corner is at X, Y and correct orientation (informations from message.info)
-  this.useQuaternion = true;
-  this.quaternion = message.info.origin.orientation;
-  this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
-  this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
-  this.position.z = message.info.origin.position.z;
-  this.scale.x = message.info.resolution;
-  this.scale.y = message.info.resolution;
-};
-ROS3D.OccupancyGrid.prototype.__proto__ = THREE.Mesh.prototype;
-
-/**
- * @author Russell Toris - rctoris@wpi.edu
- */
-
-/**
- * An occupancy grid client that listens to a given map topic.
- *
- * Emits the following events:
- *
- *  * 'change' - there was an update or change in the marker
- *
- * @constructor
- * @param options - object with following keys:
- *
- *   * ros - the ROSLIB.Ros connection handle
- *   * topic (optional) - the map topic to listen to
- *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
- *   * tfClient (optional) - the TF client handle to use for a scene node
- *   * rootObject (optional) - the root object to add this marker to
- */
-ROS3D.OccupancyGridClient = function(options) {
-  var that = this;
-  options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/map';
-  this.continuous = options.continuous;
-  this.tfClient = options.tfClient;
-  this.rootObject = options.rootObject || new THREE.Object3D();
-
-  // current grid that is displayed
-  this.currentGrid = null;
-
-  // subscribe to the topic
-  var rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'nav_msgs/OccupancyGrid',
-    compression : 'png'
-  });
-  rosTopic.subscribe(function(message) {
-    // check for an old map
-    if (that.currentGrid) {
-      that.rootObject.remove(that.currentGrid);
-    }
-
-    var newGrid = new ROS3D.OccupancyGrid({
-      message : message
-    });
-
-    // check if we care about the scene
-    if (that.tfClient) {
-      that.currentGrid = new ROS3D.SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : that.tfClient,
-        object : newGrid
-      });
-    } else {
-      that.currentGrid = newGrid;
-    }
-
-    that.rootObject.add(that.currentGrid);
-
-    that.emit('change');
-
-    // check if we should unsubscribe
-    if (!that.continuous) {
-      rosTopic.unsubscribe();
-    }
-  });
-};
-ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
-
-/**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -2429,8 +2280,7 @@ ROS3D.Arrow.prototype.setLength = function(length) {
  * @param hex - the hex value of the color to use
  */
 ROS3D.Arrow.prototype.setColor = function(hex) {
-  this.line.material.color.setHex(hex);
-  this.cone.material.color.setHex(hex);
+  this.geometry.material.color.setHex(hex);
 };
 
 /**
@@ -2513,14 +2363,14 @@ ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;
  * @constructor
  * @param options - object with following keys:
  *
- *  * size (optional) - The number of cells of the grid
+ *  * num_cells (optional) - The number of cells of the grid
  *  * color (optional) - the line color of the grid, like '#cccccc'
  *  * lineWidth (optional) - the width of the lines in the grid
  *  * cellSize (optional) - The length, in meters, of the side of each cell
  */
 ROS3D.Grid = function(options) {
   options = options || {};
-  var size = options.size || 10;
+  var num_cells = options.num_cells || 10;
   var color = options.color || '#cccccc';
   var lineWidth = options.lineWidth || 1;
   var cellSize = options.cellSize || 1;
@@ -2532,8 +2382,8 @@ ROS3D.Grid = function(options) {
     linewidth: lineWidth
   });
 
-  for (var i = 0; i <= size; ++i) {
-    var edge = cellSize * size / 2;
+  for (var i = 0; i <= num_cells; ++i) {
+    var edge = cellSize * num_cells / 2;
     var position = edge - (i * cellSize);
     var geometryH = new THREE.Geometry();
     geometryH.vertices.push(
@@ -2728,6 +2578,739 @@ ROS3D.TriangleList.prototype.setColor = function(hex) {
 };
 
 /**
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *   * message - the occupancy grid message
+ */
+ROS3D.OccupancyGrid = function(options) {
+  options = options || {};
+  var message = options.message;
+
+  // create the geometry
+  var width = message.info.width;
+  var height = message.info.height;
+  var geom = new THREE.PlaneGeometry(width, height);
+
+  // internal drawing canvas
+  var canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  var context = canvas.getContext('2d');
+  // create the color material
+  var imageData = context.createImageData(width, height);
+  for ( var row = 0; row < height; row++) {
+    for ( var col = 0; col < width; col++) {
+      // determine the index into the map data
+      var mapI = col + ((height - row - 1) * width);
+      // determine the value
+      var data = message.data[mapI];
+      var val;
+      if (data === 100) {
+        val = 0;
+      } else if (data === 0) {
+        val = 255;
+      } else {
+        val = 127;
+      }
+
+      // determine the index into the image data array
+      var i = (col + (row * width)) * 4;
+      // r
+      imageData.data[i] = val;
+      // g
+      imageData.data[++i] = val;
+      // b
+      imageData.data[++i] = val;
+      // a
+      imageData.data[++i] = 255;
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+
+  var texture = new THREE.Texture(canvas);
+  texture.needsUpdate = true;
+  var material = new THREE.MeshBasicMaterial({
+    map : texture
+  });
+  material.side = THREE.DoubleSide;
+
+  // create the mesh
+  THREE.Mesh.call(this, geom, material);
+  // move the map so the corner is at X, Y and correct orientation (informations from message.info)
+  this.useQuaternion = true;
+  this.quaternion = message.info.origin.orientation;
+  this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
+  this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
+  this.position.z = message.info.origin.position.z;
+  this.scale.x = message.info.resolution;
+  this.scale.y = message.info.resolution;
+};
+ROS3D.OccupancyGrid.prototype.__proto__ = THREE.Mesh.prototype;
+
+/**
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * An occupancy grid client that listens to a given map topic.
+ *
+ * Emits the following events:
+ *
+ *  * 'change' - there was an update or change in the marker
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *   * ros - the ROSLIB.Ros connection handle
+ *   * topic (optional) - the map topic to listen to
+ *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+ *   * tfClient (optional) - the TF client handle to use for a scene node
+ *   * rootObject (optional) - the root object to add this marker to
+ */
+ROS3D.OccupancyGridClient = function(options) {
+  var that = this;
+  options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/map';
+  this.continuous = options.continuous;
+  this.tfClient = options.tfClient;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+
+  // current grid that is displayed
+  this.currentGrid = null;
+
+  // subscribe to the topic
+  var rosTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : topic,
+    messageType : 'nav_msgs/OccupancyGrid',
+    compression : 'png'
+  });
+  rosTopic.subscribe(function(message) {
+    // check for an old map
+    if (that.currentGrid) {
+      that.rootObject.remove(that.currentGrid);
+    }
+
+    var newGrid = new ROS3D.OccupancyGrid({
+      message : message
+    });
+
+    // check if we care about the scene
+    if (that.tfClient) {
+      that.currentGrid = new ROS3D.SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : that.tfClient,
+        object : newGrid
+      });
+    } else {
+      that.currentGrid = newGrid;
+    }
+
+    that.rootObject.add(that.currentGrid);
+
+    that.emit('change');
+
+    // check if we should unsubscribe
+    if (!that.continuous) {
+      rosTopic.unsubscribe();
+    }
+  });
+};
+ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * An Odometry client
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * keep (optional) - number of markers to keep around (default: 1)
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ *  * length (optional) - the length of the arrow (default: 1.0)
+ *  * headLength (optional) - the head length of the arrow (default: 0.2)
+ *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
+ *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
+ */
+ROS3D.Odometry = function(options) {
+  this.options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/particlecloud';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.length = options.length || 1.0;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  this.keep = options.keep || 1;
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sns = [];
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'nav_msgs/Odometry'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sns.length >= that.keep) {
+          that.rootObject.remove(that.sns[0]);
+          that.sns.shift();
+      }
+
+      that.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+                                               message.pose.pose.position.z);
+
+      var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+                                     message.pose.pose.orientation.z, message.pose.pose.orientation.w);
+      that.options.direction = new THREE.Vector3(1,0,0);
+      that.options.direction.applyQuaternion(rot);
+      that.options.material = new THREE.MeshBasicMaterial({color: that.color});
+      var arrow = new ROS3D.Arrow(that.options);
+
+      that.sns.push(new ROS3D.SceneNode({
+            frameID : message.header.frame_id,
+            tfClient : that.tfClient,
+            object : arrow
+      }));
+
+      that.rootObject.add(that.sns[ that.sns.length - 1]);
+  });
+};
+ROS3D.Odometry.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A Path client that listens to a given topic and displays a line connecting the poses.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ */
+ROS3D.Path = function(options) {
+  options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/path';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sn = null;
+  this.line = null;
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'nav_msgs/Path'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
+
+      var lineGeometry = new THREE.Geometry();
+      for(var i=0; i<message.poses.length;i++){
+          var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
+                                      message.poses[i].pose.position.z);
+          lineGeometry.vertices.push(v3);
+      }
+
+      lineGeometry.computeLineDistances();
+      var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+      var line = new THREE.Line( lineGeometry, lineMaterial );
+
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : line
+      });
+
+      that.rootObject.add(that.sn);
+  });
+};
+ROS3D.Path.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A PointStamped client
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ *  * radius (optional) - radius of the point (default: 0.2)
+ */
+ROS3D.Point = function(options) {
+  this.options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/point';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  this.radius = options.radius || 0.2;
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sn = null;
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'geometry_msgs/PointStamped'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
+
+      var sphereGeometry = new THREE.SphereGeometry( that.radius );
+      var sphereMaterial = new THREE.MeshBasicMaterial( {color: that.color} );
+      var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(message.point.x, message.point.y, message.point.z);
+
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : sphere
+      });
+
+      that.rootObject.add(that.sn);
+  });
+};
+ROS3D.Point.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A PolygonStamped client that listens to a given topic and displays the polygon
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ */
+ROS3D.Polygon = function(options) {
+  options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/path';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sn = null;
+  this.line = null;
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'geometry_msgs/PolygonStamped'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
+
+      var lineGeometry = new THREE.Geometry();
+      var v3;
+      for(var i=0; i<message.polygon.points.length;i++){
+          v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
+                                  message.polygon.points[i].z);
+          lineGeometry.vertices.push(v3);
+      }
+      v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
+                              message.polygon.points[0].z);
+      lineGeometry.vertices.push(v3);
+      lineGeometry.computeLineDistances();
+      var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+      var line = new THREE.Line( lineGeometry, lineMaterial );
+
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : line
+      });
+
+      that.rootObject.add(that.sn);
+  });
+};
+ROS3D.Polygon.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A PoseStamped client
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ *  * length (optional) - the length of the arrow (default: 1.0)
+ *  * headLength (optional) - the head length of the arrow (default: 0.2)
+ *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
+ *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
+ */
+ROS3D.Pose = function(options) {
+  this.options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/pose';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sn = null;
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'geometry_msgs/PoseStamped'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
+
+      that.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
+                                               message.pose.position.z);
+
+      var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+                                     message.pose.orientation.z, message.pose.orientation.w);
+      that.options.direction = new THREE.Vector3(1,0,0);
+      that.options.direction.applyQuaternion(rot);
+      that.options.material = new THREE.MeshBasicMaterial({color: that.color});
+      var arrow = new ROS3D.Arrow(that.options);
+
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : arrow
+      });
+
+      that.rootObject.add(that.sn);
+  });
+};
+ROS3D.Pose.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A PoseArray client
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * color (optional) - color for line (default: 0xcc00ff)
+ *  * length (optional) - the length of the arrow (default: 1.0)
+ */
+ROS3D.PoseArray = function(options) {
+  this.options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/particlecloud';
+  this.tfClient = options.tfClient;
+  this.color = options.color || 0xcc00ff;
+  this.length = options.length || 1.0;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.sn = null;
+
+  var rosTopic = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : 'geometry_msgs/PoseArray'
+  });
+
+  rosTopic.subscribe(function(message) {
+      if(that.sn!==null){
+          that.rootObject.remove(that.sn);
+      }
+
+      var group = new THREE.Object3D();
+      var line;
+
+      for(var i=0;i<message.poses.length;i++){
+          var lineGeometry = new THREE.Geometry();
+
+          var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
+                                      message.poses[i].position.z);
+          lineGeometry.vertices.push(v3);
+
+          var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
+                                         message.poses[i].orientation.z, message.poses[i].orientation.w);
+
+          var tip = new THREE.Vector3(that.length,0,0);
+          var side1 = new THREE.Vector3(that.length*0.8, that.length*0.2, 0);
+          var side2 = new THREE.Vector3(that.length*0.8, -that.length*0.2, 0);
+          tip.applyQuaternion(rot);
+          side1.applyQuaternion(rot);
+          side2.applyQuaternion(rot);
+
+          lineGeometry.vertices.push(tip.add(v3));
+          lineGeometry.vertices.push(side1.add(v3));
+          lineGeometry.vertices.push(side2.add(v3));
+          lineGeometry.vertices.push(tip);
+
+          lineGeometry.computeLineDistances();
+          var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+          line = new THREE.Line( lineGeometry, lineMaterial );
+
+          group.add(line);
+      }
+
+      that.sn = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : that.tfClient,
+          object : group
+      });
+
+      that.rootObject.add(that.sn);
+  });
+};
+ROS3D.PoseArray.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A LaserScan client that listens to a given topic and displays the points.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to
+ *  * tfClient - the TF client handle to use
+ *  * color - (optional) color of the points (default 0xFFA500)
+ *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * size (optional) - size to draw each point (default 0.05)
+ *  * max_pts (optional) - number of points to draw (default 100)
+ */
+ROS3D.LaserScan = function(options) {
+  options = options || {};
+  var ros = options.ros;
+  var topic = options.topic || '/scan';
+  this.color = options.color || 0xFFA500;
+  var that = this;
+
+  this.particles = new ROS3D.Particles(options);
+
+  var rosTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : topic,
+    messageType : 'sensor_msgs/LaserScan'
+  });
+
+
+  rosTopic.subscribe(function(message) {
+    setFrame(that.particles, message.header.frame_id);
+
+    var n = message.ranges.length;
+    for(var i=0;i<n;i++){
+      var range = message.ranges[i];
+      if(range < message.range_min || range > message.range_max){
+        that.particles.alpha[i] = 0.0;
+      }else{
+          var angle = message.angle_min + i * message.angle_increment;
+          that.particles.points[i] = new THREE.Vector3( range * Math.cos(angle), range * Math.sin(angle), 0.0 );
+          that.particles.alpha[i] = 1.0;
+      }
+      that.particles.colors[ i ] = new THREE.Color( that.color );
+    }
+
+    finishedUpdate(that.particles, n);
+  });
+};
+ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
+
+/**
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A set of particles. Used by PointCloud2.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * tfClient - the TF client handle to use
+ *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
+ *  * rootObject (optional) - the root object to add this marker to
+ *  * size (optional) - size to draw each point (default 0.05)
+ *  * max_pts (optional) - number of points to draw (default 100)
+ */
+ROS3D.Particles = function(options) {
+  options = options || {};
+  this.tfClient = options.tfClient;
+  var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
+  var size = options.size || 0.05;
+  this.max_pts = options.max_pts || 10000;
+  this.first_size = null;
+  this.prev_pts = 0;
+  this.rootObject = options.rootObject || new THREE.Object3D();
+  var that = this;
+  THREE.Object3D.call(this);
+
+  this.vertex_shader = [
+    'attribute vec3 customColor;',
+    'attribute float alpha;',
+    'varying vec3 vColor;',
+    'varying float falpha;',
+    'void main() ',
+    '{',
+    '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
+    '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+    '    falpha = alpha; ',
+    '',
+    '    // option (1): draw particles at constant size on screen',
+    '    // gl_PointSize = size;',
+    '    // option (2): scale particles as objects in 3D space',
+    '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
+    '    gl_Position = projectionMatrix * mvPosition;',
+    '}'
+    ].join('\n');
+
+  this.fragment_shader = [
+    'uniform sampler2D texture;',
+    'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
+    'varying float falpha;',
+    'void main() ',
+    '{',
+    '    // calculates a color for the particle',
+    '    gl_FragColor = vec4( vColor, falpha );',
+    '    // sets particle texture to desired color',
+    '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
+    '}'
+    ].join('\n');
+
+    this.geom = new THREE.Geometry();
+    for(var i=0;i<this.max_pts;i++){
+        this.geom.vertices.push(new THREE.Vector3( ));
+    }
+
+    var customUniforms =
+    {
+        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
+    };
+
+    this.attribs =
+    {
+        customColor:   { type: 'c', value: [] },
+        alpha:         { type: 'f', value: [] }
+    };
+
+    this.shaderMaterial = new THREE.ShaderMaterial(
+    {
+        uniforms:          customUniforms,
+        attributes:        this.attribs,
+        vertexShader:      this.vertex_shader,
+        fragmentShader:    this.fragment_shader,
+        transparent: true, alphaTest: 0.5
+    });
+
+    this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
+    this.sn = null;
+
+    this.points = this.geom.vertices;
+    this.colors = this.attribs.customColor.value;
+    this.alpha =  this.attribs.alpha.value;
+
+};
+
+function setFrame(particles, frame)
+{
+    if(particles.sn===null){
+        particles.sn = new ROS3D.SceneNode({
+            frameID : frame,
+            tfClient : particles.tfClient,
+            object : particles.ps
+        });
+
+        particles.rootObject.add(particles.sn);
+    }
+}
+
+function finishedUpdate(particles, n)
+{
+    if(particles.first_size === null){
+        particles.first_size = n;
+        particles.max_pts = Math.max(particles.max_pts, n);
+    }
+
+    for(var i=n; i<particles.prev_pts; i++){
+        particles.alpha[i] = 0.0;
+    }
+    particles.prev_pts = n;
+
+    particles.geom.verticesNeedUpdate = true;
+    particles.attribs.customColor.needsUpdate = true;
+    particles.attribs.alpha.needsUpdate = true;
+
+    if(n>particles.max_pts){
+        throw 'Attempted to draw more points than max_pts allows';
+    }
+}
+
+/**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -2779,6 +3362,7 @@ function decode64(x) {
  *  * ros - the ROSLIB.Ros connection handle
  *  * topic - the marker topic to listen to
  *  * tfClient - the TF client handle to use
+ *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
  *  * rootObject (optional) - the root object to add this marker to
  *  * size (optional) - size to draw each point (default 0.05)
  *  * max_pts (optional) - number of points to draw (default 100)
@@ -2787,118 +3371,35 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/points';
-  this.tfClient = options.tfClient;
-  var size = options.size || 0.05;
-  var max_pts = options.max_pts || 100;
-  this.prev_pts = 0;
-  this.rootObject = options.rootObject || new THREE.Object3D();
   var that = this;
-  THREE.Object3D.call(this);
 
-  this.vertex_shader = [
-    'attribute vec3 customColor;',
-    'attribute float alpha;',
-    'varying vec3 vColor;',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
-    '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
-    '    falpha = alpha; ',
-    '',
-    '    // option (1): draw particles at constant size on screen',
-    '    // gl_PointSize = size;',
-    '    // option (2): scale particles as objects in 3D space',
-    '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
-    '    gl_Position = projectionMatrix * mvPosition;',
-    '}'
-    ].join('\n');
+  this.particles = new ROS3D.Particles(options);
 
-  this.fragment_shader = [
-    'uniform sampler2D texture;',
-    'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    // calculates a color for the particle',
-    '    gl_FragColor = vec4( vColor, falpha );',
-    '    // sets particle texture to desired color',
-    '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
-    '}'
-    ].join('\n');
+  var rosTopic = new ROSLIB.Topic({
+    ros : ros,
+    name : topic,
+    messageType : 'sensor_msgs/PointCloud2'
+  });
 
-    this.geom = new THREE.Geometry();
-    for(var i=0;i<max_pts;i++){
-        this.geom.vertices.push(new THREE.Vector3( ));
+  rosTopic.subscribe(function(message) {
+    setFrame(that.particles, message.header.frame_id);
+
+    var n = message.height*message.width;
+    var buffer;
+    if(message.data.buffer){
+      buffer = message.data.buffer;
+    }else{
+      buffer = decode64(message.data);
+    }
+    for(var i=0;i<n;i++){
+      var pt = read_point(message, i, buffer);
+      that.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
+      that.particles.colors[ i ] = new THREE.Color( pt['rgb'] );
+      that.particles.alpha[i] = 1.0;
     }
 
-    var customUniforms =
-    {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( 'pixel.png' ) },
-    };
-
-    this.attribs =
-    {
-        customColor:   { type: 'c', value: [] },
-        alpha:         { type: 'f', value: [] }
-    };
-
-    this.shaderMaterial = new THREE.ShaderMaterial(
-    {
-        uniforms:          customUniforms,
-        attributes:        this.attribs,
-        vertexShader:      this.vertex_shader,
-        fragmentShader:    this.fragment_shader,
-        transparent: true, alphaTest: 0.5
-    });
-
-    this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
-    this.sn = null;
-
-    var rosTopic = new ROSLIB.Topic({
-      ros : ros,
-      name : topic,
-      messageType : 'sensor_msgs/PointCloud2'
-    });
-
-    rosTopic.subscribe(function(message) {
-        rosTopic.unsubscribe();
-
-        if(that.sn===null){
-            that.sn = new ROS3D.SceneNode({
-                frameID : message.header.frame_id,
-                tfClient : that.tfClient,
-                object : that.ps
-            });
-
-            that.rootObject.add(that.sn);
-        }
-
-        var n = message.height*message.width;
-
-        var buffer;
-        if(message.data.buffer){
-            buffer = message.data.buffer;
-        }else{
-            buffer = decode64(message.data);
-        }
-        for(var i=0;i<n;i++){
-            var pt = read_point(message, i, buffer);
-            that.geom.vertices[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-            that.attribs.customColor.value[ i ] = new THREE.Color( pt['rgb'] );
-            that.attribs.alpha.value[i] = 1.0;
-        }
-        for(i=n; i<that.prev_pts; i++){
-            that.attribs.alpha.value[i] = 0.0;
-        }
-        that.prev_pts = n;
-
-        that.geom.verticesNeedUpdate = true;
-        that.attribs.customColor.needsUpdate = true;
-        that.attribs.alpha.needsUpdate = true;
-    });
-
-
+    finishedUpdate(that.particles, n);
+  });
 };
 ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
 
