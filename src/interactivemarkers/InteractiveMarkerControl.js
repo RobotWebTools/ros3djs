@@ -174,6 +174,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   var localTfClient = new ROSLIB.TFClient({
     ros : handle.tfClient.ros,
     fixedFrame : handle.message.header.frame_id,
+    serverName : handle.tfClient.serverName
   });
 
   // create visuals (markers)
