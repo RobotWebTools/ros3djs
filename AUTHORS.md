@@ -9,6 +9,7 @@ Contributors
 ------------
 
  * Brandon Alexander (balexander@willowgarage.com)
+ * David V. Lu!! (davidvlu@gmail.com)
  * Sarah Osentoski (sarah.osentoski@us.bosch.com)
  * Benjamin Pitzer (ben.pitzer@gmail.com)
  * Xueqiao Xu (xueqiaoxu@gmail.com)
