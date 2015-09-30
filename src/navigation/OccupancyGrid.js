@@ -9,10 +9,14 @@
  * @param options - object with following keys:
  *
  *   * message - the occupancy grid message
+ *   * color (optional) - color of the visualized grid
+ *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGrid = function(options) {
   options = options || {};
   var message = options.message;
+  var color = options.color || {r:255,g:255,b:255};
+  var opacity = options.opacity || 1.0;
 
   // create the geometry
   var width = message.info.width;
@@ -44,11 +48,11 @@ ROS3D.OccupancyGrid = function(options) {
       // determine the index into the image data array
       var i = (col + (row * width)) * 4;
       // r
-      imageData.data[i] = val;
+      imageData.data[i] = (val * color.r) / 255;
       // g
-      imageData.data[++i] = val;
+      imageData.data[++i] = (val * color.g) / 255;
       // b
-      imageData.data[++i] = val;
+      imageData.data[++i] = (val * color.b) / 255;
       // a
       imageData.data[++i] = 255;
     }
@@ -57,8 +61,11 @@ ROS3D.OccupancyGrid = function(options) {
 
   var texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
+
   var material = new THREE.MeshBasicMaterial({
-    map : texture
+    map : texture,
+    transparent : opacity < 1.0,
+    opacity : opacity
   });
   material.side = THREE.DoubleSide;
 

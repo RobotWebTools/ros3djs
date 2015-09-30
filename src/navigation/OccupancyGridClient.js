@@ -17,6 +17,9 @@
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
  *   * tfClient (optional) - the TF client handle to use for a scene node
  *   * rootObject (optional) - the root object to add this marker to
+ *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
+ *   * color (optional) - color of the visualized grid
+ *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGridClient = function(options) {
   var that = this;
@@ -26,6 +29,9 @@ ROS3D.OccupancyGridClient = function(options) {
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  this.offsetPose = options.offsetPose || new ROSLIB.Pose();
+  this.color = options.color || {r:255,g:255,b:255};
+  this.opacity = options.opacity || 1.0;
 
   // current grid that is displayed
   this.currentGrid = null;
@@ -44,7 +50,9 @@ ROS3D.OccupancyGridClient = function(options) {
     }
 
     var newGrid = new ROS3D.OccupancyGrid({
-      message : message
+      message : message,
+      color : that.color,
+      opacity : that.opacity
     });
 
     // check if we care about the scene
@@ -52,7 +60,8 @@ ROS3D.OccupancyGridClient = function(options) {
       that.currentGrid = new ROS3D.SceneNode({
         frameID : message.header.frame_id,
         tfClient : that.tfClient,
-        object : newGrid
+        object : newGrid,
+        pose : that.offsetPose
       });
     } else {
       that.currentGrid = newGrid;
