@@ -38,6 +38,7 @@ ROS3D.Pose = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 

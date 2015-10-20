@@ -46,6 +46,7 @@ ROS3D.OccupancyGridClient = function(options) {
   rosTopic.subscribe(function(message) {
     // check for an old map
     if (that.currentGrid) {
+      that.currentGrid.unsubscribeTf();
       that.rootObject.remove(that.currentGrid);
     }
 
