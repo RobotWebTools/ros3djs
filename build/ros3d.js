@@ -972,13 +972,14 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       });
     });
 
-    intMarker.addEventListener('user-pose-change', handle.setPoseFromClient.bind(handle));
-    intMarker.addEventListener('user-mousedown', handle.onMouseDown.bind(handle));
-    intMarker.addEventListener('user-mouseup', handle.onMouseUp.bind(handle));
-    intMarker.addEventListener('user-button-click', handle.onButtonClick.bind(handle));
-    intMarker.addEventListener('menu-select', handle.onMenuSelect.bind(handle));
+    // add bound versions of UI handlers
+    intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
+    intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
+    intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
+    intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
+    intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
 
-    // now list for any TF changes
+    // now listen for any TF changes
     handle.subscribeTf();
   });
 };
@@ -993,6 +994,18 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     // remove the object
     var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
     this.rootObject.remove(targetIntMarker);
+    // unsubscribe from TF topic!
+    var handle = this.interactiveMarkers[intMarkerName];
+    handle.unsubscribeTf();
+
+    // remove all other listeners
+    handle.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+    handle.removeEventListener('user-mousedown', handle.onMouseDownBound);
+    handle.removeEventListener('user-mouseup', handle.onMouseUpBound);
+    handle.removeEventListener('user-button-click', handle.onButtonClickBound);
+    handle.removeEventListener('menu-select', handle.onMenuSelectBound);
+
+    // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();
   }
@@ -1174,6 +1187,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   var localTfClient = new ROSLIB.TFClient({
     ros : handle.tfClient.ros,
     fixedFrame : handle.message.header.frame_id,
+    serverName : handle.tfClient.serverName
   });
 
   // create visuals (markers)
@@ -1253,8 +1267,15 @@ ROS3D.InteractiveMarkerHandle = function(options) {
   this.tfTransform = new ROSLIB.Transform();
   this.pose = new ROSLIB.Pose();
 
+  this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
+  this.onMouseDownBound = this.onMouseDown.bind(this);
+  this.onMouseUpBound = this.onMouseUp.bind(this);
+  this.onButtonClickBound = this.onButtonClick.bind(this);
+  this.onMenuSelectBound = this.onMenuSelect.bind(this);
+
   // start by setting the pose
   this.setPoseFromServer(this.message.pose);
+  this.tfUpdateBound = this.tfUpdate.bind(this);
 };
 ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 
@@ -1264,8 +1285,12 @@ ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 ROS3D.InteractiveMarkerHandle.prototype.subscribeTf = function() {
   // subscribe to tf updates if frame-fixed
   if (this.message.header.stamp.secs === 0.0 && this.message.header.stamp.nsecs === 0.0) {
-    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdate.bind(this));
+    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdateBound);
   }
+};
+
+ROS3D.InteractiveMarkerHandle.prototype.unsubscribeTf = function() {
+  this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdateBound);
 };
 
 /**
@@ -2096,7 +2121,8 @@ ROS3D.MarkerArrayClient = function(options) {
         if(message.ns + message.id in that.markers) { // "MODIFY"
           updated = that.markers[message.ns + message.id].children[0].update(message);
           if(!updated) { // "REMOVE"
-              that.rootObject.remove(that.markers[message.ns + message.id]);
+            that.markers[message.ns + message.id].unsubscribeTf();
+            that.rootObject.remove(that.markers[message.ns + message.id]);
           }
         }
         if(!updated) { // "ADD"
@@ -2117,11 +2143,13 @@ ROS3D.MarkerArrayClient = function(options) {
         console.warn('Received marker message with deprecated action identifier "1"');
       }
       else if(message.action === 2) { // "DELETE"
+        that.markers[message.ns + message.id].unsubscribeTf();
         that.rootObject.remove(that.markers[message.ns + message.id]);
         delete that.markers[message.ns + message.id];
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
+          m.unsubscribeTf();
           that.rootObject.remove(m);
         }
         that.markers = {};
@@ -2187,7 +2215,9 @@ ROS3D.MarkerClient = function(options) {
     });
 
     // remove old marker from Three.Object3D children buffer
-    that.rootObject.remove(that.markers[message.ns + message.id]);
+    var oldNode = that.markers[message.ns + message.id];
+    oldNode.unsubscribeTf();
+    that.rootObject.remove(oldNode);
 
     that.markers[message.ns + message.id] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
@@ -2463,11 +2493,7 @@ ROS3D.MeshResource = function(options) {
       // add a texture to anything that is missing one
       if(material !== null) {
         var setMaterial = function(node, material) {
-          // do not overwrite the material
-          if (typeof node.material === 'undefined') {
-            node.material = material;
-          }
-          //node.material = material;
+          node.material = material;
           if (node.children) {
             for (var i = 0; i < node.children.length; i++) {
               setMaterial(node.children[i], material);
@@ -2588,10 +2614,14 @@ ROS3D.TriangleList.prototype.setColor = function(hex) {
  * @param options - object with following keys:
  *
  *   * message - the occupancy grid message
+ *   * color (optional) - color of the visualized grid
+ *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGrid = function(options) {
   options = options || {};
   var message = options.message;
+  var color = options.color || {r:255,g:255,b:255};
+  var opacity = options.opacity || 1.0;
 
   // create the geometry
   var width = message.info.width;
@@ -2623,11 +2653,11 @@ ROS3D.OccupancyGrid = function(options) {
       // determine the index into the image data array
       var i = (col + (row * width)) * 4;
       // r
-      imageData.data[i] = val;
+      imageData.data[i] = (val * color.r) / 255;
       // g
-      imageData.data[++i] = val;
+      imageData.data[++i] = (val * color.g) / 255;
       // b
-      imageData.data[++i] = val;
+      imageData.data[++i] = (val * color.b) / 255;
       // a
       imageData.data[++i] = 255;
     }
@@ -2636,8 +2666,11 @@ ROS3D.OccupancyGrid = function(options) {
 
   var texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
+
   var material = new THREE.MeshBasicMaterial({
-    map : texture
+    map : texture,
+    transparent : opacity < 1.0,
+    opacity : opacity
   });
   material.side = THREE.DoubleSide;
 
@@ -2673,6 +2706,9 @@ ROS3D.OccupancyGrid.prototype.__proto__ = THREE.Mesh.prototype;
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
  *   * tfClient (optional) - the TF client handle to use for a scene node
  *   * rootObject (optional) - the root object to add this marker to
+ *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
+ *   * color (optional) - color of the visualized grid
+ *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGridClient = function(options) {
   var that = this;
@@ -2682,6 +2718,9 @@ ROS3D.OccupancyGridClient = function(options) {
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
+  this.offsetPose = options.offsetPose || new ROSLIB.Pose();
+  this.color = options.color || {r:255,g:255,b:255};
+  this.opacity = options.opacity || 1.0;
 
   // current grid that is displayed
   this.currentGrid = null;
@@ -2696,11 +2735,14 @@ ROS3D.OccupancyGridClient = function(options) {
   rosTopic.subscribe(function(message) {
     // check for an old map
     if (that.currentGrid) {
+      that.currentGrid.unsubscribeTf();
       that.rootObject.remove(that.currentGrid);
     }
 
     var newGrid = new ROS3D.OccupancyGrid({
-      message : message
+      message : message,
+      color : that.color,
+      opacity : that.opacity
     });
 
     // check if we care about the scene
@@ -2708,7 +2750,8 @@ ROS3D.OccupancyGridClient = function(options) {
       that.currentGrid = new ROS3D.SceneNode({
         frameID : message.header.frame_id,
         tfClient : that.tfClient,
-        object : newGrid
+        object : newGrid,
+        pose : that.offsetPose
       });
     } else {
       that.currentGrid = newGrid;
@@ -2769,6 +2812,7 @@ ROS3D.Odometry = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sns.length >= that.keep) {
+          that.sns[0].unsubscribeTf();
           that.rootObject.remove(that.sns[0]);
           that.sns.shift();
       }
@@ -2831,6 +2875,7 @@ ROS3D.Path = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 
@@ -2894,6 +2939,7 @@ ROS3D.Point = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 
@@ -2950,6 +2996,7 @@ ROS3D.Polygon = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 
@@ -3018,6 +3065,7 @@ ROS3D.Pose = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 
@@ -3080,6 +3128,7 @@ ROS3D.PoseArray = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sn!==null){
+          that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
       }
 
@@ -3614,8 +3663,8 @@ ROS3D.SceneNode = function(options) {
   // set the inital pose
   this.updatePose(this.pose);
 
-  // listen for TF updates
-  tfClient.subscribe(frameID, function(msg) {
+  // save the TF handler so we can remove it later
+  this.tfUpdate = function(msg) {
 
     // apply the transform
     var tf = new ROSLIB.Transform(msg);
@@ -3624,7 +3673,10 @@ ROS3D.SceneNode = function(options) {
 
     // update the world
     that.updatePose(poseTransformed);
-  });
+  };
+
+  // listen for TF updates
+  tfClient.subscribe(frameID, this.tfUpdate);
 };
 ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
 
@@ -3638,6 +3690,10 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
   this.quaternion.set(pose.orientation.x, pose.orientation.y,
       pose.orientation.z, pose.orientation.w);
   this.updateMatrixWorld(true);
+};
+
+ROS3D.SceneNode.prototype.unsubscribeTf = function() {
+  this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdate);
 };
 
 /**
