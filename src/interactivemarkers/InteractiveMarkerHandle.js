@@ -32,6 +32,12 @@ ROS3D.InteractiveMarkerHandle = function(options) {
   this.tfTransform = new ROSLIB.Transform();
   this.pose = new ROSLIB.Pose();
 
+  this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
+  this.onMouseDownBound = this.onMouseDown.bind(this);
+  this.onMouseUpBound = this.onMouseUp.bind(this);
+  this.onButtonClickBound = this.onButtonClick.bind(this);
+  this.onMenuSelectBound = this.onMenuSelect.bind(this);
+
   // start by setting the pose
   this.setPoseFromServer(this.message.pose);
   this.tfUpdateBound = this.tfUpdate.bind(this);

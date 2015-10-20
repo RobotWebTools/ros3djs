@@ -166,11 +166,12 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       });
     });
 
-    intMarker.addEventListener('user-pose-change', handle.setPoseFromClient.bind(handle));
-    intMarker.addEventListener('user-mousedown', handle.onMouseDown.bind(handle));
-    intMarker.addEventListener('user-mouseup', handle.onMouseUp.bind(handle));
-    intMarker.addEventListener('user-button-click', handle.onButtonClick.bind(handle));
-    intMarker.addEventListener('menu-select', handle.onMenuSelect.bind(handle));
+    // add bound versions of UI handlers
+    intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
+    intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
+    intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
+    intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
+    intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
 
     // now listen for any TF changes
     handle.subscribeTf();
@@ -188,7 +189,17 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
     this.rootObject.remove(targetIntMarker);
     // unsubscribe from TF topic!
-    this.interactiveMarkers[intMarkerName].unsubscribeTf();
+    var handle = this.interactiveMarkers[intMarkerName];
+    handle.unsubscribeTf();
+
+    // remove all other listeners
+    handle.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+    handle.removeEventListener('user-mousedown', handle.onMouseDownBound);
+    handle.removeEventListener('user-mouseup', handle.onMouseUpBound);
+    handle.removeEventListener('user-button-click', handle.onButtonClickBound);
+    handle.removeEventListener('menu-select', handle.onMenuSelectBound);
+
+    // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();
   }
