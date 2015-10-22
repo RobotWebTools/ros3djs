@@ -32,8 +32,15 @@ ROS3D.InteractiveMarkerHandle = function(options) {
   this.tfTransform = new ROSLIB.Transform();
   this.pose = new ROSLIB.Pose();
 
+  this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
+  this.onMouseDownBound = this.onMouseDown.bind(this);
+  this.onMouseUpBound = this.onMouseUp.bind(this);
+  this.onButtonClickBound = this.onButtonClick.bind(this);
+  this.onMenuSelectBound = this.onMenuSelect.bind(this);
+
   // start by setting the pose
   this.setPoseFromServer(this.message.pose);
+  this.tfUpdateBound = this.tfUpdate.bind(this);
 };
 ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 
@@ -43,8 +50,12 @@ ROS3D.InteractiveMarkerHandle.prototype.__proto__ = EventEmitter2.prototype;
 ROS3D.InteractiveMarkerHandle.prototype.subscribeTf = function() {
   // subscribe to tf updates if frame-fixed
   if (this.message.header.stamp.secs === 0.0 && this.message.header.stamp.nsecs === 0.0) {
-    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdate.bind(this));
+    this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdateBound);
   }
+};
+
+ROS3D.InteractiveMarkerHandle.prototype.unsubscribeTf = function() {
+  this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdateBound);
 };
 
 /**

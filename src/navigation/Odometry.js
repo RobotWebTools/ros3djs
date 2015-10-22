@@ -41,6 +41,7 @@ ROS3D.Odometry = function(options) {
 
   rosTopic.subscribe(function(message) {
       if(that.sns.length >= that.keep) {
+          that.sns[0].unsubscribeTf();
           that.rootObject.remove(that.sns[0]);
           that.sns.shift();
       }
