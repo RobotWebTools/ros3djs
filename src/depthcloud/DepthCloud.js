@@ -291,7 +291,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
     var that = this;
 
     setInterval(function() {
-      if (this.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
+      if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
         that.texture.needsUpdate = true;
       }
     }, 1000 / 30);
