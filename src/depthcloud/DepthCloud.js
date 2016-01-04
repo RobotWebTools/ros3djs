@@ -9,6 +9,7 @@
  * @param options - object with following keys:
  *
  *   * url - the URL of the stream
+ *   * streamType (optional) - the stream type: mjpeg or vp8 video (defaults to vp8)
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud
  *   * width (optional) - width of the video stream
@@ -21,6 +22,7 @@ ROS3D.DepthCloud = function(options) {
   THREE.Object3D.call(this);
 
   this.url = options.url;
+  this.streamType = options.streamType || 'vp8';
   this.f = options.f || 526;
   this.pointSize = options.pointSize || 3;
   this.width = options.width || 1024;
@@ -29,11 +31,16 @@ ROS3D.DepthCloud = function(options) {
   this.varianceThreshold = options.varianceThreshold || 0.000016667;
 
   var metaLoaded = false;
-  this.video = document.createElement('video');
 
-  this.video.addEventListener('loadedmetadata', this.metaLoaded.bind(this), false);
+  this.isMjpeg = this.streamType.toLowerCase() === 'mjpeg';
 
-  this.video.loop = true;
+  this.video = document.createElement(this.isMjpeg ? 'img' : 'video');
+  this.video.addEventListener(this.isMjpeg ? 'load' : 'loadedmetadata', this.metaLoaded.bind(this), false);
+
+  if (!this.isMjpeg) {
+    this.video.loop = true;
+  }
+
   this.video.src = this.url;
   this.video.crossOrigin = 'Anonymous';
   this.video.setAttribute('crossorigin', 'Anonymous');
@@ -284,7 +291,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
     var that = this;
 
     setInterval(function() {
-      if (that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
+      if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
         that.texture.needsUpdate = true;
       }
     }, 1000 / 30);
@@ -295,12 +302,16 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
  * Start video playback
  */
 ROS3D.DepthCloud.prototype.startStream = function() {
-  this.video.play();
+  if (!this.isMjpeg) {
+    this.video.play();
+  }
 };
 
 /**
  * Stop video playback
  */
 ROS3D.DepthCloud.prototype.stopStream = function() {
-  this.video.pause();
+  if (!this.isMjpeg) {
+    this.video.pause();
+  }
 };
