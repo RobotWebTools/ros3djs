@@ -54,8 +54,8 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
     pos_x = 0;
     pos_y = 0;
     for(var i=0; i<domEvent.touches.length; ++i) {
-        pos_x += domEvent.touches[0].clientX;
-        pos_y += domEvent.touches[0].clientY;
+        pos_x += domEvent.touches[i].clientX;
+        pos_y += domEvent.touches[i].clientY;
     }
     pos_x /= domEvent.touches.length;
     pos_y /= domEvent.touches.length;
