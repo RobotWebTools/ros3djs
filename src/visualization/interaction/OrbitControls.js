@@ -340,6 +340,9 @@ ROS3D.OrbitControls = function(options) {
       rotateStart.set(event.touches[0].pageX - window.scrollX,
                       event.touches[0].pageY - window.scrollY);
     }
+    else {
+        state = STATE.NONE;
+    }
   }
 
   // add event listeners
