@@ -2,23 +2,17 @@
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-function read_point(msg, index, buffer){
+function read_point(msg, index, data_view){
     var pt = [];
     var base = msg.point_step * index;
     var n = 4;
-    var ar = new Uint8Array(n);
     for(var fi=0; fi<msg.fields.length; fi++){
         var si = base + msg.fields[fi].offset;
-        for(var i=0; i<n; i++){
-            ar[i] = buffer[si + i];
-        }
-
-        var dv = new DataView(ar.buffer);
 
         if( msg.fields[fi].name === 'rgb' ){
-            pt[ 'rgb' ] =dv.getInt32(0, 1);
+            pt[ 'rgb' ] = data_view.getInt32(si, 1);
         }else{
-            pt[ msg.fields[fi].name ] = dv.getFloat32(0, 1);
+            pt[ msg.fields[fi].name ] = data_view.getFloat32(si, 1);
         }
     }
     return pt;
@@ -75,12 +69,13 @@ ROS3D.PointCloud2 = function(options) {
     var n = message.height*message.width;
     var buffer;
     if(message.data.buffer){
-      buffer = message.data.buffer;
+      buffer = message.data.buffer.buffer;
     }else{
-      buffer = decode64(message.data);
+      buffer = Uint8Array.from(decode64(message.data)).buffer;
     }
+    var dv = new DataView(buffer);
     for(var i=0;i<n;i++){
-      var pt = read_point(message, i, buffer);
+      var pt = read_point(message, i, dv);
       that.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
       that.particles.colors[ i ] = new THREE.Color( pt['rgb'] );
       that.particles.alpha[i] = 1.0;
