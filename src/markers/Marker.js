@@ -194,36 +194,36 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_SPHERE_LIST:
       // holds the main object
-      var object = new THREE.Object3D();
+      var sphereObject = new THREE.Object3D();
       
       // check if custom colors should be used
-      var numPoints = message.points.length;
-      var createColors = (numPoints === message.colors.length);
+      var numSpherePoints = message.points.length;
+      var createSphereColors = (numSpherePoints === message.colors.length);
       // do not render giant lists
-      var stepSize = Math.ceil(numPoints / 1250);
+      var sphereStepSize = Math.ceil(numSpherePoints / 1250);
         
       // add the points
-      var p, sphere, curColor, newMesh;
-      for (p = 0; p < numPoints; p+=stepSize) {
+      var q, sphere, curSphereColor, newSphereMesh;
+      for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
         sphere = new THREE.SphereGeometry(0.5, 8, 8);
         
         // check the color
-        if(createColors) {
-          curColor = ROS3D.makeColorMaterial(message.colors[p].r, message.colors[p].g, message.colors[p].b, message.colors[p].a);
+        if(createSphereColors) {
+          curSphereColor = ROS3D.makeColorMaterial(message.colors[q].r, message.colors[q].g, message.colors[q].b, message.colors[q].a);
         } else {
-          curColor = colorMaterial;
+          curSphereColor = colorMaterial;
         }
         
-        newMesh = new THREE.Mesh(sphere, curColor);
-        newMesh.scale.x = message.scale.x;
-        newMesh.scale.y = message.scale.y;
-        newMesh.scale.z = message.scale.z;
-        newMesh.position.x = message.points[p].x;
-        newMesh.position.y = message.points[p].y;
-        newMesh.position.z = message.points[p].z;
-        object.add(newMesh);
+        newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
+        newSphereMesh.scale.x = message.scale.x;
+        newSphereMesh.scale.y = message.scale.y;
+        newSphereMesh.scale.z = message.scale.z;
+        newSphereMesh.position.x = message.points[q].x;
+        newSphereMesh.position.y = message.points[q].y;
+        newSphereMesh.position.z = message.points[q].z;
+        sphereObject.add(newSphereMesh);
       }
-      this.add(object);
+      this.add(sphereObject);
       break;
     case ROS3D.MARKER_POINTS:
       // for now, use a particle system for the lists
