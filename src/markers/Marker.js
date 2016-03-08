@@ -193,6 +193,38 @@ ROS3D.Marker = function(options) {
       this.add(object);
       break;
     case ROS3D.MARKER_SPHERE_LIST:
+      // holds the main object
+      var sphereObject = new THREE.Object3D();
+      
+      // check if custom colors should be used
+      var numSpherePoints = message.points.length;
+      var createSphereColors = (numSpherePoints === message.colors.length);
+      // do not render giant lists
+      var sphereStepSize = Math.ceil(numSpherePoints / 1250);
+        
+      // add the points
+      var q, sphere, curSphereColor, newSphereMesh;
+      for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
+        sphere = new THREE.SphereGeometry(0.5, 8, 8);
+        
+        // check the color
+        if(createSphereColors) {
+          curSphereColor = ROS3D.makeColorMaterial(message.colors[q].r, message.colors[q].g, message.colors[q].b, message.colors[q].a);
+        } else {
+          curSphereColor = colorMaterial;
+        }
+        
+        newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
+        newSphereMesh.scale.x = message.scale.x;
+        newSphereMesh.scale.y = message.scale.y;
+        newSphereMesh.scale.z = message.scale.z;
+        newSphereMesh.position.x = message.points[q].x;
+        newSphereMesh.position.y = message.points[q].y;
+        newSphereMesh.position.z = message.points[q].z;
+        sphereObject.add(newSphereMesh);
+      }
+      this.add(sphereObject);
+      break;
     case ROS3D.MARKER_POINTS:
       // for now, use a particle system for the lists
       var geometry = new THREE.Geometry();
