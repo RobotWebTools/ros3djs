@@ -21,8 +21,10 @@ ROS3D.SceneNode = function(options) {
   this.frameID = options.frameID;
   var object = options.object;
   this.pose = options.pose || new ROSLIB.Pose();
-
   THREE.Object3D.call(this);
+
+  // Do not render this object until we receive a TF update
+  this.visible = false;
 
   // add the model
   this.add(object);
@@ -40,6 +42,7 @@ ROS3D.SceneNode = function(options) {
 
     // update the world
     that.updatePose(poseTransformed);
+    that.visible = true;
   };
 
   // listen for TF updates
@@ -60,5 +63,5 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
 };
 
 ROS3D.SceneNode.prototype.unsubscribeTf = function() {
-  this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdate);
+  this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
 };
