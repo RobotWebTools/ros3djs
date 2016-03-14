@@ -29,7 +29,7 @@ ROS3D.Viewer = function(options) {
   var intensity = options.intensity || 0.66;
   var near = options.near || 0.01;
   var far = options.far || 1000;
-  var cameraPosition = options.cameraPose || {
+  var cameraPosition = options.cameraPosition || {
     x : 3,
     y : 3,
     z : 3
@@ -54,6 +54,7 @@ ROS3D.Viewer = function(options) {
   this.camera.position.x = cameraPosition.x;
   this.camera.position.y = cameraPosition.y;
   this.camera.position.z = cameraPosition.z;
+  
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,
