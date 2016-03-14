@@ -166,8 +166,6 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
       });
     });
 
-    intMarker.f1 = handle.setPoseFromClientBound;
-
     // add bound versions of UI handlers
     intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
     intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
