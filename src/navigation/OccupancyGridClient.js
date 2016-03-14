@@ -46,7 +46,11 @@ ROS3D.OccupancyGridClient = function(options) {
   rosTopic.subscribe(function(message) {
     // check for an old map
     if (that.currentGrid) {
-      that.currentGrid.unsubscribeTf();
+      // check if it there is a tf client
+      if (that.currentGrid.tfClient) {
+        // grid is of type ROS3D.SceneNode
+        that.currentGrid.unsubscribeTf();
+      }
       that.rootObject.remove(that.currentGrid);
     }
 
