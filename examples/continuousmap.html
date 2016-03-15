@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="http://cdn.robotwebtools.org/threejs/current/three.js"></script>
+<script src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script src="http://cdn.robotwebtools.org/roslibjs/current/roslib.js"></script>
+<script src="../build/ros3d.js"></script>
+
+<script>
+  /**
+   * Setup all visualization elements when the page is loaded. 
+   */
+  function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'map',
+      width : 800,
+      height : 600,
+      antialias : true
+    });
+
+    // Setup the marker client.
+    var gridClient = new ROS3D.OccupancyGridClient({
+      ros : ros,
+      rootObject : viewer.scene,
+      continuous: true
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1>Continuous Map Example</h1>
+  <p>
+    Use any method to publish continuous updates to topic /map and use this page to visualize updates. Follow these commands:
+  </p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>(method of choice to publish to /map)</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="map"></div>
+</body>
+</html>

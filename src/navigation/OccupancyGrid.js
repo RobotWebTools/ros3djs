@@ -72,7 +72,6 @@ ROS3D.OccupancyGrid = function(options) {
   // create the mesh
   THREE.Mesh.call(this, geom, material);
   // move the map so the corner is at X, Y and correct orientation (informations from message.info)
-  this.useQuaternion = true;
   this.quaternion = message.info.origin.orientation;
   this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
   this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;

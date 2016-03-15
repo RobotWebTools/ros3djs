@@ -193,12 +193,13 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     handle.unsubscribeTf();
 
     // remove all other listeners
-    handle.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
-    handle.removeEventListener('user-mousedown', handle.onMouseDownBound);
-    handle.removeEventListener('user-mouseup', handle.onMouseUpBound);
-    handle.removeEventListener('user-button-click', handle.onButtonClickBound);
-    handle.removeEventListener('menu-select', handle.onMenuSelectBound);
 
+    targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+    targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
+    targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
+    targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
+    targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
+    
     // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();
