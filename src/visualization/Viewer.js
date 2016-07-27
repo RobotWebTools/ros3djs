@@ -14,6 +14,7 @@
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
  *  * background (optional) - the color to render the background, like '#efefef'
+ *  * alpha (optional) - the alpha of the background
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
  *  * cameraPosition (optional) - the starting position of the camera
@@ -29,6 +30,7 @@ ROS3D.Viewer = function(options) {
   var intensity = options.intensity || 0.66;
   var near = options.near || 0.01;
   var far = options.far || 1000;
+  var alpha = options.alpha || 1.0;
   var cameraPosition = options.cameraPose || {
     x : 3,
     y : 3,
@@ -40,7 +42,7 @@ ROS3D.Viewer = function(options) {
   this.renderer = new THREE.WebGLRenderer({
     antialias : antialias
   });
-  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), 1.0);
+  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
@@ -60,6 +62,7 @@ ROS3D.Viewer = function(options) {
     camera : this.camera
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+
 
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
@@ -87,7 +90,7 @@ ROS3D.Viewer = function(options) {
   function draw() {
     // update the controls
     that.cameraControls.update();
-
+    
     // put light to the top-left of the camera
     that.directionalLight.position = that.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
     that.directionalLight.position.normalize();
