@@ -1010,12 +1010,13 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     handle.unsubscribeTf();
 
     // remove all other listeners
-    handle.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
-    handle.removeEventListener('user-mousedown', handle.onMouseDownBound);
-    handle.removeEventListener('user-mouseup', handle.onMouseUpBound);
-    handle.removeEventListener('user-button-click', handle.onButtonClickBound);
-    handle.removeEventListener('menu-select', handle.onMenuSelectBound);
 
+    targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+    targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
+    targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
+    targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
+    targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
+    
     // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();
@@ -1209,7 +1210,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
         path : that.path,
         loader : that.loader
       });
-      
+
       // if transformMsg isn't null, this was called by TFClient
       if (transformMsg !== null) {
         // get the current pose as a ROSLIB.Pose...
@@ -1219,6 +1220,27 @@ ROS3D.InteractiveMarkerControl = function(options) {
         });
         // so we can apply the transform provided by the TFClient
         newPose.applyTransform(new ROSLIB.Transform(transformMsg));
+
+        // get transform between parent marker's location and its frame
+        // apply it to sub-marker position to get sub-marker position
+        // relative to parent marker
+        var transformMarker = new ROS3D.Marker({
+          message : markerMsg,
+          path : that.path,
+          loader : that.loader
+        });
+        transformMarker.position.add(posInv);
+        transformMarker.position.applyQuaternion(rotInv);
+        transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
+        var translation = new THREE.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
+        var transform = new ROSLIB.Transform({
+          translation : translation,
+          orientation : transformMarker.quaternion
+        });
+
+        // apply that transform too
+        newPose.applyTransform(transform);
+
         markerHelper.setPose(newPose);
 
         markerHelper.updateMatrixWorld();
@@ -1229,10 +1251,10 @@ ROS3D.InteractiveMarkerControl = function(options) {
       // add the marker
       that.add(markerHelper);
     };
-    
-    // If the marker lives in a separate TF Frame, ask the *local* TFClient
-    // for the transformation from the InteractiveMarker frame to the
-    // sub-Marker frame
+
+    // If the marker is not relative to the parent marker's position,
+    // ask the *local* TFClient for the transformation from the
+    // InteractiveMarker frame to the sub-Marker frame
     if (markerMsg.header.frame_id !== '') {
       localTfClient.subscribe(markerMsg.header.frame_id, addMarker);
     }
@@ -2355,7 +2377,7 @@ ROS3D.Arrow.prototype.setLength = function(length) {
  * @param hex - the hex value of the color to use
  */
 ROS3D.Arrow.prototype.setColor = function(hex) {
-  this.geometry.material.color.setHex(hex);
+  this.material.color.setHex(hex);
 };
 
 /**
