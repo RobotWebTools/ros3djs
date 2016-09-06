@@ -78,8 +78,8 @@ ROS3D.MarkerArrayClient = function(options) {
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
-          m.unsubscribeTf();
-          that.rootObject.remove(m);
+          that.markers[m].unsubscribeTf();
+          that.rootObject.remove(that.markers[m]);
         }
         that.markers = {};
       }
