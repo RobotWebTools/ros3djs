@@ -37,13 +37,13 @@ ROS3D.OccupancyGridClient = function(options) {
   this.currentGrid = null;
 
   // subscribe to the topic
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'nav_msgs/OccupancyGrid',
     compression : 'png'
   });
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
     // check for an old map
     if (that.currentGrid) {
       // check if it there is a tf client
@@ -83,3 +83,7 @@ ROS3D.OccupancyGridClient = function(options) {
   });
 };
 ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

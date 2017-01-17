@@ -27,13 +27,13 @@ ROS3D.Path = function(options) {
   this.sn = null;
   this.line = null;
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
       ros : ros,
       name : topic,
       messageType : 'nav_msgs/Path'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
       if(that.sn!==null){
           that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
@@ -60,3 +60,7 @@ ROS3D.Path = function(options) {
   });
 };
 ROS3D.Path.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.Path.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

@@ -26,14 +26,14 @@ ROS3D.LaserScan = function(options) {
 
   this.particles = new ROS3D.Particles(options);
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'sensor_msgs/LaserScan'
   });
 
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
     setFrame(that.particles, message.header.frame_id);
 
     var n = message.ranges.length;
@@ -53,3 +53,7 @@ ROS3D.LaserScan = function(options) {
   });
 };
 ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.LaserScan.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

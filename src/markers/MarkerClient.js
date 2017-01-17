@@ -34,13 +34,13 @@ ROS3D.MarkerClient = function(options) {
   this.markers = {};
 
   // subscribe to the topic
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'visualization_msgs/Marker',
     compression : 'png'
   });
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
 
     var newMarker = new ROS3D.Marker({
       message : message,
@@ -66,3 +66,7 @@ ROS3D.MarkerClient = function(options) {
   });
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.MarkerClient.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

@@ -57,13 +57,13 @@ ROS3D.PointCloud2 = function(options) {
 
   this.particles = new ROS3D.Particles(options);
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'sensor_msgs/PointCloud2'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
     setFrame(that.particles, message.header.frame_id);
 
     var n = message.height*message.width;
@@ -85,3 +85,7 @@ ROS3D.PointCloud2 = function(options) {
   });
 };
 ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.PointCloud2.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

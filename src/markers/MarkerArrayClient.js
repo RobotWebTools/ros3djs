@@ -35,14 +35,14 @@ ROS3D.MarkerArrayClient = function(options) {
   this.markers = {};
 
   // subscribe to MarkerArray topic
-  var arrayTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
     ros : ros,
     name : topic,
     messageType : 'visualization_msgs/MarkerArray',
     compression : 'png'
   });
-  
-  arrayTopic.subscribe(function(arrayMessage) {
+
+  this.rosTopic.subscribe(function(arrayMessage) {
 
     arrayMessage.markers.forEach(function(message) {
       if(message.action === 0) {
@@ -87,8 +87,12 @@ ROS3D.MarkerArrayClient = function(options) {
         console.warn('Received marker message with unknown action identifier "'+message.action+'"');
       }
     });
-    
+
     that.emit('change');
   });
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

@@ -30,13 +30,13 @@ ROS3D.Pose = function(options) {
 
   this.sn = null;
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
       ros : ros,
       name : topic,
       messageType : 'geometry_msgs/PoseStamped'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
       if(that.sn!==null){
           that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
@@ -62,3 +62,7 @@ ROS3D.Pose = function(options) {
   });
 };
 ROS3D.Pose.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.Pose.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

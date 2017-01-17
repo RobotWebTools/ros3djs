@@ -33,13 +33,13 @@ ROS3D.Odometry = function(options) {
 
   this.sns = [];
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
       ros : ros,
       name : topic,
       messageType : 'nav_msgs/Odometry'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
       if(that.sns.length >= that.keep) {
           that.sns[0].unsubscribeTf();
           that.rootObject.remove(that.sns[0]);
@@ -66,3 +66,7 @@ ROS3D.Odometry = function(options) {
   });
 };
 ROS3D.Odometry.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.Odometry.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

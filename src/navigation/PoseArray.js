@@ -28,13 +28,13 @@ ROS3D.PoseArray = function(options) {
 
   this.sn = null;
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
       ros : ros,
       name : topic,
       messageType : 'geometry_msgs/PoseArray'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
       if(that.sn!==null){
           that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
@@ -82,3 +82,7 @@ ROS3D.PoseArray = function(options) {
   });
 };
 ROS3D.PoseArray.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.PoseArray.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}

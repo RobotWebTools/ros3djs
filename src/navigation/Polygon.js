@@ -27,13 +27,13 @@ ROS3D.Polygon = function(options) {
   this.sn = null;
   this.line = null;
 
-  var rosTopic = new ROSLIB.Topic({
+  this.rosTopic = new ROSLIB.Topic({
       ros : ros,
       name : topic,
       messageType : 'geometry_msgs/PolygonStamped'
   });
 
-  rosTopic.subscribe(function(message) {
+  this.rosTopic.subscribe(function(message) {
       if(that.sn!==null){
           that.sn.unsubscribeTf();
           that.rootObject.remove(that.sn);
@@ -63,3 +63,7 @@ ROS3D.Polygon = function(options) {
   });
 };
 ROS3D.Polygon.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.Polygon.prototype.unsubscribe = function(){
+  this.rosTopic.unsubscribe();
+}
