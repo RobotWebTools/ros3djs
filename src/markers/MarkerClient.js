@@ -21,10 +21,9 @@
  *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerClient = function(options) {
-  var that = this;
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic;
+  this.ros = options.ros;
+  this.topic = options.topic;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
@@ -32,41 +31,51 @@ ROS3D.MarkerClient = function(options) {
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
+  this.rosTopic = undefined;
 
-  // subscribe to the topic
-  this.rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'visualization_msgs/Marker',
-    compression : 'png'
-  });
-  this.rosTopic.subscribe(function(message) {
-
-    var newMarker = new ROS3D.Marker({
-      message : message,
-      path : that.path,
-      loader : that.loader
-    });
-
-    // remove old marker from Three.Object3D children buffer
-    var oldNode = that.markers[message.ns + message.id];
-    if (oldNode) {
-      oldNode.unsubscribeTf();
-      that.rootObject.remove(oldNode);
-    }
-
-    that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-      frameID : message.header.frame_id,
-      tfClient : that.tfClient,
-      object : newMarker
-    });
-    that.rootObject.add(that.markers[message.ns + message.id]);
-
-    that.emit('change');
-  });
+  this.subscribe();
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.MarkerClient.prototype.unsubscribe = function(){
-  this.rosTopic.unsubscribe();
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+}
+
+ROS3D.MarkerClient.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topic,
+    messageType : 'visualization_msgs/Marker',
+    compression : 'png'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+}
+
+ROS3D.MarkerClient.prototype.processMessage = function(message){
+  var newMarker = new ROS3D.Marker({
+    message : message,
+    path : this.path,
+    loader : this.loader
+  });
+
+  // remove old marker from Three.Object3D children buffer
+  var oldNode = this.markers[message.ns + message.id];
+  if (oldNode) {
+    oldNode.unsubscribeTf();
+    this.rootObject.remove(oldNode);
+  }
+
+  this.markers[message.ns + message.id] = new ROS3D.SceneNode({
+    frameID : message.header.frame_id,
+    tfClient : this.tfClient,
+    object : newMarker
+  });
+  this.rootObject.add(this.markers[message.ns + message.id]);
+
+  this.emit('change');
 }

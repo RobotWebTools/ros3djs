@@ -22,10 +22,9 @@
  *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerArrayClient = function(options) {
-  var that = this;
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic;
+  this.ros = options.ros;
+  this.topic = options.topic;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
@@ -33,66 +32,75 @@ ROS3D.MarkerArrayClient = function(options) {
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
+  this.rosTopic = undefined;
 
-  // subscribe to MarkerArray topic
-  this.rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'visualization_msgs/MarkerArray',
-    compression : 'png'
-  });
-
-  this.rosTopic.subscribe(function(arrayMessage) {
-
-    arrayMessage.markers.forEach(function(message) {
-      if(message.action === 0) {
-        var updated = false;
-        if(message.ns + message.id in that.markers) { // "MODIFY"
-          updated = that.markers[message.ns + message.id].children[0].update(message);
-          if(!updated) { // "REMOVE"
-            that.markers[message.ns + message.id].unsubscribeTf();
-            that.rootObject.remove(that.markers[message.ns + message.id]);
-          }
-        }
-        if(!updated) { // "ADD"
-          var newMarker = new ROS3D.Marker({
-            message : message,
-            path : that.path,
-            loader : that.loader
-          });
-          that.markers[message.ns + message.id] = new ROS3D.SceneNode({
-            frameID : message.header.frame_id,
-            tfClient : that.tfClient,
-            object : newMarker
-          });
-          that.rootObject.add(that.markers[message.ns + message.id]);
-        }
-      }
-      else if(message.action === 1) { // "DEPRECATED"
-        console.warn('Received marker message with deprecated action identifier "1"');
-      }
-      else if(message.action === 2) { // "DELETE"
-        that.markers[message.ns + message.id].unsubscribeTf();
-        that.rootObject.remove(that.markers[message.ns + message.id]);
-        delete that.markers[message.ns + message.id];
-      }
-      else if(message.action === 3) { // "DELETE ALL"
-        for (var m in that.markers){
-          m.unsubscribeTf();
-          that.rootObject.remove(m);
-        }
-        that.markers = {};
-      }
-      else {
-        console.warn('Received marker message with unknown action identifier "'+message.action+'"');
-      }
-    });
-
-    that.emit('change');
-  });
+  this.subscribe();
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
 
+ROS3D.MarkerArrayClient.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to MarkerArray topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topic,
+    messageType : 'visualization_msgs/MarkerArray',
+    compression : 'png'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+}
+
+ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
+  arrayMessage.markers.forEach(function(message) {
+    if(message.action === 0) {
+      var updated = false;
+      if(message.ns + message.id in this.markers) { // "MODIFY"
+        updated = this.markers[message.ns + message.id].children[0].update(message);
+        if(!updated) { // "REMOVE"
+          this.markers[message.ns + message.id].unsubscribeTf();
+          this.rootObject.remove(this.markers[message.ns + message.id]);
+        }
+      }
+      if(!updated) { // "ADD"
+        var newMarker = new ROS3D.Marker({
+          message : message,
+          path : this.path,
+          loader : this.loader
+        });
+        this.markers[message.ns + message.id] = new ROS3D.SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : this.tfClient,
+          object : newMarker
+        });
+        this.rootObject.add(this.markers[message.ns + message.id]);
+      }
+    }
+    else if(message.action === 1) { // "DEPRECATED"
+      console.warn('Received marker message with deprecated action identifier "1"');
+    }
+    else if(message.action === 2) { // "DELETE"
+      this.markers[message.ns + message.id].unsubscribeTf();
+      this.rootObject.remove(this.markers[message.ns + message.id]);
+      delete this.markers[message.ns + message.id];
+    }
+    else if(message.action === 3) { // "DELETE ALL"
+      for (var m in this.markers){
+        m.unsubscribeTf();
+        this.rootObject.remove(m);
+      }
+      this.markers = {};
+    }
+    else {
+      console.warn('Received marker message with unknown action identifier "'+message.action+'"');
+    }
+  });
+
+  this.emit('change');
+}
+
 ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
-  this.rosTopic.unsubscribe();
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
 }
