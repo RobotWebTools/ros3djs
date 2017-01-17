@@ -36,7 +36,7 @@ ROS3D.Polygon.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.Polygon.prototype.subscribe = function(){
   this.unsubscribe();
@@ -48,12 +48,12 @@ ROS3D.Polygon.prototype.subscribe = function(){
       messageType : 'geometry_msgs/PolygonStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.Polygon.prototype.processMessage = function(message){
-  if(that.sn!==null){
-      that.sn.unsubscribeTf();
-      that.rootObject.remove(that.sn);
+  if(this.sn!==null){
+      this.sn.unsubscribeTf();
+      this.rootObject.remove(this.sn);
   }
 
   var lineGeometry = new THREE.Geometry();
@@ -67,14 +67,14 @@ ROS3D.Polygon.prototype.processMessage = function(message){
                           message.polygon.points[0].z);
   lineGeometry.vertices.push(v3);
   lineGeometry.computeLineDistances();
-  var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
+  var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
   var line = new THREE.Line( lineGeometry, lineMaterial );
 
-  that.sn = new ROS3D.SceneNode({
+  this.sn = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
-      tfClient : that.tfClient,
+      tfClient : this.tfClient,
       object : line
   });
 
-  that.rootObject.add(that.sn);
-}
+  this.rootObject.add(this.sn);
+};

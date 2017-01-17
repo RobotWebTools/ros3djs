@@ -36,7 +36,7 @@ ROS3D.LaserScan.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.LaserScan.prototype.subscribe = function(){
   this.unsubscribe();
@@ -48,7 +48,7 @@ ROS3D.LaserScan.prototype.subscribe = function(){
     messageType : 'sensor_msgs/LaserScan'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.LaserScan.prototype.processMessage = function(message){
   setFrame(this.particles, message.header.frame_id);
@@ -67,4 +67,4 @@ ROS3D.LaserScan.prototype.processMessage = function(message){
   }
 
   finishedUpdate(this.particles, n);
-}
+};

@@ -45,20 +45,20 @@ ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.OccupancyGridClient.prototype.subscribe = function(){
   this.unsubscribe();
 
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
+    ros : this.ros,
+    name : this.topic,
     messageType : 'nav_msgs/OccupancyGrid',
     compression : 'png'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
   // check for an old map
@@ -95,6 +95,6 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
 
   // check if we should unsubscribe
   if (!this.continuous) {
-    rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe();
   }
-}
+};

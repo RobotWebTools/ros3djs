@@ -37,7 +37,7 @@ ROS3D.PoseArray.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.PoseArray.prototype.subscribe = function(){
   this.unsubscribe();
@@ -49,7 +49,7 @@ ROS3D.PoseArray.prototype.subscribe = function(){
      messageType : 'geometry_msgs/PoseArray'
  });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.PoseArray.prototype.processMessage = function(message){
   if(this.sn!==null){
@@ -96,4 +96,4 @@ ROS3D.PoseArray.prototype.processMessage = function(message){
   });
 
   this.rootObject.add(this.sn);
-}
+};

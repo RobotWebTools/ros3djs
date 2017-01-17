@@ -36,7 +36,7 @@ ROS3D.Path.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.Path.prototype.subscribe = function(){
   this.unsubscribe();
@@ -48,7 +48,7 @@ ROS3D.Path.prototype.subscribe = function(){
       messageType : 'nav_msgs/Path'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.Path.prototype.processMessage = function(message){
   if(this.sn!==null){
@@ -74,4 +74,4 @@ ROS3D.Path.prototype.processMessage = function(message){
   });
 
   this.rootObject.add(this.sn);
-}
+};

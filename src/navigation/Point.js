@@ -37,7 +37,7 @@ ROS3D.Point.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.Point.prototype.subscribe = function(){
   this.unsubscribe();
@@ -49,7 +49,7 @@ ROS3D.Point.prototype.subscribe = function(){
       messageType : 'geometry_msgs/PointStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.Point.prototype.processMessage = function(message){
   if(this.sn!==null){
@@ -69,4 +69,4 @@ ROS3D.Point.prototype.processMessage = function(message){
   });
 
   this.rootObject.add(this.sn);
-}
+};

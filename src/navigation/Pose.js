@@ -39,7 +39,7 @@ ROS3D.Pose.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.Pose.prototype.subscribe = function(){
   this.unsubscribe();
@@ -51,7 +51,7 @@ ROS3D.Pose.prototype.subscribe = function(){
       messageType : 'geometry_msgs/PoseStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.Pose.prototype.processMessage = function(message){
   if(this.sn!==null){
@@ -76,4 +76,4 @@ ROS3D.Pose.prototype.processMessage = function(message){
   });
 
   this.rootObject.add(this.sn);
-}
+};

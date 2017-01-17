@@ -49,7 +49,7 @@ ROS3D.MarkerArrayClient.prototype.subscribe = function(){
     compression : 'png'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
   arrayMessage.markers.forEach(function(message) {
@@ -97,10 +97,10 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
   });
 
   this.emit('change');
-}
+};
 
 ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};

@@ -65,7 +65,7 @@ ROS3D.PointCloud2.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.PointCloud2.prototype.subscribe = function(){
   this.unsubscribe();
@@ -77,7 +77,7 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
     messageType : 'sensor_msgs/PointCloud2'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.PointCloud2.prototype.processMessage = function(message){
   setFrame(this.particles, message.header.frame_id);
@@ -98,4 +98,4 @@ ROS3D.PointCloud2.prototype.processMessage = function(message){
   }
 
   finishedUpdate(this.particles, n);
-}
+};

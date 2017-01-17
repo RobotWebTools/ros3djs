@@ -41,7 +41,7 @@ ROS3D.MarkerClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.MarkerClient.prototype.subscribe = function(){
   this.unsubscribe();
@@ -54,7 +54,7 @@ ROS3D.MarkerClient.prototype.subscribe = function(){
     compression : 'png'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.MarkerClient.prototype.processMessage = function(message){
   var newMarker = new ROS3D.Marker({
@@ -78,4 +78,4 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
   this.rootObject.add(this.markers[message.ns + message.id]);
 
   this.emit('change');
-}
+};

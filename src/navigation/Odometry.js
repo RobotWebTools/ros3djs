@@ -42,7 +42,7 @@ ROS3D.Odometry.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
-}
+};
 
 ROS3D.Odometry.prototype.subscribe = function(){
   this.unsubscribe();
@@ -54,7 +54,7 @@ ROS3D.Odometry.prototype.subscribe = function(){
     messageType : 'nav_msgs/Odometry'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
-}
+};
 
 ROS3D.Odometry.prototype.processMessage = function(message){
   if(this.sns.length >= this.keep) {
@@ -74,10 +74,10 @@ ROS3D.Odometry.prototype.processMessage = function(message){
   var arrow = new ROS3D.Arrow(this.options);
 
   this.sns.push(new ROS3D.SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : this.tfClient,
-        object : arrow
+    frameID : message.header.frame_id,
+    tfClient : this.tfClient,
+    object : arrow
   }));
 
   this.rootObject.add(this.sns[ this.sns.length - 1]);
-}
+};
