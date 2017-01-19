@@ -94,7 +94,7 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
     else {
       console.warn('Received marker message with unknown action identifier "'+message.action+'"');
     }
-  });
+  }.bind(this));
 
   this.emit('change');
 };
