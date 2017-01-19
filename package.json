@@ -3,7 +3,7 @@
   "homepage": "https://www.robotwebtools.org",
   "description": "The standard ROS Javascript Visualization Library",
   "version": "0.17.0-SNAPSHOT",
-  "license": "BSD",
+  "license": "BSD-3-Clause",
   "main": "./src/Ros3DDD.js",
   "devDependencies": {
     "grunt": "~0.4.1",
