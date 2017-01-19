@@ -10,7 +10,6 @@ branches:
 
 before_script:
   - npm install -g grunt-cli
-  - cd utils
   - npm install .
 
 script:
