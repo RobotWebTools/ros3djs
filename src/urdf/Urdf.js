@@ -118,3 +118,7 @@ ROS3D.Urdf = function(options) {
   }
 };
 ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.Urdf.prototype.unsubscribeTf = function () {
+  this.children.forEach(function(n) { n.unsubscribeTf(); });
+};
