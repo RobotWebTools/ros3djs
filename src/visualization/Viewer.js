@@ -14,6 +14,7 @@
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
  *  * background (optional) - the color to render the background, like '#efefef'
+ *  * alpha (optional) - the alpha of the background
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
  *  * cameraPosition (optional) - the starting position of the camera
@@ -29,6 +30,7 @@ ROS3D.Viewer = function(options) {
   var intensity = options.intensity || 0.66;
   var near = options.near || 0.01;
   var far = options.far || 1000;
+  var alpha = options.alpha || 1.0;
   var cameraPosition = options.cameraPose || {
     x : 3,
     y : 3,
@@ -38,9 +40,10 @@ ROS3D.Viewer = function(options) {
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
-    antialias : antialias
+    antialias : antialias,
+    alpha: true
   });
-  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), 1.0);
+  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
