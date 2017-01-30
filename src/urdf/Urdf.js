@@ -121,6 +121,6 @@ ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Urdf.prototype.unsubscribeTf = function () {
   this.children.forEach(function(n) {
-    if (typeof n.unsubscribeTf === "function") { n.unsubscribeTf(); }
+    if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
   });
 };
