@@ -3809,7 +3809,6 @@ ROS3D.Viewer = function(options) {
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
-
   // lights
   this.scene.add(new THREE.AmbientLight(0x555555));
   this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
@@ -3836,7 +3835,7 @@ ROS3D.Viewer = function(options) {
   function draw() {
     // update the controls
     that.cameraControls.update();
-    
+
     // put light to the top-left of the camera
     that.directionalLight.position = that.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
     that.directionalLight.position.normalize();
