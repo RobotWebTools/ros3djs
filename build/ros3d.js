@@ -2214,8 +2214,8 @@ ROS3D.MarkerArrayClient = function(options) {
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in that.markers){
-          m.unsubscribeTf();
-          that.rootObject.remove(m);
+          that.markers[m].unsubscribeTf();
+          that.rootObject.remove(that.markers[m]);
         }
         that.markers = {};
       }
@@ -3638,6 +3638,12 @@ ROS3D.Urdf = function(options) {
 };
 ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
 
+ROS3D.Urdf.prototype.unsubscribeTf = function () {
+  this.children.forEach(function(n) {
+    if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
+  });
+};
+
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
@@ -3667,17 +3673,17 @@ ROS3D.UrdfClient = function(options) {
   var that = this;
   options = options || {};
   var ros = options.ros;
-  var param = options.param || 'robot_description';
+  this.param = options.param || 'robot_description';
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var tfPrefix = options.tfPrefix || '';
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.tfPrefix = options.tfPrefix || '';
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
     ros : ros,
-    name : param
+    name : this.param
   });
   getParam.get(function(string) {
     // hand off the XML string to the URDF model
@@ -3686,13 +3692,14 @@ ROS3D.UrdfClient = function(options) {
     });
 
     // load all models
-    that.rootObject.add(new ROS3D.Urdf({
+    that.urdf = new ROS3D.Urdf({
       urdfModel : urdfModel,
       path : that.path,
       tfClient : that.tfClient,
-      tfPrefix : tfPrefix,
-      loader : loader
-    }));
+      tfPrefix : that.tfPrefix,
+      loader : that.loader
+    });
+    that.rootObject.add(that.urdf);
   });
 };
 
