@@ -86,8 +86,8 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
     }
     else if(message.action === 3) { // "DELETE ALL"
       for (var m in this.markers){
-        m.unsubscribeTf();
-        this.rootObject.remove(m);
+        this.markers[m].unsubscribeTf();
+        this.rootObject.remove(this.markers[m]);
       }
       this.markers = {};
     }
