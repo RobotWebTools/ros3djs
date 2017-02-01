@@ -27,17 +27,17 @@ ROS3D.UrdfClient = function(options) {
   var that = this;
   options = options || {};
   var ros = options.ros;
-  var param = options.param || 'robot_description';
+  this.param = options.param || 'robot_description';
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var tfPrefix = options.tfPrefix || '';
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.tfPrefix = options.tfPrefix || '';
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
     ros : ros,
-    name : param
+    name : this.param
   });
   getParam.get(function(string) {
     // hand off the XML string to the URDF model
@@ -46,12 +46,13 @@ ROS3D.UrdfClient = function(options) {
     });
 
     // load all models
-    that.rootObject.add(new ROS3D.Urdf({
+    that.urdf = new ROS3D.Urdf({
       urdfModel : urdfModel,
       path : that.path,
       tfClient : that.tfClient,
-      tfPrefix : tfPrefix,
-      loader : loader
-    }));
+      tfPrefix : that.tfPrefix,
+      loader : that.loader
+    });
+    that.rootObject.add(that.urdf);
   });
 };

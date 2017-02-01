@@ -1210,7 +1210,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
         path : that.path,
         loader : that.loader
       });
-      
+
       // if transformMsg isn't null, this was called by TFClient
       if (transformMsg !== null) {
         // get the current pose as a ROSLIB.Pose...
@@ -1220,6 +1220,27 @@ ROS3D.InteractiveMarkerControl = function(options) {
         });
         // so we can apply the transform provided by the TFClient
         newPose.applyTransform(new ROSLIB.Transform(transformMsg));
+
+        // get transform between parent marker's location and its frame
+        // apply it to sub-marker position to get sub-marker position
+        // relative to parent marker
+        var transformMarker = new ROS3D.Marker({
+          message : markerMsg,
+          path : that.path,
+          loader : that.loader
+        });
+        transformMarker.position.add(posInv);
+        transformMarker.position.applyQuaternion(rotInv);
+        transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
+        var translation = new THREE.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
+        var transform = new ROSLIB.Transform({
+          translation : translation,
+          orientation : transformMarker.quaternion
+        });
+
+        // apply that transform too
+        newPose.applyTransform(transform);
+
         markerHelper.setPose(newPose);
 
         markerHelper.updateMatrixWorld();
@@ -1230,10 +1251,10 @@ ROS3D.InteractiveMarkerControl = function(options) {
       // add the marker
       that.add(markerHelper);
     };
-    
-    // If the marker lives in a separate TF Frame, ask the *local* TFClient
-    // for the transformation from the InteractiveMarker frame to the
-    // sub-Marker frame
+
+    // If the marker is not relative to the parent marker's position,
+    // ask the *local* TFClient for the transformation from the
+    // InteractiveMarker frame to the sub-Marker frame
     if (markerMsg.header.frame_id !== '') {
       localTfClient.subscribe(markerMsg.header.frame_id, addMarker);
     }
@@ -3776,6 +3797,12 @@ ROS3D.Urdf = function(options) {
 };
 ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
 
+ROS3D.Urdf.prototype.unsubscribeTf = function () {
+  this.children.forEach(function(n) {
+    if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
+  });
+};
+
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
@@ -3805,17 +3832,17 @@ ROS3D.UrdfClient = function(options) {
   var that = this;
   options = options || {};
   var ros = options.ros;
-  var param = options.param || 'robot_description';
+  this.param = options.param || 'robot_description';
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var tfPrefix = options.tfPrefix || '';
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.tfPrefix = options.tfPrefix || '';
+  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // get the URDF value from ROS
   var getParam = new ROSLIB.Param({
     ros : ros,
-    name : param
+    name : this.param
   });
   getParam.get(function(string) {
     // hand off the XML string to the URDF model
@@ -3824,13 +3851,14 @@ ROS3D.UrdfClient = function(options) {
     });
 
     // load all models
-    that.rootObject.add(new ROS3D.Urdf({
+    that.urdf = new ROS3D.Urdf({
       urdfModel : urdfModel,
       path : that.path,
       tfClient : that.tfClient,
-      tfPrefix : tfPrefix,
-      loader : loader
-    }));
+      tfPrefix : that.tfPrefix,
+      loader : that.loader
+    });
+    that.rootObject.add(that.urdf);
   });
 };
 
@@ -3918,6 +3946,7 @@ ROS3D.SceneNode.prototype.unsubscribeTf = function() {
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
  *  * background (optional) - the color to render the background, like '#efefef'
+ *  * alpha (optional) - the alpha of the background
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
  *  * cameraPosition (optional) - the starting position of the camera
@@ -3932,6 +3961,7 @@ ROS3D.Viewer = function(options) {
   var intensity = options.intensity || 0.66;
   var near = options.near || 0.01;
   var far = options.far || 1000;
+  var alpha = options.alpha || 1.0;
   var cameraPosition = options.cameraPose || {
     x : 3,
     y : 3,
@@ -3941,9 +3971,10 @@ ROS3D.Viewer = function(options) {
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
-    antialias : antialias
+    antialias : antialias,
+    alpha: true
   });
-  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), 1.0);
+  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
   this.renderer.shadowMapEnabled = false;
