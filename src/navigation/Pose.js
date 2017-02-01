@@ -21,7 +21,7 @@
 ROS3D.Pose = function(options) {
   this.options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/pose';
+  this.topicName = options.topic || '/pose';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -47,7 +47,7 @@ ROS3D.Pose.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
-      name : this.topic,
+      name : this.topicName,
       messageType : 'geometry_msgs/PoseStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

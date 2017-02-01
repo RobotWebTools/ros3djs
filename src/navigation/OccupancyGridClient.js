@@ -24,7 +24,7 @@
 ROS3D.OccupancyGridClient = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/map';
+  this.topicName = options.topic || '/map';
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -53,7 +53,7 @@ ROS3D.OccupancyGridClient.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
-    name : this.topic,
+    name : this.topicName,
     messageType : 'nav_msgs/OccupancyGrid',
     compression : 'png'
   });

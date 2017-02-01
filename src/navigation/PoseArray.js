@@ -18,7 +18,7 @@
 ROS3D.PoseArray = function(options) {
   this.options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/particlecloud';
+  this.topicName = options.topic || '/particlecloud';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.length = options.length || 1.0;
@@ -45,7 +45,7 @@ ROS3D.PoseArray.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
      ros : this.ros,
-     name : this.topic,
+     name : this.topicName,
      messageType : 'geometry_msgs/PoseArray'
  });
   this.rosTopic.subscribe(this.processMessage.bind(this));

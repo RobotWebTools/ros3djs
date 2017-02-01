@@ -52,7 +52,7 @@ function decode64(x) {
 ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/points';
+  this.topicName = options.topic || '/points';
 
   this.particles = new ROS3D.Particles(options);
   this.rosTopic = undefined;
@@ -73,7 +73,7 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
-    name : this.topic,
+    name : this.topicName,
     messageType : 'sensor_msgs/PointCloud2'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

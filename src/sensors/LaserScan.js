@@ -20,7 +20,7 @@
 ROS3D.LaserScan = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/scan';
+  this.topicName = options.topic || '/scan';
   this.color = options.color || 0xFFA500;
 
   this.particles = new ROS3D.Particles(options);
@@ -44,7 +44,7 @@ ROS3D.LaserScan.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
-    name : this.topic,
+    name : this.topicName,
     messageType : 'sensor_msgs/LaserScan'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

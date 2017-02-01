@@ -17,7 +17,7 @@
 ROS3D.Path = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/path';
+  this.topicName = options.topic || '/path';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -44,7 +44,7 @@ ROS3D.Path.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
-      name : this.topic,
+      name : this.topicName,
       messageType : 'nav_msgs/Path'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

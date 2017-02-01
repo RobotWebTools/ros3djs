@@ -23,7 +23,7 @@
 ROS3D.MarkerClient = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic;
+  this.topicName = options.topic;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
@@ -49,7 +49,7 @@ ROS3D.MarkerClient.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
-    name : this.topic,
+    name : this.topicName,
     messageType : 'visualization_msgs/Marker',
     compression : 'png'
   });

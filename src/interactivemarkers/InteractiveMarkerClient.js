@@ -23,7 +23,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.tfClient = options.tfClient;
-  this.topic = options.topic;
+  this.topicName = options.topic;
   this.path = options.path || '/';
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -35,8 +35,8 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.feedbackTopic = null;
 
   // check for an initial topic
-  if (this.topic) {
-    this.subscribe(this.topic);
+  if (this.topicName) {
+    this.subscribe(this.topicName);
   }
 };
 
@@ -199,7 +199,7 @@ ROS3D.InteractiveMarkerClient.prototype.eraseIntMarker = function(intMarkerName)
     targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
     targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
     targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
-    
+
     // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
     delete this.interactiveMarkers[intMarkerName];
     targetIntMarker.dispose();

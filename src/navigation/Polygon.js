@@ -17,7 +17,7 @@
 ROS3D.Polygon = function(options) {
   options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/path';
+  this.topicName = options.topic || '/path';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -44,7 +44,7 @@ ROS3D.Polygon.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
-      name : this.topic,
+      name : this.topicName,
       messageType : 'geometry_msgs/PolygonStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

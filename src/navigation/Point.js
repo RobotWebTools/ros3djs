@@ -18,7 +18,7 @@
 ROS3D.Point = function(options) {
   this.options = options || {};
   this.ros = options.ros;
-  this.topic = options.topic || '/point';
+  this.topicName = options.topic || '/point';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -45,7 +45,7 @@ ROS3D.Point.prototype.subscribe = function(){
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
-      name : this.topic,
+      name : this.topicName,
       messageType : 'geometry_msgs/PointStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
