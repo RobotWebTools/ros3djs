@@ -10,7 +10,7 @@
  *
  *  * ros - a handle to the ROS connection
  *  * tfClient - a handle to the TF client
- *  * topic (optional) - the topic to subscribe to, like '/basic_controls'
+ *  * topic (optional) - the topic to subscribe to, like '/basic_controls', if not provided use subscribe() to start message receiving
  *  * path (optional) - the base path to any meshes that will be loaded
  *  * camera - the main camera associated with the viewer for this marker client
  *  * rootObject (optional) - the root THREE 3D object to render to
