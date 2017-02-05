@@ -51,37 +51,51 @@ function decode64(x) {
  */
 ROS3D.PointCloud2 = function(options) {
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/points';
-  var that = this;
+  this.ros = options.ros;
+  this.topicName = options.topic || '/points';
 
   this.particles = new ROS3D.Particles(options);
-
-  var rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'sensor_msgs/PointCloud2'
-  });
-
-  rosTopic.subscribe(function(message) {
-    setFrame(that.particles, message.header.frame_id);
-
-    var n = message.height*message.width;
-    var buffer;
-    if(message.data.buffer){
-      buffer = message.data.buffer.buffer;
-    }else{
-      buffer = Uint8Array.from(decode64(message.data)).buffer;
-    }
-    var dv = new DataView(buffer);
-    for(var i=0;i<n;i++){
-      var pt = read_point(message, i, dv);
-      that.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-      that.particles.colors[ i ] = new THREE.Color( pt['rgb'] );
-      that.particles.alpha[i] = 1.0;
-    }
-
-    finishedUpdate(that.particles, n);
-  });
+  this.rosTopic = undefined;
+  this.subscribe();
 };
 ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.PointCloud2.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+};
+
+ROS3D.PointCloud2.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topicName,
+    messageType : 'sensor_msgs/PointCloud2'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+};
+
+ROS3D.PointCloud2.prototype.processMessage = function(message){
+  setFrame(this.particles, message.header.frame_id);
+
+  var n = message.height*message.width;
+  var buffer;
+  if(message.data.buffer){
+    buffer = message.data.buffer.buffer;
+  }else{
+    buffer = Uint8Array.from(decode64(message.data)).buffer;
+  }
+  var dv = new DataView(buffer);
+  for(var i=0;i<n;i++){
+    var pt = read_point(message, i, dv);
+    this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
+    this.particles.colors[ i ] = new THREE.Color( pt['rgb'] );
+    this.particles.alpha[i] = 1.0;
+  }
+
+  finishedUpdate(this.particles, n);
+};

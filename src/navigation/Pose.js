@@ -20,45 +20,60 @@
  */
 ROS3D.Pose = function(options) {
   this.options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/pose';
+  this.ros = options.ros;
+  this.topicName = options.topic || '/pose';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var that = this;
   THREE.Object3D.call(this);
 
   this.sn = null;
 
-  var rosTopic = new ROSLIB.Topic({
-      ros : ros,
-      name : topic,
-      messageType : 'geometry_msgs/PoseStamped'
-  });
-
-  rosTopic.subscribe(function(message) {
-      if(that.sn!==null){
-          that.sn.unsubscribeTf();
-          that.rootObject.remove(that.sn);
-      }
-
-      that.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
-                                               message.pose.position.z);
-
-      var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
-                                     message.pose.orientation.z, message.pose.orientation.w);
-      that.options.direction = new THREE.Vector3(1,0,0);
-      that.options.direction.applyQuaternion(rot);
-      that.options.material = new THREE.MeshBasicMaterial({color: that.color});
-      var arrow = new ROS3D.Arrow(that.options);
-
-      that.sn = new ROS3D.SceneNode({
-          frameID : message.header.frame_id,
-          tfClient : that.tfClient,
-          object : arrow
-      });
-
-      that.rootObject.add(that.sn);
-  });
+  this.rosTopic = undefined;
+  this.subscribe();
 };
 ROS3D.Pose.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.Pose.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+};
+
+ROS3D.Pose.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+      ros : this.ros,
+      name : this.topicName,
+      messageType : 'geometry_msgs/PoseStamped'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+};
+
+ROS3D.Pose.prototype.processMessage = function(message){
+  if(this.sn!==null){
+      this.sn.unsubscribeTf();
+      this.rootObject.remove(this.sn);
+  }
+
+  this.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
+                                           message.pose.position.z);
+
+  var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+                                 message.pose.orientation.z, message.pose.orientation.w);
+  this.options.direction = new THREE.Vector3(1,0,0);
+  this.options.direction.applyQuaternion(rot);
+  this.options.material = new THREE.MeshBasicMaterial({color: this.color});
+  var arrow = new ROS3D.Arrow(this.options);
+
+  this.sn = new ROS3D.SceneNode({
+      frameID : message.header.frame_id,
+      tfClient : this.tfClient,
+      object : arrow
+  });
+
+  this.rootObject.add(this.sn);
+};

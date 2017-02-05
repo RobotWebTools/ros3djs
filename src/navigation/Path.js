@@ -16,47 +16,62 @@
  */
 ROS3D.Path = function(options) {
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/path';
+  this.ros = options.ros;
+  this.topicName = options.topic || '/path';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var that = this;
   THREE.Object3D.call(this);
 
   this.sn = null;
   this.line = null;
 
-  var rosTopic = new ROSLIB.Topic({
-      ros : ros,
-      name : topic,
-      messageType : 'nav_msgs/Path'
-  });
-
-  rosTopic.subscribe(function(message) {
-      if(that.sn!==null){
-          that.sn.unsubscribeTf();
-          that.rootObject.remove(that.sn);
-      }
-
-      var lineGeometry = new THREE.Geometry();
-      for(var i=0; i<message.poses.length;i++){
-          var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
-                                      message.poses[i].pose.position.z);
-          lineGeometry.vertices.push(v3);
-      }
-
-      lineGeometry.computeLineDistances();
-      var lineMaterial = new THREE.LineBasicMaterial( { color: that.color } );
-      var line = new THREE.Line( lineGeometry, lineMaterial );
-
-      that.sn = new ROS3D.SceneNode({
-          frameID : message.header.frame_id,
-          tfClient : that.tfClient,
-          object : line
-      });
-
-      that.rootObject.add(that.sn);
-  });
+  this.rosTopic = undefined;
+  this.subscribe();
 };
 ROS3D.Path.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.Path.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+};
+
+ROS3D.Path.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+      ros : this.ros,
+      name : this.topicName,
+      messageType : 'nav_msgs/Path'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+};
+
+ROS3D.Path.prototype.processMessage = function(message){
+  if(this.sn!==null){
+      this.sn.unsubscribeTf();
+      this.rootObject.remove(this.sn);
+  }
+
+  var lineGeometry = new THREE.Geometry();
+  for(var i=0; i<message.poses.length;i++){
+      var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
+                                  message.poses[i].pose.position.z);
+      lineGeometry.vertices.push(v3);
+  }
+
+  lineGeometry.computeLineDistances();
+  var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+  var line = new THREE.Line( lineGeometry, lineMaterial );
+
+  this.sn = new ROS3D.SceneNode({
+      frameID : message.header.frame_id,
+      tfClient : this.tfClient,
+      object : line
+  });
+
+  this.rootObject.add(this.sn);
+};

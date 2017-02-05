@@ -19,37 +19,52 @@
  */
 ROS3D.LaserScan = function(options) {
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/scan';
+  this.ros = options.ros;
+  this.topicName = options.topic || '/scan';
   this.color = options.color || 0xFFA500;
-  var that = this;
 
   this.particles = new ROS3D.Particles(options);
 
-  var rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
-    messageType : 'sensor_msgs/LaserScan'
-  });
+  this.rosTopic = undefined;
+  this.subscribe();
 
-
-  rosTopic.subscribe(function(message) {
-    setFrame(that.particles, message.header.frame_id);
-
-    var n = message.ranges.length;
-    for(var i=0;i<n;i++){
-      var range = message.ranges[i];
-      if(range < message.range_min || range > message.range_max){
-        that.particles.alpha[i] = 0.0;
-      }else{
-          var angle = message.angle_min + i * message.angle_increment;
-          that.particles.points[i] = new THREE.Vector3( range * Math.cos(angle), range * Math.sin(angle), 0.0 );
-          that.particles.alpha[i] = 1.0;
-      }
-      that.particles.colors[ i ] = new THREE.Color( that.color );
-    }
-
-    finishedUpdate(that.particles, n);
-  });
 };
 ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.LaserScan.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+};
+
+ROS3D.LaserScan.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topicName,
+    messageType : 'sensor_msgs/LaserScan'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+};
+
+ROS3D.LaserScan.prototype.processMessage = function(message){
+  setFrame(this.particles, message.header.frame_id);
+
+  var n = message.ranges.length;
+  for(var i=0;i<n;i++){
+    var range = message.ranges[i];
+    if(range < message.range_min || range > message.range_max){
+      this.particles.alpha[i] = 0.0;
+    }else{
+        var angle = message.angle_min + i * message.angle_increment;
+        this.particles.points[i] = new THREE.Vector3( range * Math.cos(angle), range * Math.sin(angle), 0.0 );
+        this.particles.alpha[i] = 1.0;
+    }
+    this.particles.colors[ i ] = new THREE.Color( this.color );
+  }
+
+  finishedUpdate(this.particles, n);
+};

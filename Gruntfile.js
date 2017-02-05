@@ -4,8 +4,8 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     concat: {
       build: {
-        src  : ['../src/*.js', '../src/**/*.js'],
-        dest : '../build/ros3d.js'
+        src  : ['./src/*.js', './src/**/*.js'],
+        dest : './build/ros3d.js'
       }
     },
     jshint: {
@@ -14,12 +14,12 @@ module.exports = function(grunt) {
       },
       files: [
         'Gruntfile.js',
-        '../build/ros3d.js'
+        './build/ros3d.js'
       ]
     },
     karma: {
       build: {
-        configFile: '../test/karma.conf.js',
+        configFile: './test/karma.conf.js',
         singleRun: true,
         browsers: ['PhantomJS']
       }
@@ -29,8 +29,8 @@ module.exports = function(grunt) {
         report: 'min'
       },
       build: {
-        src: '../build/ros3d.js',
-        dest: '../build/ros3d.min.js'
+        src: './build/ros3d.js',
+        dest: './build/ros3d.min.js'
       }
     },
     watch: {
@@ -39,8 +39,8 @@ module.exports = function(grunt) {
           interrupt: true
         },
         files: [
-          '../src/*.js',
-          '../src/**/*.js'
+          './src/*.js',
+          './src/**/*.js'
         ],
         tasks: ['concat']
       },
@@ -51,8 +51,8 @@ module.exports = function(grunt) {
         files: [
           'Gruntfile.js',
           '.jshintrc',
-          '../src/*.js',
-          '../src/**/*.js'
+          './src/*.js',
+          './src/**/*.js'
         ],
         tasks: ['build']
       }
@@ -61,16 +61,16 @@ module.exports = function(grunt) {
       options: {
         force: true
       },
-      doc: ['../doc']
+      doc: ['./doc']
     },
     jsdoc: {
       doc: {
         src: [
-          '../src/*.js',
-          '../src/**/*.js'
+          './src/*.js',
+          './src/**/*.js'
         ],
         options: {
-          destination: '../doc',
+          destination: './doc',
           configure: 'jsdoc_conf.json'
         }
       }
@@ -90,4 +90,3 @@ module.exports = function(grunt) {
   grunt.registerTask('build_and_watch', ['watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
 };
-

@@ -20,7 +20,6 @@
  *  * cameraPosition (optional) - the starting position of the camera
  */
 ROS3D.Viewer = function(options) {
-  var that = this;
   options = options || {};
   var divID = options.divID;
   var width = options.width;
@@ -84,33 +83,60 @@ ROS3D.Viewer = function(options) {
     mouseHandler : mouseHandler
   });
 
-  /**
-   * Renders the associated scene to the viewer.
-   */
-  function draw() {
-    // update the controls
-    that.cameraControls.update();
-
-    // put light to the top-left of the camera
-    that.directionalLight.position = that.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-    that.directionalLight.position.normalize();
-
-    // set the scene
-    that.renderer.clear(true, true, true);
-    that.renderer.render(that.scene, that.camera);
-
-    // render any mouseovers
-    that.highlighter.renderHighlight(that.renderer, that.scene, that.camera);
-
-    // draw the frame
-    requestAnimationFrame(draw);
-  }
+  this.stopped = true;
+  this.animationRequestId = undefined;
 
   // add the renderer to the page
   document.getElementById(divID).appendChild(this.renderer.domElement);
 
-  // begin the animation
-  draw();
+  // begin the render loop
+  this.start();
+};
+
+/**
+ *  Start the render loop
+ */
+ROS3D.Viewer.prototype.start = function(){
+  this.stopped = false;
+  this.draw();
+};
+
+/**
+ * Renders the associated scene to the viewer.
+ */
+ROS3D.Viewer.prototype.draw = function(){
+  if(this.stopped){
+    // Do nothing if stopped
+    return;
+  }
+
+  // update the controls
+  this.cameraControls.update();
+
+  // put light to the top-left of the camera
+  this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+  this.directionalLight.position.normalize();
+
+  // set the scene
+  this.renderer.clear(true, true, true);
+  this.renderer.render(this.scene, this.camera);
+
+  // render any mouseovers
+  this.highlighter.renderHighlight(this.renderer, this.scene, this.camera);
+
+  // draw the frame
+  this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
+};
+
+/**
+ *  Stop the render loop
+ */
+ROS3D.Viewer.prototype.stop = function(){
+  if(!this.stopped){
+    // Stop animation render loop
+    cancelAnimationFrame(this.animationRequestId);
+  }
+  this.stopped = true;
 };
 
 /**

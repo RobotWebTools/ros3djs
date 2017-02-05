@@ -22,10 +22,9 @@
  *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGridClient = function(options) {
-  var that = this;
   options = options || {};
-  var ros = options.ros;
-  var topic = options.topic || '/map';
+  this.ros = options.ros;
+  this.topicName = options.topic || '/map';
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -37,49 +36,65 @@ ROS3D.OccupancyGridClient = function(options) {
   this.currentGrid = null;
 
   // subscribe to the topic
-  var rosTopic = new ROSLIB.Topic({
-    ros : ros,
-    name : topic,
+  this.rosTopic = undefined;
+  this.subscribe();
+};
+ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe();
+  }
+};
+
+ROS3D.OccupancyGridClient.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topicName,
     messageType : 'nav_msgs/OccupancyGrid',
     compression : 'png'
   });
-  rosTopic.subscribe(function(message) {
-    // check for an old map
-    if (that.currentGrid) {
-      // check if it there is a tf client
-      if (that.currentGrid.tfClient) {
-        // grid is of type ROS3D.SceneNode
-        that.currentGrid.unsubscribeTf();
-      }
-      that.rootObject.remove(that.currentGrid);
-    }
-
-    var newGrid = new ROS3D.OccupancyGrid({
-      message : message,
-      color : that.color,
-      opacity : that.opacity
-    });
-
-    // check if we care about the scene
-    if (that.tfClient) {
-      that.currentGrid = new ROS3D.SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : that.tfClient,
-        object : newGrid,
-        pose : that.offsetPose
-      });
-    } else {
-      that.currentGrid = newGrid;
-    }
-
-    that.rootObject.add(that.currentGrid);
-
-    that.emit('change');
-
-    // check if we should unsubscribe
-    if (!that.continuous) {
-      rosTopic.unsubscribe();
-    }
-  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
 };
-ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
+  // check for an old map
+  if (this.currentGrid) {
+    // check if it there is a tf client
+    if (this.currentGrid.tfClient) {
+      // grid is of type ROS3D.SceneNode
+      this.currentGrid.unsubscribeTf();
+    }
+    this.rootObject.remove(this.currentGrid);
+  }
+
+  var newGrid = new ROS3D.OccupancyGrid({
+    message : message,
+    color : this.color,
+    opacity : this.opacity
+  });
+
+  // check if we care about the scene
+  if (this.tfClient) {
+    this.currentGrid = new ROS3D.SceneNode({
+      frameID : message.header.frame_id,
+      tfClient : this.tfClient,
+      object : newGrid,
+      pose : this.offsetPose
+    });
+  } else {
+    this.currentGrid = newGrid;
+  }
+
+  this.rootObject.add(this.currentGrid);
+
+  this.emit('change');
+
+  // check if we should unsubscribe
+  if (!this.continuous) {
+    this.rosTopic.unsubscribe();
+  }
+};
