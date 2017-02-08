@@ -51,6 +51,9 @@ ROS3D.Particles = function(options) {
     'varying float falpha;',
     'void main() ',
     '{',
+    '    // THREE.Material.alphaTest is not evaluated for ShaderMaterial, so we',
+    '    // have to take care of this ourselves.',
+    '    if (falpha < 0.5) discard;',
     '    // calculates a color for the particle',
     '    gl_FragColor = vec4( vColor, falpha );',
     '    // sets particle texture to desired color',
@@ -80,7 +83,7 @@ ROS3D.Particles = function(options) {
         attributes:        this.attribs,
         vertexShader:      this.vertex_shader,
         fragmentShader:    this.fragment_shader,
-        transparent: true, alphaTest: 0.5
+        transparent: true,
     });
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
