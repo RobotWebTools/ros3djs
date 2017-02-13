@@ -4003,7 +4003,7 @@ ROS3D.Viewer = function(options) {
   // propagates mouse events to three.js objects
   this.selectableObjects = new THREE.Object3D();
   this.scene.add(this.selectableObjects);
-  var mouseHandler = new ROS3D.MouseHandler({
+  this.mouseHandler = new ROS3D.MouseHandler({
     renderer : this.renderer,
     camera : this.camera,
     rootObject : this.selectableObjects,
@@ -4012,7 +4012,7 @@ ROS3D.Viewer = function(options) {
 
   // highlights the receiver of mouse events
   this.highlighter = new ROS3D.Highlighter({
-    mouseHandler : mouseHandler
+    mouseHandler : this.mouseHandler
   });
 
   this.stopped = true;
