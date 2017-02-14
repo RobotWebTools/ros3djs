@@ -4,7 +4,7 @@
   "description": "The standard ROS Javascript Visualization Library",
   "version": "0.17.0-SNAPSHOT",
   "license": "BSD-3-Clause",
-  "main": "./src/Ros3DDD.js",
+  "main": "./src/Ros3D.js",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.1.3",
