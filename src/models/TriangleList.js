@@ -40,7 +40,7 @@ ROS3D.TriangleList = function(options) {
         color.setRGB(colors[i].r, colors[i].g, colors[i].b);
         faceVert.vertexColors.push(color);
       }
-      geometry.faces.push(face);
+      geometry.faces.push(faceVert);
     }
     material.vertexColors = THREE.VertexColors;
   } else if (colors.length === vertices.length / 3) {
