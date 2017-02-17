@@ -12,12 +12,12 @@
  */
 ROS3D.Highlighter = function(options) {
   options = options || {};
-  var mouseHandler = options.mouseHandler;
+  this.mouseHandler = options.mouseHandler;
   this.hoverObjs = [];
 
   // bind the mouse events
-  mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
-  mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
+  this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
+  this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
 };
 
 /**
