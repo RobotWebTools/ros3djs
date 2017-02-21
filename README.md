@@ -2,7 +2,7 @@ ros3djs [![Build Status](https://api.travis-ci.org/RobotWebTools/ros3djs.png)](h
 =======
 
 #### 3D Visualization Library for use with the ROS JavaScript Libraries
-For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](http://robotwebtools.org/).
+For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](http://robotwebtools.org/demos.html).
 
 [JSDoc](http://robotwebtools.org/jsdoc/ros3djs/current/) can be found on the Robot Web Tools website.
 
