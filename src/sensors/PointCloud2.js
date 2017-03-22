@@ -48,11 +48,13 @@ function decode64(x) {
  *  * rootObject (optional) - the root object to add this marker to
  *  * size (optional) - size to draw each point (default 0.05)
  *  * max_pts (optional) - number of points to draw (default 100)
+ *  * color (optional) - point color (otherwise taken from the topic)
  */
 ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
+  this.color = options.color;
 
   this.particles = new ROS3D.Particles(options);
   this.rosTopic = undefined;
@@ -90,10 +92,14 @@ ROS3D.PointCloud2.prototype.processMessage = function(message){
     buffer = Uint8Array.from(decode64(message.data)).buffer;
   }
   var dv = new DataView(buffer);
+  var color;
+  if(this.color !== undefined){
+    color = new THREE.Color(this.color);
+  }
   for(var i=0;i<n;i++){
     var pt = read_point(message, i, dv);
     this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-    this.particles.colors[ i ] = new THREE.Color( pt['rgb'] );
+    this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
     this.particles.alpha[i] = 1.0;
   }
 
