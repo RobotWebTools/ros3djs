@@ -90,7 +90,8 @@ To run the build tasks:
 `grunt doc` will rebuild all JSDoc for the project.
 
 ### Testing
-Utilizes [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for in browser testing
+Utilizes [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for in browser testing.
+
 To run tests simply open `tests/mocha.html` in a web browser
 
 ### License
