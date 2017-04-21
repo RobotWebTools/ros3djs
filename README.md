@@ -92,7 +92,7 @@ To run the build tasks:
 ### Testing
 Utilizes [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for in browser testing.
 
-To run tests simply open `tests/mocha.html` in a web browser
+To run tests simply open `tests/index.html` in a web browser
 
 ### License
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.
