@@ -14,7 +14,8 @@ module.exports = function(grunt) {
       },
       files: [
         'Gruntfile.js',
-        './build/ros3d.js'
+        './build/ros3d.js',
+        './tests/*.js'
       ]
     },
     karma: {

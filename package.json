@@ -6,14 +6,16 @@
   "license": "BSD-3-Clause",
   "main": "./src/Ros3D.js",
   "devDependencies": {
+    "chai": "^3.5.0",
     "grunt": "~1.0.1",
+    "grunt-contrib-clean": "~1.0.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-jshint": "~1.1.0",
-    "grunt-karma": "~2.0.0",
-    "grunt-contrib-watch": "~1.0.0",
     "grunt-contrib-uglify": "~2.0.0",
+    "grunt-contrib-watch": "~1.0.0",
     "grunt-jsdoc": "~2.1.0",
-    "grunt-contrib-clean": "~1.0.0"
+    "grunt-karma": "~2.0.0",
+    "mocha": "^3.2.0"
   },
   "repository": {
     "type": "git",
