@@ -125,6 +125,6 @@ function finishedUpdate(particles, n)
     particles.attribs.alpha.needsUpdate = true;
 
     if(n>particles.max_pts){
-        throw 'Attempted to draw more points than max_pts allows';
+        console.error('Attempted to draw more points than max_pts allows');
     }
 }
