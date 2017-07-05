@@ -3395,10 +3395,6 @@ ROS3D.PoseArray.prototype.processMessage = function(message){
  *  * tfClient - the TF client handle to use
  *  * rootObject (optional) - the root object to add this marker to
  *  * color (optional) - color for line (default: 0xcc00ff)
- *  * length (optional) - the length of the arrow (default: 1.0)
- *  * headLength (optional) - the head length of the arrow (default: 0.2)
- *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
- *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
  */
 ROS3D.PoseWithCovariance = function(options) {
   this.options = options || {};
