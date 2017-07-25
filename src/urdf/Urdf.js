@@ -56,8 +56,7 @@ ROS3D.Urdf = function(options) {
             var mesh = new ROS3D.MeshResource({
               path : path,
               resource : uri,
-              loader : loader,
-              material : colorMaterial
+              loader : loader
             });
 
             // check for a scale
