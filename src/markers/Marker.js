@@ -280,9 +280,9 @@ ROS3D.Marker = function(options) {
         // this does need to be set again
         context.font = fontString;
         context.fillStyle = 'rgba('
-          + textColor.r + ', '
-          + textColor.g + ', '
-          + textColor.b + ', '
+          + Math.floor(255 * textColor.r) + ', '
+          + Math.floor(255 * textColor.g) + ', '
+          + Math.floor(255 * textColor.b) + ', '
           + textColor.a + ')';
         context.textAlign = 'left';
         context.textBaseline = 'middle';
