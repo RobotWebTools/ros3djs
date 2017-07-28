@@ -79,3 +79,15 @@ ROS3D.Arrow.prototype.setLength = function(length) {
 ROS3D.Arrow.prototype.setColor = function(hex) {
   this.material.color.setHex(hex);
 };
+
+/*
+ * Free memory of elements in this marker.
+ */
+ROS3D.Arrow.prototype.dispose = function() {
+  if (this.geometry !== undefined) {
+      this.geometry.dispose();
+  }
+  if (this.material !== undefined) {
+      this.material.dispose();
+  }
+};
