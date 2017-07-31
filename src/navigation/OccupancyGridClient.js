@@ -79,17 +79,18 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
 
   // check if we care about the scene
   if (this.tfClient) {
-    this.currentGrid = new ROS3D.SceneNode({
+    this.currentGrid = newGrid;
+    this.sceneNode = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : this.tfClient,
       object : newGrid,
       pose : this.offsetPose
     });
   } else {
-    this.currentGrid = newGrid;
+    this.sceneNode = this.currentGrid = newGrid;
   }
 
-  this.rootObject.add(this.currentGrid);
+  this.rootObject.add(this.sceneNode);
 
   this.emit('change');
 
