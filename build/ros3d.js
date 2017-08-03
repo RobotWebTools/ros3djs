@@ -4245,6 +4245,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   target = this.lastTarget;
   var intersections = [];
   intersections = mouseRaycaster.intersectObject(this.rootObject, true);
+
   if (intersections.length > 0) {
     target = intersections[0].object;
     event3D.intersection = this.lastIntersection = intersections[0];
@@ -4254,10 +4255,15 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
 
   // if the mouse moves from one object to another (or from/to the 'null' object), notify both
   if (target !== this.lastTarget && domEvent.type.match(/mouse/)) {
-    var eventAccepted = this.notify(target, 'mouseover', event3D);
-    if (eventAccepted) {
+
+    // Event Status. TODO: Make it as enum
+    // 0: Accepted
+    // 1: Failed
+    // 2: Continued
+    var eventStatus = this.notify(target, 'mouseover', event3D);
+    if (eventStatus === 0) {
       this.notify(this.lastTarget, 'mouseout', event3D);
-    } else {
+    } else if(eventStatus === 1) {
       // if target was null or no target has caught our event, fall back
       target = this.fallbackTarget;
       if (target !== this.lastTarget) {
@@ -4301,15 +4307,24 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
  */
 ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
   // ensure the type is set
+  //
   event3D.type = type;
 
   // make the event cancelable
   event3D.cancelBubble = false;
+  event3D.continueBubble = false;
   event3D.stopPropagation = function() {
     event3D.cancelBubble = true;
   };
+
+  // it hit the selectable object but don't highlight
+  event3D.continuePropagation = function () {
+    event3D.continueBubble = true;
+  };
+
   // walk up graph until event is canceled or root node has been reached
   event3D.currentTarget = target;
+
   while (event3D.currentTarget) {
     // try to fire event on object
     if (event3D.currentTarget.dispatchEvent
@@ -4317,13 +4332,17 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
       event3D.currentTarget.dispatchEvent(event3D);
       if (event3D.cancelBubble) {
         this.dispatchEvent(event3D);
-        return true;
+        return 0; // Event Accepted
+      }
+      else if(event3D.continueBubble) {
+        return 2; // Event Continued
       }
     }
     // walk up
     event3D.currentTarget = event3D.currentTarget.parent;
   }
-  return false;
+
+  return 1; // Event Failed
 };
 
 THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );
