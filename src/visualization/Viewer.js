@@ -18,6 +18,9 @@
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
  *  * cameraPosition (optional) - the starting position of the camera
+ *  * buttonRotate (optional) - the mouse button for rotating the view (defaults to LEFT)
+ *  * buttonMove (optional) - the mouse bitton for moving the view (defaults to MIDDLE)
+ *  * buttonZoom (optional) - the mouse button for zooming the view (defaults to RIGHT)
  */
 ROS3D.Viewer = function(options) {
   options = options || {};
@@ -59,7 +62,10 @@ ROS3D.Viewer = function(options) {
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,
-    camera : this.camera
+    camera : this.camera,
+    buttonRotate: options.buttonRotate,
+    buttonMove: options.buttonMove,
+    buttonZoom: options.buttonZoom
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
