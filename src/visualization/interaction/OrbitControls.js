@@ -5,6 +5,12 @@
  * @author AlteredQualia - http://alteredqualia.com
  */
 
+ROS3D.MOUSE_BUTTON = {
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2
+};
+
 /**
  * Behaves like THREE.OrbitControls, but uses right-handed coordinates and z as up vector.
  *
@@ -14,7 +20,9 @@
  * @param userZoomSpeed (optional) - the speed for zooming
  * @param userRotateSpeed (optional) - the speed for rotating
  * @param autoRotate (optional) - if the orbit should auto rotate
- * @param autoRotate (optional) - the speed for auto rotating
+ * @param buttonRotate (optional) - the mouse button for rotating the view (defaults to LEFT)
+ * @param buttonMove (optional) - the mouse bitton for moving the view (defaults to MIDDLE)
+ * @param buttonZoom (optional) - the mouse button for zooming the view (defaults to RIGHT)
  */
 ROS3D.OrbitControls = function(options) {
   THREE.EventDispatcher.call(this);
@@ -29,6 +37,24 @@ ROS3D.OrbitControls = function(options) {
   this.userRotateSpeed = options.userRotateSpeed || 1.0;
   this.autoRotate = options.autoRotate;
   this.autoRotateSpeed = options.autoRotateSpeed || 2.0;
+
+  // Check if the provided button definitions are valid, and assign them.
+  Object.keys(ROS3D.MOUSE_BUTTON).forEach((function(btn) {
+    if (!this.buttonRotate && options.buttonRotate === ROS3D.MOUSE_BUTTON[btn]) {
+      this.buttonRotate = options.buttonRotate;
+    }
+    if (!this.buttonMove && options.buttonMove === ROS3D.MOUSE_BUTTON[btn]) {
+      this.buttonMove = options.buttonMove;
+    }
+    if (!this.buttonZoom && options.buttonZoom === ROS3D.MOUSE_BUTTON[btn]) {
+      this.buttonZoom = options.buttonZoom;
+    }
+  }).bind(this));
+
+  // If some weren't defined, use default.
+  this.buttonRotate = this.buttonRotate || ROS3D.MOUSE_BUTTON.LEFT;
+  this.buttonMove = this.buttonMove || ROS3D.MOUSE_BUTTON.MIDDLE;
+  this.buttonZoom = this.buttonZoom || ROS3D.MOUSE_BUTTON.RIGHT;
 
   // In ROS, z is pointing upwards
   this.camera.up = new THREE.Vector3(0, 0, 1);
@@ -83,11 +109,11 @@ ROS3D.OrbitControls = function(options) {
     event.preventDefault();
 
     switch (event.button) {
-      case 0:
+      case this.buttonRotate:
         state = STATE.ROTATE;
         rotateStart.set(event.clientX, event.clientY);
         break;
-      case 1:
+      case this.buttonMove:
         state = STATE.MOVE;
 
         moveStartNormal = new THREE.Vector3(0, 0, 1);
@@ -100,7 +126,7 @@ ROS3D.OrbitControls = function(options) {
                                                    moveStartCenter,
                                                    moveStartNormal);
         break;
-      case 2:
+      case this.buttonZoom:
         state = STATE.ZOOM;
         zoomStart.set(event.clientX, event.clientY);
         break;
