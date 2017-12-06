@@ -1,7 +1,7 @@
 {
-  "name": "ros3djs",
+  "name": "ros3d",
   "homepage": "https://www.robotwebtools.org",
-  "description": "The standard ROS Javascript Visualization Library",
+  "description": "(BOWER IS DEPRECATING! Please use npm version of ros3d). The standard ROS Javascript Visualization Library",
   "version": "0.17.0-SNAPSHOT",
   "license": "BSD-3-Clause",
   "main": "./src/Ros3D.js",
