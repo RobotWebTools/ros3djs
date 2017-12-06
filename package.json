@@ -7,7 +7,7 @@
   "main": "./src/Ros3D.js",
   "dependencies": {
     "eventemitter2": "~2.2.0",
-    "threejs": "0.64.0",
+    "three": "0.64.0",
     "roslib": ">=0.14.0"
   },
   "devDependencies": {
