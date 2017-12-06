@@ -2,9 +2,14 @@
   "name": "ros3d",
   "homepage": "https://www.robotwebtools.org",
   "description": "The standard ROS Javascript Visualization Library",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "license": "BSD-3-Clause",
   "main": "./src/Ros3D.js",
+  "dependencies": {
+    "eventemitter2": "~2.2.0",
+    "threejs": "0.64.0",
+    "roslib": ">=0.14.0"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
