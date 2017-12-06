@@ -1,5 +1,5 @@
 {
-  "name": "ros3djs",
+  "name": "ros3d",
   "homepage": "https://www.robotwebtools.org",
   "description": "The standard ROS Javascript Visualization Library",
   "version": "0.17.0-SNAPSHOT",
@@ -28,8 +28,12 @@
     "ros",
     "roslib",
     "roslibjs",
+    "ros3d",
     "ros3djs",
     "robot"
   ],
-  "author": "Robot Webtools Team <robot-web-tools@googlegroups.com> (http://robotwebtools.org)"
+  "author": "Robot Webtools Team <robot-web-tools@googlegroups.com> (http://robotwebtools.org)",
+  "directories": {
+    "example": "examples"
+  }
 }
