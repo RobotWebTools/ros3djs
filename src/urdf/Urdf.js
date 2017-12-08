@@ -61,11 +61,7 @@ ROS3D.Urdf = function(options) {
 
             // check for a scale
             if(link.visuals[i].geometry.scale) {
-              mesh.scale = new THREE.Vector3(
-                  visual.geometry.scale.x,
-                  visual.geometry.scale.y,
-                  visual.geometry.scale.z
-                  );
+              mesh.scale.copy(visual.geometry.scale);
             }
 
             // create a scene node with the model
