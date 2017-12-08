@@ -7,8 +7,8 @@
   "main": "./src/Ros3D.js",
   "dependencies": {
     "eventemitter2": "~2.2.0",
-    "three": "0.64.0",
-    "roslib": ">=0.14.0"
+    "roslib": ">=0.14.0",
+    "three": "^0.88.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
