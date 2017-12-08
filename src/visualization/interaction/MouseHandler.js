@@ -69,7 +69,8 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var deviceX = left / target.clientWidth * 2 - 1;
   var deviceY = -top / target.clientHeight * 2 + 1;
   var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
-  this.projector.unprojectVector(vector, this.camera);
+  // DEPRECATED: this.projector.unprojectVector(vector, this.camera);
+  vector.unproject(this.camera);
   // use the THREE raycaster
   var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
       this.camera.position).normalize());
@@ -221,4 +222,5 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
   return 1; // Event Failed
 };
 
-THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );
+// THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );
+Object.assign(ROS3D.MouseHandler.prototype, THREE.EventDispatcher.prototype);
