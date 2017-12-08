@@ -320,4 +320,5 @@ ROS3D.InteractiveMarker.prototype.dispose = function() {
   });
 };
 
-THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
+// THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
+Object.assign(ROS3D.InteractiveMarker.prototype, THREE.EventDispatcher.prototype);
