@@ -45,7 +45,7 @@ ROS3D.Viewer = function(options) {
   this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
-  this.renderer.shadowMapEnabled = false;
+  this.renderer.shadowMap.enabled = false;
   this.renderer.autoClear = false;
 
   // create the global scene
