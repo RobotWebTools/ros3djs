@@ -79,7 +79,7 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_CUBE:
       // set the cube dimensions
-      var cubeGeom = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
+      var cubeGeom = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
       this.add(new THREE.Mesh(cubeGeom, colorMaterial));
       break;
     case ROS3D.MARKER_SPHERE:
@@ -174,7 +174,7 @@ ROS3D.Marker = function(options) {
       // add the points
       var p, cube, curColor, newMesh;
       for (p = 0; p < numPoints; p+=stepSize) {
-        cube = new THREE.CubeGeometry(message.scale.x, message.scale.y, message.scale.z);
+        cube = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
 
         // check the color
         if(createColors) {

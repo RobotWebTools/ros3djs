@@ -88,7 +88,7 @@ ROS3D.Urdf = function(options) {
           switch (visual.geometry.type) {
             case ROSLIB.URDF_BOX:
               var dimension = visual.geometry.dimension;
-              var cube = new THREE.CubeGeometry(dimension.x, dimension.y, dimension.z);
+              var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
               shapeMesh = new THREE.Mesh(cube, colorMaterial);
               break;
             case ROSLIB.URDF_CYLINDER:
