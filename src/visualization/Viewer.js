@@ -121,9 +121,6 @@ ROS3D.Viewer.prototype.draw = function(){
   this.renderer.clear(true, true, true);
   this.renderer.render(this.scene, this.camera);
 
-  // render any mouseovers
-  this.highlighter.renderHighlight(this.renderer, this.scene, this.camera);
-
   // draw the frame
   this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
 };
