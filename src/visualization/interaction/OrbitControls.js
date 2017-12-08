@@ -475,9 +475,11 @@ ROS3D.OrbitControls.prototype.update = function() {
   phi = Math.max(eps, Math.min(Math.PI - eps, phi));
 
   var radius = offset.length();
-  offset.y = radius * Math.sin(phi) * Math.sin(theta);
-  offset.z = radius * Math.cos(phi);
-  offset.x = radius * Math.sin(phi) * Math.cos(theta);
+  offset.set(
+    radius * Math.sin(phi) * Math.cos(theta),
+    radius * Math.sin(phi) * Math.sin(theta),
+    radius * Math.cos(phi)
+  );
   offset.multiplyScalar(this.scale);
 
   position.copy(this.center).add(offset);
@@ -485,8 +487,8 @@ ROS3D.OrbitControls.prototype.update = function() {
   this.camera.lookAt(this.center);
 
   radius = offset.length();
-  this.axes.position = this.center.clone();
-  this.axes.scale.x = this.axes.scale.y = this.axes.scale.z = radius * 0.05;
+  this.axes.position.copy(this.center);
+  this.axes.scale.set(radius * 0.05, radius * 0.05, radius * 0.05);
   this.axes.updateMatrixWorld(true);
 
   this.thetaDelta = 0;

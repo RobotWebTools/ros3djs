@@ -46,17 +46,17 @@ ROS3D.Axes = function(options) {
 
     // create the arrow
     var arrow = new THREE.Mesh(that.headGeom, material);
-    arrow.position = axis.clone();
+    arrow.position.copy(axis);
     arrow.position.multiplyScalar(0.95);
-    arrow.quaternion = rot;
+    arrow.quaternion.copy(rot);
     arrow.updateMatrix();
     that.add(arrow);
 
     // create the line
     var line = new THREE.Mesh(that.lineGeom, material);
-    line.position = axis.clone();
+    line.position.copy(axis);
     line.position.multiplyScalar(0.45);
-    line.quaternion = rot;
+    line.quaternion.copy(rot);
     line.updateMatrix();
     that.add(line);
   }

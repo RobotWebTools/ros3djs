@@ -46,7 +46,7 @@ ROS3D.Arrow = function(options) {
 
   THREE.Mesh.call(this, geometry, material);
 
-  this.position = origin;
+  this.position.copy(origin);
   this.setDirection(direction);
 };
 ROS3D.Arrow.prototype.__proto__ = THREE.Mesh.prototype;

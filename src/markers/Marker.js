@@ -96,7 +96,7 @@ ROS3D.Marker = function(options) {
       var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
       var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
       cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-      cylinderMesh.scale = new THREE.Vector3(message.scale.x, message.scale.z, message.scale.y);
+      cylinderMesh.scale.set(message.scale.x, message.scale.z, message.scale.y);
       this.add(cylinderMesh);
       break;
     case ROS3D.MARKER_LINE_STRIP:
@@ -324,7 +324,7 @@ ROS3D.Marker = function(options) {
         vertices : message.points,
         colors : message.colors
       });
-      tri.scale = new THREE.Vector3(message.scale.x, message.scale.y, message.scale.z);
+      tri.scale.set(message.scale.x, message.scale.y, message.scale.z);
       this.add(tri);
       break;
     default:
@@ -346,7 +346,7 @@ ROS3D.Marker.prototype.setPose = function(pose) {
   this.position.z = pose.position.z;
 
   // set the rotation
-  this.quaternion = new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
+  this.quaternion.set(pose.orientation.x, pose.orientation.y,
       pose.orientation.z, pose.orientation.w);
   this.quaternion.normalize();
 
