@@ -294,14 +294,8 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
       this.bufferedPoseEvent = event;
     } else {
       var pose = event.pose;
-
-      this.position.x = pose.position.x;
-      this.position.y = pose.position.y;
-      this.position.z = pose.position.z;
-
-      this.quaternion.copy(new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
-          pose.orientation.z, pose.orientation.w));
-
+      this.position.copy(pose.position);
+      this.quaternion.copy(pose.orientation);
       this.updateMatrixWorld(true);
     }
   }
