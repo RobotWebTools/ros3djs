@@ -503,5 +503,4 @@ ROS3D.OrbitControls.prototype.update = function() {
   }
 };
 
-// THREE.EventDispatcher.prototype.apply( ROS3D.OrbitControls.prototype );
 Object.assign(ROS3D.OrbitControls.prototype, THREE.EventDispatcher.prototype);
