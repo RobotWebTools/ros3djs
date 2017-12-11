@@ -785,14 +785,8 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
       this.bufferedPoseEvent = event;
     } else {
       var pose = event.pose;
-
-      this.position.x = pose.position.x;
-      this.position.y = pose.position.y;
-      this.position.z = pose.position.z;
-
-      this.quaternion.copy(new THREE.Quaternion(pose.orientation.x, pose.orientation.y,
-          pose.orientation.z, pose.orientation.w));
-
+      this.position.copy(pose.position);
+      this.quaternion.copy(pose.orientation);
       this.updateMatrixWorld(true);
     }
   }
@@ -812,7 +806,6 @@ ROS3D.InteractiveMarker.prototype.dispose = function() {
   });
 };
 
-// THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarker.prototype );
 Object.assign(ROS3D.InteractiveMarker.prototype, THREE.EventDispatcher.prototype);
 
 /**
@@ -1638,7 +1631,6 @@ ROS3D.InteractiveMarkerMenu.prototype.hide = function(event) {
   document.body.removeChild(this.menuDomElem);
 };
 
-// THREE.EventDispatcher.prototype.apply( ROS3D.InteractiveMarkerMenu.prototype );
 Object.assign(ROS3D.InteractiveMarkerMenu.prototype, THREE.EventDispatcher.prototype);
 
 /**
@@ -2367,7 +2359,6 @@ ROS3D.Arrow = function(options) {
   coneGeometry.applyMatrix(m);
 
   // put the arrow together
-  // DEPRECATED: THREE.GeometryUtils.merge(geometry, coneGeometry);
   geometry.merge(coneGeometry);
 
   THREE.Mesh.call(this, geometry, material);
@@ -4178,7 +4169,6 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var deviceX = left / target.clientWidth * 2 - 1;
   var deviceY = -top / target.clientHeight * 2 + 1;
   var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
-  // DEPRECATED: this.projector.unprojectVector(vector, this.camera);
   vector.unproject(this.camera);
   // use the THREE raycaster
   var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
@@ -4331,7 +4321,6 @@ ROS3D.MouseHandler.prototype.notify = function(target, type, event3D) {
   return 1; // Event Failed
 };
 
-// THREE.EventDispatcher.prototype.apply( ROS3D.MouseHandler.prototype );
 Object.assign(ROS3D.MouseHandler.prototype, THREE.EventDispatcher.prototype);
 
 /**
@@ -4839,7 +4828,6 @@ ROS3D.OrbitControls.prototype.update = function() {
   }
 };
 
-// THREE.EventDispatcher.prototype.apply( ROS3D.OrbitControls.prototype );
 Object.assign(ROS3D.OrbitControls.prototype, THREE.EventDispatcher.prototype);
 
 /**
