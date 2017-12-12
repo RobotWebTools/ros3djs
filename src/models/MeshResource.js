@@ -30,7 +30,7 @@ ROS3D.MeshResource = function(options) {
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
-    this.path += '/';
+    path += '/';
   }
 
   var uri = path + resource;
