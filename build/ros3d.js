@@ -4048,7 +4048,6 @@ ROS3D.Highlighter = function(options) {
  * @param event - the event that contains the target of the mouseover
  */
 ROS3D.Highlighter.prototype.onMouseOver = function(event) {
-  // this.hoverObjs.push(event.currentTarget);
   this.highlightObject(event.currentTarget, true);
 };
 
@@ -4058,7 +4057,6 @@ ROS3D.Highlighter.prototype.onMouseOver = function(event) {
  * @param event - the event that contains the target of the mouseout
  */
 ROS3D.Highlighter.prototype.onMouseOut = function(event) {
-  // this.hoverObjs.splice(this.hoverObjs.indexOf(event.currentTarget), 1);
   this.highlightObject(event.currentTarget, false);
 };
 
@@ -4066,24 +4064,24 @@ ROS3D.Highlighter.prototype.onMouseOut = function(event) {
 /**
  * Highlight and unhighlight the given object
  *
- * @param object - the target object to (un)highlight
- * @param flag - whether to highlight or unhighlight
+ * @param target_object - the target object to (un)highlight
+ * @param highlight - whether to highlight or unhighlight
  */
-ROS3D.Highlighter.prototype.highlightObject = function (object, flag) {
-  if(object.material === undefined) {
-    if(object.children === undefined) {
+ROS3D.Highlighter.prototype.highlightObject = function (target_object, highlight) {
+  if(target_object.material === undefined) {
+    if(target_object.children === undefined) {
       return;
     }
     else {
-      for(var c = 0 ; c < object.children.length; c++) {
-        this.highlightObject(object.children[c], flag);
+      for(var c = 0 ; c < target_object.children.length; c++) {
+        this.highlightObject(target_object.children[c], highlight);
       }
     }
   }
   else {
-    if(flag) {
-      object.currentMaterial = object.material;
-      object.material = new THREE.MeshBasicMaterial({
+    if(highlight) {
+      target_object.originalMaterial = target_object.material;
+      target_object.material = new THREE.MeshBasicMaterial({
         fog : false,
         opacity : 0.5,
         depthTest : true,
@@ -4094,7 +4092,7 @@ ROS3D.Highlighter.prototype.highlightObject = function (object, flag) {
       });
     }
     else {
-      object.material = object.currentMaterial;
+      target_object.material = target_object.originalMaterial;
     }
   }
 };
