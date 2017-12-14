@@ -58,16 +58,13 @@ ROS3D.MeshResource = function(options) {
 
       // add a texture to anything that is missing one
       if(material !== null) {
-        var setMaterial = function(node, material) {
-          node.material = material;
-          if (node.children) {
-            for (var i = 0; i < node.children.length; i++) {
-              setMaterial(node.children[i], material);
+        collada.scene.traverse(function(child) {
+          if(child instanceof THREE.Mesh) {
+            if(child.material === undefined) {
+              child.material = material;
             }
           }
-        };
-
-        setMaterial(collada.scene, material);
+        });
       }
 
       that.add(collada.scene);
