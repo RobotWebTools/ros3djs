@@ -42,7 +42,7 @@ ROS3D.MeshResource = function(options) {
     if (loaderType ===  ROS3D.COLLADA_LOADER) {
       loader = new THREE.ColladaLoader();
     } else {
-      loader = new ColladaLoader2();
+      loader = new THREE.ColladaLoader2();
     }
     loader.log = function(message) {
       if (that.warnings) {
@@ -51,11 +51,6 @@ ROS3D.MeshResource = function(options) {
     };
     loader.load(uri, function colladaReady(collada) {
       // check for a scale factor in ColladaLoader2
-      if(loaderType === ROS3D.COLLADA_LOADER_2 && collada.dae.asset.unit) {
-        var scale = collada.dae.asset.unit;
-        collada.scene.scale.set(scale, scale, scale);
-      }
-
       // add a texture to anything that is missing one
       if(material !== null) {
         collada.scene.traverse(function(child) {
