@@ -4060,6 +4060,9 @@ ROS3D.Highlighter.prototype.onMouseOut = function(event) {
  * @param highlight - whether to highlight or unhighlight
  */
 ROS3D.Highlighter.prototype.highlightObject = function (target_object, highlight) {
+
+  // Note that this logic isn't the optimal way of highlighting the target object.
+  // Please revisit here to improve the logic.
   if(target_object.material === undefined) {
     if(target_object.children === undefined) {
       return;
