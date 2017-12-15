@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '0.17.0-SNAPSHOT'
+  REVISION : 'develop'
 };
 
 // Marker types
@@ -2640,7 +2640,7 @@ ROS3D.MeshResource = function(options) {
     if (loaderType ===  ROS3D.COLLADA_LOADER) {
       loader = new THREE.ColladaLoader();
     } else {
-      loader = new ColladaLoader2();
+      loader = new THREE.ColladaLoader2();
     }
     loader.log = function(message) {
       if (that.warnings) {
@@ -2649,23 +2649,15 @@ ROS3D.MeshResource = function(options) {
     };
     loader.load(uri, function colladaReady(collada) {
       // check for a scale factor in ColladaLoader2
-      if(loaderType === ROS3D.COLLADA_LOADER_2 && collada.dae.asset.unit) {
-        var scale = collada.dae.asset.unit;
-        collada.scene.scale.set(scale, scale, scale);
-      }
-
       // add a texture to anything that is missing one
       if(material !== null) {
-        var setMaterial = function(node, material) {
-          node.material = material;
-          if (node.children) {
-            for (var i = 0; i < node.children.length; i++) {
-              setMaterial(node.children[i], material);
+        collada.scene.traverse(function(child) {
+          if(child instanceof THREE.Mesh) {
+            if(child.material === undefined) {
+              child.material = material;
             }
           }
-        };
-
-        setMaterial(collada.scene, material);
+        });
       }
 
       that.add(collada.scene);
