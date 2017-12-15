@@ -14,8 +14,6 @@
  *  * resource - the resource file name to load
  *  * material (optional) - the material to use for the object
  *  * warnings (optional) - if warnings should be printed
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
@@ -24,7 +22,6 @@ ROS3D.MeshResource = function(options) {
   var resource = options.resource;
   var material = options.material || null;
   this.warnings = options.warnings;
-  var loaderType = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
 
@@ -39,11 +36,7 @@ ROS3D.MeshResource = function(options) {
   // check the type
   var loader;
   if (fileType === '.dae') {
-    if (loaderType ===  ROS3D.COLLADA_LOADER) {
-      loader = new THREE.ColladaLoader();
-    } else {
-      loader = new THREE.ColladaLoader2();
-    }
+    loader = new THREE.ColladaLoader();
     loader.log = function(message) {
       if (that.warnings) {
         console.warn(message);

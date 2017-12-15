@@ -17,8 +17,6 @@
  *   * tfClient - the TF client handle to use
  *   * rootObject (optional) - the root object to add this marker to
  *   * path (optional) - the base path to any meshes that will be loaded
- *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerClient = function(options) {
   options = options || {};
@@ -27,7 +25,6 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
@@ -60,7 +57,6 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
   var newMarker = new ROS3D.Marker({
     message : message,
     path : this.path,
-    loader : this.loader
   });
 
   // remove old marker from Three.Object3D children buffer

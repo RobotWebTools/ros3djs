@@ -43,11 +43,6 @@ ROS3D.INTERACTIVE_MARKER_INHERIT = 0;
 ROS3D.INTERACTIVE_MARKER_FIXED = 1;
 ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
 
-// Collada loader types
-ROS3D.COLLADA_LOADER = 1;
-ROS3D.COLLADA_LOADER_2 = 2;
-
-
 /**
  * Create a THREE material based on the given RGBA values.
  *
@@ -1646,14 +1641,11 @@ Object.assign(ROS3D.InteractiveMarkerMenu.prototype, THREE.EventDispatcher.proto
  *
  *   * path - the base path or URL for any mesh files that will be loaded for this marker
  *   * message - the marker message
- *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.Marker = function(options) {
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
@@ -1948,7 +1940,6 @@ ROS3D.Marker = function(options) {
         path : path,
         resource :  this.msgMesh,
         material : meshColorMaterial,
-        loader : loader
       });
       this.add(meshResource);
       break;
@@ -2147,8 +2138,6 @@ ROS3D.Marker.prototype.dispose = function() {
  *   * tfClient - the TF client handle to use
  *   * rootObject (optional) - the root object to add the markers to
  *   * path (optional) - the base path to any meshes that will be loaded
- *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerArrayClient = function(options) {
   options = options || {};
@@ -2157,7 +2146,6 @@ ROS3D.MarkerArrayClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
@@ -2195,7 +2183,6 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
         var newMarker = new ROS3D.Marker({
           message : message,
           path : this.path,
-          loader : this.loader
         });
         this.markers[message.ns + message.id] = new ROS3D.SceneNode({
           frameID : message.header.frame_id,
@@ -2253,8 +2240,6 @@ ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
  *   * tfClient - the TF client handle to use
  *   * rootObject (optional) - the root object to add this marker to
  *   * path (optional) - the base path to any meshes that will be loaded
- *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MarkerClient = function(options) {
   options = options || {};
@@ -2263,7 +2248,6 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
@@ -2296,7 +2280,6 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
   var newMarker = new ROS3D.Marker({
     message : message,
     path : this.path,
-    loader : this.loader
   });
 
   // remove old marker from Three.Object3D children buffer
@@ -2612,8 +2595,6 @@ ROS3D.Grid.prototype.__proto__ = THREE.Object3D.prototype;
  *  * resource - the resource file name to load
  *  * material (optional) - the material to use for the object
  *  * warnings (optional) - if warnings should be printed
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
  */
 ROS3D.MeshResource = function(options) {
   var that = this;
@@ -2622,7 +2603,6 @@ ROS3D.MeshResource = function(options) {
   var resource = options.resource;
   var material = options.material || null;
   this.warnings = options.warnings;
-  var loaderType = options.loader || ROS3D.COLLADA_LOADER_2;
 
   THREE.Object3D.call(this);
 
@@ -2637,11 +2617,7 @@ ROS3D.MeshResource = function(options) {
   // check the type
   var loader;
   if (fileType === '.dae') {
-    if (loaderType ===  ROS3D.COLLADA_LOADER) {
-      loader = new THREE.ColladaLoader();
-    } else {
-      loader = new THREE.ColladaLoader2();
-    }
+    loader = new THREE.ColladaLoader();
     loader.log = function(message) {
       if (that.warnings) {
         console.warn(message);

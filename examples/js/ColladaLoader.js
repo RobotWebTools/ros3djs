@@ -8,18 +8,17 @@
  * See: #202 why it is forked.
  *
  * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
- * Also it is renamed as ColladaLoader2.js
  */
 
-THREE.ColladaLoader2 = function ( manager ) {
+THREE.ColladaLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE.ColladaLoader2.prototype = {
+THREE.ColladaLoader.prototype = {
 
-	constructor: THREE.ColladaLoader2,
+	constructor: THREE.ColladaLoader,
 
 	crossOrigin: 'Anonymous',
 
@@ -42,7 +41,7 @@ THREE.ColladaLoader2.prototype = {
 
 		set convertUpAxis( value ) {
 
-			console.warn( 'THREE.ColladaLoader2: options.convertUpAxis() has been removed. Up axis is converted automatically.' );
+			console.warn( 'THREE.ColladaLoader: options.convertUpAxis() has been removed. Up axis is converted automatically.' );
 
 		}
 
@@ -431,15 +430,15 @@ THREE.ColladaLoader2.prototype = {
 					break;
 
 				case 'translate':
-					console.warn( 'THREE.ColladaLoader2: Animation transform type "%s" not yet implemented.', transform );
+					console.warn( 'THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform );
 					break;
 
 				case 'rotate':
-					console.warn( 'THREE.ColladaLoader2: Animation transform type "%s" not yet implemented.', transform );
+					console.warn( 'THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform );
 					break;
 
 				case 'scale':
-					console.warn( 'THREE.ColladaLoader2: Animation transform type "%s" not yet implemented.', transform );
+					console.warn( 'THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform );
 					break;
 
 			}
@@ -740,7 +739,7 @@ THREE.ColladaLoader2.prototype = {
 
 					case 'morph':
 						data.id = parseId( child.getAttribute( 'source' ) );
-						console.warn( 'THREE.ColladaLoader2: Morph target animation not supported yet.' );
+						console.warn( 'THREE.ColladaLoader: Morph target animation not supported yet.' );
 						break;
 
 				}
@@ -1425,7 +1424,7 @@ THREE.ColladaLoader2.prototype = {
 
 				}
 
-				console.error( 'THREE.ColladaLoader2: Undefined sampler', textureObject.id );
+				console.error( 'THREE.ColladaLoader: Undefined sampler', textureObject.id );
 
 				return null;
 
@@ -1796,7 +1795,7 @@ THREE.ColladaLoader2.prototype = {
 						break;
 
 					case 'polygons':
-						console.warn( 'THREE.ColladaLoader2: Unsupported primitive type: ', child.nodeName );
+						console.warn( 'THREE.ColladaLoader: Unsupported primitive type: ', child.nodeName );
 						break;
 
 					case 'lines':
@@ -2059,7 +2058,7 @@ THREE.ColladaLoader2.prototype = {
 										break;
 
 									default:
-										console.warn( 'THREE.ColladaLoader2: Semantic "%s" not handled in geometry build process.', key );
+										console.warn( 'THREE.ColladaLoader: Semantic "%s" not handled in geometry build process.', key );
 
 								}
 
@@ -2167,7 +2166,7 @@ THREE.ColladaLoader2.prototype = {
 
 				if ( maxcount > 0 ) {
 
-					console.log( 'THREE.ColladaLoader2: Geometry has faces with more than 4 vertices.' );
+					console.log( 'THREE.ColladaLoader: Geometry has faces with more than 4 vertices.' );
 
 				}
 
@@ -2583,7 +2582,7 @@ THREE.ColladaLoader2.prototype = {
 
 					} else {
 
-						console.warn( 'THREE.ColladaLoader2: Joint ' + jointIndex + ' doesn\'t exist.' );
+						console.warn( 'THREE.ColladaLoader: Joint ' + jointIndex + ' doesn\'t exist.' );
 
 					}
 
@@ -2599,11 +2598,11 @@ THREE.ColladaLoader2.prototype = {
 
 						if ( value > joint.limits.max || value < joint.limits.min ) {
 
-							console.warn( 'THREE.ColladaLoader2: Joint ' + jointIndex + ' value ' + value + ' outside of limits (min: ' + joint.limits.min + ', max: ' + joint.limits.max + ').' );
+							console.warn( 'THREE.ColladaLoader: Joint ' + jointIndex + ' value ' + value + ' outside of limits (min: ' + joint.limits.min + ', max: ' + joint.limits.max + ').' );
 
 						} else if ( joint.static ) {
 
-							console.warn( 'THREE.ColladaLoader2: Joint ' + jointIndex + ' is static.' );
+							console.warn( 'THREE.ColladaLoader: Joint ' + jointIndex + ' is static.' );
 
 						} else {
 
@@ -2634,7 +2633,7 @@ THREE.ColladaLoader2.prototype = {
 											break;
 
 										default:
-											console.warn( 'THREE.ColladaLoader2: Unknown joint type: ' + joint.type );
+											console.warn( 'THREE.ColladaLoader: Unknown joint type: ' + joint.type );
 											break;
 
 									}
@@ -2674,7 +2673,7 @@ THREE.ColladaLoader2.prototype = {
 
 					} else {
 
-						console.log( 'THREE.ColladaLoader2: ' + jointIndex + ' does not exist.' );
+						console.log( 'THREE.ColladaLoader: ' + jointIndex + ' does not exist.' );
 
 					}
 
@@ -3362,7 +3361,7 @@ THREE.ColladaLoader2.prototype = {
 
 		}
 
-		console.time( 'THREE.ColladaLoader2' );
+		console.time( 'THREE.ColladaLoader' );
 
 		if ( text.length === 0 ) {
 
@@ -3370,18 +3369,18 @@ THREE.ColladaLoader2.prototype = {
 
 		}
 
-		console.time( 'THREE.ColladaLoader2: DOMParser' );
+		console.time( 'THREE.ColladaLoader: DOMParser' );
 
 		var xml = new DOMParser().parseFromString( text, 'application/xml' );
 
-		console.timeEnd( 'THREE.ColladaLoader2: DOMParser' );
+		console.timeEnd( 'THREE.ColladaLoader: DOMParser' );
 
 		var collada = getElementsByTagName( xml, 'COLLADA' )[ 0 ];
 
 		// metadata
 
 		var version = collada.getAttribute( 'version' );
-		console.log( 'THREE.ColladaLoader2: File version', version );
+		console.log( 'THREE.ColladaLoader: File version', version );
 
 		var asset = parseAsset( getElementsByTagName( collada, 'asset' )[ 0 ] );
 		var textureLoader = new THREE.TextureLoader( this.manager );
@@ -3411,7 +3410,7 @@ THREE.ColladaLoader2.prototype = {
 			kinematicsScenes: {}
 		};
 
-		console.time( 'THREE.ColladaLoader2: Parse' );
+		console.time( 'THREE.ColladaLoader: Parse' );
 
 		parseLibrary( collada, 'library_animations', 'animation', parseAnimation );
 		parseLibrary( collada, 'library_animation_clips', 'animation_clip', parseAnimationClip );
@@ -3427,9 +3426,9 @@ THREE.ColladaLoader2.prototype = {
 		parseLibrary( collada, 'library_kinematics_models', 'kinematics_model', parseKinematicsModel );
 		parseLibrary( collada, 'scene', 'instance_kinematics_scene', parseKinematicsScene );
 
-		console.timeEnd( 'THREE.ColladaLoader2: Parse' );
+		console.timeEnd( 'THREE.ColladaLoader: Parse' );
 
-		console.time( 'THREE.ColladaLoader2: Build' );
+		console.time( 'THREE.ColladaLoader: Build' );
 
 		buildLibrary( library.animations, buildAnimation );
 		buildLibrary( library.clips, buildAnimationClip );
@@ -3442,7 +3441,7 @@ THREE.ColladaLoader2.prototype = {
 		buildLibrary( library.geometries, buildGeometry );
 		buildLibrary( library.visualScenes, buildVisualScene );
 
-		console.timeEnd( 'THREE.ColladaLoader2: Build' );
+		console.timeEnd( 'THREE.ColladaLoader: Build' );
 
 		setupAnimations();
 		setupKinematics();
@@ -3462,7 +3461,7 @@ THREE.ColladaLoader2.prototype = {
 
 		scene.scale.multiplyScalar( asset.unit );
 
-		console.timeEnd( 'THREE.ColladaLoader2' );
+		console.timeEnd( 'THREE.ColladaLoader' );
 
 		return {
 			animations: animations,
