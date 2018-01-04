@@ -4,7 +4,7 @@
  */
 
 var ROS3D = ROS3D || {
-  REVISION : 'develop'
+  REVISION : '0.18.0'
 };
 
 // Marker types
