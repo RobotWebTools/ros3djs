@@ -1,6 +1,11 @@
 ## Change Log
 
-### 0.17.0 (2017/12/06 12:17 +00:00)
+### 0.18.0 (2018/01/04 16:00 +00:00)
+- [#203](https://github.com/RobotWebTools/ros3djs/pull/203) fix highlighting with Three.js r88 (@T045T)
+- [#202](https://github.com/RobotWebTools/ros3djs/pull/202) Update coadebase to use Three.js version r88 (@jihoonl)
+
+### 0.17.0 (2017/12/06 12:23 +00:00)
+- [#201](https://github.com/RobotWebTools/ros3djs/pull/201) Mark 0.17.0 and create PR based changelog (#201) (@jihoonl)
 - [#200](https://github.com/RobotWebTools/ros3djs/pull/200) Rename ros3djs to ros3d just as roslib and ros2d. Add directories suggested by @sevenbitbyte (#200) (@jihoonl)
 - [#196](https://github.com/RobotWebTools/ros3djs/pull/196) Allow a color for a PointCloud2 (#196) (@drigz)
 - [#190](https://github.com/RobotWebTools/ros3djs/pull/190) provides mouse intersect event without highlighting object. (#190) (@jihoonl)
