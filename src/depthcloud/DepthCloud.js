@@ -11,6 +11,7 @@
  *   * url - the URL of the stream
  *   * streamType (optional) - the stream type: mjpeg or vp8 video (defaults to vp8)
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
+ *   * maxDepthPerTile (optional) - the factor with which we control the desired depth range (defaults to 1.0)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud
  *   * width (optional) - width of the video stream
  *   * height (optional) - height of the video stream
@@ -24,6 +25,7 @@ ROS3D.DepthCloud = function(options) {
   this.url = options.url;
   this.streamType = options.streamType || 'vp8';
   this.f = options.f || 526;
+  this.maxDepthPerTile = options.maxDepthPerTile || 1.0;
   this.pointSize = options.pointSize || 3;
   this.width = options.width || 1024;
   this.height = options.height || 1024;
@@ -57,6 +59,7 @@ ROS3D.DepthCloud = function(options) {
     'uniform float zOffset;',
     '',
     'uniform float focallength;',
+    'uniform float maxDepthPerTile;',
     '',
     'varying vec2 vUvP;',
     'varying vec2 colorP;',
@@ -160,9 +163,9 @@ ROS3D.DepthCloud = function(options) {
     '    float z = -depth;',
     '    ',
     '    pos = vec4(',
-    '      ( position.x / width - 0.5 ) * z * (1000.0/focallength) * -1.0,',
-    '      ( position.y / height - 0.5 ) * z * (1000.0/focallength),',
-    '      (- z + zOffset / 1000.0) * 2.0,',
+    '      ( position.x / width - 0.5 ) * z * 0.5 * maxDepthPerTile * (1000.0/focallength) * -1.0,',
+    '      ( position.y / height - 0.5 ) * z * 0.5 * maxDepthPerTile * (1000.0/focallength),',
+    '      (- z + zOffset / 1000.0) * maxDepthPerTile,',
     '      1.0);',
     '    ',
     '    vec2 maskP = vec2( position.x / (width*2.0), position.y / (height*2.0)  );',
@@ -277,7 +280,11 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
         'varianceThreshold' : {
           type : 'f',
           value : this.varianceThreshold
-        }
+        },
+        'maxDepthPerTile': {
+          type : 'f',
+          value : this.maxDepthPerTile
+        },
       },
       vertexShader : this.vertex_shader,
       fragmentShader : this.fragment_shader
