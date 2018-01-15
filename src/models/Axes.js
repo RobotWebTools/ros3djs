@@ -11,6 +11,13 @@
  *   * shaftRadius (optional) - the radius of the shaft to render
  *   * headRadius (optional) - the radius of the head to render
  *   * headLength (optional) - the length of the head to render
+ *   * scale (optional) - the scale of the frame (defaults to 1.0)
+ *   * lineType (optional) - the line type for the axes. Supported line types:
+ *                           'dashed' and 'full'.
+ *   * lineDashLength (optional) - the length of the dashes, relative to the length of the axis.
+ *                                 Maximum value is 1, which means the dash length is
+ *                                 equal to the length of the axis. Parameter only applies when
+ *                                 lineType is set to dashed.
  */
 ROS3D.Axes = function(options) {
   var that = this;
@@ -18,8 +25,13 @@ ROS3D.Axes = function(options) {
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
+  var scaleArg = options.scale || 1.0;
+  var lineType = options.lineType || 'full';
+  var lineDashLength = options.lineDashLength || 0.1;
 
   THREE.Object3D.call(this);
+
+  this.scale = new THREE.Vector3(scaleArg, scaleArg, scaleArg);
 
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
@@ -53,12 +65,29 @@ ROS3D.Axes = function(options) {
     that.add(arrow);
 
     // create the line
-    var line = new THREE.Mesh(that.lineGeom, material);
-    line.position.copy(axis);
-    line.position.multiplyScalar(0.45);
-    line.quaternion.copy(rot);
-    line.updateMatrix();
-    that.add(line);
+    var line;
+    if (lineType === 'dashed') {
+      var l = lineDashLength;
+      for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
+        var geom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, l);
+        line = new THREE.Mesh(geom, material);
+        line.position.copy(axis);
+        // Make spacing between dashes equal to 1.5 times the dash length.
+        line.position.multiplyScalar(l / 2 + 3 * l * i);
+        line.quaternion.copy(rot);
+        line.updateMatrix();
+        that.add(line);
+      }
+    } else if (lineType === 'full') {
+      line = new THREE.Mesh(that.lineGeom, material);
+      line.position.copy(axis);
+      line.position.multiplyScalar(0.45);
+      line.quaternion.copy(rot);
+      line.updateMatrix();
+      that.add(line);
+    } else {
+      console.warn('[ROS3D.Axes]: Unsupported line type. Not drawing any axes.');
+    }
   }
 
   // add the three markers to the axes
