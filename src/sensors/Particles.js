@@ -95,7 +95,7 @@ ROS3D.Particles = function(options) {
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.sn = null;
 
-    this.points = this.geom.vertices;
+    this.points = this.geom.position;
     this.colors = this.attribs.customColor.value;
     this.alpha =  this.attribs.alpha.value;
 
