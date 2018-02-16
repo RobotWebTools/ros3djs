@@ -3643,10 +3643,16 @@ ROS3D.Particles = function(options) {
     ].join('\n');
 
     this.geom = new THREE.BufferGeometry();
+    
+    var positions = [];
+
     for(var i=0;i<this.max_pts;i++){
-		//this.geom.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
-        this.geom.vertices.push(new THREE.Vector3( ));
+		
+		positions.push(new THREE.Vector3( ));
+        //this.geom.vertices.push(new THREE.Vector3( ));
     }
+    
+    this.geom.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
 
     var customUniforms =
     {
