@@ -3652,7 +3652,7 @@ ROS3D.Particles = function(options) {
         //this.geom.vertices.push(new THREE.Vector3( ));
     }
     
-    this.geom.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+    this.geom.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
 
     var customUniforms =
     {
