@@ -61,8 +61,9 @@ ROS3D.Particles = function(options) {
     '}'
     ].join('\n');
 
-    this.geom = new THREE.Geometry();
+    this.geom = new THREE.BufferGeometry();
     for(var i=0;i<this.max_pts;i++){
+		//this.geom.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
         this.geom.vertices.push(new THREE.Vector3( ));
     }
 
@@ -80,7 +81,6 @@ ROS3D.Particles = function(options) {
     this.shaderMaterial = new THREE.ShaderMaterial(
     {
         uniforms:          customUniforms,
-        attributes:        this.attribs,
         vertexShader:      this.vertex_shader,
         fragmentShader:    this.fragment_shader,
         transparent: true,
