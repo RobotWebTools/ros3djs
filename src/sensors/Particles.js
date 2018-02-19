@@ -61,28 +61,18 @@ ROS3D.Particles = function(options) {
     '}'
     ].join('\n');
 
-    this.geom = new THREE.BufferGeometry();
-    
-    var positions = [];
-
-    for(var i=0;i<this.max_pts;i++){
-		
-		positions.push(new THREE.Vector3( ));
-        //this.geom.vertices.push(new THREE.Vector3( ));
-    }
-    
-    this.geom.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-
     var customUniforms =
     {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
+		texture:   { type: 't', value: new THREE.TextureLoader().load( texture ) }
+        //texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
     };
-
-    this.attribs =
+	
+	
+    /*this.attribs =
     {
         customColor:   { type: 'c', value: [] },
         alpha:         { type: 'f', value: [] }
-    };
+    };*/
 
     this.shaderMaterial = new THREE.ShaderMaterial(
     {
@@ -91,13 +81,30 @@ ROS3D.Particles = function(options) {
         fragmentShader:    this.fragment_shader,
         transparent: true,
     });
+    
+    this.geom = new THREE.BufferGeometry();
+    
+    var positions = [];
+    var customColor = [];
+    var alpha = [];
+
+    for(var i = 0; i < this.max_pts; i++){
+		
+		positions.push(new THREE.Vector3( ));
+        //this.geom.vertices.push(new THREE.Vector3( ));
+    }
+    
+    this.geom.addAttribute( 'points', new THREE.Float32BufferAttribute( positions, 3 ) );
+    this.geom.addAttribute( 'colors', new THREE.Float32BufferAttribute( customColor, 1 ) );
+    this geom.addAttribute( 'alpha', new THREE.Float32BufferAttribute( alpha, 1 ) );
+
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.sn = null;
 
-    this.points = this.geom.position;
+    /*this.points = this.geom.position;
     this.colors = this.attribs.customColor.value;
-    this.alpha =  this.attribs.alpha.value;
+    this.alpha =  this.attribs.alpha.value;*/
 
 };
 
