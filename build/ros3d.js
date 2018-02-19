@@ -3683,11 +3683,11 @@ ROS3D.Particles = function(options) {
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.sn = null;
 
-    this.points = this.geom.points;
+    this.points = this.geom.attributes.points;
     //this.colors = this.attribs.customColor.value;
-    this.colors = this.geom.colors;
+    this.colors = this.geom.attributes.colors;
     //this.alpha =  this.attribs.alpha.value;
-    this.alpha = this.geom.alpha;
+    this.alpha = this.geom.attributes.alpha;
 
 };
 
