@@ -3718,7 +3718,7 @@ function finishedUpdate(particles, n)
 
     particles.geom.verticesNeedUpdate = true;
     //particles.attribs.customColor.needsUpdate = true;
-    particles.customColor.needsUpdate = true;
+    particles.colors.needsUpdate = true;
     //particles.attribs.alpha.needsUpdate = true;
     particles.alpha.needsUpdate = true;
 
