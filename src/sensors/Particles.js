@@ -96,7 +96,7 @@ ROS3D.Particles = function(options) {
     
     this.geom.addAttribute( 'points', new THREE.Float32BufferAttribute( positions, 3 ) );
     this.geom.addAttribute( 'colors', new THREE.Float32BufferAttribute( customColor, 1 ) );
-    this geom.addAttribute( 'alpha', new THREE.Float32BufferAttribute( alpha, 1 ) );
+    this.geom.addAttribute( 'alpha', new THREE.Float32BufferAttribute( alpha, 1 ) );
 
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );

@@ -3642,28 +3642,18 @@ ROS3D.Particles = function(options) {
     '}'
     ].join('\n');
 
-    this.geom = new THREE.BufferGeometry();
-    
-    var positions = [];
-
-    for(var i=0;i<this.max_pts;i++){
-		
-		positions.push(new THREE.Vector3( ));
-        //this.geom.vertices.push(new THREE.Vector3( ));
-    }
-    
-    this.geom.addAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
-
     var customUniforms =
     {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
+		texture:   { type: 't', value: new THREE.TextureLoader().load( texture ) }
+        //texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
     };
-
-    this.attribs =
+	
+	
+    /*this.attribs =
     {
         customColor:   { type: 'c', value: [] },
         alpha:         { type: 'f', value: [] }
-    };
+    };*/
 
     this.shaderMaterial = new THREE.ShaderMaterial(
     {
@@ -3672,13 +3662,32 @@ ROS3D.Particles = function(options) {
         fragmentShader:    this.fragment_shader,
         transparent: true,
     });
+    
+    this.geom = new THREE.BufferGeometry();
+    
+    var positions = [];
+    var customColor = [];
+    var alpha = [];
+
+    for(var i = 0; i < this.max_pts; i++){
+		
+		positions.push(new THREE.Vector3( ));
+        //this.geom.vertices.push(new THREE.Vector3( ));
+    }
+    
+    this.geom.addAttribute( 'points', new THREE.Float32BufferAttribute( positions, 3 ) );
+    this.geom.addAttribute( 'colors', new THREE.Float32BufferAttribute( customColor, 1 ) );
+    this.geom.addAttribute( 'alpha', new THREE.Float32BufferAttribute( alpha, 1 ) );
+
 
     this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
     this.sn = null;
 
-    this.points = this.geom.position;
-    this.colors = this.attribs.customColor.value;
-    this.alpha =  this.attribs.alpha.value;
+    this.points = this.geom.points;
+    //this.colors = this.attribs.customColor.value;
+    this.colors = this.geom.colors;
+    //this.alpha =  this.attribs.alpha.value;
+    this.alpha = this.geom.alpha;
 
 };
 
@@ -3708,8 +3717,10 @@ function finishedUpdate(particles, n)
     particles.prev_pts = n;
 
     particles.geom.verticesNeedUpdate = true;
-    particles.attribs.customColor.needsUpdate = true;
-    particles.attribs.alpha.needsUpdate = true;
+    //particles.attribs.customColor.needsUpdate = true;
+    particles.customColor.needsUpdate = true;
+    //particles.attribs.alpha.needsUpdate = true;
+    particles.alpha.needsUpdate = true;
 
     if(n>particles.max_pts){
         console.error('Attempted to draw more points than max_pts allows');
@@ -3804,20 +3815,25 @@ ROS3D.PointCloud2.prototype.processMessage = function(message){
 
   var n = message.height*message.width;
   var buffer;
+  
   if(message.data.buffer){
     buffer = message.data.buffer.buffer;
-  }else{
+  }
+  else{
     buffer = Uint8Array.from(decode64(message.data)).buffer;
   }
+  
   var dv = new DataView(buffer);
   var color;
+  
   if(this.color !== undefined){
     color = new THREE.Color(this.color);
   }
-  for(var i=0;i<n;i++){
+  
+  for(var i = 0; i < n; i++){
     var pt = read_point(message, i, dv);
     this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-    this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
+    this.particles.colors[i] = color || new THREE.Color( pt['rgb'] );
     this.particles.alpha[i] = 1.0;
   }
 
