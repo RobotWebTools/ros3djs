@@ -71,7 +71,7 @@ ROS3D.Particles = function(options) {
     /*this.attribs =
     {
         customColor:   { type: 'c', value: [] },
-        alpha:         { type: 'f',œ value: [] }
+        alpha:         { type: 'f', value: [] }
     };*/
 
     this.shaderMaterial = new THREE.ShaderMaterial(

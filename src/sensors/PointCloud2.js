@@ -104,6 +104,9 @@ ROS3D.PointCloud2.prototype.processMessage = function(message){
   for(var i = 0; i < n; i++){
     var pt = read_point(message, i, dv);
     this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
+    this.particles.positions[3*i] = pt['x'];
+    this.particles.positions[3*i + 1] = pt['y'];
+    this.particles.positions[3*i + 2] = pt['z'];
     this.particles.colors[i] = color || new THREE.Color( pt['rgb'] );
     this.particles.alpha[i] = 1.0;
   }
