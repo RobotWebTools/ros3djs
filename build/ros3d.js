@@ -3683,7 +3683,8 @@ ROS3D.Particles = function(options) {
     this.geom.addAttribute( 'alpha', new THREE.Float32BufferAttribute( alpha, 1 ) );
 
 
-    this.ps = new THREE.Points( this.geom, this.shaderMaterial );
+    //this.ps = new THREE.Points( this.geom, this.shaderMaterial );
+    this.ps = new THREE.Points( this.geom );
     this.sn = null;
 
     this.points = this.geom.attributes.points;
