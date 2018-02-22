@@ -139,6 +139,7 @@ function finishedUpdate(particles, n)
     particles.prev_pts = n;
 
     particles.geom.verticesNeedUpdate = true;
+    particles.points.needsUpdate = true;
     //particles.attribs.customColor.needsUpdate = true;
     particles.colors.needsUpdate = true;
     //particles.attribs.alpha.needsUpdate = true;
