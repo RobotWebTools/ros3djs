@@ -3652,7 +3652,7 @@ ROS3D.Particles = function(options) {
     /*this.attribs =
     {
         customColor:   { type: 'c', value: [] },
-        alpha:         { type: 'f', value: [] }
+        alpha:         { type: 'f',œ value: [] }
     };*/
 
     this.shaderMaterial = new THREE.ShaderMaterial(
@@ -3671,8 +3671,11 @@ ROS3D.Particles = function(options) {
 
     for(var i = 0; i < this.max_pts; i++){
 		
-		positions.push(new THREE.Vector3( ));
+		//positions.push(new THREE.Vector3( ));
         //this.geom.vertices.push(new THREE.Vector3( ));
+        positions.push(0);
+        positions.push(0);
+        positions.push(0);
     }
     
     this.geom.addAttribute( 'points', new THREE.Float32BufferAttribute( positions, 3 ) );
@@ -3693,7 +3696,7 @@ ROS3D.Particles = function(options) {
 
 function setFrame(particles, frame)
 {
-    if(particles.sn===null){
+    if(particles.sn === null){
         particles.sn = new ROS3D.SceneNode({
             frameID : frame,
             tfClient : particles.tfClient,
