@@ -22,7 +22,8 @@
     "grunt-karma": "^2.0.0",
     "karma": "^1.1.1",
     "karma-chai": "^0.1.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "rollup": "^0.56.4"
   },
   "repository": {
     "type": "git",
