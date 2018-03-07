@@ -12,8 +12,7 @@
  *  * message - the interactive marker control message
  *  * camera - the main camera associated with the viewer for this marker client
  *  * path (optional) - the base path to any meshes that will be loaded
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.InteractiveMarkerControl = function(options) {
   var that = this;
@@ -26,7 +25,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.name = message.name;
   this.camera = options.camera;
   this.path = options.path || '/';
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.loader = options.loader;
   this.dragging = false;
   this.startMousePos = new THREE.Vector2();
 
