@@ -86,20 +86,28 @@ ROS3D.PointCloud2.prototype.processMessage = function(message){
 
   var n = message.height*message.width;
   var buffer;
+  
   if(message.data.buffer){
     buffer = message.data.buffer.buffer;
-  }else{
+  }
+  else{
     buffer = Uint8Array.from(decode64(message.data)).buffer;
   }
+  
   var dv = new DataView(buffer);
   var color;
+  
   if(this.color !== undefined){
     color = new THREE.Color(this.color);
   }
-  for(var i=0;i<n;i++){
+  
+  for(var i = 0; i < n; i++){
     var pt = read_point(message, i, dv);
     this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-    this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
+    this.particles.points.array[3*i] = pt['x'];
+    this.particles.points.array[3*i + 1] = pt['y'];
+    this.particles.points.array[3*i + 2] = pt['z'];
+    this.particles.colors[i] = color || new THREE.Color( pt['rgb'] );
     this.particles.alpha[i] = 1.0;
   }
 
