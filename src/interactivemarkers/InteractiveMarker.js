@@ -15,7 +15,6 @@
  */
 ROS3D.InteractiveMarker = function(options) {
   THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
 
   var that = this;
   options = options || {};

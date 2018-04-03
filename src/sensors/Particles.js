@@ -95,6 +95,8 @@ ROS3D.Particles = function(options) {
 
 };
 
+ROS3D.Particles.prototype.__proto__ = THREE.Object3D.prototype;
+
 function setFrame(particles, frame)
 {
     if(particles.sn===null){
