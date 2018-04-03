@@ -26,50 +26,11 @@ ROS3D.Particles = function(options) {
   var that = this;
   THREE.Object3D.call(this);
 
-  this.vertex_shader = [
-    'attribute vec3 customColor;',
-    'attribute float alpha;',
-    'varying vec3 vColor;',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
-    '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
-    '    falpha = alpha; ',
-    '',
-    '    // option (1): draw particles at constant size on screen',
-    '    // gl_PointSize = size;',
-    '    // option (2): scale particles as objects in 3D space',
-    '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
-    '    gl_Position = projectionMatrix * mvPosition;',
-    '}'
-    ].join('\n');
-
-  this.fragment_shader = [
-    'uniform sampler2D texture;',
-    'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    // THREE.Material.alphaTest is not evaluated for ShaderMaterial, so we',
-    '    // have to take care of this ourselves.',
-    '    if (falpha < 0.5) discard;',
-    '    // calculates a color for the particle',
-    '    gl_FragColor = vec4( vColor, falpha );',
-    '    // sets particle texture to desired color',
-    '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
-    '}'
-    ].join('\n');
-
     this.geom = new THREE.Geometry();
     for(var i=0;i<this.max_pts;i++){
         this.geom.vertices.push(new THREE.Vector3( ));
+        this.geom.colors.push( new THREE.Color( options.color ) );
     }
-
-    var customUniforms =
-    {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
-    };
 
     this.attribs =
     {
@@ -77,16 +38,13 @@ ROS3D.Particles = function(options) {
         alpha:         { type: 'f', value: [] }
     };
 
-    this.shaderMaterial = new THREE.ShaderMaterial(
+    this.pointsMaterial = new THREE.PointsMaterial(
     {
-        uniforms:          customUniforms,
-        attributes:        this.attribs,
-        vertexShader:      this.vertex_shader,
-        fragmentShader:    this.fragment_shader,
-        transparent: true,
+        size : size,
+        vertexColors : THREE.VertexColors
     });
 
-    this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
+    this.ps = new THREE.Points( this.geom, this.pointsMaterial );
     this.sn = null;
 
     this.points = this.geom.vertices;
