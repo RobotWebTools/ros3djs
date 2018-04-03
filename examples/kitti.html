@@ -32,28 +32,34 @@
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0,
-      fixedFrame : '/camera_link'
+      fixedFrame : 'velo_link'
     });
 
     var cloudClient = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/camera/depth_registered/points',
-        material: { size: 0.05 }
+        topic: '/kitti/velo/pointcloud',
+        max_pts: 200000,
+        pointRatio: 2,
+        messageRatio: 1,
+        material: { size: 3, color: new THREE.Color(0xffffff), sizeAttenuation: false },
+        //colorsrc: 'i', colormap: function(i) { return new THREE.Color(3*i,0,1-3*i); }
+        colorsrc: 'z', colormap: function(z) { z=z+2; return new THREE.Color(z,0,1-z); }
     });
   }
 </script>
 </head>
 
 <body onload="init()">
-  <h1>Simple PointCloud2 Example</h1>
+  <h1><a href="http://www.cvlibs.net/datasets/kitti">Kitti</a> PointCloud2 Example</h1>
   <p>Run the following commands in the terminal then refresh the page.</p>
   <ol>
-    <li><tt>roscore</tt></li>
+    <li><tt>roslaunch ros3djs.launch</tt></li>
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
     <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
-    <li><tt>roslaunch openni_launch openni.launch depth_registration:=true</tt></li>
+    <li><tt>rosparam set use_sim_time true</tt></li>
+    <li><tt>rosbag play -l --clock <a href="https://github.com/tomas789/kitti2bag">kitti_2011_09_26_drive_0002_synced.bag</a></tt></li>
   </ol>
   <div id="viewer"></div>
 </body>
