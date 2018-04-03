@@ -1,3 +1,9 @@
+const {
+  debugRules,
+  transpileToEs6
+} = require('./es6-transpiler')
+
+// Export Grunt config
 module.exports = function(grunt) {
 
   grunt.initConfig({
@@ -75,6 +81,37 @@ module.exports = function(grunt) {
           configure: 'jsdoc_conf.json'
         }
       }
+    },
+    pipe: {
+      transpile: {
+        options: {
+          process: transpileToEs6,
+        },
+        files: [{
+          expand: true,
+          cwd: 'src',
+          src: [
+            '*.js',
+            // 'interactivemarkers/InteractiveMarker.js',
+            // 'interactivemarkers/InteractiveMarkerControl.js',
+            // 'sensors/Particles.js',
+            '**/*.js',
+          ],
+          dest: 'src-esm-test/',
+        }]
+      }
+    },
+    execute: {
+      transpile: {
+        call: (grunt, options) => {
+          console.log()
+          if (debugRules.logDepsAtEnd) {
+            console.log('Internal dependencies')
+            console.log(dependencies.toString())
+          }
+          console.log()
+        },
+      }
     }
   });
 
@@ -85,9 +122,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-pipe');
+  grunt.loadNpmTasks('grunt-execute');
 
   grunt.registerTask('dev', ['concat', 'watch']);
   grunt.registerTask('build', ['concat', 'jshint', 'uglify']);
   grunt.registerTask('build_and_watch', ['watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
+  grunt.registerTask('transpile', ['pipe', 'execute']);
 };
