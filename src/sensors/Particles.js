@@ -15,6 +15,7 @@
  *  * max_pts (optional) - number of points to draw (default 100)
  */
 ROS3D.Particles = function(options) {
+  THREE.Object3D.call(this);
   options = options || {};
   this.tfClient = options.tfClient;
   var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
@@ -23,7 +24,6 @@ ROS3D.Particles = function(options) {
   this.first_size = null;
   this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  THREE.Object3D.call(this);
   var that = this;
 
   this.vertex_shader = [

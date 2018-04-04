@@ -13,13 +13,13 @@
  *   * headLength (optional) - the length of the head to render
  */
 ROS3D.Axes = function(options) {
+  THREE.Object3D.call(this);
+  var that = this;
   options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
   var headRadius = options.headRadius || 0.023;
   var headLength = options.headLength || 0.1;
 
-  THREE.Object3D.call(this);
-  var that = this;
 
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);

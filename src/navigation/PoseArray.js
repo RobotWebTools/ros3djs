@@ -16,6 +16,7 @@
  *  * length (optional) - the length of the arrow (default: 1.0)
  */
 ROS3D.PoseArray = function(options) {
+  THREE.Object3D.call(this);
   this.options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/particlecloud';
@@ -23,7 +24,6 @@ ROS3D.PoseArray = function(options) {
   this.color = options.color || 0xcc00ff;
   this.length = options.length || 1.0;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  THREE.Object3D.call(this);
 
   this.sn = null;
 
