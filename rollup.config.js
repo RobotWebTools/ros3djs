@@ -10,7 +10,7 @@ const resolve = require('rollup-plugin-node-resolve');
 const uglify = require('rollup-plugin-uglify');
 
 const pkg = require('./package.json');
-const input = 'src-esm/index.js'
+const input = 'src-esm-test/index.js'
 
 export default [
   // build main as a CommonJS module for compatibility
@@ -41,12 +41,30 @@ export default [
       filesize(),
     ],
   },
-  // build browser as IIFE module for script tag inclusion
+  // build browser as IIFE module for script tag inclusion, unminified
+  // Usage:
+  // <script src="../build/ros3d.js"></script>
   {
     input,
     output: {
       name: 'ROS3D',
-      file: pkg.browser,
+      file: pkg.browser.replace(/(\.min)?\.js/, '.js'),
+      format: 'iife',
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      filesize(),
+    ],
+  },
+  // build browser as IIFE module for script tag inclusion, minified
+  // Usage:
+  // <script src="../build/ros3d.min.js"></script>
+  {
+    input,
+    output: {
+      name: 'ROS3D',
+      file: pkg.browser.replace(/(\.min)?\.js/, '.min.js'),
       format: 'iife',
     },
     plugins: [

@@ -1,5 +1,7 @@
 const {
   debugRules,
+  dependencies,
+  injectImports,
   transpileToEs6
 } = require('./es6-transpiler')
 
@@ -98,6 +100,33 @@ module.exports = function(grunt) {
             '**/*.js',
           ],
           dest: 'src-esm-test/',
+        }]
+      },
+      transpile_imports: {
+        options: {
+          process: injectImports,
+        },
+        files: [{
+          expand: true,
+          cwd: 'src-esm-test',
+          src: [
+            '*.js',
+            // 'interactivemarkers/InteractiveMarker.js',
+            // 'interactivemarkers/InteractiveMarkerControl.js',
+            // 'sensors/Particles.js',
+            '**/*.js',
+          ],
+          dest: 'src-esm-test/',
+        }]
+      },
+      transpile_index: {
+        files: [{
+          expand: true,
+          cwd: 'src-esm',
+          src: [
+            'index.js'
+          ],
+          dest: 'src-esm-test/'
         }]
       }
     },
