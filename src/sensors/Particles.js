@@ -97,7 +97,7 @@ ROS3D.Particles = function(options) {
 
 ROS3D.Particles.prototype.__proto__ = THREE.Object3D.prototype;
 
-function setFrame(particles, frame)
+ROS3D.Particles.prototype.setFrame = function(particles, frame)
 {
     if(particles.sn===null){
         particles.sn = new ROS3D.SceneNode({
@@ -110,7 +110,7 @@ function setFrame(particles, frame)
     }
 }
 
-function finishedUpdate(particles, n)
+ROS3D.Particles.prototype.finishedUpdate = function(particles, n)
 {
     if(particles.first_size === null){
         particles.first_size = n;
