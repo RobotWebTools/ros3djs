@@ -23,8 +23,8 @@ ROS3D.Particles = function(options) {
   this.first_size = null;
   this.prev_pts = 0;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  var that = this;
   THREE.Object3D.call(this);
+  var that = this;
 
   this.vertex_shader = [
     'attribute vec3 customColor;',

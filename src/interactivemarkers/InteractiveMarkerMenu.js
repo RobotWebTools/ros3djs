@@ -15,7 +15,6 @@
  *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerMenu = function(options) {
-  var that = this;
   options = options || {};
   var menuEntries = options.menuEntries;
   var className = options.className || 'default-interactive-marker-menu';
@@ -30,6 +29,7 @@ ROS3D.InteractiveMarkerMenu = function(options) {
   };
 
   THREE.EventDispatcher.call(this);
+  var that = this;
 
   // create the CSS for this marker if it has not been created
   if (document.getElementById('default-interactive-marker-menu-css') === null) {

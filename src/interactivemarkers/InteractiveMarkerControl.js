@@ -15,8 +15,8 @@
  *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.InteractiveMarkerControl = function(options) {
-  var that = this;
   THREE.Object3D.call(this);
+  var that = this;
 
   options = options || {};
   this.parent = options.parent;

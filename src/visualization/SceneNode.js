@@ -16,12 +16,12 @@
  */
 ROS3D.SceneNode = function(options) {
   options = options || {};
-  var that = this;
   this.tfClient = options.tfClient;
   this.frameID = options.frameID;
   var object = options.object;
   this.pose = options.pose || new ROSLIB.Pose();
   THREE.Object3D.call(this);
+  var that = this;
 
   // Do not render this object until we receive a TF update
   this.visible = false;
