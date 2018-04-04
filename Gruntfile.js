@@ -1,6 +1,7 @@
 const {
   debugRules,
   dependencies,
+  inheritance,
   injectImports,
   transpileToEs6
 } = require('./es6-transpiler')
@@ -94,9 +95,6 @@ module.exports = function(grunt) {
           cwd: 'src',
           src: [
             '*.js',
-            // 'interactivemarkers/InteractiveMarker.js',
-            // 'interactivemarkers/InteractiveMarkerControl.js',
-            // 'sensors/Particles.js',
             '**/*.js',
           ],
           dest: 'src-esm-test/',
@@ -111,9 +109,6 @@ module.exports = function(grunt) {
           cwd: 'src-esm-test',
           src: [
             '*.js',
-            // 'interactivemarkers/InteractiveMarker.js',
-            // 'interactivemarkers/InteractiveMarkerControl.js',
-            // 'sensors/Particles.js',
             '**/*.js',
           ],
           dest: 'src-esm-test/',
@@ -134,10 +129,19 @@ module.exports = function(grunt) {
       transpile: {
         call: (grunt, options) => {
           console.log()
-          if (debugRules.logDepsAtEnd) {
+          if (debugRules.logInternalDepsAtEnd) {
             console.log('Internal dependencies')
-            console.log(dependencies.toString())
+            console.log(dependencies.internalToString())
           }
+          if (debugRules.logExternalDepsAtEnd) {
+            console.log('External dependencies')
+            console.log(dependencies.externalToString())
+          }
+          if (debugRules.logInheritanceAtEnd) {
+            console.log('Inheritance hierarchy')
+            console.log(inheritance.toString())
+          }
+
           console.log()
         },
       }

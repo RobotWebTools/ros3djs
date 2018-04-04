@@ -46,13 +46,18 @@ const logHeader = (color) => (...args) => {
 const debugRules = {
   logClasses: true,
   logConstructors: false,
-  logDepsAsFound: true,
-  logDepsAtEnd: true,
-  logExportsAsFound: true,
+  logExportsAsFound: false,
   logExtensions: false,
+  logExternalDepsAsFound: false,
+  logExternalDepsAtEnd: false,
   logFunctions: false,
   logImportMarking: true,
-  logInjectedImports:true,
+  logInheritanceAtEnd: false,
+  logInjectedExternalImports: false,
+  logInjectedInternalImports:false,
+  logInjectedSuperCalls: false,
+  logInternalDepsAsFound: false,
+  logInternalDepsAtEnd: false,
   logSuperConstructorCalls: false,
   logSuperMethodCalls: false,
 }
@@ -74,19 +79,40 @@ const dependencies = {
       deps[file] = []
     }
     if (!deps[file].includes(dependency)) {
-      if (debugRules.logDepsAsFound) {
+      if (debugRules.logInternalDepsAsFound) {
         logInfo('depends on', dependency)
       }
       deps[file].push(dependency)
     }
   },
-  toString() {
+  external: {},
+  trackExternal(file, dependency) {
+    const deps = dependencies.external
+
+    if (!deps[file]) {
+      deps[file] = []
+    }
+    if (!deps[file].includes(dependency)) {
+      if (debugRules.logExternalDepsAsFound) {
+        logInfo('depends on external dep', dependency)
+      }
+      deps[file].push(dependency)
+    }
+  },
+  internalToString() {
     return JSON.stringify(dependencies.internal, null, 2)
   },
-  forFile(file) {
+  externalToString() {
+    return JSON.stringify(dependencies.external, null, 2)
+  },
+  internalForFile(file) {
     const deps = dependencies.internal
     return deps[file]
-  }
+  },
+  externalForFile(file) {
+    const deps = dependencies.external
+    return deps[file]
+  },
 }
 
 // Track inheritance for class generation
@@ -107,7 +133,7 @@ const inheritance = {
     } else {
       if (!inheritance.isClass(child)) {
         if (debugRules.logClasses) {
-          logInfo(child, 'is a class')
+          logWarning(child, 'is a class')
         }
         inheritance.index[child] = null
       }
@@ -117,12 +143,6 @@ const inheritance = {
     return JSON.stringify(inheritance.index, null, 2)
   },
 }
-
-const getModule = (filepath = '') => filepath
-  .split(path.sep)
-  .slice(1)
-  .join(path.sep)
-  .split('.js')[0]
 
 // Track exported properties for import injection
 const exported = {
@@ -161,6 +181,21 @@ const exported = {
       logError('no export found for', prop, { exporters })
     }
     return exporter
+  },
+}
+
+const superConstructorCalls = {
+  index: {},
+  track(child, parent) {
+    if (superConstructorCalls.index[child]) {
+      logError('child', child, 'already called its super constructor:', parent)
+      return
+    }
+
+    superConstructorCalls.index[child] = parent
+  },
+  getParent(child) {
+    return superConstructorCalls.index[child]
   },
 }
 
@@ -213,6 +248,22 @@ const transpile = {
       return `${preStuffs}${dep}`
     }
   ],
+  // Track external dependencies for import injection
+  externalDependencies: (filepath) => [
+    /(.*)(THREE|EventEmitter2|ROSLIB|ColladaLoader|STLLoader).*/g,
+    (match, $preStuffs, $dep) => {
+
+      if (/^\s*(?:\*|\/\/)/.test($preStuffs)) {
+        // we're in a block comment, bail
+        return match
+      }
+
+      // track dependency on $1
+      dependencies.trackExternal(filepath, $dep)
+
+      return match
+    }
+  ],
   // Replace __proto__ mutation with class extension
   buildInheritanceIndexViaProto: [
     // from:
@@ -245,7 +296,7 @@ const transpile = {
   methods: [
     // from:
     // ROS3D.Arrow2.prototype.dispose = function() { ... };
-    /ROS3D.(\w+).prototype.(\w+) = function|function\s+(\w+)/g,
+    /ROS3D.(\w+).prototype.(\w+) = function|function\s+?(\w+)/g,
     // to:
     // dispose() { ... };
     (match, $1, $2, $3) => {
@@ -330,6 +381,7 @@ const transpile = {
         if (debugRules.logSuperConstructorCalls) {
           logInfo('found super constructor call', { match, child, parent, args })
         }
+        superConstructorCalls.track(child, parent)
         return `\n${indent}super(${args});`
       } else {
         // we got a super method call
@@ -426,13 +478,95 @@ const transpile = {
   imports: (filepath, state = { isStart: false }) => [
     /^/m,
     (match) => {
-      const deps = dependencies.forFile(filepath)
-      const exporters = {}
+      let externalDeps = dependencies.externalForFile(filepath)
+      const internalDeps = dependencies.internalForFile(filepath)
+      let externalImports = ''
+      let internalImports = ''
 
-      if (deps) {
+      if (externalDeps && externalDeps.length > 0) {
+        // Make sure these come after importing THREE
+        const threeExtensions = ['ColladaLoader', 'STLLoader']
+        const threeExtensionsUsed = []
+
+        threeExtensions.forEach(ext => {
+          if (externalDeps.includes(ext)) {
+            threeExtensionsUsed.push(ext)
+          }
+        })
+
+        if (threeExtensionsUsed.length > 0) {
+          // remove all special deps
+          externalDeps = externalDeps.filter(dep => !threeExtensionsUsed.includes(dep))
+
+          // reinsert after THREE
+          const threeIndex = externalDeps.indexOf('THREE')
+          if (threeIndex == -1) {
+            logError('found dependency on THREE extension without dependency on THREE itself!', { filepath, threeExtensionsUsed })
+          } else {
+            threeExtensionsUsed.forEach(ext => {
+              externalDeps.splice(threeIndex + 1, 0, ext)
+            })
+          }
+        }
+
+        const importStrings = externalDeps.map(dep => {
+          let importString
+
+          switch (dep) {
+            case 'THREE': {
+              const modulePath = 'src-esm/shims/three/core.js'
+              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
+              importString = `import THREE from '${resolvedPath}';`
+              // importString = "import * as THREE from 'three';"
+              break;
+            }
+            case 'ROSLIB': {
+              importString = "import ROSLIB from 'roslib';"
+              break;
+            }
+            case 'EventEmitter2': {
+              importString = "import EventEmitter2 from 'eventemitter2';"
+              break;
+            }
+            case 'ColladaLoader': {
+              const modulePath = 'src-esm/shims/three/ColladaLoader.js'
+              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
+              importString = `import '${resolvedPath}';`
+              break;
+            }
+            case 'STLLoader': {
+              const modulePath = 'src-esm/shims/three/STLLoader.js'
+              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
+              importString = `import '${resolvedPath}';`
+              break;
+            }
+            default: {
+              logError('unknown external dependency', dep, { filepath, externalDeps })
+              return undefined
+            }
+          }
+
+          if (importString) {
+            if (debugRules.logInjectedExternalImports) {
+              logInfo('injecting import statement:', importString)
+            }
+          }
+
+          return importString
+        })
+
+        externalImports = importStrings.length > 0
+          ? importStrings.filter(s => !!s).join('\n') + '\n\n'
+          : ''
+      }
+
+      if (internalDeps) {
+        const exporters = {}
+
         // build map of exporter -> dep
-        deps.forEach(dep => {
+        internalDeps.forEach(dep => {
           const exporter = exported.getExporter(dep)
+
           if (!exporter) {
             logError('cant find exporter for', dep, { filepath })
             return
@@ -466,17 +600,40 @@ const transpile = {
             : ['.', ...modulePath.split(path.sep)].join(path.sep)
           const importString = `import { ${joinedProps} } from '${internalModulePath}'`
 
-          if (debugRules.logInjectedImports) {
+          if (debugRules.logInjectedInternalImports) {
             logInfo('injecting import statement:', importString)
           }
 
           return importString
         })
 
-        return importStrings.join('\n') + '\n\n'
+        internalImports = importStrings.length > 0
+          ? importStrings.join('\n') + '\n\n'
+          : ''
       }
 
-      return ''
+      const allImports = externalImports + internalImports
+
+      return allImports
+    }
+  ],
+  injectMissingSuperCalls: (filepath) => [
+    /^(\s+?)(constructor.*)/gm,
+    (match, $indent, $constructor) => {
+      const className = getFileClass(filepath)
+      const parent = inheritance.getParent(className)
+      const hasCalledSuper = superConstructorCalls.getParent(className)
+
+      if (parent && !hasCalledSuper) {
+        // missing super() call
+        if (debugRules.logInjectedSuperCalls) {
+          logInfo('injecting missing super() call for', className, { match, parent })
+        }
+
+        return `${match}\n${$indent}${indent}super();`
+      }
+
+      return match
     }
   ]
 }
@@ -495,6 +652,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
 
   // give replace function access to filepath
   const transpileInternalDependencies = transpile.internalDependencies(filepath)
+  const transpileExternalDependencies = transpile.externalDependencies(filepath)
   const transpileConstructors = transpile.constructors(filepath)
   const transpileSuperCalls = transpile.superCalls(filepath)
   const transpileClasses = transpile.classes(filepath)
@@ -502,6 +660,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
 
   return transpiled
     .replace(...transpileInternalDependencies)
+    .replace(...transpileExternalDependencies)
     .replace(...transpile.buildInheritanceIndexViaProto)
     .replace(...transpile.buildInheritanceIndexViaObjectAssign)
     .replace(...transpile.methods)
@@ -523,14 +682,17 @@ const injectImports = function (content, filepath, grunt) {
 
   // give replace function access to sourceFilePath
   const transpileImports = transpile.imports(sourceFilePath)
+  const transpileInjectMissingSuperCalls = transpile.injectMissingSuperCalls(sourceFilePath)
 
   return transpiled
     .replace(...transpileImports)
+    .replace(...transpileInjectMissingSuperCalls)
 }
 
 module.exports = {
   debugRules,
   dependencies,
+  inheritance,
   transpileToEs6,
   injectImports,
 }

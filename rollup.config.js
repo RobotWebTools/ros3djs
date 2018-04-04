@@ -12,6 +12,11 @@ const uglify = require('rollup-plugin-uglify');
 const pkg = require('./package.json');
 const input = 'src-esm-test/index.js'
 
+const threeExtensions = {
+  // 'three/add/ColladaLoader': 'THREE.ColladaLoader',
+  // 'three/add/STLLoader': 'THREE.STLLoader',
+}
+
 export default [
   // build main as a CommonJS module for compatibility
   {
@@ -21,6 +26,9 @@ export default [
       file: pkg.main,
       format: 'cjs',
     },
+    external: [
+      'roslib',
+    ],
     plugins: [
       resolve(),
       commonjs(),
@@ -35,6 +43,9 @@ export default [
       file: pkg.module,
       format: 'es',
     },
+    external: [
+      'roslib',
+    ],
     plugins: [
       resolve(),
       commonjs(),
@@ -50,7 +61,19 @@ export default [
       name: 'ROS3D',
       file: pkg.browser.replace(/(\.min)?\.js/, '.js'),
       format: 'iife',
+      globals: {
+        three: 'THREE',
+        roslib: 'ROSLIB',
+        eventemitter2: 'EventEmitter2',
+        ...threeExtensions,
+      },
     },
+    external: [
+      'three',
+      'roslib',
+      'eventemitter2',
+      ...Object.keys(threeExtensions),
+    ],
     plugins: [
       resolve(),
       commonjs(),
@@ -66,7 +89,19 @@ export default [
       name: 'ROS3D',
       file: pkg.browser.replace(/(\.min)?\.js/, '.min.js'),
       format: 'iife',
+      globals: {
+        three: 'THREE',
+        roslib: 'ROSLIB',
+        eventemitter2: 'EventEmitter2',
+        ...threeExtensions,
+      },
     },
+    external: [
+      'three',
+      'roslib',
+      'eventemitter2',
+      ...Object.keys(threeExtensions),
+    ],
     plugins: [
       resolve(),
       commonjs(),
