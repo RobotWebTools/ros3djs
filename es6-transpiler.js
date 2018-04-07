@@ -514,7 +514,7 @@ const transpile = {
 
           switch (dep) {
             case 'THREE': {
-              const modulePath = 'es6-support/shims/three/core.js'
+              const modulePath = 'shims/three/core.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
               importString = `import THREE from '${resolvedPath}';`
               break;
@@ -532,13 +532,13 @@ const transpile = {
               break;
             }
             case 'ColladaLoader': {
-              const modulePath = 'es6-support/shims/three/ColladaLoader.js'
+              const modulePath = 'shims/three/ColladaLoader.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
               importString = `import '${resolvedPath}';`
               break;
             }
             case 'STLLoader': {
-              const modulePath = 'es6-support/shims/three/STLLoader.js'
+              const modulePath = 'shims/three/STLLoader.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
               importString = `import '${resolvedPath}';`
               break;
