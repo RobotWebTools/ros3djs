@@ -97,7 +97,7 @@ module.exports = function(grunt) {
             '*.js',
             '**/*.js',
           ],
-          dest: 'src-esm-test/',
+          dest: 'src-esm/',
         }]
       },
       transpile_imports: {
@@ -106,22 +106,22 @@ module.exports = function(grunt) {
         },
         files: [{
           expand: true,
-          cwd: 'src-esm-test',
+          cwd: 'src-esm',
           src: [
             '*.js',
             '**/*.js',
           ],
-          dest: 'src-esm-test/',
+          dest: 'src-esm/',
         }]
       },
       transpile_index: {
         files: [{
           expand: true,
-          cwd: 'src-esm',
+          cwd: 'es6-support',
           src: [
             'index.js'
           ],
-          dest: 'src-esm-test/'
+          dest: 'src-esm/'
         }]
       }
     },
