@@ -1,3 +1,7 @@
+import THREE from '../../shims/three/core.js';
+
+import { Particles } from './Particles'
+
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
@@ -35,73 +39,76 @@ function decode64(x) {
     return a;
 }
 
-/**
- * A PointCloud2 client that listens to a given topic and displays the points.
- *
- * @constructor
- * @param options - object with following keys:
- *
- *  * ros - the ROSLIB.Ros connection handle
- *  * topic - the marker topic to listen to
- *  * tfClient - the TF client handle to use
- *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
- *  * rootObject (optional) - the root object to add this marker to
- *  * size (optional) - size to draw each point (default 0.05)
- *  * max_pts (optional) - number of points to draw (default 100)
- *  * color (optional) - point color (otherwise taken from the topic)
- */
-ROS3D.PointCloud2 = function(options) {
-  options = options || {};
-  this.ros = options.ros;
-  this.topicName = options.topic || '/points';
-  this.color = options.color;
+export class PointCloud2 extends THREE.Object3D {
 
-  this.particles = new ROS3D.Particles(options);
-  this.rosTopic = undefined;
-  this.subscribe();
-};
-ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
+  /**
+   * A PointCloud2 client that listens to a given topic and displays the points.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * size (optional) - size to draw each point (default 0.05)
+   *  * max_pts (optional) - number of points to draw (default 100)
+   *  * color (optional) - point color (otherwise taken from the topic)
+   */
+  constructor(options) {
+    super();
+    options = options || {};
+    this.ros = options.ros;
+    this.topicName = options.topic || '/points';
+    this.color = options.color;
+
+    this.particles = new Particles(options);
+    this.rosTopic = undefined;
+    this.subscribe();
+  };
 
 
-ROS3D.PointCloud2.prototype.unsubscribe = function(){
-  if(this.rosTopic){
-    this.rosTopic.unsubscribe();
-  }
-};
+  unsubscribe(){
+    if(this.rosTopic){
+      this.rosTopic.unsubscribe();
+    }
+  };
 
-ROS3D.PointCloud2.prototype.subscribe = function(){
-  this.unsubscribe();
+  subscribe(){
+    this.unsubscribe();
 
-  // subscribe to the topic
-  this.rosTopic = new ROSLIB.Topic({
-    ros : this.ros,
-    name : this.topicName,
-    messageType : 'sensor_msgs/PointCloud2'
-  });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
-};
+    // subscribe to the topic
+    this.rosTopic = new ROSLIB.Topic({
+      ros : this.ros,
+      name : this.topicName,
+      messageType : 'sensor_msgs/PointCloud2'
+    });
+    this.rosTopic.subscribe(this.processMessage.bind(this));
+  };
 
-ROS3D.PointCloud2.prototype.processMessage = function(message){
-  setFrame(this.particles, message.header.frame_id);
+  processMessage(message){
+    setFrame(this.particles, message.header.frame_id);
 
-  var n = message.height*message.width;
-  var buffer;
-  if(message.data.buffer){
-    buffer = message.data.buffer.buffer;
-  }else{
-    buffer = Uint8Array.from(decode64(message.data)).buffer;
-  }
-  var dv = new DataView(buffer);
-  var color;
-  if(this.color !== undefined){
-    color = new THREE.Color(this.color);
-  }
-  for(var i=0;i<n;i++){
-    var pt = read_point(message, i, dv);
-    this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-    this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
-    this.particles.alpha[i] = 1.0;
-  }
+    var n = message.height*message.width;
+    var buffer;
+    if(message.data.buffer){
+      buffer = message.data.buffer.buffer;
+    }else{
+      buffer = Uint8Array.from(decode64(message.data)).buffer;
+    }
+    var dv = new DataView(buffer);
+    var color;
+    if(this.color !== undefined){
+      color = new THREE.Color(this.color);
+    }
+    for(var i=0;i<n;i++){
+      var pt = read_point(message, i, dv);
+      this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
+      this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
+      this.particles.alpha[i] = 1.0;
+    }
 
-  finishedUpdate(this.particles, n);
-};
+    finishedUpdate(this.particles, n);
+  };
+}

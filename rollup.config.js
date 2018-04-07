@@ -10,7 +10,7 @@ const resolve = require('rollup-plugin-node-resolve');
 const uglify = require('rollup-plugin-uglify');
 
 const pkg = require('./package.json');
-const input = 'src-esm/index.js'
+const input = 'src/index.js'
 
 const browserGlobals = {
   roslib: 'ROSLIB',

@@ -1,10 +1,3 @@
-const {
-  debugRules,
-  dependencies,
-  inheritance,
-  injectImports,
-  transpileToEs6
-} = require('./es6-transpiler')
 
 // Export Grunt config
 module.exports = function(grunt) {
@@ -84,67 +77,6 @@ module.exports = function(grunt) {
           configure: 'jsdoc_conf.json'
         }
       }
-    },
-    pipe: {
-      transpile: {
-        options: {
-          process: transpileToEs6,
-        },
-        files: [{
-          expand: true,
-          cwd: 'src',
-          src: [
-            '*.js',
-            '**/*.js',
-          ],
-          dest: 'src-esm/',
-        }]
-      },
-      transpile_imports: {
-        options: {
-          process: injectImports,
-        },
-        files: [{
-          expand: true,
-          cwd: 'src-esm',
-          src: [
-            '*.js',
-            '**/*.js',
-          ],
-          dest: 'src-esm/',
-        }]
-      },
-      transpile_index: {
-        files: [{
-          expand: true,
-          cwd: 'es6-support',
-          src: [
-            'index.js'
-          ],
-          dest: 'src-esm/'
-        }]
-      }
-    },
-    execute: {
-      transpile: {
-        call: (grunt, options) => {
-          console.log()
-          if (debugRules.logInternalDepsAtEnd) {
-            console.log('Internal dependencies')
-            console.log(dependencies.internalToString())
-          }
-          if (debugRules.logExternalDepsAtEnd) {
-            console.log('External dependencies')
-            console.log(dependencies.externalToString())
-          }
-          if (debugRules.logInheritanceAtEnd) {
-            console.log('Inheritance hierarchy')
-            console.log(inheritance.toString())
-          }
-
-          console.log()
-        },
-      }
     }
   });
 
@@ -162,5 +94,4 @@ module.exports = function(grunt) {
   grunt.registerTask('build', ['concat', 'jshint', 'uglify']);
   grunt.registerTask('build_and_watch', ['watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
-  grunt.registerTask('transpile', ['pipe', 'execute']);
 };

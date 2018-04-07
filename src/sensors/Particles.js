@@ -1,132 +1,138 @@
+import THREE from '../../shims/three/core.js';
+
+import { SceneNode } from '../visualization/SceneNode'
+
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-/**
- * A set of particles. Used by PointCloud2.
- *
- * @constructor
- * @param options - object with following keys:
- *
- *  * tfClient - the TF client handle to use
- *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
- *  * rootObject (optional) - the root object to add this marker to
- *  * size (optional) - size to draw each point (default 0.05)
- *  * max_pts (optional) - number of points to draw (default 100)
- */
-ROS3D.Particles = function(options) {
-  THREE.Object3D.call(this);
-  options = options || {};
-  this.tfClient = options.tfClient;
-  var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
-  var size = options.size || 0.05;
-  this.max_pts = options.max_pts || 10000;
-  this.first_size = null;
-  this.prev_pts = 0;
-  this.rootObject = options.rootObject || new THREE.Object3D();
-  var that = this;
+export class Particles extends THREE.Object3D {
 
-  this.vertex_shader = [
-    'attribute vec3 customColor;',
-    'attribute float alpha;',
-    'varying vec3 vColor;',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
-    '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
-    '    falpha = alpha; ',
-    '',
-    '    // option (1): draw particles at constant size on screen',
-    '    // gl_PointSize = size;',
-    '    // option (2): scale particles as objects in 3D space',
-    '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
-    '    gl_Position = projectionMatrix * mvPosition;',
-    '}'
-    ].join('\n');
+  /**
+   * A set of particles. Used by PointCloud2.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * tfClient - the TF client handle to use
+   *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * size (optional) - size to draw each point (default 0.05)
+   *  * max_pts (optional) - number of points to draw (default 100)
+   */
+  constructor(options) {
+    super();
+    options = options || {};
+    this.tfClient = options.tfClient;
+    var texture = options.texture || 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Pixel-white.png';
+    var size = options.size || 0.05;
+    this.max_pts = options.max_pts || 10000;
+    this.first_size = null;
+    this.prev_pts = 0;
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    var that = this;
 
-  this.fragment_shader = [
-    'uniform sampler2D texture;',
-    'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
-    'varying float falpha;',
-    'void main() ',
-    '{',
-    '    // THREE.Material.alphaTest is not evaluated for ShaderMaterial, so we',
-    '    // have to take care of this ourselves.',
-    '    if (falpha < 0.5) discard;',
-    '    // calculates a color for the particle',
-    '    gl_FragColor = vec4( vColor, falpha );',
-    '    // sets particle texture to desired color',
-    '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
-    '}'
-    ].join('\n');
+    this.vertex_shader = [
+      'attribute vec3 customColor;',
+      'attribute float alpha;',
+      'varying vec3 vColor;',
+      'varying float falpha;',
+      'void main() ',
+      '{',
+      '    vColor = customColor; // set color associated to vertex; use later in fragment shader',
+      '    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );',
+      '    falpha = alpha; ',
+      '',
+      '    // option (1): draw particles at constant size on screen',
+      '    // gl_PointSize = size;',
+      '    // option (2): scale particles as objects in 3D space',
+      '    gl_PointSize = ', size, '* ( 300.0 / length( mvPosition.xyz ) );',
+      '    gl_Position = projectionMatrix * mvPosition;',
+      '}'
+      ].join('\n');
 
-    this.geom = new THREE.Geometry();
-    for(var i=0;i<this.max_pts;i++){
-        this.geom.vertices.push(new THREE.Vector3( ));
-    }
+    this.fragment_shader = [
+      'uniform sampler2D texture;',
+      'varying vec3 vColor; // colors associated to vertices; assigned by vertex shader',
+      'varying float falpha;',
+      'void main() ',
+      '{',
+      '    // THREE.Material.alphaTest is not evaluated for ShaderMaterial, so we',
+      '    // have to take care of this ourselves.',
+      '    if (falpha < 0.5) discard;',
+      '    // calculates a color for the particle',
+      '    gl_FragColor = vec4( vColor, falpha );',
+      '    // sets particle texture to desired color',
+      '    gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );',
+      '}'
+      ].join('\n');
 
-    var customUniforms =
-    {
-        texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
-    };
+      this.geom = new THREE.Geometry();
+      for(var i=0;i<this.max_pts;i++){
+          this.geom.vertices.push(new THREE.Vector3( ));
+      }
 
-    this.attribs =
-    {
-        customColor:   { type: 'c', value: [] },
-        alpha:         { type: 'f', value: [] }
-    };
+      var customUniforms =
+      {
+          texture:   { type: 't', value: THREE.ImageUtils.loadTexture( texture ) },
+      };
 
-    this.shaderMaterial = new THREE.ShaderMaterial(
-    {
-        uniforms:          customUniforms,
-        attributes:        this.attribs,
-        vertexShader:      this.vertex_shader,
-        fragmentShader:    this.fragment_shader,
-        transparent: true,
-    });
+      this.attribs =
+      {
+          customColor:   { type: 'c', value: [] },
+          alpha:         { type: 'f', value: [] }
+      };
 
-    this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
-    this.sn = null;
+      this.shaderMaterial = new THREE.ShaderMaterial(
+      {
+          uniforms:          customUniforms,
+          attributes:        this.attribs,
+          vertexShader:      this.vertex_shader,
+          fragmentShader:    this.fragment_shader,
+          transparent: true,
+      });
 
-    this.points = this.geom.vertices;
-    this.colors = this.attribs.customColor.value;
-    this.alpha =  this.attribs.alpha.value;
+      this.ps = new THREE.ParticleSystem( this.geom, this.shaderMaterial );
+      this.sn = null;
 
-};
+      this.points = this.geom.vertices;
+      this.colors = this.attribs.customColor.value;
+      this.alpha =  this.attribs.alpha.value;
 
-ROS3D.Particles.prototype.__proto__ = THREE.Object3D.prototype;
+  };
 
-ROS3D.Particles.prototype.setFrame = function(particles, frame)
-{
-    if(particles.sn===null){
-        particles.sn = new ROS3D.SceneNode({
-            frameID : frame,
-            tfClient : particles.tfClient,
-            object : particles.ps
-        });
 
-        particles.rootObject.add(particles.sn);
-    }
-}
+  setFrame(particles, frame)
+  {
+      if(particles.sn===null){
+          particles.sn = new SceneNode({
+              frameID : frame,
+              tfClient : particles.tfClient,
+              object : particles.ps
+          });
 
-ROS3D.Particles.prototype.finishedUpdate = function(particles, n)
-{
-    if(particles.first_size === null){
-        particles.first_size = n;
-        particles.max_pts = Math.max(particles.max_pts, n);
-    }
+          particles.rootObject.add(particles.sn);
+      }
+  }
 
-    for(var i=n; i<particles.prev_pts; i++){
-        particles.alpha[i] = 0.0;
-    }
-    particles.prev_pts = n;
+  finishedUpdate(particles, n)
+  {
+      if(particles.first_size === null){
+          particles.first_size = n;
+          particles.max_pts = Math.max(particles.max_pts, n);
+      }
 
-    particles.geom.verticesNeedUpdate = true;
-    particles.attribs.customColor.needsUpdate = true;
-    particles.attribs.alpha.needsUpdate = true;
+      for(var i=n; i<particles.prev_pts; i++){
+          particles.alpha[i] = 0.0;
+      }
+      particles.prev_pts = n;
 
-    if(n>particles.max_pts){
-        console.error('Attempted to draw more points than max_pts allows');
-    }
+      particles.geom.verticesNeedUpdate = true;
+      particles.attribs.customColor.needsUpdate = true;
+      particles.attribs.alpha.needsUpdate = true;
+
+      if(n>particles.max_pts){
+          console.error('Attempted to draw more points than max_pts allows');
+      }
+  }
 }

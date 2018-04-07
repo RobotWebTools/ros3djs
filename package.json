@@ -13,7 +13,6 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "debug": "^3.1.0",
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
@@ -38,8 +37,7 @@
     "url": "https://github.com/RobotWebTools/ros3djs/releases"
   },
   "scripts": {
-    "build": "rollup -c",
-    "transpile": "DEBUG=* grunt transpile"
+    "build": "rollup -c"
   },
   "keywords": [
     "ROS",
