@@ -44,14 +44,14 @@ const logHeader = (color) => (...args) => {
 }
 
 const debugRules = {
-  logClasses: true,
+  logClasses: false,
   logConstructors: false,
   logExportsAsFound: false,
   logExtensions: false,
   logExternalDepsAsFound: false,
   logExternalDepsAtEnd: false,
   logFunctions: false,
-  logImportMarking: true,
+  logImportMarking: false,
   logInheritanceAtEnd: false,
   logInjectedExternalImports: false,
   logInjectedInternalImports:false,
@@ -517,11 +517,14 @@ const transpile = {
               const modulePath = 'src-esm/shims/three/core.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
               importString = `import THREE from '${resolvedPath}';`
-              // importString = "import * as THREE from 'three';"
               break;
             }
             case 'ROSLIB': {
-              importString = "import ROSLIB from 'roslib';"
+              // Rollup is unable to be import ROSLIB due to
+              // the dynamic export semantics it uses. This will
+              // have to remain an implicit global dependency for now.
+              // importString = "import * as ROSLIB from 'roslib';"
+              importString = ""
               break;
             }
             case 'EventEmitter2': {

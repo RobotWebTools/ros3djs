@@ -4,7 +4,6 @@
   "description": "The standard ROS Javascript Visualization Library",
   "version": "0.18.0",
   "license": "BSD-3-Clause",
-  "browser": "./build/ros3d.min.js",
   "main": "./build/ros3d.cjs.js",
   "module": "./build/ros3d.esm.js",
   "dependencies": {

@@ -1,0 +1,73 @@
+<template>
+  <div>
+    <h1>Simple Marker Example</h1>
+    <p>Run the following commands in the terminal then refresh this page.</p>
+    <ol>
+      <li><tt>roscore</tt></li>
+      <li><tt>rosrun visualization_marker_tutorials basic_shapes</tt></li>
+      <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
+      <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+    </ol>
+    <div id="markers"></div>
+  </div>
+</template>
+
+<script>
+import * as ROS3D from 'ros3d'
+import * as ROSLIB from 'roslib'
+
+console.log('ROSLIB', ROSLIB)
+
+/**
+ * Setup all visualization elements when the page is loaded.
+ */
+function init() {
+  // Connect to ROS.
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  // Create the main viewer.
+  var viewer = new ROS3D.Viewer({
+    divID : 'markers',
+    width : 400,
+    height : 300,
+    antialias : true
+  });
+
+  // Setup a client to listen to TFs.
+  var tfClient = new ROSLIB.TFClient({
+    ros : ros,
+    angularThres : 0.01,
+    transThres : 0.01,
+    rate : 10.0,
+    fixedFrame : '/my_frame'
+  });
+
+  // Setup the marker client.
+  var markerClient = new ROS3D.MarkerClient({
+    ros : ros,
+    tfClient : tfClient,
+    topic : '/visualization_marker',
+    rootObject : viewer.scene
+  });
+}
+
+export default {
+  name: 'Markers',
+  mounted() {
+    init()
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1, h2 {
+  margin-top: 0;
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+}
+</style>

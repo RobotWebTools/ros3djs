@@ -12,9 +12,19 @@ const uglify = require('rollup-plugin-uglify');
 const pkg = require('./package.json');
 const input = 'src-esm-test/index.js'
 
-const threeExtensions = {
-  // 'three/add/ColladaLoader': 'THREE.ColladaLoader',
-  // 'three/add/STLLoader': 'THREE.STLLoader',
+const browserGlobals = {
+  roslib: 'ROSLIB',
+}
+
+const moduleGlobals = {
+  roslib: 'ROSLIB',
+}
+
+const outputFiles = {
+  commonModule: pkg.main,
+  esModule: pkg.module,
+  browserGlobal: './build/ros3d.js',
+  browserGlobalMinified: './build/ros3d.min.js',
 }
 
 export default [
@@ -23,15 +33,26 @@ export default [
     input,
     output: {
       name: 'ROS3D',
-      file: pkg.main,
+      file: outputFiles.commonModule,
       format: 'cjs',
+      globals: {
+        ...moduleGlobals,
+      }
     },
     external: [
-      'roslib',
+      ...Object.keys(moduleGlobals)
     ],
     plugins: [
-      resolve(),
-      commonjs(),
+      resolve({ browser: true }),
+      commonjs({
+        include: [
+          'node_modules/**',
+          'node_modules/roslib/**'
+        ],
+        namedExports: {
+          'node_modules/roslib/src/RosLib.js': ['UrdfModel', 'Ros']
+        }
+      }),
       filesize(),
     ],
   },
@@ -40,14 +61,17 @@ export default [
     input,
     output: {
       name: 'ROS3D',
-      file: pkg.module,
+      file: outputFiles.esModule,
       format: 'es',
+      globals: {
+        ...moduleGlobals,
+      }
     },
     external: [
-      'roslib',
+      ...Object.keys(moduleGlobals)
     ],
     plugins: [
-      resolve(),
+      resolve({ browser: true }),
       commonjs(),
       filesize(),
     ],
@@ -59,23 +83,17 @@ export default [
     input,
     output: {
       name: 'ROS3D',
-      file: pkg.browser.replace(/(\.min)?\.js/, '.js'),
+      file: outputFiles.browserGlobal,
       format: 'iife',
       globals: {
-        three: 'THREE',
-        roslib: 'ROSLIB',
-        eventemitter2: 'EventEmitter2',
-        ...threeExtensions,
+        ...browserGlobals,
       },
     },
     external: [
-      'three',
-      'roslib',
-      'eventemitter2',
-      ...Object.keys(threeExtensions),
+      ...Object.keys(browserGlobals),
     ],
     plugins: [
-      resolve(),
+      resolve({ browser: true }),
       commonjs(),
       filesize(),
     ],
@@ -87,23 +105,17 @@ export default [
     input,
     output: {
       name: 'ROS3D',
-      file: pkg.browser.replace(/(\.min)?\.js/, '.min.js'),
+      file: outputFiles.browserGlobalMinified,
       format: 'iife',
       globals: {
-        three: 'THREE',
-        roslib: 'ROSLIB',
-        eventemitter2: 'EventEmitter2',
-        ...threeExtensions,
+        ...browserGlobals,
       },
     },
     external: [
-      'three',
-      'roslib',
-      'eventemitter2',
-      ...Object.keys(threeExtensions),
+      ...Object.keys(browserGlobals),
     ],
     plugins: [
-      resolve(),
+      resolve({ browser: true }),
       commonjs(),
       filesize(),
       uglify(),
