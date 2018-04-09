@@ -60,7 +60,7 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
-  this.particles = new ROS3D.Particles(options);
+  this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
   this.subscribe();
 };
@@ -86,38 +86,38 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
 };
 
 ROS3D.PointCloud2.prototype.processMessage = function(msg){
-  if(!this.particles.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
+  if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
       return;
   }
 
-  var n, pointRatio = this.particles.pointRatio;
+  var n, pointRatio = this.points.positionRatio;
 
   if (msg.data.buffer) {
-    this.particles.buffer = msg.data.buffer;
+    this.points.buffer = msg.data.buffer;
     n = msg.height*msg.width / pointRatio;
   } else {
-    n = decode64(msg.data, this.particles.buffer, msg.point_step, pointRatio);
+    n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
     pointRatio = 1;
   }
 
-  var dv = new DataView(this.particles.buffer.buffer);
+  var dv = new DataView(this.points.buffer.buffer);
   var littleEndian = !msg.is_bigendian;
-  var x = this.particles.fields.x.offset;
-  var y = this.particles.fields.y.offset;
-  var z = this.particles.fields.z.offset;
+  var x = this.points.fields.x.offset;
+  var y = this.points.fields.y.offset;
+  var z = this.points.fields.z.offset;
   var base, color;
   for(var i = 0; i < n; i++){
     base = i * pointRatio * msg.point_step;
-    this.particles.point.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
-    this.particles.point.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
-    this.particles.point.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
+    this.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
+    this.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
+    this.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
 
-    if(this.particles.getColor){
-        color = this.particles.colormap(this.particles.getColor(dv,base,littleEndian));
-        this.particles.color.array[3*i    ] = color.r;
-        this.particles.color.array[3*i + 1] = color.g;
-        this.particles.color.array[3*i + 2] = color.b;
+    if(this.points.colors){
+        color = this.points.colormap(this.points.getColor(dv,base,littleEndian));
+        this.points.colors.array[3*i    ] = color.r;
+        this.points.colors.array[3*i + 1] = color.g;
+        this.points.colors.array[3*i + 2] = color.b;
     }
   }
-  this.particles.update(n);
+  this.points.update(n);
 };

@@ -4,7 +4,7 @@
  */
 
 /**
- * A set of particles. Used by PointCloud2.
+ * A set of points. Used by PointCloud2 and LaserScan.
  *
  * @constructor
  * @param options - object with following keys:
@@ -18,7 +18,7 @@
  *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
  *  * colormap (optional) - function that turns the colorsrc field value to a color
  */
-ROS3D.Particles = function(options) {
+ROS3D.Points = function(options) {
   options = options || {};
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -31,11 +31,19 @@ ROS3D.Particles = function(options) {
   this.colormap = options.colormap;
   THREE.Object3D.call(this);
 
+  if(('color' in options) || ('size' in options) || ('texture' in options)) {
+      console.warn(
+        'toplevel "color", "size" and "texture" options are deprecated.' +
+        'They should beprovided within a "material" option, e.g. : '+
+        ' { tfClient, material : { color: mycolor, size: mysize, map: mytexture }, ... }'
+      );
+  }
+
   this.sn = null;
   this.buffer = null;
 };
 
-ROS3D.Particles.prototype.setup = function(frame, point_step, fields)
+ROS3D.Points.prototype.setup = function(frame, point_step, fields)
 {
     if(this.sn===null){
         // scratch space to decode base64 buffers
@@ -50,8 +58,8 @@ ROS3D.Particles.prototype.setup = function(frame, point_step, fields)
         }
         this.geom = new THREE.BufferGeometry();
 
-        this.point = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
-        this.geom.addAttribute( 'position', this.point.setDynamic(true) );
+        this.positions = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+        this.geom.addAttribute( 'position', this.positions.setDynamic(true) );
 
         if(!this.colorsrc && this.fields.rgb) {
             this.colorsrc = 'rgb';
@@ -59,8 +67,8 @@ ROS3D.Particles.prototype.setup = function(frame, point_step, fields)
         if(this.colorsrc) {
             var field = this.fields[this.colorsrc];
             if (field) {
-                this.color = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
-                this.geom.addAttribute( 'color', this.color.setDynamic(true) );
+                this.colors = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+                this.geom.addAttribute( 'color', this.colors.setDynamic(true) );
                 var offset = field.offset;
                 this.getColor = [
                     function(dv,base,le){return dv.getInt8(base+offset,le);},
@@ -79,18 +87,18 @@ ROS3D.Particles.prototype.setup = function(frame, point_step, fields)
         }
 
         if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
-            if(this.color && this.material.vertexColors === undefined) {
+            if(this.colors && this.material.vertexColors === undefined) {
                 this.material.vertexColors = THREE.VertexColors;
             }
             this.material = new THREE.PointsMaterial(this.material);      
         }
 
-        this.ps = new THREE.Points( this.geom, this.material );
+        this.object = new THREE.Points( this.geom, this.material );
 
         this.sn = new ROS3D.SceneNode({
             frameID : frame,
             tfClient : this.tfClient,
-            object : this.ps
+            object : this.object
         });
 
         this.rootObject.add(this.sn);
@@ -98,15 +106,15 @@ ROS3D.Particles.prototype.setup = function(frame, point_step, fields)
     return (this.messageCount++ % this.messageRatio) === 0;
 };
 
-ROS3D.Particles.prototype.update = function(n)
+ROS3D.Points.prototype.update = function(n)
 {
   this.geom.setDrawRange(0,n);
 
-  this.point.needsUpdate = true;
-  this.point.updateRange.count = n * this.point.itemSize;
+  this.positions.needsUpdate = true;
+  this.positions.updateRange.count = n * this.positions.itemSize;
 
-  if (this.color) {
-    this.color.needsUpdate = true;
-    this.color.updateRange.count = n * this.color.itemSize;
+  if (this.colors) {
+    this.colors.needsUpdate = true;
+    this.colors.updateRange.count = n * this.colors.itemSize;
   }
 };

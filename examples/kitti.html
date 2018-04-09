@@ -35,16 +35,19 @@
       fixedFrame : 'velo_link'
     });
 
+    // var texture = new THREE.TextureLoader().load( "https://threejs.org/examples/textures/sprites/ball.png" );
+
     var cloudClient = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
         topic: '/kitti/velo/pointcloud',
         max_pts: 200000,
-        pointRatio: 2,
-        messageRatio: 1,
-        material: { size: 3, color: new THREE.Color(0xffffff), sizeAttenuation: false },
-        //colorsrc: 'i', colormap: function(i) { return new THREE.Color(3*i,0,1-3*i); }
+        pointRatio: 3,
+        messageRatio: 2,
+        // material: { size: 7, sizeAttenuation: false, alphaTest: 0.5, transparent: true, map: texture },
+        material: { size: 3, sizeAttenuation: false },
+        // colorsrc: 'i', colormap: function(i) { return new THREE.Color(3*i,0,1-3*i); }
         colorsrc: 'z', colormap: function(z) { z=z+2; return new THREE.Color(z,0,1-z); }
     });
   }
