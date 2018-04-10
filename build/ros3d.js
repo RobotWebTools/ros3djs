@@ -3581,6 +3581,7 @@ ROS3D.LaserScan.prototype.processMessage = function(message){
  *  * topic - the NavSatFix topic to listen to
  *  * rootObject (optional) - the root object to add this marker to
  *  * color (optional) - color for line (default: 0xcc00ff)
+ *  * altitudeNaN (optional) - default altitude when the message altitude is NaN (default: 0)
  *  * keep (optional) - number of gps fix points to keep (default: 100)
  *  * convert (optional) - conversion from lat/lon/alt to xyz (default: passthrough)
  */
@@ -3589,7 +3590,8 @@ ROS3D.NavSatFix = function(options) {
   this.ros = options.ros;
   this.topicName = options.topic || '/gps/fix';
   this.color = options.color || 0xcc00ff;
-  this.convert = options.convert || function(lat, lon, alt) { return new THREE.Vector3(lat, lon, alt); };
+  this.altitudeNaN = options.altitudeNaN || 0;
+  this.convert = options.convert || function(lon,lat,alt) { return new THREE.Vector3(lon,lat,alt); };
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.keep = options.keep || 100;
   this.count = 0;
@@ -3633,7 +3635,8 @@ ROS3D.NavSatFix.prototype.subscribe = function(){
 };
 
 ROS3D.NavSatFix.prototype.processMessage = function(message){
-  var pt = this.convert(message.longitude, message.latitude, message.altitude);
+  var altitude = isNaN(message.altitude) ? this.altitudeNaN : message.altitude;
+  var pt = this.convert(message.longitude, message.latitude, altitude);
 
   // move the group to the gps position
   this.group.position.set(pt.x, pt.y, pt.z);
