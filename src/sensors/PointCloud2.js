@@ -1,39 +1,43 @@
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
+ * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-function read_point(msg, index, data_view){
-    var pt = [];
-    var base = msg.point_step * index;
-    var n = 4;
-    for(var fi=0; fi<msg.fields.length; fi++){
-        var si = base + msg.fields[fi].offset;
+/**
+ * Decodes the base64-encoded array 'inbytes' into the array 'outbytes'
+ * until 'inbytes' is exhausted or 'outbytes' is filled.
+ * if 'record_size' is specified, records of length 'record_size' bytes
+ * are copied every other 'pointRatio' records.
+ * returns the number of decoded records
+ */
+function decode64(inbytes, outbytes, record_size, pointRatio) {
+    var x,b=0,l=0,j=0,L=inbytes.length,A=outbytes.length;
+    record_size = record_size || A; // default copies everything (no skipping)
+    pointRatio = pointRatio || 1; // default copies everything (no skipping)
+    var bitskip = (pointRatio-1) * record_size * 8;
+    for(x=0;x<L&&j<A;x++){
+        b=(b<<6)+decode64.e[inbytes.charAt(x)];
+        l+=6;
+        if(l>=8){
+            l-=8;
+            outbytes[j++]=(b>>>l)&0xff;
+            if((j % record_size) === 0) { // skip records
+                // no    optimization: for(var i=0;i<bitskip;x++){l+=6;if(l>=8) {l-=8;i+=8;}}
+                // first optimization: for(;l<bitskip;l+=6){x++;} l=l%8;
+                x += Math.ceil((bitskip - l) / 6);
+                l = l % 8;
 
-        if( msg.fields[fi].name === 'rgb' ){
-            pt[ 'rgb' ] = data_view.getInt32(si, 1);
-        }else{
-            pt[ msg.fields[fi].name ] = data_view.getFloat32(si, 1);
+                if(l>0){b=decode64.e[inbytes.charAt(x)];}
+            }
         }
     }
-    return pt;
+    return Math.floor(j/record_size);
 }
+// initialize decoder with static lookup table 'e'
+decode64.S='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+decode64.e={};
+for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
 
-var BASE64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-function decode64(x) {
-    var a = [], z = 0, bits = 0;
-
-    for (var i = 0, len = x.length; i < len; i++) {
-      z += BASE64.indexOf( x[i] );
-      bits += 6;
-      if(bits>=8){
-          bits -= 8;
-          a.push(z >> bits);
-          z = z & (Math.pow(2, bits)-1);
-      }
-      z = z << 6;
-    }
-    return a;
-}
 
 /**
  * A PointCloud2 client that listens to a given topic and displays the points.
@@ -42,21 +46,21 @@ function decode64(x) {
  * @param options - object with following keys:
  *
  *  * ros - the ROSLIB.Ros connection handle
- *  * topic - the marker topic to listen to
+ *  * topic - the marker topic to listen to (default: '/points')
  *  * tfClient - the TF client handle to use
- *  * texture - (optional) Image url for a texture to use for the points. Defaults to a single white pixel.
- *  * rootObject (optional) - the root object to add this marker to
- *  * size (optional) - size to draw each point (default 0.05)
- *  * max_pts (optional) - number of points to draw (default 100)
- *  * color (optional) - point color (otherwise taken from the topic)
+ *  * rootObject (optional) - the root object to add this marker to use for the points.
+ *  * max_pts (optional) - number of points to draw (default: 10000)
+ *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
+ *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
+ *  * material (optional) - a material object or an option to construct a PointsMaterial.
+ *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
+ *  * colormap (optional) - function that turns the colorsrc field value to a color
  */
 ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
-  this.color = options.color;
-
-  this.particles = new ROS3D.Particles(options);
+  this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
   this.subscribe();
 };
@@ -81,27 +85,39 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
 
-ROS3D.PointCloud2.prototype.processMessage = function(message){
-  setFrame(this.particles, message.header.frame_id);
-
-  var n = message.height*message.width;
-  var buffer;
-  if(message.data.buffer){
-    buffer = message.data.buffer.buffer;
-  }else{
-    buffer = Uint8Array.from(decode64(message.data)).buffer;
-  }
-  var dv = new DataView(buffer);
-  var color;
-  if(this.color !== undefined){
-    color = new THREE.Color(this.color);
-  }
-  for(var i=0;i<n;i++){
-    var pt = read_point(message, i, dv);
-    this.particles.points[i] = new THREE.Vector3( pt['x'], pt['y'], pt['z'] );
-    this.particles.colors[ i ] = color || new THREE.Color( pt['rgb'] );
-    this.particles.alpha[i] = 1.0;
+ROS3D.PointCloud2.prototype.processMessage = function(msg){
+  if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
+      return;
   }
 
-  finishedUpdate(this.particles, n);
+  var n, pointRatio = this.points.positionRatio;
+
+  if (msg.data.buffer) {
+    this.points.buffer = msg.data.buffer;
+    n = msg.height*msg.width / pointRatio;
+  } else {
+    n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
+    pointRatio = 1;
+  }
+
+  var dv = new DataView(this.points.buffer.buffer);
+  var littleEndian = !msg.is_bigendian;
+  var x = this.points.fields.x.offset;
+  var y = this.points.fields.y.offset;
+  var z = this.points.fields.z.offset;
+  var base, color;
+  for(var i = 0; i < n; i++){
+    base = i * pointRatio * msg.point_step;
+    this.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
+    this.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
+    this.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
+
+    if(this.points.colors){
+        color = this.points.colormap(this.points.getColor(dv,base,littleEndian));
+        this.points.colors.array[3*i    ] = color.r;
+        this.points.colors.array[3*i + 1] = color.g;
+        this.points.colors.array[3*i + 2] = color.b;
+    }
+  }
+  this.points.update(n);
 };
