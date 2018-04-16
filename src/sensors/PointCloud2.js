@@ -90,7 +90,7 @@ ROS3D.PointCloud2.prototype.processMessage = function(msg){
       return;
   }
 
-  var n, pointRatio = this.points.positionRatio;
+  var n, pointRatio = this.points.pointRatio;
 
   if (msg.data.buffer) {
     this.points.buffer = msg.data.buffer;
