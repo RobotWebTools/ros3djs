@@ -5598,8 +5598,8 @@ time-stamp@^2.0.0:
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-2.0.0.tgz#95c6a44530e15ba8d6f4a3ecb8c3a3fac46da357"
 
 timers-browserify@^2.0.4:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.7.tgz#e74093629cb62c20332af587ddc0c86b4ba97a05"
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.8.tgz#ad5ecbc2d081e038f8732406aeb723628b482494"
   dependencies:
     setimmediate "^1.0.4"
 
