@@ -1,6 +1,5 @@
-# Examples of ROS3D in a Single Page Application
+# Examples of ROS3D in a Vue App
 
-> A ROS3D demo in Vue.js
 > Project generated using the vue-cli's webpack template (`vue init webpack <appname>`)
 
 ## Build Setup
