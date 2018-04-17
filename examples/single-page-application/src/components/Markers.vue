@@ -16,8 +16,6 @@
 import * as ROS3D from 'ros3d'
 import * as ROSLIB from 'roslib'
 
-console.log('ROSLIB', ROSLIB)
-
 /**
  * Setup all visualization elements when the page is loaded.
  */
