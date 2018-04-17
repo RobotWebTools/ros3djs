@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <p>This is an app meant to demonstrate how to use the ros3djs module in a Single Page Application</p>
+    <p>This is an app meant to demonstrate how to use the ros3djs module in a Vue app</p>
     <p>Examples:</p>
     <ul>
       <li><router-link to="markers">Markers</router-link></li>
