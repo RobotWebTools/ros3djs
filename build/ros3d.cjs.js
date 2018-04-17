@@ -1,5 +1,6 @@
-var ROS3D = (function (exports) {
 'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 // Polyfills
 
@@ -54760,7 +54761,3 @@ exports.MouseHandler = MouseHandler;
 exports.OrbitControls = OrbitControls;
 exports.SceneNode = SceneNode;
 exports.Viewer = Viewer;
-
-return exports;
-
-}({}));

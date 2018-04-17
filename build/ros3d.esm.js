@@ -1,6 +1,3 @@
-var ROS3D = (function (exports) {
-'use strict';
-
 // Polyfills
 
 if ( Number.EPSILON === undefined ) {
@@ -54693,74 +54690,4 @@ class Viewer {
   };
 }
 
-exports.REVISION = REVISION$1;
-exports.MARKER_ARROW = MARKER_ARROW;
-exports.MARKER_CUBE = MARKER_CUBE;
-exports.MARKER_SPHERE = MARKER_SPHERE;
-exports.MARKER_CYLINDER = MARKER_CYLINDER;
-exports.MARKER_LINE_STRIP = MARKER_LINE_STRIP;
-exports.MARKER_LINE_LIST = MARKER_LINE_LIST;
-exports.MARKER_CUBE_LIST = MARKER_CUBE_LIST;
-exports.MARKER_SPHERE_LIST = MARKER_SPHERE_LIST;
-exports.MARKER_POINTS = MARKER_POINTS;
-exports.MARKER_TEXT_VIEW_FACING = MARKER_TEXT_VIEW_FACING;
-exports.MARKER_MESH_RESOURCE = MARKER_MESH_RESOURCE;
-exports.MARKER_TRIANGLE_LIST = MARKER_TRIANGLE_LIST;
-exports.INTERACTIVE_MARKER_KEEP_ALIVE = INTERACTIVE_MARKER_KEEP_ALIVE;
-exports.INTERACTIVE_MARKER_POSE_UPDATE = INTERACTIVE_MARKER_POSE_UPDATE;
-exports.INTERACTIVE_MARKER_MENU_SELECT = INTERACTIVE_MARKER_MENU_SELECT;
-exports.INTERACTIVE_MARKER_BUTTON_CLICK = INTERACTIVE_MARKER_BUTTON_CLICK;
-exports.INTERACTIVE_MARKER_MOUSE_DOWN = INTERACTIVE_MARKER_MOUSE_DOWN;
-exports.INTERACTIVE_MARKER_MOUSE_UP = INTERACTIVE_MARKER_MOUSE_UP;
-exports.INTERACTIVE_MARKER_NONE = INTERACTIVE_MARKER_NONE;
-exports.INTERACTIVE_MARKER_MENU = INTERACTIVE_MARKER_MENU;
-exports.INTERACTIVE_MARKER_BUTTON = INTERACTIVE_MARKER_BUTTON;
-exports.INTERACTIVE_MARKER_MOVE_AXIS = INTERACTIVE_MARKER_MOVE_AXIS;
-exports.INTERACTIVE_MARKER_MOVE_PLANE = INTERACTIVE_MARKER_MOVE_PLANE;
-exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS;
-exports.INTERACTIVE_MARKER_MOVE_ROTATE = INTERACTIVE_MARKER_MOVE_ROTATE;
-exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT;
-exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED;
-exports.INTERACTIVE_MARKER_VIEW_FACING = INTERACTIVE_MARKER_VIEW_FACING;
-exports.makeColorMaterial = makeColorMaterial;
-exports.intersectPlane = intersectPlane;
-exports.findClosestPoint = findClosestPoint;
-exports.closestAxisPoint = closestAxisPoint;
-exports.DepthCloud = DepthCloud;
-exports.InteractiveMarker = InteractiveMarker;
-exports.InteractiveMarkerClient = InteractiveMarkerClient;
-exports.InteractiveMarkerControl = InteractiveMarkerControl;
-exports.InteractiveMarkerHandle = InteractiveMarkerHandle;
-exports.InteractiveMarkerMenu = InteractiveMarkerMenu;
-exports.Marker = Marker;
-exports.MarkerArrayClient = MarkerArrayClient;
-exports.MarkerClient = MarkerClient;
-exports.Arrow = Arrow;
-exports.Arrow2 = Arrow2;
-exports.Axes = Axes;
-exports.Grid = Grid;
-exports.MeshResource = MeshResource;
-exports.TriangleList = TriangleList;
-exports.OccupancyGrid = OccupancyGrid;
-exports.OccupancyGridClient = OccupancyGridClient;
-exports.Odometry = Odometry;
-exports.Path = Path$1;
-exports.Point = Point;
-exports.Polygon = Polygon;
-exports.Pose = Pose;
-exports.PoseArray = PoseArray;
-exports.PoseWithCovariance = PoseWithCovariance;
-exports.LaserScan = LaserScan;
-exports.Particles = Particles;
-exports.PointCloud2 = PointCloud2;
-exports.Urdf = Urdf;
-exports.UrdfClient = UrdfClient;
-exports.Highlighter = Highlighter;
-exports.MouseHandler = MouseHandler;
-exports.OrbitControls = OrbitControls;
-exports.SceneNode = SceneNode;
-exports.Viewer = Viewer;
-
-return exports;
-
-}({}));
+export { REVISION$1 as REVISION, MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose, PoseArray, PoseWithCovariance, LaserScan, Particles, PointCloud2, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
