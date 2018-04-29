@@ -1,4 +1,5 @@
 import THREE from '../../shims/three/core.js';
+import * as ROSLIB from 'roslib';
 
 import { makeColorMaterial } from '../Ros3D'
 import { MeshResource } from '../models/MeshResource'

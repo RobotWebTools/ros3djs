@@ -2,6 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var ROSLIB = require('roslib');
+
 // Polyfills
 
 if ( Number.EPSILON === undefined ) {

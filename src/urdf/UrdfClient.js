@@ -1,4 +1,5 @@
 import THREE from '../../shims/three/core.js';
+import * as ROSLIB from 'roslib';
 
 import { Urdf } from './Urdf'
 
