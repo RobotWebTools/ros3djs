@@ -1,6 +1,13 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author Mugen87 / https://github.com/Mugen87
+ *
+ *
+ * @Modified by Jihoon Lee from ColladerLoader.js@r88
+ * To support rviz compatible collada viewing.
+ * See: #202 why it is forked.
+ *
+ * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
  */
 
 import THREE from './core'
@@ -1619,9 +1626,11 @@ THREE.ColladaLoader.prototype = {
     }
 
     function getCamera(id) {
-
-      return getBuild(library.cameras[id], buildCamera);
-
+      var data = library.cameras[id];
+      if (data !== undefined) {
+        return getBuild(data, buildCamera);
+      }
+      return null;
     }
 
     // light
@@ -1744,9 +1753,15 @@ THREE.ColladaLoader.prototype = {
     }
 
     function getLight(id) {
+      var data = library.lights[id];
 
-      return getBuild(library.lights[id], buildLight);
+      if (data !== undefined) {
 
+        return getBuild(data, buildLight);
+
+      }
+
+      return null;
     }
 
     // geometry
@@ -3030,7 +3045,14 @@ THREE.ColladaLoader.prototype = {
 
       for (var i = 0, l = instanceCameras.length; i < l; i++) {
 
-        objects.push(getCamera(instanceCameras[i]).clone());
+        var instanceCamera = getCamera(instanceCameras[i]);
+
+        if (instanceCamera !== null) {
+
+          objects.push(instanceCamera.clone());
+
+        }
+
 
       }
 
@@ -3068,8 +3090,13 @@ THREE.ColladaLoader.prototype = {
       // instance lights
 
       for (var i = 0, l = instanceLights.length; i < l; i++) {
+        var instanceCamera = getCamera(instanceCameras[i]);
 
-        objects.push(getLight(instanceLights[i]).clone());
+        if (instanceCamera !== null) {
+
+          objects.push(instanceCamera.clone());
+
+        }
 
       }
 
@@ -3423,11 +3450,16 @@ THREE.ColladaLoader.prototype = {
 
     var scene = parseScene(getElementsByTagName(collada, 'scene')[0]);
 
-    if (asset.upAxis === 'Z_UP') {
+    /*
+     * up_axis of some robot models in ROS world aren't properly set because
+     * rviz ignores this field. Thus, ignores Z_UP to show urdfs just like rviz.
+     * See https://github.com/ros-visualization/rviz/issues/1045 for the detail
+      if ( asset.upAxis === 'Z_UP' ) {
 
-      scene.rotation.x = - Math.PI / 2;
+        scene.rotation.x = - Math.PI / 2;
 
-    }
+      }
+     */
 
     scene.scale.multiplyScalar(asset.unit);
 
