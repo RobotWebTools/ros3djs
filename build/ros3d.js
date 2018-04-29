@@ -1,4 +1,4 @@
-var ROS3D = (function (exports) {
+var ROS3D = (function (exports,ROSLIB) {
 'use strict';
 
 // Polyfills
@@ -54763,4 +54763,4 @@ exports.Viewer = Viewer;
 
 return exports;
 
-}({}));
+}({},ROSLIB));

@@ -520,11 +520,7 @@ const transpile = {
               break;
             }
             case 'ROSLIB': {
-              // Rollup is unable to be import ROSLIB due to
-              // the dynamic export semantics it uses. This will
-              // have to remain an implicit global dependency for now.
-              // importString = "import * as ROSLIB from 'roslib';"
-              importString = ""
+              importString = "import * as ROSLIB from 'roslib';"
               break;
             }
             case 'EventEmitter2': {

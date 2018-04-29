@@ -1,3 +1,5 @@
+import { TFClient, Pose, Transform, Topic, Service, ServiceRequest, URDF_MESH, URDF_BOX, URDF_CYLINDER, URDF_SPHERE, Param, UrdfModel } from 'roslib';
+
 // Polyfills
 
 if ( Number.EPSILON === undefined ) {
@@ -50174,7 +50176,7 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
 
     // temporary TFClient to get transformations from InteractiveMarker
     // frame to potential child Marker frames
-    var localTfClient = new ROSLIB.TFClient({
+    var localTfClient = new TFClient({
       ros : handle.tfClient.ros,
       fixedFrame : handle.message.header.frame_id,
       serverName : handle.tfClient.serverName
@@ -50192,12 +50194,12 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
         // if transformMsg isn't null, this was called by TFClient
         if (transformMsg !== null) {
           // get the current pose as a ROSLIB.Pose...
-          var newPose = new ROSLIB.Pose({
+          var newPose = new Pose({
             position : markerHelper.position,
             orientation : markerHelper.quaternion
           });
           // so we can apply the transform provided by the TFClient
-          newPose.applyTransform(new ROSLIB.Transform(transformMsg));
+          newPose.applyTransform(new Transform(transformMsg));
 
           // get transform between parent marker's location and its frame
           // apply it to sub-marker position to get sub-marker position
@@ -50211,7 +50213,7 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
           transformMarker.position.applyQuaternion(rotInv);
           transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
           var translation = new THREE$1.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
-          var transform = new ROSLIB.Transform({
+          var transform = new Transform({
             translation : translation,
             orientation : transformMarker.quaternion
           });
@@ -51543,8 +51545,8 @@ class InteractiveMarkerHandle extends eventemitter2 {
     this.menuEntries = this.message.menu_entries;
     this.dragging = false;
     this.timeoutHandle = null;
-    this.tfTransform = new ROSLIB.Transform();
-    this.pose = new ROSLIB.Pose();
+    this.tfTransform = new Transform();
+    this.pose = new Pose();
 
     this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
     this.onMouseDownBound = this.onMouseDown.bind(this);
@@ -51575,7 +51577,7 @@ class InteractiveMarkerHandle extends eventemitter2 {
    * Emit the new pose that has come from the server.
    */
   emitServerPoseUpdate() {
-    var poseTransformed = new ROSLIB.Pose(this.pose);
+    var poseTransformed = new Pose(this.pose);
     poseTransformed.applyTransform(this.tfTransform);
     this.emit('pose', poseTransformed);
   };
@@ -51586,7 +51588,7 @@ class InteractiveMarkerHandle extends eventemitter2 {
    * @param poseMsg - the pose given by the server
    */
   setPoseFromServer(poseMsg) {
-    this.pose = new ROSLIB.Pose(poseMsg);
+    this.pose = new Pose(poseMsg);
     this.emitServerPoseUpdate();
   };
 
@@ -51596,7 +51598,7 @@ class InteractiveMarkerHandle extends eventemitter2 {
    * @param transformMsg - the TF given by the server
    */
   tfUpdate(transformMsg) {
-    this.tfTransform = new ROSLIB.Transform(transformMsg);
+    this.tfTransform = new Transform(transformMsg);
     this.emitServerPoseUpdate();
   };
 
@@ -51607,7 +51609,7 @@ class InteractiveMarkerHandle extends eventemitter2 {
    */
   setPoseFromClient(event) {
     // apply the transform
-    this.pose = new ROSLIB.Pose(event);
+    this.pose = new Pose(event);
     var inv = this.tfTransform.clone();
     inv.rotation.invert();
     inv.translation.multiplyQuaternion(inv.rotation);
@@ -51755,7 +51757,7 @@ class InteractiveMarkerClient {
     // unsubscribe to the other topics
     this.unsubscribe();
 
-    this.updateTopic = new ROSLIB.Topic({
+    this.updateTopic = new Topic({
       ros : this.ros,
       name : topic + '/tunneled/update',
       messageType : 'visualization_msgs/InteractiveMarkerUpdate',
@@ -51763,7 +51765,7 @@ class InteractiveMarkerClient {
     });
     this.updateTopic.subscribe(this.processUpdate.bind(this));
 
-    this.feedbackTopic = new ROSLIB.Topic({
+    this.feedbackTopic = new Topic({
       ros : this.ros,
       name : topic + '/feedback',
       messageType : 'visualization_msgs/InteractiveMarkerFeedback',
@@ -51771,12 +51773,12 @@ class InteractiveMarkerClient {
     });
     this.feedbackTopic.advertise();
 
-    this.initService = new ROSLIB.Service({
+    this.initService = new Service({
       ros : this.ros,
       name : topic + '/tunneled/get_init',
       serviceType : 'demo_interactive_markers/GetInit'
     });
-    var request = new ROSLIB.ServiceRequest({});
+    var request = new ServiceRequest({});
     this.initService.callService(request, this.processInit.bind(this));
   };
 
@@ -51938,7 +51940,7 @@ class SceneNode extends THREE$1.Object3D {
     this.tfClient = options.tfClient;
     this.frameID = options.frameID;
     var object = options.object;
-    this.pose = options.pose || new ROSLIB.Pose();
+    this.pose = options.pose || new Pose();
 
     // Do not render this object until we receive a TF update
     this.visible = false;
@@ -51953,8 +51955,8 @@ class SceneNode extends THREE$1.Object3D {
     this.tfUpdate = function(msg) {
 
       // apply the transform
-      var tf = new ROSLIB.Transform(msg);
-      var poseTransformed = new ROSLIB.Pose(that.pose);
+      var tf = new Transform(msg);
+      var poseTransformed = new Pose(that.pose);
       poseTransformed.applyTransform(tf);
 
       // update the world
@@ -52026,7 +52028,7 @@ class MarkerArrayClient extends eventemitter2 {
     this.unsubscribe();
 
     // subscribe to MarkerArray topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/MarkerArray',
@@ -52137,7 +52139,7 @@ class MarkerClient extends eventemitter2 {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/Marker',
@@ -52484,7 +52486,7 @@ class OccupancyGridClient extends eventemitter2 {
     this.continuous = options.continuous;
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
-    this.offsetPose = options.offsetPose || new ROSLIB.Pose();
+    this.offsetPose = options.offsetPose || new Pose();
     this.color = options.color || {r:255,g:255,b:255};
     this.opacity = options.opacity || 1.0;
 
@@ -52506,7 +52508,7 @@ class OccupancyGridClient extends eventemitter2 {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
@@ -52607,7 +52609,7 @@ class Odometry extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/Odometry'
@@ -52687,7 +52689,7 @@ let Path$1 = class Path extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
         ros : this.ros,
         name : this.topicName,
         messageType : 'nav_msgs/Path'
@@ -52768,7 +52770,7 @@ class Point extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
         ros : this.ros,
         name : this.topicName,
         messageType : 'geometry_msgs/PointStamped'
@@ -52842,7 +52844,7 @@ class Polygon extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
         ros : this.ros,
         name : this.topicName,
         messageType : 'geometry_msgs/PolygonStamped'
@@ -52884,7 +52886,7 @@ class Polygon extends THREE$1.Object3D {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Pose extends THREE$1.Object3D {
+let Pose$1 = class Pose extends THREE$1.Object3D {
 
   /**
    * A PoseStamped client
@@ -52928,7 +52930,7 @@ class Pose extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
         ros : this.ros,
         name : this.topicName,
         messageType : 'geometry_msgs/PoseStamped'
@@ -52960,7 +52962,7 @@ class Pose extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+};
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -53008,7 +53010,7 @@ class PoseArray extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
        ros : this.ros,
        name : this.topicName,
        messageType : 'geometry_msgs/PoseArray'
@@ -53108,7 +53110,7 @@ class PoseWithCovariance extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
         ros : this.ros,
         name : this.topicName,
         messageType : 'geometry_msgs/PoseWithCovarianceStamped'
@@ -53322,7 +53324,7 @@ class LaserScan extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/LaserScan'
@@ -53426,7 +53428,7 @@ class PointCloud2 extends THREE$1.Object3D {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/PointCloud2'
@@ -53504,7 +53506,7 @@ class Urdf extends THREE$1.Object3D {
             var color = visual.material && visual.material.color;
             colorMaterial = makeColorMaterial(color.r, color.g, color.b, color.a);
           }
-          if (visual.geometry.type === ROSLIB.URDF_MESH) {
+          if (visual.geometry.type === URDF_MESH) {
             var uri = visual.geometry.filename;
             // strips package://
             var tmpIndex = uri.indexOf('package://');
@@ -53546,19 +53548,19 @@ class Urdf extends THREE$1.Object3D {
             var shapeMesh;
             // Create a shape
             switch (visual.geometry.type) {
-              case ROSLIB.URDF_BOX:
+              case URDF_BOX:
                 var dimension = visual.geometry.dimension;
                 var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
                 shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
                 break;
-              case ROSLIB.URDF_CYLINDER:
+              case URDF_CYLINDER:
                 var radius = visual.geometry.radius;
                 var length = visual.geometry.length;
                 var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
                 shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
                 shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
                 break;
-              case ROSLIB.URDF_SPHERE:
+              case URDF_SPHERE:
                 var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
                 shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
                 break;
@@ -53622,13 +53624,13 @@ class UrdfClient {
     this.loader = options.loader;
 
     // get the URDF value from ROS
-    var getParam = new ROSLIB.Param({
+    var getParam = new Param({
       ros : ros,
       name : this.param
     });
     getParam.get(function(string) {
       // hand off the XML string to the URDF model
-      var urdfModel = new ROSLIB.UrdfModel({
+      var urdfModel = new UrdfModel({
         string : string
       });
 
@@ -54690,4 +54692,4 @@ class Viewer {
   };
 }
 
-export { REVISION$1 as REVISION, MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose, PoseArray, PoseWithCovariance, LaserScan, Particles, PointCloud2, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
+export { REVISION$1 as REVISION, MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Particles, PointCloud2, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
