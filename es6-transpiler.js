@@ -376,6 +376,10 @@ const transpile = {
         .join(',')      // put them back into a string
         .trim()         // trim whitespace
 
+      if (!parent) {
+        logWarning('no parent found for super call disambiguation', { match, child, parent, callee, args })
+      }
+
       if (callee === parent) {
         // we got a super constructor call
         if (debugRules.logSuperConstructorCalls) {
@@ -396,7 +400,7 @@ const transpile = {
         }
 
         if (!partsMatch) {
-          logError('super method call invalid, parts dont match', { match, child, callee, args })
+          logError('super method call invalid, parts dont match', { match, child, parent, callee, args })
           return match
         }
 
