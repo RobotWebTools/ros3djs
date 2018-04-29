@@ -8,10 +8,10 @@
 
 ``` bash
 # 1. install dependencies
-npm install
+yarn install # or npm install
 
 # 2. start simple express webserver at localhost:3000
-npm start
+yarn start # or npm start
 
 # 3. open app and view examples
 # http://localhost:3000
