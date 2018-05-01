@@ -1,10 +1,11 @@
+/* jshint es5: false, esversion: 6, node: true */
 const {
   debugRules,
   dependencies,
   inheritance,
   injectImports,
   transpileToEs6
-} = require('./es6-transpiler')
+} = require('./es6-transpiler');
 
 // Export Grunt config
 module.exports = function(grunt) {
@@ -128,21 +129,21 @@ module.exports = function(grunt) {
     execute: {
       transpile: {
         call: (grunt, options) => {
-          console.log()
+          console.log();
           if (debugRules.logInternalDepsAtEnd) {
-            console.log('Internal dependencies')
-            console.log(dependencies.internalToString())
+            console.log('Internal dependencies');
+            console.log(dependencies.internalToString());
           }
           if (debugRules.logExternalDepsAtEnd) {
-            console.log('External dependencies')
-            console.log(dependencies.externalToString())
+            console.log('External dependencies');
+            console.log(dependencies.externalToString());
           }
           if (debugRules.logInheritanceAtEnd) {
-            console.log('Inheritance hierarchy')
-            console.log(inheritance.toString())
+            console.log('Inheritance hierarchy');
+            console.log(inheritance.toString());
           }
 
-          console.log()
+          console.log();
         },
       }
     }

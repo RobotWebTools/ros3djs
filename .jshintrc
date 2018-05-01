@@ -2,6 +2,7 @@
   "globals": {
     "module": true,
     "EventEmitter2": true,
+    "ROS3D": true,
     "ROSLIB": true,
     "THREE": true,
     "ColladaLoader2": true,

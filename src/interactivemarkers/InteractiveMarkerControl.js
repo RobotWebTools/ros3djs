@@ -204,8 +204,8 @@ ROS3D.InteractiveMarkerControl = function(options) {
 ROS3D.InteractiveMarkerControl.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld = function (force) {
-  const that = this;
-  const message = this.message;
+  var that = this;
+  var message = this.message;
   switch (message.orientation_mode) {
     case ROS3D.INTERACTIVE_MARKER_INHERIT:
       ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
@@ -248,4 +248,4 @@ ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld = function (force) {
       console.error('Unkown orientation mode: ' + message.orientation_mode);
       break;
   }
-}
+};
