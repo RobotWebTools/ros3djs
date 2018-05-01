@@ -48,34 +48,46 @@ export class MeshResource extends THREE.Object3D {
           console.warn(message);
         }
       };
-      loader.load(uri, function colladaReady(collada) {
-        // check for a scale factor in ColladaLoader2
-        // add a texture to anything that is missing one
-        if(material !== null) {
-          collada.scene.traverse(function(child) {
-            if(child instanceof THREE.Mesh) {
-              if(child.material === undefined) {
-                child.material = material;
+      loader.load(
+        uri,
+        function colladaReady(collada) {
+          // check for a scale factor in ColladaLoader2
+          // add a texture to anything that is missing one
+          if(material !== null) {
+            collada.scene.traverse(function(child) {
+              if(child instanceof THREE.Mesh) {
+                if(child.material === undefined) {
+                  child.material = material;
+                }
               }
-            }
-          });
-        }
+            });
+          }
 
-        that.add(collada.scene);
-      });
+          that.add(collada.scene);
+        },
+        /*onProgress=*/null,
+        function onLoadError(error) {
+          console.error(error);
+        });
     } else if (fileType === '.stl') {
       loader = new THREE.STLLoader();
       {
-        loader.load(uri, function ( geometry ) {
-          geometry.computeFaceNormals();
-          var mesh;
-          if(material !== null) {
-            mesh = new THREE.Mesh( geometry, material );
-          } else {
-            mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
-          }
-          that.add(mesh);
-        } );
+        loader.load(uri,
+                    function ( geometry ) {
+                      geometry.computeFaceNormals();
+                      var mesh;
+                      if(material !== null) {
+                        mesh = new THREE.Mesh( geometry, material );
+                      } else {
+                        mesh = new THREE.Mesh( geometry,
+                                               new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
+                      }
+                      that.add(mesh);
+                    },
+                    /*onProgress=*/null,
+                    function onLoadError(error) {
+                      console.error(error);
+                    });
       }
     }
   };
