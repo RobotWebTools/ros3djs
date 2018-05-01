@@ -4,12 +4,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    concat: {
-      build: {
-        src  : ['./src/*.js', './src/**/*.js'],
-        dest : './build/ros3d.js'
-      }
-    },
     jshint: {
       options: {
         jshintrc: '.jshintrc'
@@ -18,22 +12,19 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         './build/ros3d.js',
         './tests/*.js'
-      ]
+        ],
+      },
+    },
+    shell: {
+      build: {
+        command: 'rollup -c'
+      }
     },
     karma: {
       build: {
         configFile: './test/karma.conf.js',
         singleRun: true,
         browsers: ['PhantomJS']
-      }
-    },
-    uglify: {
-      options: {
-        report: 'min'
-      },
-      build: {
-        src: './build/ros3d.js',
-        dest: './build/ros3d.min.js'
       }
     },
     watch: {
@@ -83,12 +74,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-pipe');
   grunt.loadNpmTasks('grunt-execute');
+  grunt.loadNpmTasks('grunt-shell');
 
   grunt.registerTask('dev', ['concat', 'watch']);
   grunt.registerTask('build', ['concat', 'jshint', 'uglify']);
