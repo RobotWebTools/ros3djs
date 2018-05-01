@@ -18,12 +18,12 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-execute": "git+https://github.com/gruntjs-updater/grunt-execute.git#peerDep",
     "grunt-jsdoc": "^2.1.0",
     "grunt-karma": "^2.0.0",
     "grunt-pipe": "git+https://github.com/gruntjs-updater/grunt-pipe.git#peerDep",
+    "grunt-shell": "^2.1.0",
     "karma": "^1.1.1",
     "karma-chai": "^0.1.0",
     "mocha": "^3.2.0",
@@ -38,7 +38,7 @@
     "url": "https://github.com/RobotWebTools/ros3djs/releases"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "DEBUG=* grunt build",
     "transpile": "DEBUG=* grunt transpile"
   },
   "keywords": [

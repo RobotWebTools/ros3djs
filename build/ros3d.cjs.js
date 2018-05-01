@@ -50289,8 +50289,8 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
   };
 
   updateMatrixWorld (force) {
-    const that = this;
-    const message = this.message;
+    var that = this;
+    var message = this.message;
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
         super.updateMatrixWorld(force);
@@ -50333,7 +50333,7 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
         console.error('Unkown orientation mode: ' + message.orientation_mode);
         break;
     }
-  }
+  };
 }
 
 /**

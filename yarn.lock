@@ -1197,6 +1197,13 @@ grunt-legacy-util@~1.0.0:
   dependencies:
     cheerio "~0.12.2"
 
+grunt-shell@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/grunt-shell/-/grunt-shell-2.1.0.tgz#439f79159ed11e64a651a69cc8a3d02bebf5ecc2"
+  dependencies:
+    chalk "^1.0.0"
+    npm-run-path "^2.0.0"
+
 grunt@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/grunt/-/grunt-1.0.2.tgz#4e6a5e695b70472fd5304f5fa9e34236836a73bc"
