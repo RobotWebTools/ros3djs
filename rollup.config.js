@@ -30,7 +30,7 @@ const outputFiles = {
 };
 
 export default [
-  // build main as a CommonJS module for compatibility
+  // build main as ES5 in CommonJS format for compatibility
   {
     input,
     output: {
@@ -51,7 +51,7 @@ export default [
       filesize(),
     ],
   },
-  // build module as ES6 module for modern tooling
+  // build module as ES5 in ES module format for modern tooling
   {
     input,
     output: {
@@ -68,6 +68,7 @@ export default [
     plugins: [
       resolve({ browser: true }),
       commonjs(),
+      buble(),
       filesize(),
     ],
   },
