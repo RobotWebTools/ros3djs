@@ -60,6 +60,8 @@ if ( Object.assign === undefined ) {
 	( function () {
 
 		Object.assign = function ( target ) {
+			var arguments$1 = arguments;
+
 
 			if ( target === undefined || target === null ) {
 
@@ -71,7 +73,7 @@ if ( Object.assign === undefined ) {
 
 			for ( var index = 1; index < arguments.length; index ++ ) {
 
-				var source = arguments[ index ];
+				var source = arguments$1[ index ];
 
 				if ( source !== undefined && source !== null ) {
 
@@ -107,7 +109,7 @@ Object.assign( EventDispatcher.prototype, {
 
 	addEventListener: function ( type, listener ) {
 
-		if ( this._listeners === undefined ) this._listeners = {};
+		if ( this._listeners === undefined ) { this._listeners = {}; }
 
 		var listeners = this._listeners;
 
@@ -127,7 +129,7 @@ Object.assign( EventDispatcher.prototype, {
 
 	hasEventListener: function ( type, listener ) {
 
-		if ( this._listeners === undefined ) return false;
+		if ( this._listeners === undefined ) { return false; }
 
 		var listeners = this._listeners;
 
@@ -137,7 +139,7 @@ Object.assign( EventDispatcher.prototype, {
 
 	removeEventListener: function ( type, listener ) {
 
-		if ( this._listeners === undefined ) return;
+		if ( this._listeners === undefined ) { return; }
 
 		var listeners = this._listeners;
 		var listenerArray = listeners[ type ];
@@ -157,8 +159,10 @@ Object.assign( EventDispatcher.prototype, {
 	},
 
 	dispatchEvent: function ( event ) {
+		var this$1 = this;
 
-		if ( this._listeners === undefined ) return;
+
+		if ( this._listeners === undefined ) { return; }
 
 		var listeners = this._listeners;
 		var listenerArray = listeners[ event.type ];
@@ -171,7 +175,7 @@ Object.assign( EventDispatcher.prototype, {
 
 			for ( var i = 0, l = array.length; i < l; i ++ ) {
 
-				array[ i ].call( this, event );
+				array[ i ].call( this$1, event );
 
 			}
 
@@ -341,7 +345,7 @@ var _Math = {
 
 				} else {
 
-					if ( rnd <= 0x02 ) rnd = 0x2000000 + ( Math.random() * 0x1000000 ) | 0;
+					if ( rnd <= 0x02 ) { rnd = 0x2000000 + ( Math.random() * 0x1000000 ) | 0; }
 					r = rnd & 0xf;
 					rnd = rnd >> 4;
 					uuid += chars[ ( i === 19 ) ? ( r & 0x3 ) | 0x8 : r ];
@@ -391,8 +395,8 @@ var _Math = {
 
 	smoothstep: function ( x, min, max ) {
 
-		if ( x <= min ) return 0;
-		if ( x >= max ) return 1;
+		if ( x <= min ) { return 0; }
+		if ( x >= max ) { return 1; }
 
 		x = ( x - min ) / ( max - min );
 
@@ -402,8 +406,8 @@ var _Math = {
 
 	smootherstep: function ( x, min, max ) {
 
-		if ( x <= min ) return 0;
-		if ( x >= max ) return 1;
+		if ( x <= min ) { return 0; }
+		if ( x >= max ) { return 1; }
 
 		x = ( x - min ) / ( max - min );
 
@@ -852,7 +856,7 @@ Object.assign( Vector2.prototype, {
 
 		var angle = Math.atan2( this.y, this.x );
 
-		if ( angle < 0 ) angle += 2 * Math.PI;
+		if ( angle < 0 ) { angle += 2 * Math.PI; }
 
 		return angle;
 
@@ -906,7 +910,7 @@ Object.assign( Vector2.prototype, {
 
 	fromArray: function ( array, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.x = array[ offset ];
 		this.y = array[ offset + 1 ];
@@ -917,8 +921,8 @@ Object.assign( Vector2.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this.x;
 		array[ offset + 1 ] = this.y;
@@ -1405,6 +1409,8 @@ Object.assign( Matrix4.prototype, {
 		var v1 = new Vector3();
 
 		return function applyToBufferAttribute( attribute ) {
+			var this$1 = this;
+
 
 			for ( var i = 0, l = attribute.count; i < l; i ++ ) {
 
@@ -1412,7 +1418,7 @@ Object.assign( Matrix4.prototype, {
 				v1.y = attribute.getY( i );
 				v1.z = attribute.getZ( i );
 
-				v1.applyMatrix4( this );
+				v1.applyMatrix4( this$1 );
 
 				attribute.setXYZ( i, v1.x, v1.y, v1.z );
 
@@ -1735,7 +1741,7 @@ Object.assign( Matrix4.prototype, {
 
 			// if determine is negative, we need to invert one scale
 			var det = this.determinant();
-			if ( det < 0 ) sx = - sx;
+			if ( det < 0 ) { sx = - sx; }
 
 			position.x = te[ 12 ];
 			position.y = te[ 13 ];
@@ -1825,7 +1831,7 @@ Object.assign( Matrix4.prototype, {
 
 		for ( var i = 0; i < 16; i ++ ) {
 
-			if ( te[ i ] !== me[ i ] ) return false;
+			if ( te[ i ] !== me[ i ] ) { return false; }
 
 		}
 
@@ -1834,12 +1840,14 @@ Object.assign( Matrix4.prototype, {
 	},
 
 	fromArray: function ( array, offset ) {
+		var this$1 = this;
 
-		if ( offset === undefined ) offset = 0;
+
+		if ( offset === undefined ) { offset = 0; }
 
 		for ( var i = 0; i < 16; i ++ ) {
 
-			this.elements[ i ] = array[ i + offset ];
+			this$1.elements[ i ] = array[ i + offset ];
 
 		}
 
@@ -1849,8 +1857,8 @@ Object.assign( Matrix4.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		var te = this.elements;
 
@@ -2143,7 +2151,7 @@ Object.assign( Quaternion.prototype, {
 
 		}
 
-		if ( update !== false ) this.onChangeCallback();
+		if ( update !== false ) { this.onChangeCallback(); }
 
 		return this;
 
@@ -2238,7 +2246,7 @@ Object.assign( Quaternion.prototype, {
 
 		return function setFromUnitVectors( vFrom, vTo ) {
 
-			if ( v1 === undefined ) v1 = new Vector3();
+			if ( v1 === undefined ) { v1 = new Vector3(); }
 
 			r = vFrom.dot( vTo ) + 1;
 
@@ -2376,8 +2384,8 @@ Object.assign( Quaternion.prototype, {
 
 	slerp: function ( qb, t ) {
 
-		if ( t === 0 ) return this;
-		if ( t === 1 ) return this.copy( qb );
+		if ( t === 0 ) { return this; }
+		if ( t === 1 ) { return this.copy( qb ); }
 
 		var x = this._x, y = this._y, z = this._z, w = this._w;
 
@@ -2447,7 +2455,7 @@ Object.assign( Quaternion.prototype, {
 
 	fromArray: function ( array, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this._x = array[ offset ];
 		this._y = array[ offset + 1 ];
@@ -2462,8 +2470,8 @@ Object.assign( Quaternion.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this._x;
 		array[ offset + 1 ] = this._y;
@@ -3169,7 +3177,7 @@ Object.assign( Vector3.prototype, {
 
 	fromArray: function ( array, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.x = array[ offset ];
 		this.y = array[ offset + 1 ];
@@ -3181,8 +3189,8 @@ Object.assign( Vector3.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this.x;
 		array[ offset + 1 ] = this.y;
@@ -3305,6 +3313,8 @@ Object.assign( Matrix3.prototype, {
 		var v1 = new Vector3();
 
 		return function applyToBufferAttribute( attribute ) {
+			var this$1 = this;
+
 
 			for ( var i = 0, l = attribute.count; i < l; i ++ ) {
 
@@ -3312,7 +3322,7 @@ Object.assign( Matrix3.prototype, {
 				v1.y = attribute.getY( i );
 				v1.z = attribute.getZ( i );
 
-				v1.applyMatrix3( this );
+				v1.applyMatrix3( this$1 );
 
 				attribute.setXYZ( i, v1.x, v1.y, v1.z );
 
@@ -3547,7 +3557,7 @@ Object.assign( Matrix3.prototype, {
 
 		for ( var i = 0; i < 9; i ++ ) {
 
-			if ( te[ i ] !== me[ i ] ) return false;
+			if ( te[ i ] !== me[ i ] ) { return false; }
 
 		}
 
@@ -3556,12 +3566,14 @@ Object.assign( Matrix3.prototype, {
 	},
 
 	fromArray: function ( array, offset ) {
+		var this$1 = this;
 
-		if ( offset === undefined ) offset = 0;
+
+		if ( offset === undefined ) { offset = 0; }
 
 		for ( var i = 0; i < 9; i ++ ) {
 
-			this.elements[ i ] = array[ i + offset ];
+			this$1.elements[ i ] = array[ i + offset ];
 
 		}
 
@@ -3571,8 +3583,8 @@ Object.assign( Matrix3.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		var te = this.elements;
 
@@ -3657,7 +3669,7 @@ Object.defineProperty( Texture.prototype, "needsUpdate", {
 
 	set: function ( value ) {
 
-		if ( value === true ) this.version ++;
+		if ( value === true ) { this.version ++; }
 
 	}
 
@@ -3832,7 +3844,7 @@ Object.assign( Texture.prototype, EventDispatcher.prototype, {
 
 	transformUv: function ( uv ) {
 
-		if ( this.mapping !== UVMapping ) return;
+		if ( this.mapping !== UVMapping ) { return; }
 
 		uv.applyMatrix3( this.matrix );
 
@@ -4296,7 +4308,7 @@ Object.assign( Vector4.prototype, {
 		                   ( m13 - m31 ) * ( m13 - m31 ) +
 		                   ( m21 - m12 ) * ( m21 - m12 ) ); // used to normalize
 
-		if ( Math.abs( s ) < 0.001 ) s = 1;
+		if ( Math.abs( s ) < 0.001 ) { s = 1; }
 
 		// prevent divide by zero, should not happen if matrix is orthogonal and should be
 		// caught by singularity test above, but I've left it in just in case
@@ -4491,7 +4503,7 @@ Object.assign( Vector4.prototype, {
 
 	fromArray: function ( array, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.x = array[ offset ];
 		this.y = array[ offset + 1 ];
@@ -4504,8 +4516,8 @@ Object.assign( Vector4.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this.x;
 		array[ offset + 1 ] = this.y;
@@ -4560,7 +4572,7 @@ function WebGLRenderTarget( width, height, options ) {
 
 	options = options || {};
 
-	if ( options.minFilter === undefined ) options.minFilter = LinearFilter;
+	if ( options.minFilter === undefined ) { options.minFilter = LinearFilter; }
 
 	this.texture = new Texture( undefined, undefined, options.wrapS, options.wrapT, options.magFilter, options.minFilter, options.format, options.type, options.anisotropy, options.encoding );
 
@@ -4778,7 +4790,7 @@ function flatten( array, nBlocks, blockSize ) {
 
 	var firstElem = array[ 0 ];
 
-	if ( firstElem <= 0 || firstElem > 0 ) return array;
+	if ( firstElem <= 0 || firstElem > 0 ) { return array; }
 	// unoptimized: ! isNaN( firstElem )
 	// see http://jacksondunstan.com/articles/983
 
@@ -4823,7 +4835,7 @@ function allocTexUnits( renderer, n ) {
 	}
 
 	for ( var i = 0; i !== n; ++ i )
-		r[ i ] = renderer.allocTextureUnit();
+		{ r[ i ] = renderer.allocTextureUnit(); }
 
 	return r;
 
@@ -5197,7 +5209,7 @@ function parseUniform( activeInfo, addr, container ) {
 			idIsIndex = match[ 2 ] === ']',
 			subscript = match[ 3 ];
 
-		if ( idIsIndex ) id = id | 0; // convert to integer
+		if ( idIsIndex ) { id = id | 0; } // convert to integer
 
 		if ( subscript === undefined || subscript === '[' && matchEnd + 2 === pathLength ) {
 
@@ -5233,6 +5245,8 @@ function parseUniform( activeInfo, addr, container ) {
 // Root Container
 
 function WebGLUniforms( gl, program, renderer ) {
+	var this$1 = this;
+
 
 	UniformContainer.call( this );
 
@@ -5246,7 +5260,7 @@ function WebGLUniforms( gl, program, renderer ) {
 			path = info.name,
 			addr = gl.getUniformLocation( program, path );
 
-		parseUniform( info, addr, this );
+		parseUniform( info, addr, this$1 );
 
 	}
 
@@ -5256,7 +5270,7 @@ WebGLUniforms.prototype.setValue = function ( gl, name, value ) {
 
 	var u = this.map[ name ];
 
-	if ( u !== undefined ) u.setValue( gl, value, this.renderer );
+	if ( u !== undefined ) { u.setValue( gl, value, this.renderer ); }
 
 };
 
@@ -5264,7 +5278,7 @@ WebGLUniforms.prototype.setOptional = function ( gl, object, name ) {
 
 	var v = object[ name ];
 
-	if ( v !== undefined ) this.setValue( gl, name, v );
+	if ( v !== undefined ) { this.setValue( gl, name, v ); }
 
 };
 
@@ -5296,7 +5310,7 @@ WebGLUniforms.seqWithValue = function ( seq, values ) {
 	for ( var i = 0, n = seq.length; i !== n; ++ i ) {
 
 		var u = seq[ i ];
-		if ( u.id in values ) r.push( u );
+		if ( u.id in values ) { r.push( u ); }
 
 	}
 
@@ -5408,11 +5422,11 @@ Object.assign( Color.prototype, {
 
 		function hue2rgb( p, q, t ) {
 
-			if ( t < 0 ) t += 1;
-			if ( t > 1 ) t -= 1;
-			if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
-			if ( t < 1 / 2 ) return q;
-			if ( t < 2 / 3 ) return p + ( q - p ) * 6 * ( 2 / 3 - t );
+			if ( t < 0 ) { t += 1; }
+			if ( t > 1 ) { t -= 1; }
+			if ( t < 1 / 6 ) { return p + ( q - p ) * 6 * t; }
+			if ( t < 1 / 2 ) { return q; }
+			if ( t < 2 / 3 ) { return p + ( q - p ) * 6 * ( 2 / 3 - t ); }
 			return p;
 
 		}
@@ -5449,7 +5463,7 @@ Object.assign( Color.prototype, {
 
 		function handleAlpha( string ) {
 
-			if ( string === undefined ) return;
+			if ( string === undefined ) { return; }
 
 			if ( parseFloat( string ) < 1 ) {
 
@@ -5593,7 +5607,7 @@ Object.assign( Color.prototype, {
 
 	copyGammaToLinear: function ( color, gammaFactor ) {
 
-		if ( gammaFactor === undefined ) gammaFactor = 2.0;
+		if ( gammaFactor === undefined ) { gammaFactor = 2.0; }
 
 		this.r = Math.pow( color.r, gammaFactor );
 		this.g = Math.pow( color.g, gammaFactor );
@@ -5605,7 +5619,7 @@ Object.assign( Color.prototype, {
 
 	copyLinearToGamma: function ( color, gammaFactor ) {
 
-		if ( gammaFactor === undefined ) gammaFactor = 2.0;
+		if ( gammaFactor === undefined ) { gammaFactor = 2.0; }
 
 		var safeInverse = ( gammaFactor > 0 ) ? ( 1.0 / gammaFactor ) : 1.0;
 
@@ -5792,7 +5806,7 @@ Object.assign( Color.prototype, {
 
 	fromArray: function ( array, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.r = array[ offset ];
 		this.g = array[ offset + 1 ];
@@ -5804,8 +5818,8 @@ Object.assign( Color.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this.r;
 		array[ offset + 1 ] = this.g;
@@ -6013,12 +6027,14 @@ var UniformsLib = {
 var UniformsUtils = {
 
 	merge: function ( uniforms ) {
+		var this$1 = this;
+
 
 		var merged = {};
 
 		for ( var u = 0; u < uniforms.length; u ++ ) {
 
-			var tmp = this.clone( uniforms[ u ] );
+			var tmp = this$1.clone( uniforms[ u ] );
 
 			for ( var p in tmp ) {
 
@@ -6613,8 +6629,7 @@ var ShaderLib = {
 			{
 				color: { value: new Color( 0x00000 ) },
 				opacity: { value: 1.0 }
-			},
-		] ),
+			} ] ),
 
 		vertexShader: ShaderChunk.shadow_vert,
 		fragmentShader: ShaderChunk.shadow_frag
@@ -6661,12 +6676,14 @@ Object.assign( Box2.prototype, {
 	},
 
 	setFromPoints: function ( points ) {
+		var this$1 = this;
+
 
 		this.makeEmpty();
 
 		for ( var i = 0, il = points.length; i < il; i ++ ) {
 
-			this.expandByPoint( points[ i ] );
+			this$1.expandByPoint( points[ i ] );
 
 		}
 
@@ -7033,7 +7050,7 @@ function WebGLFlareRenderer( renderer, gl, state, textures, capabilities ) {
 
 	this.render = function ( flares, scene, camera, viewport ) {
 
-		if ( flares.length === 0 ) return;
+		if ( flares.length === 0 ) { return; }
 
 		var tempPosition = new Vector3();
 
@@ -7337,7 +7354,7 @@ function WebGLSpriteRenderer( renderer, gl, state, textures, capabilities ) {
 
 	this.render = function ( sprites, scene, camera ) {
 
-		if ( sprites.length === 0 ) return;
+		if ( sprites.length === 0 ) { return; }
 
 		// setup gl
 
@@ -7426,7 +7443,7 @@ function WebGLSpriteRenderer( renderer, gl, state, textures, capabilities ) {
 			var sprite = sprites[ i ];
 			var material = sprite.material;
 
-			if ( material.visible === false ) continue;
+			if ( material.visible === false ) { continue; }
 
 			sprite.onBeforeRender( renderer, scene, camera, undefined, material, undefined );
 
@@ -7697,8 +7714,10 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 	onBeforeCompile: function () {},
 
 	setValues: function ( values ) {
+		var this$1 = this;
 
-		if ( values === undefined ) return;
+
+		if ( values === undefined ) { return; }
 
 		for ( var key in values ) {
 
@@ -7714,17 +7733,17 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 			// for backward compatability if shading is set in the constructor
 			if ( key === 'shading' ) {
 
-				console.warn( 'THREE.' + this.type + ': .shading has been removed. Use the boolean .flatShading instead.' );
-				this.flatShading = ( newValue === FlatShading ) ? true : false;
+				console.warn( 'THREE.' + this$1.type + ': .shading has been removed. Use the boolean .flatShading instead.' );
+				this$1.flatShading = ( newValue === FlatShading ) ? true : false;
 				continue;
 
 			}
 
-			var currentValue = this[ key ];
+			var currentValue = this$1[ key ];
 
 			if ( currentValue === undefined ) {
 
-				console.warn( "THREE." + this.type + ": '" + key + "' is not a property of this material." );
+				console.warn( "THREE." + this$1.type + ": '" + key + "' is not a property of this material." );
 				continue;
 
 			}
@@ -7740,11 +7759,11 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 			} else if ( key === 'overdraw' ) {
 
 				// ensure overdraw is backwards-compatible with legacy boolean type
-				this[ key ] = Number( newValue );
+				this$1[ key ] = Number( newValue );
 
 			} else {
 
-				this[ key ] = newValue;
+				this$1[ key ] = newValue;
 
 			}
 
@@ -7777,24 +7796,24 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 		data.uuid = this.uuid;
 		data.type = this.type;
 
-		if ( this.name !== '' ) data.name = this.name;
+		if ( this.name !== '' ) { data.name = this.name; }
 
-		if ( this.color && this.color.isColor ) data.color = this.color.getHex();
+		if ( this.color && this.color.isColor ) { data.color = this.color.getHex(); }
 
-		if ( this.roughness !== undefined ) data.roughness = this.roughness;
-		if ( this.metalness !== undefined ) data.metalness = this.metalness;
+		if ( this.roughness !== undefined ) { data.roughness = this.roughness; }
+		if ( this.metalness !== undefined ) { data.metalness = this.metalness; }
 
-		if ( this.emissive && this.emissive.isColor ) data.emissive = this.emissive.getHex();
-		if ( this.emissiveIntensity !== 1 ) data.emissiveIntensity = this.emissiveIntensity;
+		if ( this.emissive && this.emissive.isColor ) { data.emissive = this.emissive.getHex(); }
+		if ( this.emissiveIntensity !== 1 ) { data.emissiveIntensity = this.emissiveIntensity; }
 
-		if ( this.specular && this.specular.isColor ) data.specular = this.specular.getHex();
-		if ( this.shininess !== undefined ) data.shininess = this.shininess;
-		if ( this.clearCoat !== undefined ) data.clearCoat = this.clearCoat;
-		if ( this.clearCoatRoughness !== undefined ) data.clearCoatRoughness = this.clearCoatRoughness;
+		if ( this.specular && this.specular.isColor ) { data.specular = this.specular.getHex(); }
+		if ( this.shininess !== undefined ) { data.shininess = this.shininess; }
+		if ( this.clearCoat !== undefined ) { data.clearCoat = this.clearCoat; }
+		if ( this.clearCoatRoughness !== undefined ) { data.clearCoatRoughness = this.clearCoatRoughness; }
 
-		if ( this.map && this.map.isTexture ) data.map = this.map.toJSON( meta ).uuid;
-		if ( this.alphaMap && this.alphaMap.isTexture ) data.alphaMap = this.alphaMap.toJSON( meta ).uuid;
-		if ( this.lightMap && this.lightMap.isTexture ) data.lightMap = this.lightMap.toJSON( meta ).uuid;
+		if ( this.map && this.map.isTexture ) { data.map = this.map.toJSON( meta ).uuid; }
+		if ( this.alphaMap && this.alphaMap.isTexture ) { data.alphaMap = this.alphaMap.toJSON( meta ).uuid; }
+		if ( this.lightMap && this.lightMap.isTexture ) { data.lightMap = this.lightMap.toJSON( meta ).uuid; }
 		if ( this.bumpMap && this.bumpMap.isTexture ) {
 
 			data.bumpMap = this.bumpMap.toJSON( meta ).uuid;
@@ -7814,11 +7833,11 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 			data.displacementBias = this.displacementBias;
 
 		}
-		if ( this.roughnessMap && this.roughnessMap.isTexture ) data.roughnessMap = this.roughnessMap.toJSON( meta ).uuid;
-		if ( this.metalnessMap && this.metalnessMap.isTexture ) data.metalnessMap = this.metalnessMap.toJSON( meta ).uuid;
+		if ( this.roughnessMap && this.roughnessMap.isTexture ) { data.roughnessMap = this.roughnessMap.toJSON( meta ).uuid; }
+		if ( this.metalnessMap && this.metalnessMap.isTexture ) { data.metalnessMap = this.metalnessMap.toJSON( meta ).uuid; }
 
-		if ( this.emissiveMap && this.emissiveMap.isTexture ) data.emissiveMap = this.emissiveMap.toJSON( meta ).uuid;
-		if ( this.specularMap && this.specularMap.isTexture ) data.specularMap = this.specularMap.toJSON( meta ).uuid;
+		if ( this.emissiveMap && this.emissiveMap.isTexture ) { data.emissiveMap = this.emissiveMap.toJSON( meta ).uuid; }
+		if ( this.specularMap && this.specularMap.isTexture ) { data.specularMap = this.specularMap.toJSON( meta ).uuid; }
 
 		if ( this.envMap && this.envMap.isTexture ) {
 
@@ -7833,44 +7852,44 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 
 		}
 
-		if ( this.size !== undefined ) data.size = this.size;
-		if ( this.sizeAttenuation !== undefined ) data.sizeAttenuation = this.sizeAttenuation;
+		if ( this.size !== undefined ) { data.size = this.size; }
+		if ( this.sizeAttenuation !== undefined ) { data.sizeAttenuation = this.sizeAttenuation; }
 
-		if ( this.blending !== NormalBlending ) data.blending = this.blending;
-		if ( this.flatShading === true ) data.flatShading = this.flatShading;
-		if ( this.side !== FrontSide ) data.side = this.side;
-		if ( this.vertexColors !== NoColors ) data.vertexColors = this.vertexColors;
+		if ( this.blending !== NormalBlending ) { data.blending = this.blending; }
+		if ( this.flatShading === true ) { data.flatShading = this.flatShading; }
+		if ( this.side !== FrontSide ) { data.side = this.side; }
+		if ( this.vertexColors !== NoColors ) { data.vertexColors = this.vertexColors; }
 
-		if ( this.opacity < 1 ) data.opacity = this.opacity;
-		if ( this.transparent === true ) data.transparent = this.transparent;
+		if ( this.opacity < 1 ) { data.opacity = this.opacity; }
+		if ( this.transparent === true ) { data.transparent = this.transparent; }
 
 		data.depthFunc = this.depthFunc;
 		data.depthTest = this.depthTest;
 		data.depthWrite = this.depthWrite;
 
 		// rotation (SpriteMaterial)
-		if ( this.rotation !== 0 ) data.rotation = this.rotation;
+		if ( this.rotation !== 0 ) { data.rotation = this.rotation; }
 
-		if ( this.linewidth !== 1 ) data.linewidth = this.linewidth;
-		if ( this.dashSize !== undefined ) data.dashSize = this.dashSize;
-		if ( this.gapSize !== undefined ) data.gapSize = this.gapSize;
-		if ( this.scale !== undefined ) data.scale = this.scale;
+		if ( this.linewidth !== 1 ) { data.linewidth = this.linewidth; }
+		if ( this.dashSize !== undefined ) { data.dashSize = this.dashSize; }
+		if ( this.gapSize !== undefined ) { data.gapSize = this.gapSize; }
+		if ( this.scale !== undefined ) { data.scale = this.scale; }
 
-		if ( this.dithering === true ) data.dithering = true;
+		if ( this.dithering === true ) { data.dithering = true; }
 
-		if ( this.alphaTest > 0 ) data.alphaTest = this.alphaTest;
-		if ( this.premultipliedAlpha === true ) data.premultipliedAlpha = this.premultipliedAlpha;
+		if ( this.alphaTest > 0 ) { data.alphaTest = this.alphaTest; }
+		if ( this.premultipliedAlpha === true ) { data.premultipliedAlpha = this.premultipliedAlpha; }
 
-		if ( this.wireframe === true ) data.wireframe = this.wireframe;
-		if ( this.wireframeLinewidth > 1 ) data.wireframeLinewidth = this.wireframeLinewidth;
-		if ( this.wireframeLinecap !== 'round' ) data.wireframeLinecap = this.wireframeLinecap;
-		if ( this.wireframeLinejoin !== 'round' ) data.wireframeLinejoin = this.wireframeLinejoin;
+		if ( this.wireframe === true ) { data.wireframe = this.wireframe; }
+		if ( this.wireframeLinewidth > 1 ) { data.wireframeLinewidth = this.wireframeLinewidth; }
+		if ( this.wireframeLinecap !== 'round' ) { data.wireframeLinecap = this.wireframeLinecap; }
+		if ( this.wireframeLinejoin !== 'round' ) { data.wireframeLinejoin = this.wireframeLinejoin; }
 
-		if ( this.morphTargets === true ) data.morphTargets = true;
-		if ( this.skinning === true ) data.skinning = true;
+		if ( this.morphTargets === true ) { data.morphTargets = true; }
+		if ( this.skinning === true ) { data.skinning = true; }
 
-		if ( this.visible === false ) data.visible = false;
-		if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
+		if ( this.visible === false ) { data.visible = false; }
+		if ( JSON.stringify( this.userData ) !== '{}' ) { data.userData = this.userData; }
 
 		// TODO: Copied from Object3D.toJSON
 
@@ -7895,8 +7914,8 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 			var textures = extractFromCache( meta.textures );
 			var images = extractFromCache( meta.images );
 
-			if ( textures.length > 0 ) data.textures = textures;
-			if ( images.length > 0 ) data.images = images;
+			if ( textures.length > 0 ) { data.textures = textures; }
+			if ( images.length > 0 ) { data.images = images; }
 
 		}
 
@@ -7966,7 +7985,7 @@ Object.assign( Material.prototype, EventDispatcher.prototype, {
 			dstPlanes = new Array( n );
 
 			for ( var i = 0; i !== n; ++ i )
-				dstPlanes[ i ] = srcPlanes[ i ].clone();
+				{ dstPlanes[ i ] = srcPlanes[ i ].clone(); }
 
 		}
 
@@ -8185,13 +8204,13 @@ Object.assign( Box3.prototype, {
 			var y = array[ i + 1 ];
 			var z = array[ i + 2 ];
 
-			if ( x < minX ) minX = x;
-			if ( y < minY ) minY = y;
-			if ( z < minZ ) minZ = z;
+			if ( x < minX ) { minX = x; }
+			if ( y < minY ) { minY = y; }
+			if ( z < minZ ) { minZ = z; }
 
-			if ( x > maxX ) maxX = x;
-			if ( y > maxY ) maxY = y;
-			if ( z > maxZ ) maxZ = z;
+			if ( x > maxX ) { maxX = x; }
+			if ( y > maxY ) { maxY = y; }
+			if ( z > maxZ ) { maxZ = z; }
 
 		}
 
@@ -8218,13 +8237,13 @@ Object.assign( Box3.prototype, {
 			var y = attribute.getY( i );
 			var z = attribute.getZ( i );
 
-			if ( x < minX ) minX = x;
-			if ( y < minY ) minY = y;
-			if ( z < minZ ) minZ = z;
+			if ( x < minX ) { minX = x; }
+			if ( y < minY ) { minY = y; }
+			if ( z < minZ ) { minZ = z; }
 
-			if ( x > maxX ) maxX = x;
-			if ( y > maxY ) maxY = y;
-			if ( z > maxZ ) maxZ = z;
+			if ( x > maxX ) { maxX = x; }
+			if ( y > maxY ) { maxY = y; }
+			if ( z > maxZ ) { maxZ = z; }
 
 		}
 
@@ -8236,12 +8255,14 @@ Object.assign( Box3.prototype, {
 	},
 
 	setFromPoints: function ( points ) {
+		var this$1 = this;
+
 
 		this.makeEmpty();
 
 		for ( var i = 0, il = points.length; i < il; i ++ ) {
 
-			this.expandByPoint( points[ i ] );
+			this$1.expandByPoint( points[ i ] );
 
 		}
 
@@ -8558,7 +8579,7 @@ Object.assign( Box3.prototype, {
 		this.max.min( box.max );
 
 		// ensure that if there is no overlap, the result is fully empty, not slightly empty with non-inf/+inf values that will cause subsequence intersects to erroneously return valid values.
-		if ( this.isEmpty() ) this.makeEmpty();
+		if ( this.isEmpty() ) { this.makeEmpty(); }
 
 		return this;
 
@@ -8589,7 +8610,7 @@ Object.assign( Box3.prototype, {
 		return function applyMatrix4( matrix ) {
 
 			// transform of empty box is an empty box.
-			if ( this.isEmpty() ) return this;
+			if ( this.isEmpty() ) { return this; }
 
 			// NOTE: I am using a binary pattern to specify all 2^3 combinations below
 			points[ 0 ].set( this.min.x, this.min.y, this.min.z ).applyMatrix4( matrix ); // 000
@@ -9103,7 +9124,7 @@ Object.assign( Frustum.prototype, {
 			var geometry = object.geometry;
 
 			if ( geometry.boundingSphere === null )
-				geometry.computeBoundingSphere();
+				{ geometry.computeBoundingSphere(); }
 
 			sphere.copy( geometry.boundingSphere )
 				.applyMatrix4( object.matrixWorld );
@@ -9299,10 +9320,10 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	this.render = function ( lights, scene, camera ) {
 
-		if ( scope.enabled === false ) return;
-		if ( scope.autoUpdate === false && scope.needsUpdate === false ) return;
+		if ( scope.enabled === false ) { return; }
+		if ( scope.autoUpdate === false && scope.needsUpdate === false ) { return; }
 
-		if ( lights.length === 0 ) return;
+		if ( lights.length === 0 ) { return; }
 
 		// TODO Clean up (needed in case of contextlost)
 		var _gl = _renderer.context;
@@ -9508,8 +9529,8 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 			var variantIndex = 0;
 
-			if ( useMorphing ) variantIndex |= _MorphingFlag;
-			if ( useSkinning ) variantIndex |= _SkinningFlag;
+			if ( useMorphing ) { variantIndex |= _MorphingFlag; }
+			if ( useSkinning ) { variantIndex |= _SkinningFlag; }
 
 			result = materialVariants[ variantIndex ];
 
@@ -9563,8 +9584,8 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 		if ( scope.renderReverseSided ) {
 
-			if ( side === FrontSide ) side = BackSide;
-			else if ( side === BackSide ) side = FrontSide;
+			if ( side === FrontSide ) { side = BackSide; }
+			else if ( side === BackSide ) { side = FrontSide; }
 
 		}
 
@@ -9591,7 +9612,7 @@ function WebGLShadowMap( _renderer, _objects, maxTextureSize ) {
 
 	function renderObject( object, camera, shadowCamera, isPointLight ) {
 
-		if ( object.visible === false ) return;
+		if ( object.visible === false ) { return; }
 
 		var visible = object.layers.test( camera.layers );
 
@@ -9746,7 +9767,7 @@ function WebGLAttributes( gl ) {
 
 	function get( attribute ) {
 
-		if ( attribute.isInterleavedBufferAttribute ) attribute = attribute.data;
+		if ( attribute.isInterleavedBufferAttribute ) { attribute = attribute.data; }
 
 		return buffers[ attribute.uuid ];
 
@@ -9754,7 +9775,7 @@ function WebGLAttributes( gl ) {
 
 	function remove( attribute ) {
 
-		if ( attribute.isInterleavedBufferAttribute ) attribute = attribute.data;
+		if ( attribute.isInterleavedBufferAttribute ) { attribute = attribute.data; }
 
 		var data = buffers[ attribute.uuid ];
 
@@ -9770,7 +9791,7 @@ function WebGLAttributes( gl ) {
 
 	function update( attribute, bufferType ) {
 
-		if ( attribute.isInterleavedBufferAttribute ) attribute = attribute.data;
+		if ( attribute.isInterleavedBufferAttribute ) { attribute = attribute.data; }
 
 		var data = buffers[ attribute.uuid ];
 
@@ -10042,7 +10063,7 @@ Object.assign( Euler.prototype, {
 
 		this._order = order;
 
-		if ( update !== false ) this.onChangeCallback();
+		if ( update !== false ) { this.onChangeCallback(); }
 
 		return this;
 
@@ -10095,7 +10116,7 @@ Object.assign( Euler.prototype, {
 		this._x = array[ 0 ];
 		this._y = array[ 1 ];
 		this._z = array[ 2 ];
-		if ( array[ 3 ] !== undefined ) this._order = array[ 3 ];
+		if ( array[ 3 ] !== undefined ) { this._order = array[ 3 ]; }
 
 		this.onChangeCallback();
 
@@ -10105,8 +10126,8 @@ Object.assign( Euler.prototype, {
 
 	toArray: function ( array, offset ) {
 
-		if ( array === undefined ) array = [];
-		if ( offset === undefined ) offset = 0;
+		if ( array === undefined ) { array = []; }
+		if ( offset === undefined ) { offset = 0; }
 
 		array[ offset ] = this._x;
 		array[ offset + 1 ] = this._y;
@@ -10515,12 +10536,15 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 	}(),
 
 	add: function ( object ) {
+		var arguments$1 = arguments;
+		var this$1 = this;
+
 
 		if ( arguments.length > 1 ) {
 
 			for ( var i = 0; i < arguments.length; i ++ ) {
 
-				this.add( arguments[ i ] );
+				this$1.add( arguments$1[ i ] );
 
 			}
 
@@ -10559,12 +10583,15 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 	},
 
 	remove: function ( object ) {
+		var arguments$1 = arguments;
+		var this$1 = this;
+
 
 		if ( arguments.length > 1 ) {
 
 			for ( var i = 0; i < arguments.length; i ++ ) {
 
-				this.remove( arguments[ i ] );
+				this$1.remove( arguments$1[ i ] );
 
 			}
 
@@ -10601,12 +10628,14 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 	},
 
 	getObjectByProperty: function ( name, value ) {
+		var this$1 = this;
 
-		if ( this[ name ] === value ) return this;
+
+		if ( this[ name ] === value ) { return this; }
 
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
-			var child = this.children[ i ];
+			var child = this$1.children[ i ];
 			var object = child.getObjectByProperty( name, value );
 
 			if ( object !== undefined ) {
@@ -10719,7 +10748,7 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 
 	traverseVisible: function ( callback ) {
 
-		if ( this.visible === false ) return;
+		if ( this.visible === false ) { return; }
 
 		callback( this );
 
@@ -10757,7 +10786,7 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 
 	updateMatrixWorld: function ( force ) {
 
-		if ( this.matrixAutoUpdate ) this.updateMatrix();
+		if ( this.matrixAutoUpdate ) { this.updateMatrix(); }
 
 		if ( this.matrixWorldNeedsUpdate || force ) {
 
@@ -10790,6 +10819,8 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 	},
 
 	toJSON: function ( meta ) {
+		var this$1 = this;
+
 
 		// meta is a string when called from JSON.stringify
 		var isRootObject = ( meta === undefined || typeof meta === 'string' );
@@ -10824,11 +10855,11 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 		object.uuid = this.uuid;
 		object.type = this.type;
 
-		if ( this.name !== '' ) object.name = this.name;
-		if ( this.castShadow === true ) object.castShadow = true;
-		if ( this.receiveShadow === true ) object.receiveShadow = true;
-		if ( this.visible === false ) object.visible = false;
-		if ( JSON.stringify( this.userData ) !== '{}' ) object.userData = this.userData;
+		if ( this.name !== '' ) { object.name = this.name; }
+		if ( this.castShadow === true ) { object.castShadow = true; }
+		if ( this.receiveShadow === true ) { object.receiveShadow = true; }
+		if ( this.visible === false ) { object.visible = false; }
+		if ( JSON.stringify( this.userData ) !== '{}' ) { object.userData = this.userData; }
 
 		object.matrix = this.matrix.toArray();
 
@@ -10860,7 +10891,7 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 
 				for ( var i = 0, l = this.material.length; i < l; i ++ ) {
 
-					uuids.push( serialize( meta.materials, this.material[ i ] ) );
+					uuids.push( serialize( meta.materials, this$1.material[ i ] ) );
 
 				}
 
@@ -10882,7 +10913,7 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 
 			for ( var i = 0; i < this.children.length; i ++ ) {
 
-				object.children.push( this.children[ i ].toJSON( meta ).object );
+				object.children.push( this$1.children[ i ].toJSON( meta ).object );
 
 			}
 
@@ -10895,10 +10926,10 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 			var textures = extractFromCache( meta.textures );
 			var images = extractFromCache( meta.images );
 
-			if ( geometries.length > 0 ) output.geometries = geometries;
-			if ( materials.length > 0 ) output.materials = materials;
-			if ( textures.length > 0 ) output.textures = textures;
-			if ( images.length > 0 ) output.images = images;
+			if ( geometries.length > 0 ) { output.geometries = geometries; }
+			if ( materials.length > 0 ) { output.materials = materials; }
+			if ( textures.length > 0 ) { output.textures = textures; }
+			if ( images.length > 0 ) { output.images = images; }
 
 		}
 
@@ -10932,8 +10963,10 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 	},
 
 	copy: function ( source, recursive ) {
+		var this$1 = this;
 
-		if ( recursive === undefined ) recursive = true;
+
+		if ( recursive === undefined ) { recursive = true; }
 
 		this.name = source.name;
 
@@ -10965,7 +10998,7 @@ Object.assign( Object3D.prototype, EventDispatcher.prototype, {
 			for ( var i = 0; i < source.children.length; i ++ ) {
 
 				var child = source.children[ i ];
-				this.add( child.clone() );
+				this$1.add( child.clone() );
 
 			}
 
@@ -11175,7 +11208,7 @@ OrthographicCamera.prototype = Object.assign( Object.create( Camera.prototype ),
 		data.object.near = this.near;
 		data.object.far = this.far;
 
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+		if ( this.view !== null ) { data.object.view = Object.assign( {}, this.view ); }
 
 		return data;
 
@@ -11213,6 +11246,8 @@ Object.assign( Face3.prototype, {
 	},
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		this.a = source.a;
 		this.b = source.b;
@@ -11225,13 +11260,13 @@ Object.assign( Face3.prototype, {
 
 		for ( var i = 0, il = source.vertexNormals.length; i < il; i ++ ) {
 
-			this.vertexNormals[ i ] = source.vertexNormals[ i ].clone();
+			this$1.vertexNormals[ i ] = source.vertexNormals[ i ].clone();
 
 		}
 
 		for ( var i = 0, il = source.vertexColors.length; i < il; i ++ ) {
 
-			this.vertexColors[ i ] = source.vertexColors[ i ].clone();
+			this$1.vertexColors[ i ] = source.vertexColors[ i ].clone();
 
 		}
 
@@ -11294,19 +11329,21 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	isGeometry: true,
 
 	applyMatrix: function ( matrix ) {
+		var this$1 = this;
+
 
 		var normalMatrix = new Matrix3().getNormalMatrix( matrix );
 
 		for ( var i = 0, il = this.vertices.length; i < il; i ++ ) {
 
-			var vertex = this.vertices[ i ];
+			var vertex = this$1.vertices[ i ];
 			vertex.applyMatrix4( matrix );
 
 		}
 
 		for ( var i = 0, il = this.faces.length; i < il; i ++ ) {
 
-			var face = this.faces[ i ];
+			var face = this$1.faces[ i ];
 			face.normal.applyMatrix3( normalMatrix ).normalize();
 
 			for ( var j = 0, jl = face.vertexNormals.length; j < jl; j ++ ) {
@@ -11455,7 +11492,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 		var uvs = attributes.uv !== undefined ? attributes.uv.array : undefined;
 		var uvs2 = attributes.uv2 !== undefined ? attributes.uv2.array : undefined;
 
-		if ( uvs2 !== undefined ) this.faceVertexUvs[ 1 ] = [];
+		if ( uvs2 !== undefined ) { this.faceVertexUvs[ 1 ] = []; }
 
 		var tempNormals = [];
 		var tempUVs = [];
@@ -11617,16 +11654,18 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	computeFaceNormals: function () {
+		var this$1 = this;
+
 
 		var cb = new Vector3(), ab = new Vector3();
 
 		for ( var f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			var face = this.faces[ f ];
+			var face = this$1.faces[ f ];
 
-			var vA = this.vertices[ face.a ];
-			var vB = this.vertices[ face.b ];
-			var vC = this.vertices[ face.c ];
+			var vA = this$1.vertices[ face.a ];
+			var vB = this$1.vertices[ face.b ];
+			var vC = this$1.vertices[ face.c ];
 
 			cb.subVectors( vC, vB );
 			ab.subVectors( vA, vB );
@@ -11641,8 +11680,10 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	computeVertexNormals: function ( areaWeighted ) {
+		var this$1 = this;
 
-		if ( areaWeighted === undefined ) areaWeighted = true;
+
+		if ( areaWeighted === undefined ) { areaWeighted = true; }
 
 		var v, vl, f, fl, face, vertices;
 
@@ -11664,11 +11705,11 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this.faces[ f ];
+				face = this$1.faces[ f ];
 
-				vA = this.vertices[ face.a ];
-				vB = this.vertices[ face.b ];
-				vC = this.vertices[ face.c ];
+				vA = this$1.vertices[ face.a ];
+				vB = this$1.vertices[ face.b ];
+				vC = this$1.vertices[ face.c ];
 
 				cb.subVectors( vC, vB );
 				ab.subVectors( vA, vB );
@@ -11686,7 +11727,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this.faces[ f ];
+				face = this$1.faces[ f ];
 
 				vertices[ face.a ].add( face.normal );
 				vertices[ face.b ].add( face.normal );
@@ -11704,7 +11745,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this.faces[ f ];
+			face = this$1.faces[ f ];
 
 			var vertexNormals = face.vertexNormals;
 
@@ -11733,6 +11774,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	computeFlatVertexNormals: function () {
+		var this$1 = this;
+
 
 		var f, fl, face;
 
@@ -11740,7 +11783,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this.faces[ f ];
+			face = this$1.faces[ f ];
 
 			var vertexNormals = face.vertexNormals;
 
@@ -11769,6 +11812,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	computeMorphNormals: function () {
+		var this$1 = this;
+
 
 		var i, il, f, fl, face;
 
@@ -11778,7 +11823,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this.faces[ f ];
+			face = this$1.faces[ f ];
 
 			if ( ! face.__originalFaceNormal ) {
 
@@ -11790,7 +11835,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			if ( ! face.__originalVertexNormals ) face.__originalVertexNormals = [];
+			if ( ! face.__originalVertexNormals ) { face.__originalVertexNormals = []; }
 
 			for ( i = 0, il = face.vertexNormals.length; i < il; i ++ ) {
 
@@ -11817,14 +11862,14 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			// create on first access
 
-			if ( ! this.morphNormals[ i ] ) {
+			if ( ! this$1.morphNormals[ i ] ) {
 
-				this.morphNormals[ i ] = {};
-				this.morphNormals[ i ].faceNormals = [];
-				this.morphNormals[ i ].vertexNormals = [];
+				this$1.morphNormals[ i ] = {};
+				this$1.morphNormals[ i ].faceNormals = [];
+				this$1.morphNormals[ i ].vertexNormals = [];
 
-				var dstNormalsFace = this.morphNormals[ i ].faceNormals;
-				var dstNormalsVertex = this.morphNormals[ i ].vertexNormals;
+				var dstNormalsFace = this$1.morphNormals[ i ].faceNormals;
+				var dstNormalsVertex = this$1.morphNormals[ i ].vertexNormals;
 
 				var faceNormal, vertexNormals;
 
@@ -11840,11 +11885,11 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			var morphNormals = this.morphNormals[ i ];
+			var morphNormals = this$1.morphNormals[ i ];
 
 			// set vertices to morph target
 
-			tmpGeo.vertices = this.morphTargets[ i ].vertices;
+			tmpGeo.vertices = this$1.morphTargets[ i ].vertices;
 
 			// compute morph normals
 
@@ -11857,7 +11902,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this.faces[ f ];
+				face = this$1.faces[ f ];
 
 				faceNormal = morphNormals.faceNormals[ f ];
 				vertexNormals = morphNormals.vertexNormals[ f ];
@@ -11876,7 +11921,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this.faces[ f ];
+			face = this$1.faces[ f ];
 
 			face.normal = face.__originalFaceNormal;
 			face.vertexNormals = face.__originalVertexNormals;
@@ -11886,6 +11931,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	computeLineDistances: function () {
+		var this$1 = this;
+
 
 		var d = 0;
 		var vertices = this.vertices;
@@ -11898,7 +11945,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			this.lineDistances[ i ] = d;
+			this$1.lineDistances[ i ] = d;
 
 		}
 
@@ -11948,7 +11995,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 			colors1 = this.colors,
 			colors2 = geometry.colors;
 
-		if ( materialIndexOffset === undefined ) materialIndexOffset = 0;
+		if ( materialIndexOffset === undefined ) { materialIndexOffset = 0; }
 
 		if ( matrix !== undefined ) {
 
@@ -11964,7 +12011,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			var vertexCopy = vertex.clone();
 
-			if ( matrix !== undefined ) vertexCopy.applyMatrix4( matrix );
+			if ( matrix !== undefined ) { vertexCopy.applyMatrix4( matrix ); }
 
 			vertices1.push( vertexCopy );
 
@@ -12070,6 +12117,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	 */
 
 	mergeVertices: function () {
+		var this$1 = this;
+
 
 		var verticesMap = {}; // Hashmap for looking up vertices by position coordinates (and making sure they are unique)
 		var unique = [], changes = [];
@@ -12082,13 +12131,13 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = this.vertices.length; i < il; i ++ ) {
 
-			v = this.vertices[ i ];
+			v = this$1.vertices[ i ];
 			key = Math.round( v.x * precision ) + '_' + Math.round( v.y * precision ) + '_' + Math.round( v.z * precision );
 
 			if ( verticesMap[ key ] === undefined ) {
 
 				verticesMap[ key ] = i;
-				unique.push( this.vertices[ i ] );
+				unique.push( this$1.vertices[ i ] );
 				changes[ i ] = unique.length - 1;
 
 			} else {
@@ -12107,7 +12156,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = this.faces.length; i < il; i ++ ) {
 
-			face = this.faces[ i ];
+			face = this$1.faces[ i ];
 
 			face.a = changes[ face.a ];
 			face.b = changes[ face.b ];
@@ -12134,11 +12183,11 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			var idx = faceIndicesToRemove[ i ];
 
-			this.faces.splice( idx, 1 );
+			this$1.faces.splice( idx, 1 );
 
 			for ( j = 0, jl = this.faceVertexUvs.length; j < jl; j ++ ) {
 
-				this.faceVertexUvs[ j ].splice( idx, 1 );
+				this$1.faceVertexUvs[ j ].splice( idx, 1 );
 
 			}
 
@@ -12153,13 +12202,15 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	setFromPoints: function ( points ) {
+		var this$1 = this;
+
 
 		this.vertices = [];
 
 		for ( var i = 0, l = points.length; i < l; i ++ ) {
 
 			var point = points[ i ];
-			this.vertices.push( new Vector3( point.x, point.y, point.z || 0 ) );
+			this$1.vertices.push( new Vector3( point.x, point.y, point.z || 0 ) );
 
 		}
 
@@ -12197,24 +12248,26 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		var newUvs1, newUvs2;
 
-		if ( uvs1 && uvs1.length === length ) newUvs1 = [];
-		if ( uvs2 && uvs2.length === length ) newUvs2 = [];
+		if ( uvs1 && uvs1.length === length ) { newUvs1 = []; }
+		if ( uvs2 && uvs2.length === length ) { newUvs2 = []; }
 
 		for ( var i = 0; i < length; i ++ ) {
 
 			var id = faces[ i ]._id;
 
-			if ( newUvs1 ) newUvs1.push( uvs1[ id ] );
-			if ( newUvs2 ) newUvs2.push( uvs2[ id ] );
+			if ( newUvs1 ) { newUvs1.push( uvs1[ id ] ); }
+			if ( newUvs2 ) { newUvs2.push( uvs2[ id ] ); }
 
 		}
 
-		if ( newUvs1 ) this.faceVertexUvs[ 0 ] = newUvs1;
-		if ( newUvs2 ) this.faceVertexUvs[ 1 ] = newUvs2;
+		if ( newUvs1 ) { this.faceVertexUvs[ 0 ] = newUvs1; }
+		if ( newUvs2 ) { this.faceVertexUvs[ 1 ] = newUvs2; }
 
 	},
 
 	toJSON: function () {
+		var this$1 = this;
+
 
 		var data = {
 			metadata: {
@@ -12228,7 +12281,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		data.uuid = this.uuid;
 		data.type = this.type;
-		if ( this.name !== '' ) data.name = this.name;
+		if ( this.name !== '' ) { data.name = this.name; }
 
 		if ( this.parameters !== undefined ) {
 
@@ -12236,7 +12289,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			for ( var key in parameters ) {
 
-				if ( parameters[ key ] !== undefined ) data[ key ] = parameters[ key ];
+				if ( parameters[ key ] !== undefined ) { data[ key ] = parameters[ key ]; }
 
 			}
 
@@ -12248,7 +12301,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( var i = 0; i < this.vertices.length; i ++ ) {
 
-			var vertex = this.vertices[ i ];
+			var vertex = this$1.vertices[ i ];
 			vertices.push( vertex.x, vertex.y, vertex.z );
 
 		}
@@ -12263,11 +12316,11 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( var i = 0; i < this.faces.length; i ++ ) {
 
-			var face = this.faces[ i ];
+			var face = this$1.faces[ i ];
 
 			var hasMaterial = true;
 			var hasFaceUv = false; // deprecated
-			var hasFaceVertexUv = this.faceVertexUvs[ 0 ][ i ] !== undefined;
+			var hasFaceVertexUv = this$1.faceVertexUvs[ 0 ][ i ] !== undefined;
 			var hasFaceNormal = face.normal.length() > 0;
 			var hasFaceVertexNormal = face.vertexNormals.length > 0;
 			var hasFaceColor = face.color.r !== 1 || face.color.g !== 1 || face.color.b !== 1;
@@ -12290,7 +12343,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			if ( hasFaceVertexUv ) {
 
-				var faceVertexUvs = this.faceVertexUvs[ 0 ][ i ];
+				var faceVertexUvs = this$1.faceVertexUvs[ 0 ][ i ];
 
 				faces.push(
 					getUvIndex( faceVertexUvs[ 0 ] ),
@@ -12399,8 +12452,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		data.data.vertices = vertices;
 		data.data.normals = normals;
-		if ( colors.length > 0 ) data.data.colors = colors;
-		if ( uvs.length > 0 ) data.data.uvs = [ uvs ]; // temporal backward compatibility
+		if ( colors.length > 0 ) { data.data.colors = colors; }
+		if ( uvs.length > 0 ) { data.data.uvs = [ uvs ]; } // temporal backward compatibility
 		data.data.faces = faces;
 
 		return data;
@@ -12438,6 +12491,8 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 	},
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		var i, il, j, jl, k, kl;
 
@@ -12465,7 +12520,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = vertices.length; i < il; i ++ ) {
 
-			this.vertices.push( vertices[ i ].clone() );
+			this$1.vertices.push( vertices[ i ].clone() );
 
 		}
 
@@ -12475,7 +12530,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = colors.length; i < il; i ++ ) {
 
-			this.colors.push( colors[ i ].clone() );
+			this$1.colors.push( colors[ i ].clone() );
 
 		}
 
@@ -12485,7 +12540,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = faces.length; i < il; i ++ ) {
 
-			this.faces.push( faces[ i ].clone() );
+			this$1.faces.push( faces[ i ].clone() );
 
 		}
 
@@ -12495,9 +12550,9 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			var faceVertexUvs = source.faceVertexUvs[ i ];
 
-			if ( this.faceVertexUvs[ i ] === undefined ) {
+			if ( this$1.faceVertexUvs[ i ] === undefined ) {
 
-				this.faceVertexUvs[ i ] = [];
+				this$1.faceVertexUvs[ i ] = [];
 
 			}
 
@@ -12513,7 +12568,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 				}
 
-				this.faceVertexUvs[ i ].push( uvsCopy );
+				this$1.faceVertexUvs[ i ].push( uvsCopy );
 
 			}
 
@@ -12556,7 +12611,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			this.morphTargets.push( morphTarget );
+			this$1.morphTargets.push( morphTarget );
 
 		}
 
@@ -12603,7 +12658,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			this.morphNormals.push( morphNormal );
+			this$1.morphNormals.push( morphNormal );
 
 		}
 
@@ -12613,7 +12668,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = skinWeights.length; i < il; i ++ ) {
 
-			this.skinWeights.push( skinWeights[ i ].clone() );
+			this$1.skinWeights.push( skinWeights[ i ].clone() );
 
 		}
 
@@ -12623,7 +12678,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = skinIndices.length; i < il; i ++ ) {
 
-			this.skinIndices.push( skinIndices[ i ].clone() );
+			this$1.skinIndices.push( skinIndices[ i ].clone() );
 
 		}
 
@@ -12633,7 +12688,7 @@ Object.assign( Geometry.prototype, EventDispatcher.prototype, {
 
 		for ( i = 0, il = lineDistances.length; i < il; i ++ ) {
 
-			this.lineDistances.push( lineDistances[ i ] );
+			this$1.lineDistances.push( lineDistances[ i ] );
 
 		}
 
@@ -12712,7 +12767,7 @@ Object.defineProperty( BufferAttribute.prototype, 'needsUpdate', {
 
 	set: function ( value ) {
 
-		if ( value === true ) this.version ++;
+		if ( value === true ) { this.version ++; }
 
 	}
 
@@ -12757,13 +12812,15 @@ Object.assign( BufferAttribute.prototype, {
 	},
 
 	copyAt: function ( index1, attribute, index2 ) {
+		var this$1 = this;
+
 
 		index1 *= this.itemSize;
 		index2 *= attribute.itemSize;
 
 		for ( var i = 0, l = this.itemSize; i < l; i ++ ) {
 
-			this.array[ index1 + i ] = attribute.array[ index2 + i ];
+			this$1.array[ index1 + i ] = attribute.array[ index2 + i ];
 
 		}
 
@@ -12899,7 +12956,7 @@ Object.assign( BufferAttribute.prototype, {
 
 	set: function ( value, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.array.set( value, offset );
 
@@ -13189,6 +13246,8 @@ Object.assign( DirectGeometry.prototype, {
 	},
 
 	fromGeometry: function ( geometry ) {
+		var this$1 = this;
+
 
 		var faces = geometry.faces;
 		var vertices = geometry.vertices;
@@ -13251,19 +13310,19 @@ Object.assign( DirectGeometry.prototype, {
 
 			var face = faces[ i ];
 
-			this.vertices.push( vertices[ face.a ], vertices[ face.b ], vertices[ face.c ] );
+			this$1.vertices.push( vertices[ face.a ], vertices[ face.b ], vertices[ face.c ] );
 
 			var vertexNormals = face.vertexNormals;
 
 			if ( vertexNormals.length === 3 ) {
 
-				this.normals.push( vertexNormals[ 0 ], vertexNormals[ 1 ], vertexNormals[ 2 ] );
+				this$1.normals.push( vertexNormals[ 0 ], vertexNormals[ 1 ], vertexNormals[ 2 ] );
 
 			} else {
 
 				var normal = face.normal;
 
-				this.normals.push( normal, normal, normal );
+				this$1.normals.push( normal, normal, normal );
 
 			}
 
@@ -13271,13 +13330,13 @@ Object.assign( DirectGeometry.prototype, {
 
 			if ( vertexColors.length === 3 ) {
 
-				this.colors.push( vertexColors[ 0 ], vertexColors[ 1 ], vertexColors[ 2 ] );
+				this$1.colors.push( vertexColors[ 0 ], vertexColors[ 1 ], vertexColors[ 2 ] );
 
 			} else {
 
 				var color = face.color;
 
-				this.colors.push( color, color, color );
+				this$1.colors.push( color, color, color );
 
 			}
 
@@ -13287,13 +13346,13 @@ Object.assign( DirectGeometry.prototype, {
 
 				if ( vertexUvs !== undefined ) {
 
-					this.uvs.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
+					this$1.uvs.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
 
 				} else {
 
 					console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv ', i );
 
-					this.uvs.push( new Vector2(), new Vector2(), new Vector2() );
+					this$1.uvs.push( new Vector2(), new Vector2(), new Vector2() );
 
 				}
 
@@ -13305,13 +13364,13 @@ Object.assign( DirectGeometry.prototype, {
 
 				if ( vertexUvs !== undefined ) {
 
-					this.uvs2.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
+					this$1.uvs2.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
 
 				} else {
 
 					console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv2 ', i );
 
-					this.uvs2.push( new Vector2(), new Vector2(), new Vector2() );
+					this$1.uvs2.push( new Vector2(), new Vector2(), new Vector2() );
 
 				}
 
@@ -13339,13 +13398,13 @@ Object.assign( DirectGeometry.prototype, {
 
 			if ( hasSkinIndices ) {
 
-				this.skinIndices.push( skinIndices[ face.a ], skinIndices[ face.b ], skinIndices[ face.c ] );
+				this$1.skinIndices.push( skinIndices[ face.a ], skinIndices[ face.b ], skinIndices[ face.c ] );
 
 			}
 
 			if ( hasSkinWeights ) {
 
-				this.skinWeights.push( skinWeights[ face.a ], skinWeights[ face.b ], skinWeights[ face.c ] );
+				this$1.skinWeights.push( skinWeights[ face.a ], skinWeights[ face.b ], skinWeights[ face.c ] );
 
 			}
 
@@ -13371,13 +13430,13 @@ Object.assign( DirectGeometry.prototype, {
 
 function arrayMax( array ) {
 
-	if ( array.length === 0 ) return - Infinity;
+	if ( array.length === 0 ) { return - Infinity; }
 
 	var max = array[ 0 ];
 
 	for ( var i = 1, l = array.length; i < l; ++ i ) {
 
-		if ( array[ i ] > max ) max = array[ i ];
+		if ( array[ i ] > max ) { max = array[ i ]; }
 
 	}
 
@@ -13862,6 +13921,8 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 	},
 
 	fromDirectGeometry: function ( geometry ) {
+		var this$1 = this;
+
 
 		var positions = new Float32Array( geometry.vertices.length * 3 );
 		this.addAttribute( 'position', new BufferAttribute( positions, 3 ).copyVector3sArray( geometry.vertices ) );
@@ -13923,7 +13984,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			this.morphAttributes[ name ] = array;
+			this$1.morphAttributes[ name ] = array;
 
 		}
 
@@ -14175,13 +14236,13 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 		}
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		var attributes = this.attributes;
 
 		for ( var key in attributes ) {
 
-			if ( geometry.attributes[ key ] === undefined ) continue;
+			if ( geometry.attributes[ key ] === undefined ) { continue; }
 
 			var attribute1 = attributes[ key ];
 			var attributeArray1 = attribute1.array;
@@ -14286,7 +14347,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 		data.uuid = this.uuid;
 		data.type = this.type;
-		if ( this.name !== '' ) data.name = this.name;
+		if ( this.name !== '' ) { data.name = this.name; }
 
 		if ( this.parameters !== undefined ) {
 
@@ -14294,7 +14355,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 			for ( var key in parameters ) {
 
-				if ( parameters[ key ] !== undefined ) data[ key ] = parameters[ key ];
+				if ( parameters[ key ] !== undefined ) { data[ key ] = parameters[ key ]; }
 
 			}
 
@@ -14388,6 +14449,8 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 	},
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		var name, i, l;
 
@@ -14421,7 +14484,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 		for ( name in attributes ) {
 
 			var attribute = attributes[ name ];
-			this.addAttribute( name, attribute.clone() );
+			this$1.addAttribute( name, attribute.clone() );
 
 		}
 
@@ -14440,7 +14503,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 
 			}
 
-			this.morphAttributes[ name ] = array;
+			this$1.morphAttributes[ name ] = array;
 
 		}
 
@@ -14451,7 +14514,7 @@ Object.assign( BufferGeometry.prototype, EventDispatcher.prototype, {
 		for ( i = 0, l = groups.length; i < l; i ++ ) {
 
 			var group = groups[ i ];
-			this.addGroup( group.start, group.count, group.materialIndex );
+			this$1.addGroup( group.start, group.count, group.materialIndex );
 
 		}
 
@@ -15295,7 +15358,7 @@ Object.assign( Ray.prototype, {
 			var d2 = v1.dot( v1 ) - tca * tca;
 			var radius2 = sphere.radius * sphere.radius;
 
-			if ( d2 > radius2 ) return null;
+			if ( d2 > radius2 ) { return null; }
 
 			var thc = Math.sqrt( radius2 - d2 );
 
@@ -15306,12 +15369,12 @@ Object.assign( Ray.prototype, {
 			var t1 = tca + thc;
 
 			// test to see if both t0 and t1 are behind the ray - if so, return null
-			if ( t0 < 0 && t1 < 0 ) return null;
+			if ( t0 < 0 && t1 < 0 ) { return null; }
 
 			// test to see if t0 is behind the ray:
 			// if it is, the ray is inside the sphere, so return the second exit point scaled by t1,
 			// in order to always return an intersect point that is in front of the ray.
-			if ( t0 < 0 ) return this.at( t1, optionalTarget );
+			if ( t0 < 0 ) { return this.at( t1, optionalTarget ); }
 
 			// else t0 is in front of the ray, so return the first collision point scaled by t0
 			return this.at( t0, optionalTarget );
@@ -15427,14 +15490,14 @@ Object.assign( Ray.prototype, {
 
 		}
 
-		if ( ( tmin > tymax ) || ( tymin > tmax ) ) return null;
+		if ( ( tmin > tymax ) || ( tymin > tmax ) ) { return null; }
 
 		// These lines also handle the case where tmin or tmax is NaN
 		// (result of 0 * Infinity). x !== x returns true if x is NaN
 
-		if ( tymin > tmin || tmin !== tmin ) tmin = tymin;
+		if ( tymin > tmin || tmin !== tmin ) { tmin = tymin; }
 
-		if ( tymax < tmax || tmax !== tmax ) tmax = tymax;
+		if ( tymax < tmax || tmax !== tmax ) { tmax = tymax; }
 
 		if ( invdirz >= 0 ) {
 
@@ -15448,15 +15511,15 @@ Object.assign( Ray.prototype, {
 
 		}
 
-		if ( ( tmin > tzmax ) || ( tzmin > tmax ) ) return null;
+		if ( ( tmin > tzmax ) || ( tzmin > tmax ) ) { return null; }
 
-		if ( tzmin > tmin || tmin !== tmin ) tmin = tzmin;
+		if ( tzmin > tmin || tmin !== tmin ) { tmin = tzmin; }
 
-		if ( tzmax < tmax || tmax !== tmax ) tmax = tzmax;
+		if ( tzmax < tmax || tmax !== tmax ) { tmax = tzmax; }
 
 		//return point closest to the ray (positive side)
 
-		if ( tmax < 0 ) return null;
+		if ( tmax < 0 ) { return null; }
 
 		return this.at( tmin >= 0 ? tmin : tmax, optionalTarget );
 
@@ -15500,7 +15563,7 @@ Object.assign( Ray.prototype, {
 
 			if ( DdN > 0 ) {
 
-				if ( backfaceCulling ) return null;
+				if ( backfaceCulling ) { return null; }
 				sign = 1;
 
 			} else if ( DdN < 0 ) {
@@ -16008,6 +16071,8 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	updateMorphTargets: function () {
+		var this$1 = this;
+
 
 		var geometry = this.geometry;
 		var m, ml, name;
@@ -16030,8 +16095,8 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						name = morphAttribute[ m ].name || String( m );
 
-						this.morphTargetInfluences.push( 0 );
-						this.morphTargetDictionary[ name ] = m;
+						this$1.morphTargetInfluences.push( 0 );
+						this$1.morphTargetDictionary[ name ] = m;
 
 					}
 
@@ -16052,8 +16117,8 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					name = morphTargets[ m ].name || String( m );
 
-					this.morphTargetInfluences.push( 0 );
-					this.morphTargetDictionary[ name ] = m;
+					this$1.morphTargetInfluences.push( 0 );
+					this$1.morphTargetDictionary[ name ] = m;
 
 				}
 
@@ -16114,14 +16179,14 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			}
 
-			if ( intersect === null ) return null;
+			if ( intersect === null ) { return null; }
 
 			intersectionPointWorld.copy( point );
 			intersectionPointWorld.applyMatrix4( object.matrixWorld );
 
 			var distance = raycaster.ray.origin.distanceTo( intersectionPointWorld );
 
-			if ( distance < raycaster.near || distance > raycaster.far ) return null;
+			if ( distance < raycaster.near || distance > raycaster.far ) { return null; }
 
 			return {
 				distance: distance,
@@ -16161,21 +16226,23 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		}
 
 		return function raycast( raycaster, intersects ) {
+			var this$1 = this;
+
 
 			var geometry = this.geometry;
 			var material = this.material;
 			var matrixWorld = this.matrixWorld;
 
-			if ( material === undefined ) return;
+			if ( material === undefined ) { return; }
 
 			// Checking boundingSphere distance to ray
 
-			if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
+			if ( geometry.boundingSphere === null ) { geometry.computeBoundingSphere(); }
 
 			sphere.copy( geometry.boundingSphere );
 			sphere.applyMatrix4( matrixWorld );
 
-			if ( raycaster.ray.intersectsSphere( sphere ) === false ) return;
+			if ( raycaster.ray.intersectsSphere( sphere ) === false ) { return; }
 
 			//
 
@@ -16186,7 +16253,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			if ( geometry.boundingBox !== null ) {
 
-				if ( ray.intersectsBox( geometry.boundingBox ) === false ) return;
+				if ( ray.intersectsBox( geometry.boundingBox ) === false ) { return; }
 
 			}
 
@@ -16210,7 +16277,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 						b = index.getX( i + 1 );
 						c = index.getX( i + 2 );
 
-						intersection = checkBufferGeometryIntersection( this, raycaster, ray, position, uv, a, b, c );
+						intersection = checkBufferGeometryIntersection( this$1, raycaster, ray, position, uv, a, b, c );
 
 						if ( intersection ) {
 
@@ -16231,7 +16298,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 						b = i + 1;
 						c = i + 2;
 
-						intersection = checkBufferGeometryIntersection( this, raycaster, ray, position, uv, a, b, c );
+						intersection = checkBufferGeometryIntersection( this$1, raycaster, ray, position, uv, a, b, c );
 
 						if ( intersection ) {
 
@@ -16254,14 +16321,14 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 				var uvs;
 
 				var faceVertexUvs = geometry.faceVertexUvs[ 0 ];
-				if ( faceVertexUvs.length > 0 ) uvs = faceVertexUvs;
+				if ( faceVertexUvs.length > 0 ) { uvs = faceVertexUvs; }
 
 				for ( var f = 0, fl = faces.length; f < fl; f ++ ) {
 
 					var face = faces[ f ];
 					var faceMaterial = isMultiMaterial ? material[ face.materialIndex ] : material;
 
-					if ( faceMaterial === undefined ) continue;
+					if ( faceMaterial === undefined ) { continue; }
 
 					fvA = vertices[ face.a ];
 					fvB = vertices[ face.b ];
@@ -16270,7 +16337,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 					if ( faceMaterial.morphTargets === true ) {
 
 						var morphTargets = geometry.morphTargets;
-						var morphInfluences = this.morphTargetInfluences;
+						var morphInfluences = this$1.morphTargetInfluences;
 
 						vA.set( 0, 0, 0 );
 						vB.set( 0, 0, 0 );
@@ -16280,7 +16347,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 							var influence = morphInfluences[ t ];
 
-							if ( influence === 0 ) continue;
+							if ( influence === 0 ) { continue; }
 
 							var targets = morphTargets[ t ].vertices;
 
@@ -16300,7 +16367,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					}
 
-					intersection = checkIntersection( this, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
+					intersection = checkIntersection( this$1, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
 
 					if ( intersection ) {
 
@@ -16571,8 +16638,8 @@ function WebGLRenderList() {
 
 	function sort() {
 
-		if ( opaque.length > 1 ) opaque.sort( painterSortStable );
-		if ( transparent.length > 1 ) transparent.sort( reversePainterSortStable );
+		if ( opaque.length > 1 ) { opaque.sort( painterSortStable ); }
+		if ( transparent.length > 1 ) { transparent.sort( reversePainterSortStable ); }
 
 	}
 
@@ -16673,8 +16740,8 @@ function WebGLMorphtargets( gl ) {
 
 			if ( influence[ 1 ] !== 0 ) {
 
-				if ( morphTargets ) geometry.removeAttribute( 'morphTarget' + i );
-				if ( morphNormals ) geometry.removeAttribute( 'morphNormal' + i );
+				if ( morphTargets ) { geometry.removeAttribute( 'morphTarget' + i ); }
+				if ( morphNormals ) { geometry.removeAttribute( 'morphNormal' + i ); }
 
 			}
 
@@ -16706,8 +16773,8 @@ function WebGLMorphtargets( gl ) {
 
 				if ( value ) {
 
-					if ( morphTargets ) geometry.addAttribute( 'morphTarget' + i, morphTargets[ index ] );
-					if ( morphNormals ) geometry.addAttribute( 'morphNormal' + i, morphNormals[ index ] );
+					if ( morphTargets ) { geometry.addAttribute( 'morphTarget' + i, morphTargets[ index ] ); }
+					if ( morphNormals ) { geometry.addAttribute( 'morphNormal' + i, morphNormals[ index ] ); }
 
 					morphInfluences[ i ] = value;
 					continue;
@@ -16762,8 +16829,8 @@ function WebGLIndexedBufferRenderer( gl, extensions, infoRender ) {
 		infoRender.calls ++;
 		infoRender.vertices += count;
 
-		if ( mode === gl.TRIANGLES ) infoRender.faces += count / 3;
-		else if ( mode === gl.POINTS ) infoRender.points += count;
+		if ( mode === gl.TRIANGLES ) { infoRender.faces += count / 3; }
+		else if ( mode === gl.POINTS ) { infoRender.points += count; }
 
 	}
 
@@ -16783,8 +16850,8 @@ function WebGLIndexedBufferRenderer( gl, extensions, infoRender ) {
 		infoRender.calls ++;
 		infoRender.vertices += count * geometry.maxInstancedCount;
 
-		if ( mode === gl.TRIANGLES ) infoRender.faces += geometry.maxInstancedCount * count / 3;
-		else if ( mode === gl.POINTS ) infoRender.points += geometry.maxInstancedCount * count;
+		if ( mode === gl.TRIANGLES ) { infoRender.faces += geometry.maxInstancedCount * count / 3; }
+		else if ( mode === gl.POINTS ) { infoRender.points += geometry.maxInstancedCount * count; }
 
 	}
 
@@ -16818,8 +16885,8 @@ function WebGLBufferRenderer( gl, extensions, infoRender ) {
 		infoRender.calls ++;
 		infoRender.vertices += count;
 
-		if ( mode === gl.TRIANGLES ) infoRender.faces += count / 3;
-		else if ( mode === gl.POINTS ) infoRender.points += count;
+		if ( mode === gl.TRIANGLES ) { infoRender.faces += count / 3; }
+		else if ( mode === gl.POINTS ) { infoRender.points += count; }
 
 	}
 
@@ -16851,8 +16918,8 @@ function WebGLBufferRenderer( gl, extensions, infoRender ) {
 		infoRender.calls ++;
 		infoRender.vertices += count * geometry.maxInstancedCount;
 
-		if ( mode === gl.TRIANGLES ) infoRender.faces += geometry.maxInstancedCount * count / 3;
-		else if ( mode === gl.POINTS ) infoRender.points += geometry.maxInstancedCount * count;
+		if ( mode === gl.TRIANGLES ) { infoRender.faces += geometry.maxInstancedCount * count / 3; }
+		else if ( mode === gl.POINTS ) { infoRender.points += geometry.maxInstancedCount * count; }
 
 	}
 
@@ -16924,7 +16991,7 @@ function WebGLGeometries( gl, attributes, infoMemory ) {
 
 		var buffergeometry = geometries[ geometry.id ];
 
-		if ( buffergeometry ) return buffergeometry;
+		if ( buffergeometry ) { return buffergeometry; }
 
 		geometry.addEventListener( 'dispose', onGeometryDispose );
 
@@ -16991,7 +17058,7 @@ function WebGLGeometries( gl, attributes, infoMemory ) {
 
 		var attribute = wireframeAttributes[ geometry.id ];
 
-		if ( attribute ) return attribute;
+		if ( attribute ) { return attribute; }
 
 		var indices = [];
 
@@ -17569,7 +17636,7 @@ function generateDefines( defines ) {
 
 		var value = defines[ name ];
 
-		if ( value === false ) continue;
+		if ( value === false ) { continue; }
 
 		chunks.push( '#define ' + name + ' ' + value );
 
@@ -18578,7 +18645,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			// 2D texture
 
-			if ( textureProperties.__webglInit === undefined ) return;
+			if ( textureProperties.__webglInit === undefined ) { return; }
 
 			_gl.deleteTexture( textureProperties.__webglTexture );
 
@@ -18594,7 +18661,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 		var renderTargetProperties = properties.get( renderTarget );
 		var textureProperties = properties.get( renderTarget.texture );
 
-		if ( ! renderTarget ) return;
+		if ( ! renderTarget ) { return; }
 
 		if ( textureProperties.__webglTexture !== undefined ) {
 
@@ -18613,14 +18680,14 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 			for ( var i = 0; i < 6; i ++ ) {
 
 				_gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer[ i ] );
-				if ( renderTargetProperties.__webglDepthbuffer ) _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthbuffer[ i ] );
+				if ( renderTargetProperties.__webglDepthbuffer ) { _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthbuffer[ i ] ); }
 
 			}
 
 		} else {
 
 			_gl.deleteFramebuffer( renderTargetProperties.__webglFramebuffer );
-			if ( renderTargetProperties.__webglDepthbuffer ) _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthbuffer );
+			if ( renderTargetProperties.__webglDepthbuffer ) { _gl.deleteRenderbuffer( renderTargetProperties.__webglDepthbuffer ); }
 
 		}
 
@@ -18766,7 +18833,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 				textureProperties.__version = texture.version;
 
-				if ( texture.onUpdate ) texture.onUpdate( texture );
+				if ( texture.onUpdate ) { texture.onUpdate( texture ); }
 
 			} else {
 
@@ -18824,8 +18891,8 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 		if ( extension ) {
 
-			if ( texture.type === FloatType && extensions.get( 'OES_texture_float_linear' ) === null ) return;
-			if ( texture.type === HalfFloatType && extensions.get( 'OES_texture_half_float_linear' ) === null ) return;
+			if ( texture.type === FloatType && extensions.get( 'OES_texture_float_linear' ) === null ) { return; }
+			if ( texture.type === HalfFloatType && extensions.get( 'OES_texture_half_float_linear' ) === null ) { return; }
 
 			if ( texture.anisotropy > 1 || properties.get( texture ).__currentAnisotropy ) {
 
@@ -18883,7 +18950,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			if ( texture.type === FloatType ) {
 
-				if ( ! _isWebGL2 ) throw new Error( 'Float Depth Texture only supported in WebGL2.0' );
+				if ( ! _isWebGL2 ) { throw new Error( 'Float Depth Texture only supported in WebGL2.0' ); }
 				internalFormat = _gl.DEPTH_COMPONENT32F;
 
 			} else if ( _isWebGL2 ) {
@@ -19007,11 +19074,11 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 		}
 
-		if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
+		if ( textureNeedsGenerateMipmaps( texture, isPowerOfTwoImage ) ) { _gl.generateMipmap( _gl.TEXTURE_2D ); }
 
 		textureProperties.__version = texture.version;
 
-		if ( texture.onUpdate ) texture.onUpdate( texture );
+		if ( texture.onUpdate ) { texture.onUpdate( texture ); }
 
 	}
 
@@ -19059,7 +19126,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 	function setupDepthTexture( framebuffer, renderTarget ) {
 
 		var isCube = ( renderTarget && renderTarget.isWebGLRenderTargetCube );
-		if ( isCube ) throw new Error( 'Depth Texture with cube render targets is not supported' );
+		if ( isCube ) { throw new Error( 'Depth Texture with cube render targets is not supported' ); }
 
 		_gl.bindFramebuffer( _gl.FRAMEBUFFER, framebuffer );
 
@@ -19109,7 +19176,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 		if ( renderTarget.depthTexture ) {
 
-			if ( isCube ) throw new Error( 'target.depthTexture not supported in Cube render targets' );
+			if ( isCube ) { throw new Error( 'target.depthTexture not supported in Cube render targets' ); }
 
 			setupDepthTexture( renderTargetProperties.__webglFramebuffer, renderTarget );
 
@@ -19187,7 +19254,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 
 			}
 
-			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) _gl.generateMipmap( _gl.TEXTURE_CUBE_MAP );
+			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) { _gl.generateMipmap( _gl.TEXTURE_CUBE_MAP ); }
 			state.bindTexture( _gl.TEXTURE_CUBE_MAP, null );
 
 		} else {
@@ -19196,7 +19263,7 @@ function WebGLTextures( _gl, extensions, state, properties, capabilities, utils,
 			setTextureParameters( _gl.TEXTURE_2D, renderTarget.texture, isTargetPowerOfTwo );
 			setupFrameBufferTexture( renderTargetProperties.__webglFramebuffer, renderTarget, _gl.COLOR_ATTACHMENT0, _gl.TEXTURE_2D );
 
-			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) _gl.generateMipmap( _gl.TEXTURE_2D );
+			if ( textureNeedsGenerateMipmaps( renderTarget.texture, isTargetPowerOfTwo ) ) { _gl.generateMipmap( _gl.TEXTURE_2D ); }
 			state.bindTexture( _gl.TEXTURE_2D, null );
 
 		}
@@ -20007,7 +20074,7 @@ function WebGLState( gl, extensions, utils ) {
 
 		if ( width !== currentLineWidth ) {
 
-			if ( lineWidthAvailable ) gl.lineWidth( width );
+			if ( lineWidthAvailable ) { gl.lineWidth( width ); }
 
 			currentLineWidth = width;
 
@@ -20056,7 +20123,7 @@ function WebGLState( gl, extensions, utils ) {
 
 	function activeTexture( webglSlot ) {
 
-		if ( webglSlot === undefined ) webglSlot = gl.TEXTURE0 + maxTextures - 1;
+		if ( webglSlot === undefined ) { webglSlot = gl.TEXTURE0 + maxTextures - 1; }
 
 		if ( currentTextureSlot !== webglSlot ) {
 
@@ -20235,7 +20302,7 @@ function WebGLCapabilities( gl, extensions, parameters ) {
 
 	function getMaxAnisotropy() {
 
-		if ( maxAnisotropy !== undefined ) return maxAnisotropy;
+		if ( maxAnisotropy !== undefined ) { return maxAnisotropy; }
 
 		var extension = extensions.get( 'EXT_texture_filter_anisotropic' );
 
@@ -20542,7 +20609,7 @@ PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), 
 		}
 
 		var skew = this.filmOffset;
-		if ( skew !== 0 ) left += near * skew / this.getFilmWidth();
+		if ( skew !== 0 ) { left += near * skew / this.getFilmWidth(); }
 
 		this.projectionMatrix.makePerspective( left, left + width, top, top - height, near, this.far );
 
@@ -20561,7 +20628,7 @@ PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), 
 
 		data.object.aspect = this.aspect;
 
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+		if ( this.view !== null ) { data.object.view = Object.assign( {}, this.view ); }
 
 		data.object.filmGauge = this.filmGauge;
 		data.object.filmOffset = this.filmOffset;
@@ -20670,13 +20737,13 @@ function WebVRManager( renderer ) {
 
 	this.setDevice = function ( value ) {
 
-		if ( value !== undefined ) device = value;
+		if ( value !== undefined ) { device = value; }
 
 	};
 
 	this.getCamera = function ( camera ) {
 
-		if ( device === null ) return camera;
+		if ( device === null ) { return camera; }
 
 		device.depthNear = camera.near;
 		device.depthFar = camera.far;
@@ -20717,7 +20784,7 @@ function WebVRManager( renderer ) {
 
 		}
 
-		if ( device.isPresenting === false ) return camera;
+		if ( device.isPresenting === false ) { return camera; }
 
 		//
 
@@ -20798,7 +20865,7 @@ function WebVRManager( renderer ) {
 
 	this.submitFrame = function () {
 
-		if ( device && device.isPresenting ) device.submitFrame();
+		if ( device && device.isPresenting ) { device.submitFrame(); }
 
 	};
 
@@ -21046,62 +21113,62 @@ function WebGLUtils( gl, extensions ) {
 
 		var extension;
 
-		if ( p === RepeatWrapping ) return gl.REPEAT;
-		if ( p === ClampToEdgeWrapping ) return gl.CLAMP_TO_EDGE;
-		if ( p === MirroredRepeatWrapping ) return gl.MIRRORED_REPEAT;
+		if ( p === RepeatWrapping ) { return gl.REPEAT; }
+		if ( p === ClampToEdgeWrapping ) { return gl.CLAMP_TO_EDGE; }
+		if ( p === MirroredRepeatWrapping ) { return gl.MIRRORED_REPEAT; }
 
-		if ( p === NearestFilter ) return gl.NEAREST;
-		if ( p === NearestMipMapNearestFilter ) return gl.NEAREST_MIPMAP_NEAREST;
-		if ( p === NearestMipMapLinearFilter ) return gl.NEAREST_MIPMAP_LINEAR;
+		if ( p === NearestFilter ) { return gl.NEAREST; }
+		if ( p === NearestMipMapNearestFilter ) { return gl.NEAREST_MIPMAP_NEAREST; }
+		if ( p === NearestMipMapLinearFilter ) { return gl.NEAREST_MIPMAP_LINEAR; }
 
-		if ( p === LinearFilter ) return gl.LINEAR;
-		if ( p === LinearMipMapNearestFilter ) return gl.LINEAR_MIPMAP_NEAREST;
-		if ( p === LinearMipMapLinearFilter ) return gl.LINEAR_MIPMAP_LINEAR;
+		if ( p === LinearFilter ) { return gl.LINEAR; }
+		if ( p === LinearMipMapNearestFilter ) { return gl.LINEAR_MIPMAP_NEAREST; }
+		if ( p === LinearMipMapLinearFilter ) { return gl.LINEAR_MIPMAP_LINEAR; }
 
-		if ( p === UnsignedByteType ) return gl.UNSIGNED_BYTE;
-		if ( p === UnsignedShort4444Type ) return gl.UNSIGNED_SHORT_4_4_4_4;
-		if ( p === UnsignedShort5551Type ) return gl.UNSIGNED_SHORT_5_5_5_1;
-		if ( p === UnsignedShort565Type ) return gl.UNSIGNED_SHORT_5_6_5;
+		if ( p === UnsignedByteType ) { return gl.UNSIGNED_BYTE; }
+		if ( p === UnsignedShort4444Type ) { return gl.UNSIGNED_SHORT_4_4_4_4; }
+		if ( p === UnsignedShort5551Type ) { return gl.UNSIGNED_SHORT_5_5_5_1; }
+		if ( p === UnsignedShort565Type ) { return gl.UNSIGNED_SHORT_5_6_5; }
 
-		if ( p === ByteType ) return gl.BYTE;
-		if ( p === ShortType ) return gl.SHORT;
-		if ( p === UnsignedShortType ) return gl.UNSIGNED_SHORT;
-		if ( p === IntType ) return gl.INT;
-		if ( p === UnsignedIntType ) return gl.UNSIGNED_INT;
-		if ( p === FloatType ) return gl.FLOAT;
+		if ( p === ByteType ) { return gl.BYTE; }
+		if ( p === ShortType ) { return gl.SHORT; }
+		if ( p === UnsignedShortType ) { return gl.UNSIGNED_SHORT; }
+		if ( p === IntType ) { return gl.INT; }
+		if ( p === UnsignedIntType ) { return gl.UNSIGNED_INT; }
+		if ( p === FloatType ) { return gl.FLOAT; }
 
 		if ( p === HalfFloatType ) {
 
 			extension = extensions.get( 'OES_texture_half_float' );
 
-			if ( extension !== null ) return extension.HALF_FLOAT_OES;
+			if ( extension !== null ) { return extension.HALF_FLOAT_OES; }
 
 		}
 
-		if ( p === AlphaFormat ) return gl.ALPHA;
-		if ( p === RGBFormat ) return gl.RGB;
-		if ( p === RGBAFormat ) return gl.RGBA;
-		if ( p === LuminanceFormat ) return gl.LUMINANCE;
-		if ( p === LuminanceAlphaFormat ) return gl.LUMINANCE_ALPHA;
-		if ( p === DepthFormat ) return gl.DEPTH_COMPONENT;
-		if ( p === DepthStencilFormat ) return gl.DEPTH_STENCIL;
+		if ( p === AlphaFormat ) { return gl.ALPHA; }
+		if ( p === RGBFormat ) { return gl.RGB; }
+		if ( p === RGBAFormat ) { return gl.RGBA; }
+		if ( p === LuminanceFormat ) { return gl.LUMINANCE; }
+		if ( p === LuminanceAlphaFormat ) { return gl.LUMINANCE_ALPHA; }
+		if ( p === DepthFormat ) { return gl.DEPTH_COMPONENT; }
+		if ( p === DepthStencilFormat ) { return gl.DEPTH_STENCIL; }
 
-		if ( p === AddEquation ) return gl.FUNC_ADD;
-		if ( p === SubtractEquation ) return gl.FUNC_SUBTRACT;
-		if ( p === ReverseSubtractEquation ) return gl.FUNC_REVERSE_SUBTRACT;
+		if ( p === AddEquation ) { return gl.FUNC_ADD; }
+		if ( p === SubtractEquation ) { return gl.FUNC_SUBTRACT; }
+		if ( p === ReverseSubtractEquation ) { return gl.FUNC_REVERSE_SUBTRACT; }
 
-		if ( p === ZeroFactor ) return gl.ZERO;
-		if ( p === OneFactor ) return gl.ONE;
-		if ( p === SrcColorFactor ) return gl.SRC_COLOR;
-		if ( p === OneMinusSrcColorFactor ) return gl.ONE_MINUS_SRC_COLOR;
-		if ( p === SrcAlphaFactor ) return gl.SRC_ALPHA;
-		if ( p === OneMinusSrcAlphaFactor ) return gl.ONE_MINUS_SRC_ALPHA;
-		if ( p === DstAlphaFactor ) return gl.DST_ALPHA;
-		if ( p === OneMinusDstAlphaFactor ) return gl.ONE_MINUS_DST_ALPHA;
+		if ( p === ZeroFactor ) { return gl.ZERO; }
+		if ( p === OneFactor ) { return gl.ONE; }
+		if ( p === SrcColorFactor ) { return gl.SRC_COLOR; }
+		if ( p === OneMinusSrcColorFactor ) { return gl.ONE_MINUS_SRC_COLOR; }
+		if ( p === SrcAlphaFactor ) { return gl.SRC_ALPHA; }
+		if ( p === OneMinusSrcAlphaFactor ) { return gl.ONE_MINUS_SRC_ALPHA; }
+		if ( p === DstAlphaFactor ) { return gl.DST_ALPHA; }
+		if ( p === OneMinusDstAlphaFactor ) { return gl.ONE_MINUS_DST_ALPHA; }
 
-		if ( p === DstColorFactor ) return gl.DST_COLOR;
-		if ( p === OneMinusDstColorFactor ) return gl.ONE_MINUS_DST_COLOR;
-		if ( p === SrcAlphaSaturateFactor ) return gl.SRC_ALPHA_SATURATE;
+		if ( p === DstColorFactor ) { return gl.DST_COLOR; }
+		if ( p === OneMinusDstColorFactor ) { return gl.ONE_MINUS_DST_COLOR; }
+		if ( p === SrcAlphaSaturateFactor ) { return gl.SRC_ALPHA_SATURATE; }
 
 		if ( p === RGB_S3TC_DXT1_Format || p === RGBA_S3TC_DXT1_Format ||
 			p === RGBA_S3TC_DXT3_Format || p === RGBA_S3TC_DXT5_Format ) {
@@ -21110,10 +21177,10 @@ function WebGLUtils( gl, extensions ) {
 
 			if ( extension !== null ) {
 
-				if ( p === RGB_S3TC_DXT1_Format ) return extension.COMPRESSED_RGB_S3TC_DXT1_EXT;
-				if ( p === RGBA_S3TC_DXT1_Format ) return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT;
-				if ( p === RGBA_S3TC_DXT3_Format ) return extension.COMPRESSED_RGBA_S3TC_DXT3_EXT;
-				if ( p === RGBA_S3TC_DXT5_Format ) return extension.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+				if ( p === RGB_S3TC_DXT1_Format ) { return extension.COMPRESSED_RGB_S3TC_DXT1_EXT; }
+				if ( p === RGBA_S3TC_DXT1_Format ) { return extension.COMPRESSED_RGBA_S3TC_DXT1_EXT; }
+				if ( p === RGBA_S3TC_DXT3_Format ) { return extension.COMPRESSED_RGBA_S3TC_DXT3_EXT; }
+				if ( p === RGBA_S3TC_DXT5_Format ) { return extension.COMPRESSED_RGBA_S3TC_DXT5_EXT; }
 
 			}
 
@@ -21126,10 +21193,10 @@ function WebGLUtils( gl, extensions ) {
 
 			if ( extension !== null ) {
 
-				if ( p === RGB_PVRTC_4BPPV1_Format ) return extension.COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-				if ( p === RGB_PVRTC_2BPPV1_Format ) return extension.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
-				if ( p === RGBA_PVRTC_4BPPV1_Format ) return extension.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-				if ( p === RGBA_PVRTC_2BPPV1_Format ) return extension.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+				if ( p === RGB_PVRTC_4BPPV1_Format ) { return extension.COMPRESSED_RGB_PVRTC_4BPPV1_IMG; }
+				if ( p === RGB_PVRTC_2BPPV1_Format ) { return extension.COMPRESSED_RGB_PVRTC_2BPPV1_IMG; }
+				if ( p === RGBA_PVRTC_4BPPV1_Format ) { return extension.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG; }
+				if ( p === RGBA_PVRTC_2BPPV1_Format ) { return extension.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG; }
 
 			}
 
@@ -21139,7 +21206,7 @@ function WebGLUtils( gl, extensions ) {
 
 			extension = extensions.get( 'WEBGL_compressed_texture_etc1' );
 
-			if ( extension !== null ) return extension.COMPRESSED_RGB_ETC1_WEBGL;
+			if ( extension !== null ) { return extension.COMPRESSED_RGB_ETC1_WEBGL; }
 
 		}
 
@@ -21149,8 +21216,8 @@ function WebGLUtils( gl, extensions ) {
 
 			if ( extension !== null ) {
 
-				if ( p === MinEquation ) return extension.MIN_EXT;
-				if ( p === MaxEquation ) return extension.MAX_EXT;
+				if ( p === MinEquation ) { return extension.MIN_EXT; }
+				if ( p === MaxEquation ) { return extension.MAX_EXT; }
 
 			}
 
@@ -21160,7 +21227,7 @@ function WebGLUtils( gl, extensions ) {
 
 			extension = extensions.get( 'WEBGL_depth_texture' );
 
-			if ( extension !== null ) return extension.UNSIGNED_INT_24_8_WEBGL;
+			if ( extension !== null ) { return extension.UNSIGNED_INT_24_8_WEBGL; }
 
 		}
 
@@ -21469,14 +21536,14 @@ function WebGLRenderer( parameters ) {
 	this.forceContextLoss = function () {
 
 		var extension = extensions.get( 'WEBGL_lose_context' );
-		if ( extension ) extension.loseContext();
+		if ( extension ) { extension.loseContext(); }
 
 	};
 
 	this.forceContextRestore = function () {
 
 		var extension = extensions.get( 'WEBGL_lose_context' );
-		if ( extension ) extension.restoreContext();
+		if ( extension ) { extension.restoreContext(); }
 
 	};
 
@@ -21488,7 +21555,7 @@ function WebGLRenderer( parameters ) {
 
 	this.setPixelRatio = function ( value ) {
 
-		if ( value === undefined ) return;
+		if ( value === undefined ) { return; }
 
 		_pixelRatio = value;
 
@@ -21606,9 +21673,9 @@ function WebGLRenderer( parameters ) {
 
 		var bits = 0;
 
-		if ( color === undefined || color ) bits |= _gl.COLOR_BUFFER_BIT;
-		if ( depth === undefined || depth ) bits |= _gl.DEPTH_BUFFER_BIT;
-		if ( stencil === undefined || stencil ) bits |= _gl.STENCIL_BUFFER_BIT;
+		if ( color === undefined || color ) { bits |= _gl.COLOR_BUFFER_BIT; }
+		if ( depth === undefined || depth ) { bits |= _gl.DEPTH_BUFFER_BIT; }
+		if ( stencil === undefined || stencil ) { bits |= _gl.STENCIL_BUFFER_BIT; }
 
 		_gl.clear( bits );
 
@@ -21727,10 +21794,10 @@ function WebGLRenderer( parameters ) {
 
 		var buffers = properties.get( object );
 
-		if ( object.hasPositions && ! buffers.position ) buffers.position = _gl.createBuffer();
-		if ( object.hasNormals && ! buffers.normal ) buffers.normal = _gl.createBuffer();
-		if ( object.hasUvs && ! buffers.uv ) buffers.uv = _gl.createBuffer();
-		if ( object.hasColors && ! buffers.color ) buffers.color = _gl.createBuffer();
+		if ( object.hasPositions && ! buffers.position ) { buffers.position = _gl.createBuffer(); }
+		if ( object.hasNormals && ! buffers.normal ) { buffers.normal = _gl.createBuffer(); }
+		if ( object.hasUvs && ! buffers.uv ) { buffers.uv = _gl.createBuffer(); }
+		if ( object.hasColors && ! buffers.color ) { buffers.color = _gl.createBuffer(); }
 
 		var programAttributes = program.getAttributes();
 
@@ -21901,7 +21968,7 @@ function WebGLRenderer( parameters ) {
 
 		var drawCount = Math.max( 0, drawEnd - drawStart + 1 );
 
-		if ( drawCount === 0 ) return;
+		if ( drawCount === 0 ) { return; }
 
 		//
 
@@ -21937,7 +22004,7 @@ function WebGLRenderer( parameters ) {
 
 			var lineWidth = material.linewidth;
 
-			if ( lineWidth === undefined ) lineWidth = 1; // Not using Line*Material
+			if ( lineWidth === undefined ) { lineWidth = 1; } // Not using Line*Material
 
 			state.setLineWidth( lineWidth * getTargetPixelRatio() );
 
@@ -21990,7 +22057,7 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		if ( startIndex === undefined ) startIndex = 0;
+		if ( startIndex === undefined ) { startIndex = 0; }
 
 		state.initAttributes();
 
@@ -22017,7 +22084,7 @@ function WebGLRenderer( parameters ) {
 
 					// TODO Attribute may not be available on context restore
 
-					if ( attribute === undefined ) continue;
+					if ( attribute === undefined ) { continue; }
 
 					var buffer = attribute.buffer;
 					var type = attribute.type;
@@ -22164,7 +22231,7 @@ function WebGLRenderer( parameters ) {
 
 	function start() {
 
-		if ( isAnimating ) return;
+		if ( isAnimating ) { return; }
 
 		var device = vr.getDevice();
 		
@@ -22184,7 +22251,7 @@ function WebGLRenderer( parameters ) {
 
 	function loop( time ) {
 
-		if ( onAnimationFrame !== null ) onAnimationFrame( time );
+		if ( onAnimationFrame !== null ) { onAnimationFrame( time ); }
 
 		var device = vr.getDevice();
 		
@@ -22218,7 +22285,7 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		if ( _isContextLost ) return;
+		if ( _isContextLost ) { return; }
 
 		// reset caching for this frame
 
@@ -22228,11 +22295,11 @@ function WebGLRenderer( parameters ) {
 
 		// update scene graph
 
-		if ( scene.autoUpdate === true ) scene.updateMatrixWorld();
+		if ( scene.autoUpdate === true ) { scene.updateMatrixWorld(); }
 
 		// update camera matrices and frustum
 
-		if ( camera.parent === null ) camera.updateMatrixWorld();
+		if ( camera.parent === null ) { camera.updateMatrixWorld(); }
 
 		if ( vr.enabled ) {
 
@@ -22265,13 +22332,13 @@ function WebGLRenderer( parameters ) {
 
 		//
 
-		if ( _clippingEnabled ) _clipping.beginShadows();
+		if ( _clippingEnabled ) { _clipping.beginShadows(); }
 
 		shadowMap.render( shadowsArray, scene, camera );
 
 		lights.setup( lightsArray, shadowsArray, camera );
 
-		if ( _clippingEnabled ) _clipping.endShadows();
+		if ( _clippingEnabled ) { _clipping.endShadows(); }
 
 		//
 
@@ -22302,18 +22369,18 @@ function WebGLRenderer( parameters ) {
 
 			var overrideMaterial = scene.overrideMaterial;
 
-			if ( opaqueObjects.length ) renderObjects( opaqueObjects, scene, camera, overrideMaterial );
-			if ( transparentObjects.length ) renderObjects( transparentObjects, scene, camera, overrideMaterial );
+			if ( opaqueObjects.length ) { renderObjects( opaqueObjects, scene, camera, overrideMaterial ); }
+			if ( transparentObjects.length ) { renderObjects( transparentObjects, scene, camera, overrideMaterial ); }
 
 		} else {
 
 			// opaque pass (front-to-back order)
 
-			if ( opaqueObjects.length ) renderObjects( opaqueObjects, scene, camera );
+			if ( opaqueObjects.length ) { renderObjects( opaqueObjects, scene, camera ); }
 
 			// transparent pass (back-to-front order)
 
-			if ( transparentObjects.length ) renderObjects( transparentObjects, scene, camera );
+			if ( transparentObjects.length ) { renderObjects( transparentObjects, scene, camera ); }
 
 		}
 
@@ -22405,7 +22472,7 @@ function WebGLRenderer( parameters ) {
 
 	function projectObject( object, camera, sortObjects ) {
 
-		if ( object.visible === false ) return;
+		if ( object.visible === false ) { return; }
 
 		var visible = object.layers.test( camera.layers );
 
@@ -23025,8 +23092,8 @@ function WebGLRenderer( parameters ) {
 			// RectAreaLight Texture
 			// TODO (mrdoob): Find a nicer implementation
 
-			if ( m_uniforms.ltcMat !== undefined ) m_uniforms.ltcMat.value = UniformsLib.LTC_MAT_TEXTURE;
-			if ( m_uniforms.ltcMag !== undefined ) m_uniforms.ltcMag.value = UniformsLib.LTC_MAG_TEXTURE;
+			if ( m_uniforms.ltcMat !== undefined ) { m_uniforms.ltcMat.value = UniformsLib.LTC_MAT_TEXTURE; }
+			if ( m_uniforms.ltcMag !== undefined ) { m_uniforms.ltcMag.value = UniformsLib.LTC_MAG_TEXTURE; }
 
 			WebGLUniforms.upload(
 				_gl, materialProperties.uniformsList, m_uniforms, _this );
@@ -23784,9 +23851,9 @@ Scene.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		Object3D.prototype.copy.call( this, source, recursive );
 
-		if ( source.background !== null ) this.background = source.background.clone();
-		if ( source.fog !== null ) this.fog = source.fog.clone();
-		if ( source.overrideMaterial !== null ) this.overrideMaterial = source.overrideMaterial.clone();
+		if ( source.background !== null ) { this.background = source.background.clone(); }
+		if ( source.fog !== null ) { this.fog = source.fog.clone(); }
+		if ( source.overrideMaterial !== null ) { this.overrideMaterial = source.overrideMaterial.clone(); }
 
 		this.autoUpdate = source.autoUpdate;
 		this.matrixAutoUpdate = source.matrixAutoUpdate;
@@ -23799,8 +23866,8 @@ Scene.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		var data = Object3D.prototype.toJSON.call( this, meta );
 
-		if ( this.background !== null ) data.object.background = this.background.toJSON( meta );
-		if ( this.fog !== null ) data.object.fog = this.fog.toJSON();
+		if ( this.background !== null ) { data.object.background = this.background.toJSON( meta ); }
+		if ( this.fog !== null ) { data.object.fog = this.fog.toJSON(); }
 
 		return data;
 
@@ -23837,6 +23904,8 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	isLensFlare: true,
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		Object3D.prototype.copy.call( this, source );
 
@@ -23845,7 +23914,7 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		for ( var i = 0, l = source.lensFlares.length; i < l; i ++ ) {
 
-			this.lensFlares.push( source.lensFlares[ i ] );
+			this$1.lensFlares.push( source.lensFlares[ i ] );
 
 		}
 
@@ -23855,11 +23924,11 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 	add: function ( texture, size, distance, blending, color, opacity ) {
 
-		if ( size === undefined ) size = - 1;
-		if ( distance === undefined ) distance = 0;
-		if ( opacity === undefined ) opacity = 1;
-		if ( color === undefined ) color = new Color( 0xffffff );
-		if ( blending === undefined ) blending = NormalBlending;
+		if ( size === undefined ) { size = - 1; }
+		if ( distance === undefined ) { distance = 0; }
+		if ( opacity === undefined ) { opacity = 1; }
+		if ( color === undefined ) { color = new Color( 0xffffff ); }
+		if ( blending === undefined ) { blending = NormalBlending; }
 
 		distance = Math.min( distance, Math.max( 0, distance ) );
 
@@ -23883,6 +23952,8 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	 */
 
 	updateLensFlares: function () {
+		var this$1 = this;
+
 
 		var f, fl = this.lensFlares.length;
 		var flare;
@@ -23891,10 +23962,10 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		for ( f = 0; f < fl; f ++ ) {
 
-			flare = this.lensFlares[ f ];
+			flare = this$1.lensFlares[ f ];
 
-			flare.x = this.positionScreen.x + vecX * flare.distance;
-			flare.y = this.positionScreen.y + vecY * flare.distance;
+			flare.x = this$1.positionScreen.x + vecX * flare.distance;
+			flare.y = this$1.positionScreen.y + vecY * flare.distance;
 
 			flare.wantedRotation = flare.x * Math.PI * 0.25;
 			flare.rotation += ( flare.wantedRotation - flare.rotation ) * 0.25;
@@ -23988,11 +24059,11 @@ Sprite.prototype = Object.assign( Object.create( Object3D.prototype ), {
 			worldScale.setFromMatrixScale( this.matrixWorld );
 			var guessSizeSq = worldScale.x * worldScale.y / 4;
 
-			if ( worldPosition.distanceToSquared( intersectPoint ) > guessSizeSq ) return;
+			if ( worldPosition.distanceToSquared( intersectPoint ) > guessSizeSq ) { return; }
 
 			var distance = raycaster.ray.origin.distanceTo( intersectPoint );
 
-			if ( distance < raycaster.near || distance > raycaster.far ) return;
+			if ( distance < raycaster.near || distance > raycaster.far ) { return; }
 
 			intersects.push( {
 
@@ -24041,6 +24112,8 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	constructor: LOD,
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		Object3D.prototype.copy.call( this, source, false );
 
@@ -24050,7 +24123,7 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			var level = levels[ i ];
 
-			this.addLevel( level.object.clone(), level.distance );
+			this$1.addLevel( level.object.clone(), level.distance );
 
 		}
 
@@ -24060,7 +24133,7 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 	addLevel: function ( object, distance ) {
 
-		if ( distance === undefined ) distance = 0;
+		if ( distance === undefined ) { distance = 0; }
 
 		distance = Math.abs( distance );
 
@@ -24194,6 +24267,8 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
  */
 
 function Skeleton( bones, boneInverses ) {
+	var this$1 = this;
+
 
 	// copy the bone array
 
@@ -24222,7 +24297,7 @@ function Skeleton( bones, boneInverses ) {
 
 			for ( var i = 0, il = this.bones.length; i < il; i ++ ) {
 
-				this.boneInverses.push( new Matrix4() );
+				this$1.boneInverses.push( new Matrix4() );
 
 			}
 
@@ -24235,6 +24310,8 @@ function Skeleton( bones, boneInverses ) {
 Object.assign( Skeleton.prototype, {
 
 	calculateInverses: function () {
+		var this$1 = this;
+
 
 		this.boneInverses = [];
 
@@ -24242,19 +24319,21 @@ Object.assign( Skeleton.prototype, {
 
 			var inverse = new Matrix4();
 
-			if ( this.bones[ i ] ) {
+			if ( this$1.bones[ i ] ) {
 
-				inverse.getInverse( this.bones[ i ].matrixWorld );
+				inverse.getInverse( this$1.bones[ i ].matrixWorld );
 
 			}
 
-			this.boneInverses.push( inverse );
+			this$1.boneInverses.push( inverse );
 
 		}
 
 	},
 
 	pose: function () {
+		var this$1 = this;
+
 
 		var bone, i, il;
 
@@ -24262,11 +24341,11 @@ Object.assign( Skeleton.prototype, {
 
 		for ( i = 0, il = this.bones.length; i < il; i ++ ) {
 
-			bone = this.bones[ i ];
+			bone = this$1.bones[ i ];
 
 			if ( bone ) {
 
-				bone.matrixWorld.getInverse( this.boneInverses[ i ] );
+				bone.matrixWorld.getInverse( this$1.boneInverses[ i ] );
 
 			}
 
@@ -24276,7 +24355,7 @@ Object.assign( Skeleton.prototype, {
 
 		for ( i = 0, il = this.bones.length; i < il; i ++ ) {
 
-			bone = this.bones[ i ];
+			bone = this$1.bones[ i ];
 
 			if ( bone ) {
 
@@ -24396,6 +24475,8 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 	isSkinnedMesh: true,
 
 	initBones: function () {
+		var this$1 = this;
+
 
 		var bones = [], bone, gbone;
 		var i, il;
@@ -24406,7 +24487,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0, il = this.geometry.bones.length; i < il; i ++ ) {
 
-				gbone = this.geometry.bones[ i ];
+				gbone = this$1.geometry.bones[ i ];
 
 				// create new 'Bone' object
 
@@ -24418,7 +24499,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 				bone.name = gbone.name;
 				bone.position.fromArray( gbone.pos );
 				bone.quaternion.fromArray( gbone.rotq );
-				if ( gbone.scl !== undefined ) bone.scale.fromArray( gbone.scl );
+				if ( gbone.scl !== undefined ) { bone.scale.fromArray( gbone.scl ); }
 
 			}
 
@@ -24426,7 +24507,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0, il = this.geometry.bones.length; i < il; i ++ ) {
 
-				gbone = this.geometry.bones[ i ];
+				gbone = this$1.geometry.bones[ i ];
 
 				if ( ( gbone.parent !== - 1 ) && ( gbone.parent !== null ) && ( bones[ gbone.parent ] !== undefined ) ) {
 
@@ -24438,7 +24519,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 					// topmost bone, immediate child of the skinned mesh
 
-					this.add( bones[ i ] );
+					this$1.add( bones[ i ] );
 
 				}
 
@@ -24481,6 +24562,8 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 	},
 
 	normalizeSkinWeights: function () {
+		var this$1 = this;
+
 
 		var scale, i;
 
@@ -24488,7 +24571,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0; i < this.geometry.skinWeights.length; i ++ ) {
 
-				var sw = this.geometry.skinWeights[ i ];
+				var sw = this$1.geometry.skinWeights[ i ];
 
 				scale = 1.0 / sw.manhattanLength();
 
@@ -24651,6 +24734,8 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		var sphere = new Sphere();
 
 		return function raycast( raycaster, intersects ) {
+			var this$1 = this;
+
 
 			var precision = raycaster.linePrecision;
 			var precisionSq = precision * precision;
@@ -24660,12 +24745,12 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			// Checking boundingSphere distance to ray
 
-			if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
+			if ( geometry.boundingSphere === null ) { geometry.computeBoundingSphere(); }
 
 			sphere.copy( geometry.boundingSphere );
 			sphere.applyMatrix4( matrixWorld );
 
-			if ( raycaster.ray.intersectsSphere( sphere ) === false ) return;
+			if ( raycaster.ray.intersectsSphere( sphere ) === false ) { return; }
 
 			//
 
@@ -24698,24 +24783,24 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						var distSq = ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
 
-						if ( distSq > precisionSq ) continue;
+						if ( distSq > precisionSq ) { continue; }
 
-						interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+						interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
 
 						var distance = raycaster.ray.origin.distanceTo( interRay );
 
-						if ( distance < raycaster.near || distance > raycaster.far ) continue;
+						if ( distance < raycaster.near || distance > raycaster.far ) { continue; }
 
 						intersects.push( {
 
 							distance: distance,
 							// What do we want? intersection point on the ray or on the segment??
 							// point: raycaster.ray.at( distance ),
-							point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+							point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
 							index: i,
 							face: null,
 							faceIndex: null,
-							object: this
+							object: this$1
 
 						} );
 
@@ -24730,24 +24815,24 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						var distSq = ray.distanceSqToSegment( vStart, vEnd, interRay, interSegment );
 
-						if ( distSq > precisionSq ) continue;
+						if ( distSq > precisionSq ) { continue; }
 
-						interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+						interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
 
 						var distance = raycaster.ray.origin.distanceTo( interRay );
 
-						if ( distance < raycaster.near || distance > raycaster.far ) continue;
+						if ( distance < raycaster.near || distance > raycaster.far ) { continue; }
 
 						intersects.push( {
 
 							distance: distance,
 							// What do we want? intersection point on the ray or on the segment??
 							// point: raycaster.ray.at( distance ),
-							point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+							point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
 							index: i,
 							face: null,
 							faceIndex: null,
-							object: this
+							object: this$1
 
 						} );
 
@@ -24764,24 +24849,24 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					var distSq = ray.distanceSqToSegment( vertices[ i ], vertices[ i + 1 ], interRay, interSegment );
 
-					if ( distSq > precisionSq ) continue;
+					if ( distSq > precisionSq ) { continue; }
 
-					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
+					interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
 
 					var distance = raycaster.ray.origin.distanceTo( interRay );
 
-					if ( distance < raycaster.near || distance > raycaster.far ) continue;
+					if ( distance < raycaster.near || distance > raycaster.far ) { continue; }
 
 					intersects.push( {
 
 						distance: distance,
 						// What do we want? intersection point on the ray or on the segment??
 						// point: raycaster.ray.at( distance ),
-						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
+						point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
 						index: i,
 						face: null,
 						faceIndex: null,
-						object: this
+						object: this$1
 
 					} );
 
@@ -24930,13 +25015,13 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			// Checking boundingSphere distance to ray
 
-			if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
+			if ( geometry.boundingSphere === null ) { geometry.computeBoundingSphere(); }
 
 			sphere.copy( geometry.boundingSphere );
 			sphere.applyMatrix4( matrixWorld );
 			sphere.radius += threshold;
 
-			if ( raycaster.ray.intersectsSphere( sphere ) === false ) return;
+			if ( raycaster.ray.intersectsSphere( sphere ) === false ) { return; }
 
 			//
 
@@ -24958,7 +25043,7 @@ Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					var distance = raycaster.ray.origin.distanceTo( intersectPoint );
 
-					if ( distance < raycaster.near || distance > raycaster.far ) return;
+					if ( distance < raycaster.near || distance > raycaster.far ) { return; }
 
 					intersects.push( {
 
@@ -25125,8 +25210,8 @@ function DepthTexture( width, height, type, mapping, wrapS, wrapT, magFilter, mi
 
 	}
 
-	if ( type === undefined && format === DepthFormat ) type = UnsignedShortType;
-	if ( type === undefined && format === DepthStencilFormat ) type = UnsignedInt248Type;
+	if ( type === undefined && format === DepthFormat ) { type = UnsignedShortType; }
+	if ( type === undefined && format === DepthStencilFormat ) { type = UnsignedInt248Type; }
 
 	Texture.call( this, null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy );
 
@@ -25702,9 +25787,9 @@ function PolyhedronBufferGeometry( vertices, indices, radius, detail ) {
 
 			if ( max > 0.9 && min < 0.1 ) {
 
-				if ( x0 < 0.2 ) uvBuffer[ i + 0 ] += 1;
-				if ( x1 < 0.2 ) uvBuffer[ i + 2 ] += 1;
-				if ( x2 < 0.2 ) uvBuffer[ i + 4 ] += 1;
+				if ( x0 < 0.2 ) { uvBuffer[ i + 0 ] += 1; }
+				if ( x1 < 0.2 ) { uvBuffer[ i + 2 ] += 1; }
+				if ( x2 < 0.2 ) { uvBuffer[ i + 4 ] += 1; }
 
 			}
 
@@ -26075,7 +26160,7 @@ function TubeGeometry( path, tubularSegments, radius, radialSegments, closed, ta
 		closed: closed
 	};
 
-	if ( taper !== undefined ) console.warn( 'THREE.TubeGeometry: taper has been removed.' );
+	if ( taper !== undefined ) { console.warn( 'THREE.TubeGeometry: taper has been removed.' ); }
 
 	var bufferGeometry = new TubeBufferGeometry( path, tubularSegments, radius, radialSegments, closed );
 
@@ -26288,7 +26373,7 @@ function TorusKnotGeometry( radius, tube, tubularSegments, radialSegments, p, q,
 		q: q
 	};
 
-	if ( heightScale !== undefined ) console.warn( 'THREE.TorusKnotGeometry: heightScale has been deprecated. Use .scale( x, y, z ) instead.' );
+	if ( heightScale !== undefined ) { console.warn( 'THREE.TorusKnotGeometry: heightScale has been deprecated. Use .scale( x, y, z ) instead.' ); }
 
 	this.fromBufferGeometry( new TorusKnotBufferGeometry( radius, tube, tubularSegments, radialSegments, p, q ) );
 	this.mergeVertices();
@@ -26640,7 +26725,7 @@ var ShapeUtils = {
 			cx = contour[ verts[ w ] ].x;
 			cy = contour[ verts[ w ] ].y;
 
-			if ( ( bx - ax ) * ( cy - ay ) - ( by - ay ) * ( cx - ax ) <= 0 ) return false;
+			if ( ( bx - ax ) * ( cy - ay ) - ( by - ay ) * ( cx - ax ) <= 0 ) { return false; }
 
 			var aX, aY, bX, bY, cX, cY;
 			var apx, apy, bpx, bpy, cpx, cpy;
@@ -26657,7 +26742,7 @@ var ShapeUtils = {
 
 				if ( ( ( px === ax ) && ( py === ay ) ) ||
 					 ( ( px === bx ) && ( py === by ) ) ||
-					 ( ( px === cx ) && ( py === cy ) ) )	continue;
+					 ( ( px === cx ) && ( py === cy ) ) )	{ continue; }
 
 				apx = px - ax; apy = py - ay;
 				bpx = px - bx; bpy = py - by;
@@ -26669,7 +26754,7 @@ var ShapeUtils = {
 				cCROSSap = cX * apy - cY * apx;
 				bCROSScp = bX * cpy - bY * cpx;
 
-				if ( ( aCROSSbp >= - Number.EPSILON ) && ( bCROSScp >= - Number.EPSILON ) && ( cCROSSap >= - Number.EPSILON ) ) return false;
+				if ( ( aCROSSbp >= - Number.EPSILON ) && ( bCROSScp >= - Number.EPSILON ) && ( cCROSSap >= - Number.EPSILON ) ) { return false; }
 
 			}
 
@@ -26683,7 +26768,7 @@ var ShapeUtils = {
 
 			var n = contour.length;
 
-			if ( n < 3 ) return null;
+			if ( n < 3 ) { return null; }
 
 			var result = [],
 				verts = [],
@@ -26695,11 +26780,11 @@ var ShapeUtils = {
 
 			if ( ShapeUtils.area( contour ) > 0.0 ) {
 
-				for ( v = 0; v < n; v ++ ) verts[ v ] = v;
+				for ( v = 0; v < n; v ++ ) { verts[ v ] = v; }
 
 			} else {
 
-				for ( v = 0; v < n; v ++ ) verts[ v ] = ( n - 1 ) - v;
+				for ( v = 0; v < n; v ++ ) { verts[ v ] = ( n - 1 ) - v; }
 
 			}
 
@@ -26722,16 +26807,16 @@ var ShapeUtils = {
 					// Sometimes warning is fine, especially polygons are triangulated in reverse.
 					console.warn( 'THREE.ShapeUtils: Unable to triangulate polygon! in triangulate()' );
 
-					if ( indices ) return vertIndices;
+					if ( indices ) { return vertIndices; }
 					return result;
 
 				}
 
 				/* three consecutive vertices in current polygon, <u,v,w> */
 
-				u = v; if ( nv <= u ) u = 0; /* previous */
-				v = u + 1; if ( nv <= v ) v = 0; /* new v    */
-				w = v + 1; if ( nv <= w ) w = 0; /* next     */
+				u = v; if ( nv <= u ) { u = 0; } /* previous */
+				v = u + 1; if ( nv <= v ) { v = 0; } /* new v    */
+				w = v + 1; if ( nv <= w ) { w = 0; } /* next     */
 
 				if ( snip( contour, u, v, w, nv, verts ) ) {
 
@@ -26770,7 +26855,7 @@ var ShapeUtils = {
 
 			}
 
-			if ( indices ) return vertIndices;
+			if ( indices ) { return vertIndices; }
 			return result;
 
 		};
@@ -26843,15 +26928,15 @@ var ShapeUtils = {
 				var perpSeg2;
 				if ( limit > 0 ) {
 
-					if ( ( perpSeg1 < 0 ) || ( perpSeg1 > limit ) ) 		return [];
+					if ( ( perpSeg1 < 0 ) || ( perpSeg1 > limit ) ) 		{ return []; }
 					perpSeg2 = seg2dy * seg1seg2dx - seg2dx * seg1seg2dy;
-					if ( ( perpSeg2 < 0 ) || ( perpSeg2 > limit ) ) 		return [];
+					if ( ( perpSeg2 < 0 ) || ( perpSeg2 > limit ) ) 		{ return []; }
 
 				} else {
 
-					if ( ( perpSeg1 > 0 ) || ( perpSeg1 < limit ) ) 		return [];
+					if ( ( perpSeg1 > 0 ) || ( perpSeg1 < limit ) ) 		{ return []; }
 					perpSeg2 = seg2dy * seg1seg2dx - seg2dx * seg1seg2dy;
-					if ( ( perpSeg2 > 0 ) || ( perpSeg2 < limit ) ) 		return [];
+					if ( ( perpSeg2 > 0 ) || ( perpSeg2 < limit ) ) 		{ return []; }
 
 				}
 
@@ -26860,20 +26945,20 @@ var ShapeUtils = {
 				if ( perpSeg2 === 0 ) {
 
 					if ( ( inExcludeAdjacentSegs ) &&
-						 ( ( perpSeg1 === 0 ) || ( perpSeg1 === limit ) ) )		return [];
+						 ( ( perpSeg1 === 0 ) || ( perpSeg1 === limit ) ) )		{ return []; }
 					return [ inSeg1Pt1 ];
 
 				}
 				if ( perpSeg2 === limit ) {
 
 					if ( ( inExcludeAdjacentSegs ) &&
-						 ( ( perpSeg1 === 0 ) || ( perpSeg1 === limit ) ) )		return [];
+						 ( ( perpSeg1 === 0 ) || ( perpSeg1 === limit ) ) )		{ return []; }
 					return [ inSeg1Pt2 ];
 
 				}
 				// intersection at endpoint of segment#2?
-				if ( perpSeg1 === 0 )		return [ inSeg2Pt1 ];
-				if ( perpSeg1 === limit )	return [ inSeg2Pt2 ];
+				if ( perpSeg1 === 0 )		{ return [ inSeg2Pt1 ]; }
+				if ( perpSeg1 === limit )	{ return [ inSeg2Pt2 ]; }
 
 				// return real intersection point
 				var factorSeg1 = perpSeg2 / limit;
@@ -26883,7 +26968,7 @@ var ShapeUtils = {
 
 				// parallel or collinear
 				if ( ( perpSeg1 !== 0 ) ||
-					 ( seg2dy * seg1seg2dx !== seg2dx * seg1seg2dy ) ) 			return [];
+					 ( seg2dy * seg1seg2dx !== seg2dx * seg1seg2dy ) ) 			{ return []; }
 
 				// they are collinear or degenerate
 				var seg1Pt = ( ( seg1dx === 0 ) && ( seg1dy === 0 ) );	// segment1 is just a point?
@@ -26892,21 +26977,21 @@ var ShapeUtils = {
 				if ( seg1Pt && seg2Pt ) {
 
 					if ( ( inSeg1Pt1.x !== inSeg2Pt1.x ) ||
-						 ( inSeg1Pt1.y !== inSeg2Pt1.y ) )		return [];	// they are distinct  points
+						 ( inSeg1Pt1.y !== inSeg2Pt1.y ) )		{ return []; }	// they are distinct  points
 					return [ inSeg1Pt1 ];	// they are the same point
 
 				}
 				// segment#1  is a single point
 				if ( seg1Pt ) {
 
-					if ( ! point_in_segment_2D_colin( inSeg2Pt1, inSeg2Pt2, inSeg1Pt1 ) )		return [];		// but not in segment#2
+					if ( ! point_in_segment_2D_colin( inSeg2Pt1, inSeg2Pt2, inSeg1Pt1 ) )		{ return []; }		// but not in segment#2
 					return [ inSeg1Pt1 ];
 
 				}
 				// segment#2  is a single point
 				if ( seg2Pt ) {
 
-					if ( ! point_in_segment_2D_colin( inSeg1Pt1, inSeg1Pt2, inSeg2Pt1 ) )		return [];		// but not in segment#1
+					if ( ! point_in_segment_2D_colin( inSeg1Pt1, inSeg1Pt2, inSeg2Pt1 ) )		{ return []; }		// but not in segment#1
 					return [ inSeg2Pt1 ];
 
 				}
@@ -26969,26 +27054,26 @@ var ShapeUtils = {
 				}
 				if ( seg1minVal <= seg2minVal ) {
 
-					if ( seg1maxVal < seg2minVal )	return [];
+					if ( seg1maxVal < seg2minVal )	{ return []; }
 					if ( seg1maxVal === seg2minVal )	{
 
-						if ( inExcludeAdjacentSegs )		return [];
+						if ( inExcludeAdjacentSegs )		{ return []; }
 						return [ seg2min ];
 
 					}
-					if ( seg1maxVal <= seg2maxVal )	return [ seg2min, seg1max ];
+					if ( seg1maxVal <= seg2maxVal )	{ return [ seg2min, seg1max ]; }
 					return	[ seg2min, seg2max ];
 
 				} else {
 
-					if ( seg1minVal > seg2maxVal )	return [];
+					if ( seg1minVal > seg2maxVal )	{ return []; }
 					if ( seg1minVal === seg2maxVal )	{
 
-						if ( inExcludeAdjacentSegs )		return [];
+						if ( inExcludeAdjacentSegs )		{ return []; }
 						return [ seg1min ];
 
 					}
-					if ( seg1maxVal <= seg2maxVal )	return [ seg1min, seg1max ];
+					if ( seg1maxVal <= seg2maxVal )	{ return [ seg1min, seg1max ]; }
 					return	[ seg1min, seg2max ];
 
 				}
@@ -27051,10 +27136,10 @@ var ShapeUtils = {
 				var lastShapeIdx = shape.length - 1;
 
 				var prevShapeIdx = inShapeIdx - 1;
-				if ( prevShapeIdx < 0 )			prevShapeIdx = lastShapeIdx;
+				if ( prevShapeIdx < 0 )			{ prevShapeIdx = lastShapeIdx; }
 
 				var nextShapeIdx = inShapeIdx + 1;
-				if ( nextShapeIdx > lastShapeIdx )	nextShapeIdx = 0;
+				if ( nextShapeIdx > lastShapeIdx )	{ nextShapeIdx = 0; }
 
 				var insideAngle = isPointInsideAngle( shape[ inShapeIdx ], shape[ prevShapeIdx ], shape[ nextShapeIdx ], hole[ inHoleIdx ] );
 				if ( ! insideAngle ) {
@@ -27068,10 +27153,10 @@ var ShapeUtils = {
 				var lastHoleIdx = hole.length - 1;
 
 				var prevHoleIdx = inHoleIdx - 1;
-				if ( prevHoleIdx < 0 )			prevHoleIdx = lastHoleIdx;
+				if ( prevHoleIdx < 0 )			{ prevHoleIdx = lastHoleIdx; }
 
 				var nextHoleIdx = inHoleIdx + 1;
-				if ( nextHoleIdx > lastHoleIdx )	nextHoleIdx = 0;
+				if ( nextHoleIdx > lastHoleIdx )	{ nextHoleIdx = 0; }
 
 				insideAngle = isPointInsideAngle( hole[ inHoleIdx ], hole[ prevHoleIdx ], hole[ nextHoleIdx ], shape[ inShapeIdx ] );
 				if ( ! insideAngle ) {
@@ -27093,7 +27178,7 @@ var ShapeUtils = {
 
 					nextIdx = sIdx + 1; nextIdx %= shape.length;
 					intersection = intersect_segments_2D( inShapePt, inHolePt, shape[ sIdx ], shape[ nextIdx ], true );
-					if ( intersection.length > 0 )		return	true;
+					if ( intersection.length > 0 )		{ return	true; }
 
 				}
 
@@ -27115,7 +27200,7 @@ var ShapeUtils = {
 
 						nextIdx = hIdx + 1; nextIdx %= chkHole.length;
 						intersection = intersect_segments_2D( inShapePt, inHolePt, chkHole[ hIdx ], chkHole[ nextIdx ], true );
-						if ( intersection.length > 0 )		return	true;
+						if ( intersection.length > 0 )		{ return	true; }
 
 					}
 
@@ -27162,15 +27247,15 @@ var ShapeUtils = {
 
 						// prevent multiple checks
 						cutKey = shapePt.x + ':' + shapePt.y + ':' + holeIdx;
-						if ( failedCuts[ cutKey ] !== undefined )			continue;
+						if ( failedCuts[ cutKey ] !== undefined )			{ continue; }
 
 						hole = holes[ holeIdx ];
 						for ( var h2 = 0; h2 < hole.length; h2 ++ ) {
 
 							holePt = hole[ h2 ];
-							if ( ! isCutLineInsideAngles( shapeIndex, h2 ) )		continue;
-							if ( intersectsShapeEdge( shapePt, holePt ) )		continue;
-							if ( intersectsHoleEdge( shapePt, holePt ) )		continue;
+							if ( ! isCutLineInsideAngles( shapeIndex, h2 ) )		{ continue; }
+							if ( intersectsShapeEdge( shapePt, holePt ) )		{ continue; }
+							if ( intersectsHoleEdge( shapePt, holePt ) )		{ continue; }
 
 							holeIndex = h2;
 							indepHoles.splice( h, 1 );
@@ -27190,12 +27275,12 @@ var ShapeUtils = {
 							break;
 
 						}
-						if ( holeIndex >= 0 )	break;		// hole-vertex found
+						if ( holeIndex >= 0 )	{ break; }		// hole-vertex found
 
 						failedCuts[ cutKey ] = true;			// remember failure
 
 					}
-					if ( holeIndex >= 0 )	break;		// hole-vertex found
+					if ( holeIndex >= 0 )	{ break; }		// hole-vertex found
 
 				}
 
@@ -27376,6 +27461,8 @@ ExtrudeBufferGeometry.prototype.getArrays = function () {
 };
 
 ExtrudeBufferGeometry.prototype.addShapeList = function ( shapes, options ) {
+	var this$1 = this;
+
 
 	var sl = shapes.length;
 	options.arrays = this.getArrays();
@@ -27383,7 +27470,7 @@ ExtrudeBufferGeometry.prototype.addShapeList = function ( shapes, options ) {
 	for ( var s = 0; s < sl; s ++ ) {
 
 		var shape = shapes[ s ];
-		this.addShape( shape, options );
+		this$1.addShape( shape, options );
 
 	}
 
@@ -27503,7 +27590,7 @@ ExtrudeBufferGeometry.prototype.addShape = function ( shape, options ) {
 
 	function scalePt2( pt, vec, size ) {
 
-		if ( ! vec ) console.error( "THREE.ExtrudeGeometry: vec does not exist" );
+		if ( ! vec ) { console.error( "THREE.ExtrudeGeometry: vec does not exist" ); }
 
 		return vec.clone().multiplyScalar( size ).add( pt );
 
@@ -27644,8 +27731,8 @@ ExtrudeBufferGeometry.prototype.addShape = function ( shape, options ) {
 
 	for ( var i = 0, il = contour.length, j = il - 1, k = i + 1; i < il; i ++, j ++, k ++ ) {
 
-		if ( j === il ) j = 0;
-		if ( k === il ) k = 0;
+		if ( j === il ) { j = 0; }
+		if ( k === il ) { k = 0; }
 
 		//  (j)---(i)---(k)
 		// console.log('i,j,k', i, j , k)
@@ -27665,8 +27752,8 @@ ExtrudeBufferGeometry.prototype.addShape = function ( shape, options ) {
 
 		for ( i = 0, il = ahole.length, j = il - 1, k = i + 1; i < il; i ++, j ++, k ++ ) {
 
-			if ( j === il ) j = 0;
-			if ( k === il ) k = 0;
+			if ( j === il ) { j = 0; }
+			if ( k === il ) { k = 0; }
 
 			//  (j)---(i)---(k)
 			oneHoleMovements[ i ] = getBevelVec( ahole[ i ], ahole[ j ], ahole[ k ] );
@@ -27926,7 +28013,7 @@ ExtrudeBufferGeometry.prototype.addShape = function ( shape, options ) {
 
 			j = i;
 			k = i - 1;
-			if ( k < 0 ) k = contour.length - 1;
+			if ( k < 0 ) { k = contour.length - 1; }
 
 			//console.log('b', i,j, i-1, k,vertices.length);
 
@@ -28146,9 +28233,9 @@ function TextBufferGeometry( text, parameters ) {
 
 	// defaults
 
-	if ( parameters.bevelThickness === undefined ) parameters.bevelThickness = 10;
-	if ( parameters.bevelSize === undefined ) parameters.bevelSize = 8;
-	if ( parameters.bevelEnabled === undefined ) parameters.bevelEnabled = false;
+	if ( parameters.bevelThickness === undefined ) { parameters.bevelThickness = 10; }
+	if ( parameters.bevelSize === undefined ) { parameters.bevelSize = 8; }
+	if ( parameters.bevelEnabled === undefined ) { parameters.bevelEnabled = false; }
 
 	ExtrudeBufferGeometry.call( this, shapes, parameters );
 
@@ -28285,8 +28372,8 @@ function SphereBufferGeometry( radius, widthSegments, heightSegments, phiStart, 
 			var c = grid[ iy + 1 ][ ix ];
 			var d = grid[ iy + 1 ][ ix + 1 ];
 
-			if ( iy !== 0 || thetaStart > 0 ) indices.push( a, b, d );
-			if ( iy !== heightSegments - 1 || thetaEnd < Math.PI ) indices.push( b, c, d );
+			if ( iy !== 0 || thetaStart > 0 ) { indices.push( a, b, d ); }
+			if ( iy !== heightSegments - 1 || thetaEnd < Math.PI ) { indices.push( b, c, d ); }
 
 		}
 
@@ -28663,6 +28750,8 @@ ShapeGeometry.prototype.constructor = ShapeGeometry;
 // ShapeBufferGeometry
 
 function ShapeBufferGeometry( shapes, curveSegments ) {
+	var this$1 = this;
+
 
 	BufferGeometry.call( this );
 
@@ -28699,7 +28788,7 @@ function ShapeBufferGeometry( shapes, curveSegments ) {
 
 			addShape( shapes[ i ] );
 
-			this.addGroup( groupStart, groupCount, i ); // enables MultiMaterial support
+			this$1.addGroup( groupStart, groupCount, i ); // enables MultiMaterial support
 
 			groupStart += groupCount;
 			groupCount = 0;
@@ -28985,8 +29074,8 @@ function CylinderBufferGeometry( radiusTop, radiusBottom, height, radialSegments
 
 	if ( openEnded === false ) {
 
-		if ( radiusTop > 0 ) generateCap( true );
-		if ( radiusBottom > 0 ) generateCap( false );
+		if ( radiusTop > 0 ) { generateCap( true ); }
+		if ( radiusBottom > 0 ) { generateCap( false ); }
 
 	}
 
@@ -30170,7 +30259,7 @@ var Cache = {
 
 	add: function ( key, file ) {
 
-		if ( this.enabled === false ) return;
+		if ( this.enabled === false ) { return; }
 
 		// console.log( 'THREE.Cache', 'Adding key:', key );
 
@@ -30180,7 +30269,7 @@ var Cache = {
 
 	get: function ( key ) {
 
-		if ( this.enabled === false ) return;
+		if ( this.enabled === false ) { return; }
 
 		// console.log( 'THREE.Cache', 'Checking key:', key );
 
@@ -30309,10 +30398,12 @@ function FileLoader( manager ) {
 Object.assign( FileLoader.prototype, {
 
 	load: function ( url, onLoad, onProgress, onError ) {
+		var this$1 = this;
 
-		if ( url === undefined ) url = '';
 
-		if ( this.path !== undefined ) url = this.path + url;
+		if ( url === undefined ) { url = ''; }
+
+		if ( this.path !== undefined ) { url = this.path + url; }
 
 		url = this.manager.resolveURL( url );
 
@@ -30326,7 +30417,7 @@ Object.assign( FileLoader.prototype, {
 
 			setTimeout( function () {
 
-				if ( onLoad ) onLoad( cached );
+				if ( onLoad ) { onLoad( cached ); }
 
 				scope.manager.itemEnd( url );
 
@@ -30365,7 +30456,7 @@ Object.assign( FileLoader.prototype, {
 
 			data = window.decodeURIComponent( data );
 
-			if ( isBase64 ) data = window.atob( data );
+			if ( isBase64 ) { data = window.atob( data ); }
 
 			try {
 
@@ -30421,7 +30512,7 @@ Object.assign( FileLoader.prototype, {
 				// Wait for next browser tick like standard XMLHttpRequest event dispatching does
 				window.setTimeout( function () {
 
-					if ( onLoad ) onLoad( response );
+					if ( onLoad ) { onLoad( response ); }
 
 					scope.manager.itemEnd( url );
 
@@ -30432,7 +30523,7 @@ Object.assign( FileLoader.prototype, {
 				// Wait for next browser tick like standard XMLHttpRequest event dispatching does
 				window.setTimeout( function () {
 
-					if ( onError ) onError( error );
+					if ( onError ) { onError( error ); }
 
 					scope.manager.itemEnd( url );
 					scope.manager.itemError( url );
@@ -30474,7 +30565,7 @@ Object.assign( FileLoader.prototype, {
 					for ( var i = 0, il = callbacks.length; i < il; i ++ ) {
 
 						var callback = callbacks[ i ];
-						if ( callback.onLoad ) callback.onLoad( response );
+						if ( callback.onLoad ) { callback.onLoad( response ); }
 
 					}
 
@@ -30490,7 +30581,7 @@ Object.assign( FileLoader.prototype, {
 					for ( var i = 0, il = callbacks.length; i < il; i ++ ) {
 
 						var callback = callbacks[ i ];
-						if ( callback.onLoad ) callback.onLoad( response );
+						if ( callback.onLoad ) { callback.onLoad( response ); }
 
 					}
 
@@ -30501,7 +30592,7 @@ Object.assign( FileLoader.prototype, {
 					for ( var i = 0, il = callbacks.length; i < il; i ++ ) {
 
 						var callback = callbacks[ i ];
-						if ( callback.onError ) callback.onError( event );
+						if ( callback.onError ) { callback.onError( event ); }
 
 					}
 
@@ -30519,7 +30610,7 @@ Object.assign( FileLoader.prototype, {
 				for ( var i = 0, il = callbacks.length; i < il; i ++ ) {
 
 					var callback = callbacks[ i ];
-					if ( callback.onProgress ) callback.onProgress( event );
+					if ( callback.onProgress ) { callback.onProgress( event ); }
 
 				}
 
@@ -30534,7 +30625,7 @@ Object.assign( FileLoader.prototype, {
 				for ( var i = 0, il = callbacks.length; i < il; i ++ ) {
 
 					var callback = callbacks[ i ];
-					if ( callback.onError ) callback.onError( event );
+					if ( callback.onError ) { callback.onError( event ); }
 
 				}
 
@@ -30543,14 +30634,14 @@ Object.assign( FileLoader.prototype, {
 
 			}, false );
 
-			if ( this.responseType !== undefined ) request.responseType = this.responseType;
-			if ( this.withCredentials !== undefined ) request.withCredentials = this.withCredentials;
+			if ( this.responseType !== undefined ) { request.responseType = this.responseType; }
+			if ( this.withCredentials !== undefined ) { request.withCredentials = this.withCredentials; }
 
-			if ( request.overrideMimeType ) request.overrideMimeType( this.mimeType !== undefined ? this.mimeType : 'text/plain' );
+			if ( request.overrideMimeType ) { request.overrideMimeType( this.mimeType !== undefined ? this.mimeType : 'text/plain' ); }
 
-			for ( var header in this.requestHeader ) {
+			for ( var header in this$1.requestHeader ) {
 
-				request.setRequestHeader( header, this.requestHeader[ header ] );
+				request.setRequestHeader( header, this$1.requestHeader[ header ] );
 
 			}
 
@@ -30649,12 +30740,12 @@ Object.assign( CompressedTextureLoader.prototype, {
 				if ( loaded === 6 ) {
 
 					if ( texDatas.mipmapCount === 1 )
-						texture.minFilter = LinearFilter;
+						{ texture.minFilter = LinearFilter; }
 
 					texture.format = texDatas.format;
 					texture.needsUpdate = true;
 
-					if ( onLoad ) onLoad( texture );
+					if ( onLoad ) { onLoad( texture ); }
 
 				}
 
@@ -30716,7 +30807,7 @@ Object.assign( CompressedTextureLoader.prototype, {
 				texture.format = texDatas.format;
 				texture.needsUpdate = true;
 
-				if ( onLoad ) onLoad( texture );
+				if ( onLoad ) { onLoad( texture ); }
 
 			}, onProgress, onError );
 
@@ -30765,7 +30856,7 @@ Object.assign( DataTextureLoader.prototype, {
 
 			var texData = scope._parser( buffer );
 
-			if ( ! texData ) return;
+			if ( ! texData ) { return; }
 
 			if ( undefined !== texData.image ) {
 
@@ -30812,7 +30903,7 @@ Object.assign( DataTextureLoader.prototype, {
 
 			texture.needsUpdate = true;
 
-			if ( onLoad ) onLoad( texture, texData );
+			if ( onLoad ) { onLoad( texture, texData ); }
 
 		}, onProgress, onError );
 
@@ -30839,9 +30930,9 @@ Object.assign( ImageLoader.prototype, {
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
-		if ( url === undefined ) url = '';
+		if ( url === undefined ) { url = ''; }
 
-		if ( this.path !== undefined ) url = this.path + url;
+		if ( this.path !== undefined ) { url = this.path + url; }
 
 		url = this.manager.resolveURL( url );
 
@@ -30855,7 +30946,7 @@ Object.assign( ImageLoader.prototype, {
 
 			setTimeout( function () {
 
-				if ( onLoad ) onLoad( cached );
+				if ( onLoad ) { onLoad( cached ); }
 
 				scope.manager.itemEnd( url );
 
@@ -30871,7 +30962,7 @@ Object.assign( ImageLoader.prototype, {
 
 			Cache.add( url, this );
 
-			if ( onLoad ) onLoad( this );
+			if ( onLoad ) { onLoad( this ); }
 
 			scope.manager.itemEnd( url );
 
@@ -30887,7 +30978,7 @@ Object.assign( ImageLoader.prototype, {
 
 		image.addEventListener( 'error', function ( event ) {
 
-			if ( onError ) onError( event );
+			if ( onError ) { onError( event ); }
 
 			scope.manager.itemEnd( url );
 			scope.manager.itemError( url );
@@ -30896,7 +30987,7 @@ Object.assign( ImageLoader.prototype, {
 
 		if ( url.substr( 0, 5 ) !== 'data:' ) {
 
-			if ( this.crossOrigin !== undefined ) image.crossOrigin = this.crossOrigin;
+			if ( this.crossOrigin !== undefined ) { image.crossOrigin = this.crossOrigin; }
 
 		}
 
@@ -30960,7 +31051,7 @@ Object.assign( CubeTextureLoader.prototype, {
 
 					texture.needsUpdate = true;
 
-					if ( onLoad ) onLoad( texture );
+					if ( onLoad ) { onLoad( texture ); }
 
 				}
 
@@ -31093,14 +31184,14 @@ Light.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		data.object.color = this.color.getHex();
 		data.object.intensity = this.intensity;
 
-		if ( this.groundColor !== undefined ) data.object.groundColor = this.groundColor.getHex();
+		if ( this.groundColor !== undefined ) { data.object.groundColor = this.groundColor.getHex(); }
 
-		if ( this.distance !== undefined ) data.object.distance = this.distance;
-		if ( this.angle !== undefined ) data.object.angle = this.angle;
-		if ( this.decay !== undefined ) data.object.decay = this.decay;
-		if ( this.penumbra !== undefined ) data.object.penumbra = this.penumbra;
+		if ( this.distance !== undefined ) { data.object.distance = this.distance; }
+		if ( this.angle !== undefined ) { data.object.angle = this.angle; }
+		if ( this.decay !== undefined ) { data.object.decay = this.decay; }
+		if ( this.penumbra !== undefined ) { data.object.penumbra = this.penumbra; }
 
-		if ( this.shadow !== undefined ) data.object.shadow = this.shadow.toJSON();
+		if ( this.shadow !== undefined ) { data.object.shadow = this.shadow.toJSON(); }
 
 		return data;
 
@@ -31188,9 +31279,9 @@ Object.assign( LightShadow.prototype, {
 
 		var object = {};
 
-		if ( this.bias !== 0 ) object.bias = this.bias;
-		if ( this.radius !== 1 ) object.radius = this.radius;
-		if ( this.mapSize.x !== 512 || this.mapSize.y !== 512 ) object.mapSize = this.mapSize.toArray();
+		if ( this.bias !== 0 ) { object.bias = this.bias; }
+		if ( this.radius !== 1 ) { object.radius = this.radius; }
+		if ( this.mapSize.x !== 512 || this.mapSize.y !== 512 ) { object.mapSize = this.mapSize.toArray(); }
 
 		object.camera = this.camera.toJSON( false ).object;
 		delete object.camera.matrix;
@@ -31520,7 +31611,7 @@ var AnimationUtils = {
 	convertArray: function ( array, type, forceClone ) {
 
 		if ( ! array || // let 'undefined' and 'null' pass
-				! forceClone && array.constructor === type ) return array;
+				! forceClone && array.constructor === type ) { return array; }
 
 		if ( typeof type.BYTES_PER_ELEMENT === 'number' ) {
 
@@ -31550,7 +31641,7 @@ var AnimationUtils = {
 
 		var n = times.length;
 		var result = new Array( n );
-		for ( var i = 0; i !== n; ++ i ) result[ i ] = i;
+		for ( var i = 0; i !== n; ++ i ) { result[ i ] = i; }
 
 		result.sort( compareTime );
 
@@ -31591,10 +31682,10 @@ var AnimationUtils = {
 
 		}
 
-		if ( key === undefined ) return; // no data
+		if ( key === undefined ) { return; } // no data
 
 		var value = key[ valuePropertyName ];
-		if ( value === undefined ) return; // no data
+		if ( value === undefined ) { return; } // no data
 
 		if ( Array.isArray( value ) ) {
 
@@ -31694,6 +31785,8 @@ function Interpolant( parameterPositions, sampleValues, sampleSize, resultBuffer
 Object.assign( Interpolant.prototype, {
 
 	evaluate: function ( t ) {
+		var this$1 = this;
+
 
 		var pp = this.parameterPositions,
 			i1 = this._cachedIndex,
@@ -31719,17 +31812,17 @@ Object.assign( Interpolant.prototype, {
 
 							if ( t1 === undefined ) {
 
-								if ( t < t0 ) break forward_scan;
+								if ( t < t0 ) { break forward_scan; }
 
 								// after end
 
 								i1 = pp.length;
-								this._cachedIndex = i1;
-								return this.afterEnd_( i1 - 1, t, t0 );
+								this$1._cachedIndex = i1;
+								return this$1.afterEnd_( i1 - 1, t, t0 );
 
 							}
 
-							if ( i1 === giveUpAt ) break; // this loop
+							if ( i1 === giveUpAt ) { break; } // this loop
 
 							t0 = t1;
 							t1 = pp[ ++ i1 ];
@@ -31772,12 +31865,12 @@ Object.assign( Interpolant.prototype, {
 
 								// before start
 
-								this._cachedIndex = 0;
-								return this.beforeStart_( 0, t, t1 );
+								this$1._cachedIndex = 0;
+								return this$1.beforeStart_( 0, t, t1 );
 
 							}
 
-							if ( i1 === giveUpAt ) break; // this loop
+							if ( i1 === giveUpAt ) { break; } // this loop
 
 							t1 = t0;
 							t0 = pp[ -- i1 - 1 ];
@@ -32285,15 +32378,15 @@ KeyframeTrackPrototype = {
 			from = 0,
 			to = nKeys - 1;
 
-		while ( from !== nKeys && times[ from ] < startTime ) ++ from;
-		while ( to !== - 1 && times[ to ] > endTime ) -- to;
+		while ( from !== nKeys && times[ from ] < startTime ) { ++ from; }
+		while ( to !== - 1 && times[ to ] > endTime ) { -- to; }
 
 		++ to; // inclusive -> exclusive bound
 
 		if ( from !== 0 || to !== nKeys ) {
 
 			// empty tracks are forbidden, so keep at least one keyframe
-			if ( from >= to ) to = Math.max( to, 1 ), from = to - 1;
+			if ( from >= to ) { to = Math.max( to, 1 ), from = to - 1; }
 
 			var stride = this.getValueSize();
 			this.times = AnimationUtils.arraySlice( times, from, to );
@@ -32307,6 +32400,8 @@ KeyframeTrackPrototype = {
 
 	// ensure we do not get a GarbageInGarbageOut situation, make sure tracks are at least minimally viable
 	validate: function () {
+		var this$1 = this;
+
 
 		var valid = true;
 
@@ -32338,7 +32433,7 @@ KeyframeTrackPrototype = {
 
 			if ( typeof currTime === 'number' && isNaN( currTime ) ) {
 
-				console.error( 'THREE.KeyframeTrackPrototype: Time is not a valid number.', this, i, currTime );
+				console.error( 'THREE.KeyframeTrackPrototype: Time is not a valid number.', this$1, i, currTime );
 				valid = false;
 				break;
 
@@ -32346,7 +32441,7 @@ KeyframeTrackPrototype = {
 
 			if ( prevTime !== null && prevTime > currTime ) {
 
-				console.error( 'THREE.KeyframeTrackPrototype: Out of order keys.', this, i, currTime, prevTime );
+				console.error( 'THREE.KeyframeTrackPrototype: Out of order keys.', this$1, i, currTime, prevTime );
 				valid = false;
 				break;
 
@@ -32366,7 +32461,7 @@ KeyframeTrackPrototype = {
 
 					if ( isNaN( value ) ) {
 
-						console.error( 'THREE.KeyframeTrackPrototype: Value is not a valid number.', this, i, value );
+						console.error( 'THREE.KeyframeTrackPrototype: Value is not a valid number.', this$1, i, value );
 						valid = false;
 						break;
 
@@ -32428,7 +32523,7 @@ KeyframeTrackPrototype = {
 
 					}
 
-				} else keep = true;
+				} else { keep = true; }
 
 			}
 
@@ -32445,7 +32540,7 @@ KeyframeTrackPrototype = {
 
 					for ( var j = 0; j !== stride; ++ j )
 
-						values[ writeOffset + j ] = values[ readOffset + j ];
+						{ values[ writeOffset + j ] = values[ readOffset + j ]; }
 
 				}
 
@@ -32463,7 +32558,7 @@ KeyframeTrackPrototype = {
 
 			for ( var readOffset = lastIndex * stride, writeOffset = writeIndex * stride, j = 0; j !== stride; ++ j )
 
-				values[ writeOffset + j ] = values[ readOffset + j ];
+				{ values[ writeOffset + j ] = values[ readOffset + j ]; }
 
 			++ writeIndex;
 
@@ -32484,7 +32579,7 @@ KeyframeTrackPrototype = {
 
 function KeyframeTrackConstructor( name, times, values, interpolation ) {
 
-	if ( name === undefined ) throw new Error( 'track name is undefined' );
+	if ( name === undefined ) { throw new Error( 'track name is undefined' ); }
 
 	if ( times === undefined || times.length === 0 ) {
 
@@ -33096,7 +33191,7 @@ Object.assign( AnimationClip, {
 			var animationKeys = hierarchyTracks[ h ].keys;
 
 			// skip empty tracks
-			if ( ! animationKeys || animationKeys.length === 0 ) continue;
+			if ( ! animationKeys || animationKeys.length === 0 ) { continue; }
 
 			// process morph targets
 			if ( animationKeys[ 0 ].morphTargets ) {
@@ -33180,12 +33275,14 @@ Object.assign( AnimationClip, {
 Object.assign( AnimationClip.prototype, {
 
 	resetDuration: function () {
+		var this$1 = this;
+
 
 		var tracks = this.tracks, duration = 0;
 
 		for ( var i = 0, n = tracks.length; i !== n; ++ i ) {
 
-			var track = this.tracks[ i ];
+			var track = this$1.tracks[ i ];
 
 			duration = Math.max( duration, track.times[ track.times.length - 1 ] );
 
@@ -33196,10 +33293,12 @@ Object.assign( AnimationClip.prototype, {
 	},
 
 	trim: function () {
+		var this$1 = this;
+
 
 		for ( var i = 0; i < this.tracks.length; i ++ ) {
 
-			this.tracks[ i ].trim( 0, this.duration );
+			this$1.tracks[ i ].trim( 0, this$1.duration );
 
 		}
 
@@ -33208,10 +33307,12 @@ Object.assign( AnimationClip.prototype, {
 	},
 
 	optimize: function () {
+		var this$1 = this;
+
 
 		for ( var i = 0; i < this.tracks.length; i ++ ) {
 
-			this.tracks[ i ].optimize();
+			this$1.tracks[ i ].optimize();
 
 		}
 
@@ -33271,61 +33372,61 @@ Object.assign( MaterialLoader.prototype, {
 
 		var material = new Materials[ json.type ]();
 
-		if ( json.uuid !== undefined ) material.uuid = json.uuid;
-		if ( json.name !== undefined ) material.name = json.name;
-		if ( json.color !== undefined ) material.color.setHex( json.color );
-		if ( json.roughness !== undefined ) material.roughness = json.roughness;
-		if ( json.metalness !== undefined ) material.metalness = json.metalness;
-		if ( json.emissive !== undefined ) material.emissive.setHex( json.emissive );
-		if ( json.specular !== undefined ) material.specular.setHex( json.specular );
-		if ( json.shininess !== undefined ) material.shininess = json.shininess;
-		if ( json.clearCoat !== undefined ) material.clearCoat = json.clearCoat;
-		if ( json.clearCoatRoughness !== undefined ) material.clearCoatRoughness = json.clearCoatRoughness;
-		if ( json.uniforms !== undefined ) material.uniforms = json.uniforms;
-		if ( json.vertexShader !== undefined ) material.vertexShader = json.vertexShader;
-		if ( json.fragmentShader !== undefined ) material.fragmentShader = json.fragmentShader;
-		if ( json.vertexColors !== undefined ) material.vertexColors = json.vertexColors;
-		if ( json.fog !== undefined ) material.fog = json.fog;
-		if ( json.flatShading !== undefined ) material.flatShading = json.flatShading;
-		if ( json.blending !== undefined ) material.blending = json.blending;
-		if ( json.side !== undefined ) material.side = json.side;
-		if ( json.opacity !== undefined ) material.opacity = json.opacity;
-		if ( json.transparent !== undefined ) material.transparent = json.transparent;
-		if ( json.alphaTest !== undefined ) material.alphaTest = json.alphaTest;
-		if ( json.depthTest !== undefined ) material.depthTest = json.depthTest;
-		if ( json.depthWrite !== undefined ) material.depthWrite = json.depthWrite;
-		if ( json.colorWrite !== undefined ) material.colorWrite = json.colorWrite;
-		if ( json.wireframe !== undefined ) material.wireframe = json.wireframe;
-		if ( json.wireframeLinewidth !== undefined ) material.wireframeLinewidth = json.wireframeLinewidth;
-		if ( json.wireframeLinecap !== undefined ) material.wireframeLinecap = json.wireframeLinecap;
-		if ( json.wireframeLinejoin !== undefined ) material.wireframeLinejoin = json.wireframeLinejoin;
+		if ( json.uuid !== undefined ) { material.uuid = json.uuid; }
+		if ( json.name !== undefined ) { material.name = json.name; }
+		if ( json.color !== undefined ) { material.color.setHex( json.color ); }
+		if ( json.roughness !== undefined ) { material.roughness = json.roughness; }
+		if ( json.metalness !== undefined ) { material.metalness = json.metalness; }
+		if ( json.emissive !== undefined ) { material.emissive.setHex( json.emissive ); }
+		if ( json.specular !== undefined ) { material.specular.setHex( json.specular ); }
+		if ( json.shininess !== undefined ) { material.shininess = json.shininess; }
+		if ( json.clearCoat !== undefined ) { material.clearCoat = json.clearCoat; }
+		if ( json.clearCoatRoughness !== undefined ) { material.clearCoatRoughness = json.clearCoatRoughness; }
+		if ( json.uniforms !== undefined ) { material.uniforms = json.uniforms; }
+		if ( json.vertexShader !== undefined ) { material.vertexShader = json.vertexShader; }
+		if ( json.fragmentShader !== undefined ) { material.fragmentShader = json.fragmentShader; }
+		if ( json.vertexColors !== undefined ) { material.vertexColors = json.vertexColors; }
+		if ( json.fog !== undefined ) { material.fog = json.fog; }
+		if ( json.flatShading !== undefined ) { material.flatShading = json.flatShading; }
+		if ( json.blending !== undefined ) { material.blending = json.blending; }
+		if ( json.side !== undefined ) { material.side = json.side; }
+		if ( json.opacity !== undefined ) { material.opacity = json.opacity; }
+		if ( json.transparent !== undefined ) { material.transparent = json.transparent; }
+		if ( json.alphaTest !== undefined ) { material.alphaTest = json.alphaTest; }
+		if ( json.depthTest !== undefined ) { material.depthTest = json.depthTest; }
+		if ( json.depthWrite !== undefined ) { material.depthWrite = json.depthWrite; }
+		if ( json.colorWrite !== undefined ) { material.colorWrite = json.colorWrite; }
+		if ( json.wireframe !== undefined ) { material.wireframe = json.wireframe; }
+		if ( json.wireframeLinewidth !== undefined ) { material.wireframeLinewidth = json.wireframeLinewidth; }
+		if ( json.wireframeLinecap !== undefined ) { material.wireframeLinecap = json.wireframeLinecap; }
+		if ( json.wireframeLinejoin !== undefined ) { material.wireframeLinejoin = json.wireframeLinejoin; }
 
-		if ( json.rotation !== undefined ) material.rotation = json.rotation;
+		if ( json.rotation !== undefined ) { material.rotation = json.rotation; }
 
-		if ( json.linewidth !== 1 ) material.linewidth = json.linewidth;
-		if ( json.dashSize !== undefined ) material.dashSize = json.dashSize;
-		if ( json.gapSize !== undefined ) material.gapSize = json.gapSize;
-		if ( json.scale !== undefined ) material.scale = json.scale;
+		if ( json.linewidth !== 1 ) { material.linewidth = json.linewidth; }
+		if ( json.dashSize !== undefined ) { material.dashSize = json.dashSize; }
+		if ( json.gapSize !== undefined ) { material.gapSize = json.gapSize; }
+		if ( json.scale !== undefined ) { material.scale = json.scale; }
 
-		if ( json.skinning !== undefined ) material.skinning = json.skinning;
-		if ( json.morphTargets !== undefined ) material.morphTargets = json.morphTargets;
-		if ( json.dithering !== undefined ) material.dithering = json.dithering;
+		if ( json.skinning !== undefined ) { material.skinning = json.skinning; }
+		if ( json.morphTargets !== undefined ) { material.morphTargets = json.morphTargets; }
+		if ( json.dithering !== undefined ) { material.dithering = json.dithering; }
 
-		if ( json.visible !== undefined ) material.visible = json.visible;
-		if ( json.userData !== undefined ) material.userData = json.userData;
+		if ( json.visible !== undefined ) { material.visible = json.visible; }
+		if ( json.userData !== undefined ) { material.userData = json.userData; }
 
 		// Deprecated
 
-		if ( json.shading !== undefined ) material.flatShading = json.shading === 1; // THREE.FlatShading
+		if ( json.shading !== undefined ) { material.flatShading = json.shading === 1; } // THREE.FlatShading
 
 		// for PointsMaterial
 
-		if ( json.size !== undefined ) material.size = json.size;
-		if ( json.sizeAttenuation !== undefined ) material.sizeAttenuation = json.sizeAttenuation;
+		if ( json.size !== undefined ) { material.size = json.size; }
+		if ( json.sizeAttenuation !== undefined ) { material.sizeAttenuation = json.sizeAttenuation; }
 
 		// maps
 
-		if ( json.map !== undefined ) material.map = getTexture( json.map );
+		if ( json.map !== undefined ) { material.map = getTexture( json.map ); }
 
 		if ( json.alphaMap !== undefined ) {
 
@@ -33334,10 +33435,10 @@ Object.assign( MaterialLoader.prototype, {
 
 		}
 
-		if ( json.bumpMap !== undefined ) material.bumpMap = getTexture( json.bumpMap );
-		if ( json.bumpScale !== undefined ) material.bumpScale = json.bumpScale;
+		if ( json.bumpMap !== undefined ) { material.bumpMap = getTexture( json.bumpMap ); }
+		if ( json.bumpScale !== undefined ) { material.bumpScale = json.bumpScale; }
 
-		if ( json.normalMap !== undefined ) material.normalMap = getTexture( json.normalMap );
+		if ( json.normalMap !== undefined ) { material.normalMap = getTexture( json.normalMap ); }
 		if ( json.normalScale !== undefined ) {
 
 			var normalScale = json.normalScale;
@@ -33354,29 +33455,29 @@ Object.assign( MaterialLoader.prototype, {
 
 		}
 
-		if ( json.displacementMap !== undefined ) material.displacementMap = getTexture( json.displacementMap );
-		if ( json.displacementScale !== undefined ) material.displacementScale = json.displacementScale;
-		if ( json.displacementBias !== undefined ) material.displacementBias = json.displacementBias;
+		if ( json.displacementMap !== undefined ) { material.displacementMap = getTexture( json.displacementMap ); }
+		if ( json.displacementScale !== undefined ) { material.displacementScale = json.displacementScale; }
+		if ( json.displacementBias !== undefined ) { material.displacementBias = json.displacementBias; }
 
-		if ( json.roughnessMap !== undefined ) material.roughnessMap = getTexture( json.roughnessMap );
-		if ( json.metalnessMap !== undefined ) material.metalnessMap = getTexture( json.metalnessMap );
+		if ( json.roughnessMap !== undefined ) { material.roughnessMap = getTexture( json.roughnessMap ); }
+		if ( json.metalnessMap !== undefined ) { material.metalnessMap = getTexture( json.metalnessMap ); }
 
-		if ( json.emissiveMap !== undefined ) material.emissiveMap = getTexture( json.emissiveMap );
-		if ( json.emissiveIntensity !== undefined ) material.emissiveIntensity = json.emissiveIntensity;
+		if ( json.emissiveMap !== undefined ) { material.emissiveMap = getTexture( json.emissiveMap ); }
+		if ( json.emissiveIntensity !== undefined ) { material.emissiveIntensity = json.emissiveIntensity; }
 
-		if ( json.specularMap !== undefined ) material.specularMap = getTexture( json.specularMap );
+		if ( json.specularMap !== undefined ) { material.specularMap = getTexture( json.specularMap ); }
 
-		if ( json.envMap !== undefined ) material.envMap = getTexture( json.envMap );
+		if ( json.envMap !== undefined ) { material.envMap = getTexture( json.envMap ); }
 
-		if ( json.reflectivity !== undefined ) material.reflectivity = json.reflectivity;
+		if ( json.reflectivity !== undefined ) { material.reflectivity = json.reflectivity; }
 
-		if ( json.lightMap !== undefined ) material.lightMap = getTexture( json.lightMap );
-		if ( json.lightMapIntensity !== undefined ) material.lightMapIntensity = json.lightMapIntensity;
+		if ( json.lightMap !== undefined ) { material.lightMap = getTexture( json.lightMap ); }
+		if ( json.lightMapIntensity !== undefined ) { material.lightMapIntensity = json.lightMapIntensity; }
 
-		if ( json.aoMap !== undefined ) material.aoMap = getTexture( json.aoMap );
-		if ( json.aoMapIntensity !== undefined ) material.aoMapIntensity = json.aoMapIntensity;
+		if ( json.aoMap !== undefined ) { material.aoMap = getTexture( json.aoMap ); }
+		if ( json.aoMapIntensity !== undefined ) { material.aoMapIntensity = json.aoMapIntensity; }
 
-		if ( json.gradientMap !== undefined ) material.gradientMap = getTexture( json.gradientMap );
+		if ( json.gradientMap !== undefined ) { material.gradientMap = getTexture( json.gradientMap ); }
 
 		return material;
 
@@ -33535,7 +33636,7 @@ Object.assign( Loader.prototype, {
 
 		var parts = url.split( '/' );
 
-		if ( parts.length === 1 ) return './';
+		if ( parts.length === 1 ) { return './'; }
 
 		parts.pop();
 
@@ -33544,12 +33645,14 @@ Object.assign( Loader.prototype, {
 	},
 
 	initMaterials: function ( materials, texturePath, crossOrigin ) {
+		var this$1 = this;
+
 
 		var array = [];
 
 		for ( var i = 0; i < materials.length; ++ i ) {
 
-			array[ i ] = this.createMaterial( materials[ i ], texturePath, crossOrigin );
+			array[ i ] = this$1.createMaterial( materials[ i ], texturePath, crossOrigin );
 
 		}
 
@@ -33600,8 +33703,8 @@ Object.assign( Loader.prototype, {
 
 					texture.repeat.fromArray( repeat );
 
-					if ( repeat[ 0 ] !== 1 ) texture.wrapS = RepeatWrapping;
-					if ( repeat[ 1 ] !== 1 ) texture.wrapT = RepeatWrapping;
+					if ( repeat[ 0 ] !== 1 ) { texture.wrapS = RepeatWrapping; }
+					if ( repeat[ 1 ] !== 1 ) { texture.wrapT = RepeatWrapping; }
 
 				}
 
@@ -33613,11 +33716,11 @@ Object.assign( Loader.prototype, {
 
 				if ( wrap !== undefined ) {
 
-					if ( wrap[ 0 ] === 'repeat' ) texture.wrapS = RepeatWrapping;
-					if ( wrap[ 0 ] === 'mirror' ) texture.wrapS = MirroredRepeatWrapping;
+					if ( wrap[ 0 ] === 'repeat' ) { texture.wrapS = RepeatWrapping; }
+					if ( wrap[ 0 ] === 'mirror' ) { texture.wrapS = MirroredRepeatWrapping; }
 
-					if ( wrap[ 1 ] === 'repeat' ) texture.wrapT = RepeatWrapping;
-					if ( wrap[ 1 ] === 'mirror' ) texture.wrapT = MirroredRepeatWrapping;
+					if ( wrap[ 1 ] === 'repeat' ) { texture.wrapT = RepeatWrapping; }
+					if ( wrap[ 1 ] === 'mirror' ) { texture.wrapT = MirroredRepeatWrapping; }
 
 				}
 
@@ -33676,9 +33779,9 @@ Object.assign( Loader.prototype, {
 						json.shininess = value;
 						break;
 					case 'shading':
-						if ( value.toLowerCase() === 'basic' ) json.type = 'MeshBasicMaterial';
-						if ( value.toLowerCase() === 'phong' ) json.type = 'MeshPhongMaterial';
-						if ( value.toLowerCase() === 'standard' ) json.type = 'MeshStandardMaterial';
+						if ( value.toLowerCase() === 'basic' ) { json.type = 'MeshBasicMaterial'; }
+						if ( value.toLowerCase() === 'phong' ) { json.type = 'MeshPhongMaterial'; }
+						if ( value.toLowerCase() === 'standard' ) { json.type = 'MeshStandardMaterial'; }
 						break;
 					case 'mapDiffuse':
 						json.map = loadTexture( value, m.mapDiffuseRepeat, m.mapDiffuseOffset, m.mapDiffuseWrap, m.mapDiffuseAnisotropy );
@@ -33787,8 +33890,8 @@ Object.assign( Loader.prototype, {
 						json[ name ] = value;
 						break;
 					case 'vertexColors':
-						if ( value === true ) json.vertexColors = VertexColors;
-						if ( value === 'face' ) json.vertexColors = FaceColors;
+						if ( value === true ) { json.vertexColors = VertexColors; }
+						if ( value === 'face' ) { json.vertexColors = FaceColors; }
 						break;
 					default:
 						console.error( 'THREE.Loader.createMaterial: Unsupported', name, value );
@@ -33798,10 +33901,10 @@ Object.assign( Loader.prototype, {
 
 			}
 
-			if ( json.type === 'MeshBasicMaterial' ) delete json.emissive;
-			if ( json.type !== 'MeshPhongMaterial' ) delete json.specular;
+			if ( json.type === 'MeshBasicMaterial' ) { delete json.emissive; }
+			if ( json.type !== 'MeshPhongMaterial' ) { delete json.specular; }
 
-			if ( json.opacity < 1 ) json.transparent = true;
+			if ( json.opacity < 1 ) { json.transparent = true; }
 
 			materialLoader.setTextures( textures );
 
@@ -33928,7 +34031,7 @@ Object.assign( JSONLoader.prototype, {
 
 				for ( i = 0; i < json.uvs.length; i ++ ) {
 
-					if ( json.uvs[ i ].length ) nUvLayers ++;
+					if ( json.uvs[ i ].length ) { nUvLayers ++; }
 
 				}
 
@@ -34016,8 +34119,8 @@ Object.assign( JSONLoader.prototype, {
 
 								uv = new Vector2( u, v );
 
-								if ( j !== 2 ) geometry.faceVertexUvs[ i ][ fi ].push( uv );
-								if ( j !== 0 ) geometry.faceVertexUvs[ i ][ fi + 1 ].push( uv );
+								if ( j !== 2 ) { geometry.faceVertexUvs[ i ][ fi ].push( uv ); }
+								if ( j !== 0 ) { geometry.faceVertexUvs[ i ][ fi + 1 ].push( uv ); }
 
 							}
 
@@ -34052,8 +34155,8 @@ Object.assign( JSONLoader.prototype, {
 							);
 
 
-							if ( i !== 2 ) faceA.vertexNormals.push( normal );
-							if ( i !== 0 ) faceB.vertexNormals.push( normal );
+							if ( i !== 2 ) { faceA.vertexNormals.push( normal ); }
+							if ( i !== 0 ) { faceB.vertexNormals.push( normal ); }
 
 						}
 
@@ -34078,8 +34181,8 @@ Object.assign( JSONLoader.prototype, {
 							colorIndex = faces[ offset ++ ];
 							hex = colors[ colorIndex ];
 
-							if ( i !== 2 ) faceA.vertexColors.push( new Color( hex ) );
-							if ( i !== 0 ) faceB.vertexColors.push( new Color( hex ) );
+							if ( i !== 2 ) { faceA.vertexColors.push( new Color( hex ) ); }
+							if ( i !== 0 ) { faceB.vertexColors.push( new Color( hex ) ); }
 
 						}
 
@@ -34311,7 +34414,7 @@ Object.assign( JSONLoader.prototype, {
 			for ( var i = 0; i < animations.length; i ++ ) {
 
 				var clip = AnimationClip.parseAnimation( animations[ i ], geometry.bones );
-				if ( clip ) outputAnimations.push( clip );
+				if ( clip ) { outputAnimations.push( clip ); }
 
 			}
 
@@ -34324,7 +34427,7 @@ Object.assign( JSONLoader.prototype, {
 
 			}
 
-			if ( outputAnimations.length > 0 ) geometry.animations = outputAnimations;
+			if ( outputAnimations.length > 0 ) { geometry.animations = outputAnimations; }
 
 		}
 
@@ -34409,7 +34512,7 @@ Object.assign( ObjectLoader.prototype, {
 
 			} catch ( error ) {
 
-				if ( onError !== undefined ) onError( error );
+				if ( onError !== undefined ) { onError( error ); }
 
 				console.error( 'THREE:ObjectLoader: Can\'t parse ' + url + '.', error.message );
 
@@ -34450,7 +34553,7 @@ Object.assign( ObjectLoader.prototype, {
 
 		var images = this.parseImages( json.images, function () {
 
-			if ( onLoad !== undefined ) onLoad( object );
+			if ( onLoad !== undefined ) { onLoad( object ); }
 
 		} );
 
@@ -34467,7 +34570,7 @@ Object.assign( ObjectLoader.prototype, {
 
 		if ( json.images === undefined || json.images.length === 0 ) {
 
-			if ( onLoad !== undefined ) onLoad( object );
+			if ( onLoad !== undefined ) { onLoad( object ); }
 
 		}
 
@@ -34476,6 +34579,8 @@ Object.assign( ObjectLoader.prototype, {
 	},
 
 	parseGeometries: function ( json ) {
+		var this$1 = this;
+
 
 		var geometries = {};
 
@@ -34665,7 +34770,7 @@ Object.assign( ObjectLoader.prototype, {
 
 					case 'Geometry':
 
-						geometry = geometryLoader.parse( data, this.texturePath ).geometry;
+						geometry = geometryLoader.parse( data, this$1.texturePath ).geometry;
 
 						break;
 
@@ -34679,7 +34784,7 @@ Object.assign( ObjectLoader.prototype, {
 
 				geometry.uuid = data.uuid;
 
-				if ( data.name !== undefined ) geometry.name = data.name;
+				if ( data.name !== undefined ) { geometry.name = data.name; }
 
 				geometries[ data.uuid ] = geometry;
 
@@ -34796,7 +34901,7 @@ Object.assign( ObjectLoader.prototype, {
 
 		function parseConstant( value, type ) {
 
-			if ( typeof value === 'number' ) return value;
+			if ( typeof value === 'number' ) { return value; }
 
 			console.warn( 'THREE.ObjectLoader.parseTexture: Constant should be in numeric form.', value );
 
@@ -34829,14 +34934,14 @@ Object.assign( ObjectLoader.prototype, {
 
 				texture.uuid = data.uuid;
 
-				if ( data.name !== undefined ) texture.name = data.name;
+				if ( data.name !== undefined ) { texture.name = data.name; }
 
-				if ( data.mapping !== undefined ) texture.mapping = parseConstant( data.mapping, TEXTURE_MAPPING );
+				if ( data.mapping !== undefined ) { texture.mapping = parseConstant( data.mapping, TEXTURE_MAPPING ); }
 
-				if ( data.offset !== undefined ) texture.offset.fromArray( data.offset );
-				if ( data.repeat !== undefined ) texture.repeat.fromArray( data.repeat );
-				if ( data.center !== undefined ) texture.center.fromArray( data.center );
-				if ( data.rotation !== undefined ) texture.rotation = data.rotation;
+				if ( data.offset !== undefined ) { texture.offset.fromArray( data.offset ); }
+				if ( data.repeat !== undefined ) { texture.repeat.fromArray( data.repeat ); }
+				if ( data.center !== undefined ) { texture.center.fromArray( data.center ); }
+				if ( data.rotation !== undefined ) { texture.rotation = data.rotation; }
 
 				if ( data.wrap !== undefined ) {
 
@@ -34845,11 +34950,11 @@ Object.assign( ObjectLoader.prototype, {
 
 				}
 
-				if ( data.minFilter !== undefined ) texture.minFilter = parseConstant( data.minFilter, TEXTURE_FILTER );
-				if ( data.magFilter !== undefined ) texture.magFilter = parseConstant( data.magFilter, TEXTURE_FILTER );
-				if ( data.anisotropy !== undefined ) texture.anisotropy = data.anisotropy;
+				if ( data.minFilter !== undefined ) { texture.minFilter = parseConstant( data.minFilter, TEXTURE_FILTER ); }
+				if ( data.magFilter !== undefined ) { texture.magFilter = parseConstant( data.magFilter, TEXTURE_FILTER ); }
+				if ( data.anisotropy !== undefined ) { texture.anisotropy = data.anisotropy; }
 
-				if ( data.flipY !== undefined ) texture.flipY = data.flipY;
+				if ( data.flipY !== undefined ) { texture.flipY = data.flipY; }
 
 				textures[ data.uuid ] = texture;
 
@@ -34866,6 +34971,8 @@ Object.assign( ObjectLoader.prototype, {
 		var matrix = new Matrix4();
 
 		return function parseObject( data, geometries, materials ) {
+			var this$1 = this;
+
 
 			var object;
 
@@ -34883,7 +34990,7 @@ Object.assign( ObjectLoader.prototype, {
 
 			function getMaterial( name ) {
 
-				if ( name === undefined ) return undefined;
+				if ( name === undefined ) { return undefined; }
 
 				if ( Array.isArray( name ) ) {
 
@@ -34953,11 +35060,11 @@ Object.assign( ObjectLoader.prototype, {
 
 					object = new PerspectiveCamera( data.fov, data.aspect, data.near, data.far );
 
-					if ( data.focus !== undefined ) object.focus = data.focus;
-					if ( data.zoom !== undefined ) object.zoom = data.zoom;
-					if ( data.filmGauge !== undefined ) object.filmGauge = data.filmGauge;
-					if ( data.filmOffset !== undefined ) object.filmOffset = data.filmOffset;
-					if ( data.view !== undefined ) object.view = Object.assign( {}, data.view );
+					if ( data.focus !== undefined ) { object.focus = data.focus; }
+					if ( data.zoom !== undefined ) { object.zoom = data.zoom; }
+					if ( data.filmGauge !== undefined ) { object.filmGauge = data.filmGauge; }
+					if ( data.filmOffset !== undefined ) { object.filmOffset = data.filmOffset; }
+					if ( data.view !== undefined ) { object.view = Object.assign( {}, data.view ); }
 
 					break;
 
@@ -35075,7 +35182,7 @@ Object.assign( ObjectLoader.prototype, {
 
 			object.uuid = data.uuid;
 
-			if ( data.name !== undefined ) object.name = data.name;
+			if ( data.name !== undefined ) { object.name = data.name; }
 			if ( data.matrix !== undefined ) {
 
 				matrix.fromArray( data.matrix );
@@ -35083,27 +35190,27 @@ Object.assign( ObjectLoader.prototype, {
 
 			} else {
 
-				if ( data.position !== undefined ) object.position.fromArray( data.position );
-				if ( data.rotation !== undefined ) object.rotation.fromArray( data.rotation );
-				if ( data.quaternion !== undefined ) object.quaternion.fromArray( data.quaternion );
-				if ( data.scale !== undefined ) object.scale.fromArray( data.scale );
+				if ( data.position !== undefined ) { object.position.fromArray( data.position ); }
+				if ( data.rotation !== undefined ) { object.rotation.fromArray( data.rotation ); }
+				if ( data.quaternion !== undefined ) { object.quaternion.fromArray( data.quaternion ); }
+				if ( data.scale !== undefined ) { object.scale.fromArray( data.scale ); }
 
 			}
 
-			if ( data.castShadow !== undefined ) object.castShadow = data.castShadow;
-			if ( data.receiveShadow !== undefined ) object.receiveShadow = data.receiveShadow;
+			if ( data.castShadow !== undefined ) { object.castShadow = data.castShadow; }
+			if ( data.receiveShadow !== undefined ) { object.receiveShadow = data.receiveShadow; }
 
 			if ( data.shadow ) {
 
-				if ( data.shadow.bias !== undefined ) object.shadow.bias = data.shadow.bias;
-				if ( data.shadow.radius !== undefined ) object.shadow.radius = data.shadow.radius;
-				if ( data.shadow.mapSize !== undefined ) object.shadow.mapSize.fromArray( data.shadow.mapSize );
-				if ( data.shadow.camera !== undefined ) object.shadow.camera = this.parseObject( data.shadow.camera );
+				if ( data.shadow.bias !== undefined ) { object.shadow.bias = data.shadow.bias; }
+				if ( data.shadow.radius !== undefined ) { object.shadow.radius = data.shadow.radius; }
+				if ( data.shadow.mapSize !== undefined ) { object.shadow.mapSize.fromArray( data.shadow.mapSize ); }
+				if ( data.shadow.camera !== undefined ) { object.shadow.camera = this.parseObject( data.shadow.camera ); }
 
 			}
 
-			if ( data.visible !== undefined ) object.visible = data.visible;
-			if ( data.userData !== undefined ) object.userData = data.userData;
+			if ( data.visible !== undefined ) { object.visible = data.visible; }
+			if ( data.userData !== undefined ) { object.userData = data.userData; }
 
 			if ( data.children !== undefined ) {
 
@@ -35111,7 +35218,7 @@ Object.assign( ObjectLoader.prototype, {
 
 				for ( var i = 0; i < children.length; i ++ ) {
 
-					object.add( this.parseObject( children[ i ], geometries, materials ) );
+					object.add( this$1.parseObject( children[ i ], geometries, materials ) );
 
 				}
 
@@ -35318,14 +35425,16 @@ Object.assign( Curve.prototype, {
 	// Get sequence of points using getPoint( t )
 
 	getPoints: function ( divisions ) {
+		var this$1 = this;
 
-		if ( divisions === undefined ) divisions = 5;
+
+		if ( divisions === undefined ) { divisions = 5; }
 
 		var points = [];
 
 		for ( var d = 0; d <= divisions; d ++ ) {
 
-			points.push( this.getPoint( d / divisions ) );
+			points.push( this$1.getPoint( d / divisions ) );
 
 		}
 
@@ -35336,14 +35445,16 @@ Object.assign( Curve.prototype, {
 	// Get sequence of points using getPointAt( u )
 
 	getSpacedPoints: function ( divisions ) {
+		var this$1 = this;
 
-		if ( divisions === undefined ) divisions = 5;
+
+		if ( divisions === undefined ) { divisions = 5; }
 
 		var points = [];
 
 		for ( var d = 0; d <= divisions; d ++ ) {
 
-			points.push( this.getPointAt( d / divisions ) );
+			points.push( this$1.getPointAt( d / divisions ) );
 
 		}
 
@@ -35363,8 +35474,10 @@ Object.assign( Curve.prototype, {
 	// Get list of cumulative segment lengths
 
 	getLengths: function ( divisions ) {
+		var this$1 = this;
 
-		if ( divisions === undefined ) divisions = this.arcLengthDivisions;
+
+		if ( divisions === undefined ) { divisions = this.arcLengthDivisions; }
 
 		if ( this.cacheArcLengths &&
 			( this.cacheArcLengths.length === divisions + 1 ) &&
@@ -35384,7 +35497,7 @@ Object.assign( Curve.prototype, {
 
 		for ( p = 1; p <= divisions; p ++ ) {
 
-			current = this.getPoint( p / divisions );
+			current = this$1.getPoint( p / divisions );
 			sum += current.distanceTo( last );
 			cache.push( sum );
 			last = current;
@@ -35493,8 +35606,8 @@ Object.assign( Curve.prototype, {
 
 		// Capping in case of danger
 
-		if ( t1 < 0 ) t1 = 0;
-		if ( t2 > 1 ) t2 = 1;
+		if ( t1 < 0 ) { t1 = 0; }
+		if ( t2 > 1 ) { t2 = 1; }
 
 		var pt1 = this.getPoint( t1 );
 		var pt2 = this.getPoint( t2 );
@@ -35512,6 +35625,8 @@ Object.assign( Curve.prototype, {
 	},
 
 	computeFrenetFrames: function ( segments, closed ) {
+		var this$1 = this;
+
 
 		// see http://www.cs.indiana.edu/pub/techreports/TR425.pdf
 
@@ -35532,7 +35647,7 @@ Object.assign( Curve.prototype, {
 
 			u = i / segments;
 
-			tangents[ i ] = this.getTangentAt( u );
+			tangents[ i ] = this$1.getTangentAt( u );
 			tangents[ i ].normalize();
 
 		}
@@ -35761,6 +35876,8 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	// 4. Return curve.getPointAt(t')
 
 	getPoint: function ( t ) {
+		var this$1 = this;
+
 
 		var d = t * this.getLength();
 		var curveLengths = this.getCurveLengths();
@@ -35773,7 +35890,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 			if ( curveLengths[ i ] >= d ) {
 
 				var diff = curveLengths[ i ] - d;
-				var curve = this.curves[ i ];
+				var curve = this$1.curves[ i ];
 
 				var segmentLength = curve.getLength();
 				var u = segmentLength === 0 ? 0 : 1 - diff / segmentLength;
@@ -35816,6 +35933,8 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	// We cannot overwrite getLengths() because UtoT mapping uses it.
 
 	getCurveLengths: function () {
+		var this$1 = this;
+
 
 		// We use cache values if curves and cache array are same length
 
@@ -35832,7 +35951,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		for ( var i = 0, l = this.curves.length; i < l; i ++ ) {
 
-			sums += this.curves[ i ].getLength();
+			sums += this$1.curves[ i ].getLength();
 			lengths.push( sums );
 
 		}
@@ -35844,14 +35963,16 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	getSpacedPoints: function ( divisions ) {
+		var this$1 = this;
 
-		if ( divisions === undefined ) divisions = 40;
+
+		if ( divisions === undefined ) { divisions = 40; }
 
 		var points = [];
 
 		for ( var i = 0; i <= divisions; i ++ ) {
 
-			points.push( this.getPoint( i / divisions ) );
+			points.push( this$1.getPoint( i / divisions ) );
 
 		}
 
@@ -35885,7 +36006,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 				var point = pts[ j ];
 
-				if ( last && last.equals( point ) ) continue; // ensures no consecutive points are duplicates
+				if ( last && last.equals( point ) ) { continue; } // ensures no consecutive points are duplicates
 
 				points.push( point );
 				last = point;
@@ -35905,6 +36026,8 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		Curve.prototype.copy.call( this, source );
 
@@ -35914,7 +36037,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 			var curve = source.curves[ i ];
 
-			this.curves.push( curve.clone() );
+			this$1.curves.push( curve.clone() );
 
 		}
 
@@ -35961,8 +36084,8 @@ EllipseCurve.prototype.getPoint = function ( t, optionalTarget ) {
 	var samePoints = Math.abs( deltaAngle ) < Number.EPSILON;
 
 	// ensures that deltaAngle is 0 .. 2 PI
-	while ( deltaAngle < 0 ) deltaAngle += twoPi;
-	while ( deltaAngle > twoPi ) deltaAngle -= twoPi;
+	while ( deltaAngle < 0 ) { deltaAngle += twoPi; }
+	while ( deltaAngle > twoPi ) { deltaAngle -= twoPi; }
 
 	if ( deltaAngle < Number.EPSILON ) {
 
@@ -36075,6 +36198,8 @@ SplineCurve.prototype.getPoint = function ( t, optionalTarget ) {
 };
 
 SplineCurve.prototype.copy = function ( source ) {
+	var this$1 = this;
+
 
 	Curve.prototype.copy.call( this, source );
 
@@ -36084,7 +36209,7 @@ SplineCurve.prototype.copy = function ( source ) {
 
 		var point = source.points[ i ];
 
-		this.points.push( point.clone() );
+		this$1.points.push( point.clone() );
 
 	}
 
@@ -36185,12 +36310,14 @@ QuadraticBezierCurve.prototype.copy = function ( source ) {
 var PathPrototype = Object.assign( Object.create( CurvePath.prototype ), {
 
 	setFromPoints: function ( points ) {
+		var this$1 = this;
+
 
 		this.moveTo( points[ 0 ].x, points[ 0 ].y );
 
 		for ( var i = 1, l = points.length; i < l; i ++ ) {
 
-			this.lineTo( points[ i ].x, points[ i ].y );
+			this$1.lineTo( points[ i ].x, points[ i ].y );
 
 		}
 
@@ -36362,12 +36489,14 @@ Shape.prototype = Object.assign( Object.create( PathPrototype ), {
 	constructor: Shape,
 
 	getPointsHoles: function ( divisions ) {
+		var this$1 = this;
+
 
 		var holesPts = [];
 
 		for ( var i = 0, l = this.holes.length; i < l; i ++ ) {
 
-			holesPts[ i ] = this.holes[ i ].getPoints( divisions );
+			holesPts[ i ] = this$1.holes[ i ].getPoints( divisions );
 
 		}
 
@@ -36389,6 +36518,8 @@ Shape.prototype = Object.assign( Object.create( PathPrototype ), {
 	},
 
 	copy: function ( source ) {
+		var this$1 = this;
+
 
 		Path.prototype.copy.call( this, source );
 
@@ -36398,7 +36529,7 @@ Shape.prototype = Object.assign( Object.create( PathPrototype ), {
 
 			var hole = source.holes[ i ];
 
-			this.holes.push( hole.clone() );
+			this$1.holes.push( hole.clone() );
 
 		}
 
@@ -36503,18 +36634,18 @@ Object.assign( ShapePath.prototype, {
 						edgeHighPt = inPolygon[ p ]; edgeDy = - edgeDy;
 
 					}
-					if ( ( inPt.y < edgeLowPt.y ) || ( inPt.y > edgeHighPt.y ) ) 		continue;
+					if ( ( inPt.y < edgeLowPt.y ) || ( inPt.y > edgeHighPt.y ) ) 		{ continue; }
 
 					if ( inPt.y === edgeLowPt.y ) {
 
-						if ( inPt.x === edgeLowPt.x )		return	true;		// inPt is on contour ?
+						if ( inPt.x === edgeLowPt.x )		{ return	true; }		// inPt is on contour ?
 						// continue;				// no intersection or edgeLowPt => doesn't count !!!
 
 					} else {
 
 						var perpEdge = edgeDy * ( inPt.x - edgeLowPt.x ) - edgeDx * ( inPt.y - edgeLowPt.y );
-						if ( perpEdge === 0 )				return	true;		// inPt is on contour ?
-						if ( perpEdge < 0 ) 				continue;
+						if ( perpEdge === 0 )				{ return	true; }		// inPt is on contour ?
+						if ( perpEdge < 0 ) 				{ continue; }
 						inside = ! inside;		// true intersection left of inPt
 
 					}
@@ -36522,10 +36653,10 @@ Object.assign( ShapePath.prototype, {
 				} else {
 
 					// parallel or collinear
-					if ( inPt.y !== edgeLowPt.y ) 		continue;			// parallel
+					if ( inPt.y !== edgeLowPt.y ) 		{ continue; }			// parallel
 					// edge lies on the same horizontal line as inPt
 					if ( ( ( edgeHighPt.x <= inPt.x ) && ( inPt.x <= edgeLowPt.x ) ) ||
-						 ( ( edgeLowPt.x <= inPt.x ) && ( inPt.x <= edgeHighPt.x ) ) )		return	true;	// inPt: Point on contour !
+						 ( ( edgeLowPt.x <= inPt.x ) && ( inPt.x <= edgeHighPt.x ) ) )		{ return	true; }	// inPt: Point on contour !
 					// continue;
 
 				}
@@ -36539,9 +36670,9 @@ Object.assign( ShapePath.prototype, {
 		var isClockWise = ShapeUtils.isClockWise;
 
 		var subPaths = this.subPaths;
-		if ( subPaths.length === 0 ) return [];
+		if ( subPaths.length === 0 ) { return []; }
 
-		if ( noHoles === true )	return	toShapesNoHoles( subPaths );
+		if ( noHoles === true )	{ return	toShapesNoHoles( subPaths ); }
 
 
 		var solid, tmpPath, tmpShape, shapes = [];
@@ -36579,12 +36710,12 @@ Object.assign( ShapePath.prototype, {
 
 			if ( solid ) {
 
-				if ( ( ! holesFirst ) && ( newShapes[ mainIdx ] ) )	mainIdx ++;
+				if ( ( ! holesFirst ) && ( newShapes[ mainIdx ] ) )	{ mainIdx ++; }
 
 				newShapes[ mainIdx ] = { s: new Shape(), p: tmpPoints };
 				newShapes[ mainIdx ].s.curves = tmpPath.curves;
 
-				if ( holesFirst )	mainIdx ++;
+				if ( holesFirst )	{ mainIdx ++; }
 				newShapeHoles[ mainIdx ] = [];
 
 				//console.log('cw', i);
@@ -36600,7 +36731,7 @@ Object.assign( ShapePath.prototype, {
 		}
 
 		// only Holes? -> probably all Shapes with wrong orientation
-		if ( ! newShapes[ 0 ] )	return	toShapesNoHoles( subPaths );
+		if ( ! newShapes[ 0 ] )	{ return	toShapesNoHoles( subPaths ); }
 
 
 		if ( newShapes.length > 1 ) {
@@ -36627,7 +36758,7 @@ Object.assign( ShapePath.prototype, {
 
 						if ( isPointInsidePolygon( ho.p, newShapes[ s2Idx ].p ) ) {
 
-							if ( sIdx !== s2Idx )	toChange.push( { froms: sIdx, tos: s2Idx, hole: hIdx } );
+							if ( sIdx !== s2Idx )	{ toChange.push( { froms: sIdx, tos: s2Idx, hole: hIdx } ); }
 							if ( hole_unassigned ) {
 
 								hole_unassigned = false;
@@ -36655,7 +36786,7 @@ Object.assign( ShapePath.prototype, {
 			if ( toChange.length > 0 ) {
 
 				// console.log("to change: ", toChange);
-				if ( ! ambiguous )	newShapeHoles = betterShapeHoles;
+				if ( ! ambiguous )	{ newShapeHoles = betterShapeHoles; }
 
 			}
 
@@ -36741,7 +36872,7 @@ Object.assign( Font.prototype, {
 
 			var glyph = data.glyphs[ c ] || data.glyphs[ '?' ];
 
-			if ( ! glyph ) return;
+			if ( ! glyph ) { return; }
 
 			var path = new ShapePath();
 
@@ -36830,8 +36961,8 @@ Object.assign( Font.prototype, {
 
 		//
 
-		if ( size === undefined ) size = 100;
-		if ( divisions === undefined ) divisions = 4;
+		if ( size === undefined ) { size = 100; }
+		if ( divisions === undefined ) { divisions = 4; }
 
 		var data = this.data;
 
@@ -36885,7 +37016,7 @@ Object.assign( FontLoader.prototype, {
 
 			var font = scope.parse( json );
 
-			if ( onLoad ) onLoad( font );
+			if ( onLoad ) { onLoad( font ); }
 
 		}, onProgress, onError );
 
@@ -37106,7 +37237,7 @@ function CubeCamera( near, far, cubeResolution ) {
 
 	this.update = function ( renderer, scene ) {
 
-		if ( this.parent === null ) this.updateMatrixWorld();
+		if ( this.parent === null ) { this.updateMatrixWorld(); }
 
 		var renderTarget = this.renderTarget;
 		var generateMipmaps = renderTarget.texture.generateMipmaps;
@@ -37339,7 +37470,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		this.buffer = audioBuffer;
 		this.sourceType = 'buffer';
 
-		if ( this.autoplay ) this.play();
+		if ( this.autoplay ) { this.play(); }
 
 		return this;
 
@@ -37417,6 +37548,8 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	connect: function () {
+		var this$1 = this;
+
 
 		if ( this.filters.length > 0 ) {
 
@@ -37424,7 +37557,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			for ( var i = 1, l = this.filters.length; i < l; i ++ ) {
 
-				this.filters[ i - 1 ].connect( this.filters[ i ] );
+				this$1.filters[ i - 1 ].connect( this$1.filters[ i ] );
 
 			}
 
@@ -37441,6 +37574,8 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	disconnect: function () {
+		var this$1 = this;
+
 
 		if ( this.filters.length > 0 ) {
 
@@ -37448,7 +37583,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			for ( var i = 1, l = this.filters.length; i < l; i ++ ) {
 
-				this.filters[ i - 1 ].disconnect( this.filters[ i ] );
+				this$1.filters[ i - 1 ].disconnect( this$1.filters[ i ] );
 
 			}
 
@@ -37472,7 +37607,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 	setFilters: function ( value ) {
 
-		if ( ! value ) value = [];
+		if ( ! value ) { value = []; }
 
 		if ( this.isPlaying === true ) {
 
@@ -37950,7 +38085,7 @@ Object.assign( Composite.prototype, {
 			binding = this._bindings[ firstValidIndex ];
 
 		// and only call .getValue on the first
-		if ( binding !== undefined ) binding.getValue( array, offset );
+		if ( binding !== undefined ) { binding.getValue( array, offset ); }
 
 	},
 
@@ -38172,7 +38307,7 @@ Object.assign( PropertyBinding, {
 
 					var result = searchNodeSubtree( childNode.children );
 
-					if ( result ) return result;
+					if ( result ) { return result; }
 
 				}
 
@@ -38681,6 +38816,8 @@ Object.assign( PropertyBinding.prototype, {
  */
 
 function AnimationObjectGroup() {
+	var arguments$1 = arguments;
+
 
 	this.uuid = _Math.generateUUID();
 
@@ -38695,7 +38832,7 @@ function AnimationObjectGroup() {
 
 	for ( var i = 0, n = arguments.length; i !== n; ++ i ) {
 
-		indices[ arguments[ i ].uuid ] = i;
+		indices[ arguments$1[ i ].uuid ] = i;
 
 	}
 
@@ -38735,6 +38872,8 @@ Object.assign( AnimationObjectGroup.prototype, {
 	isAnimationObjectGroup: true,
 
 	add: function () {
+		var arguments$1 = arguments;
+
 
 		var objects = this._objects,
 			nObjects = objects.length,
@@ -38747,7 +38886,7 @@ Object.assign( AnimationObjectGroup.prototype, {
 
 		for ( var i = 0, n = arguments.length; i !== n; ++ i ) {
 
-			var object = arguments[ i ],
+			var object = arguments$1[ i ],
 				uuid = object.uuid,
 				index = indicesByUUID[ uuid ],
 				knownObject = undefined;
@@ -38821,6 +38960,8 @@ Object.assign( AnimationObjectGroup.prototype, {
 	},
 
 	remove: function () {
+		var arguments$1 = arguments;
+
 
 		var objects = this._objects,
 			nCachedObjects = this.nCachedObjects_,
@@ -38830,7 +38971,7 @@ Object.assign( AnimationObjectGroup.prototype, {
 
 		for ( var i = 0, n = arguments.length; i !== n; ++ i ) {
 
-			var object = arguments[ i ],
+			var object = arguments$1[ i ],
 				uuid = object.uuid,
 				index = indicesByUUID[ uuid ];
 
@@ -38870,6 +39011,8 @@ Object.assign( AnimationObjectGroup.prototype, {
 
 	// remove & forget
 	uncache: function () {
+		var arguments$1 = arguments;
+
 
 		var objects = this._objects,
 			nObjects = objects.length,
@@ -38880,7 +39023,7 @@ Object.assign( AnimationObjectGroup.prototype, {
 
 		for ( var i = 0, n = arguments.length; i !== n; ++ i ) {
 
-			var object = arguments[ i ],
+			var object = arguments$1[ i ],
 				uuid = object.uuid,
 				index = indicesByUUID[ uuid ];
 
@@ -38963,7 +39106,7 @@ Object.assign( AnimationObjectGroup.prototype, {
 			index = indicesByPath[ path ],
 			bindings = this._bindings;
 
-		if ( index !== undefined ) return bindings[ index ];
+		if ( index !== undefined ) { return bindings[ index ]; }
 
 		var paths = this._paths,
 			parsedPaths = this._parsedPaths,
@@ -39494,7 +39637,7 @@ Object.assign( AnimationAction.prototype, {
 
 		var time = this.time + deltaTime;
 
-		if ( deltaTime === 0 ) return time;
+		if ( deltaTime === 0 ) { return time; }
 
 		var duration = this._clip.duration,
 
@@ -39522,10 +39665,10 @@ Object.assign( AnimationAction.prototype, {
 
 					time = 0;
 
-				} else break handle_stop;
+				} else { break handle_stop; }
 
-				if ( this.clampWhenFinished ) this.paused = true;
-				else this.enabled = false;
+				if ( this.clampWhenFinished ) { this.paused = true; }
+				else { this.enabled = false; }
 
 				this._mixer.dispatchEvent( {
 					type: 'finished', action: this,
@@ -39575,8 +39718,8 @@ Object.assign( AnimationAction.prototype, {
 
 					// have to stop (switch state, clamp time, fire event)
 
-					if ( this.clampWhenFinished ) this.paused = true;
-					else this.enabled = false;
+					if ( this.clampWhenFinished ) { this.paused = true; }
+					else { this.enabled = false; }
 
 					time = deltaTime > 0 ? duration : 0;
 
@@ -39714,6 +39857,8 @@ function AnimationMixer( root ) {
 Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 	_bindAction: function ( action, prototypeAction ) {
+		var this$1 = this;
+
 
 		var root = action._localRoot || this._root,
 			tracks = action._clip.tracks,
@@ -39752,7 +39897,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 					if ( binding._cacheIndex === null ) {
 
 						++ binding.referenceCount;
-						this._addInactiveBinding( binding, rootUuid, trackName );
+						this$1._addInactiveBinding( binding, rootUuid, trackName );
 
 					}
 
@@ -39768,7 +39913,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 					track.ValueTypeName, track.getValueSize() );
 
 				++ binding.referenceCount;
-				this._addInactiveBinding( binding, rootUuid, trackName );
+				this$1._addInactiveBinding( binding, rootUuid, trackName );
 
 				bindings[ i ] = binding;
 
@@ -39781,6 +39926,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 	},
 
 	_activateAction: function ( action ) {
+		var this$1 = this;
+
 
 		if ( ! this._isActiveAction( action ) ) {
 
@@ -39809,7 +39956,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 				if ( binding.useCount ++ === 0 ) {
 
-					this._lendBinding( binding );
+					this$1._lendBinding( binding );
 					binding.saveOriginalState();
 
 				}
@@ -39823,6 +39970,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 	},
 
 	_deactivateAction: function ( action ) {
+		var this$1 = this;
+
 
 		if ( this._isActiveAction( action ) ) {
 
@@ -39836,7 +39985,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 				if ( -- binding.useCount === 0 ) {
 
 					binding.restoreOriginalState();
-					this._takeBackBinding( binding );
+					this$1._takeBackBinding( binding );
 
 				}
 
@@ -40007,6 +40156,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 	},
 
 	_removeInactiveBindingsForAction: function ( action ) {
+		var this$1 = this;
+
 
 		var bindings = action._propertyBindings;
 		for ( var i = 0, n = bindings.length; i !== n; ++ i ) {
@@ -40015,7 +40166,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 			if ( -- binding.referenceCount === 0 ) {
 
-				this._removeInactiveBinding( binding );
+				this$1._removeInactiveBinding( binding );
 
 			}
 
@@ -40112,7 +40263,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 		remove_empty_map: {
 
-			for ( var _ in bindingByName ) break remove_empty_map; // eslint-disable-line no-unused-vars
+			for ( var _ in bindingByName ) { break remove_empty_map; } // eslint-disable-line no-unused-vars
 
 			delete bindingsByRoot[ rootUuid ];
 
@@ -40230,12 +40381,12 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 			// also, take the clip from the prototype action
 			if ( clipObject === null )
-				clipObject = prototypeAction._clip;
+				{ clipObject = prototypeAction._clip; }
 
 		}
 
 		// clip must be known when specified via string
-		if ( clipObject === null ) return null;
+		if ( clipObject === null ) { return null; }
 
 		// allocate all resources required to run it
 		var newAction = new AnimationAction( this, clipObject, optionalRoot );
@@ -40346,6 +40497,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 	// free all resources specific to a particular clip
 	uncacheClip: function ( clip ) {
+		var this$1 = this;
+
 
 		var actions = this._actions,
 			clipUuid = clip.uuid,
@@ -40364,7 +40517,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 				var action = actionsToRemove[ i ];
 
-				this._deactivateAction( action );
+				this$1._deactivateAction( action );
 
 				var cacheIndex = action._cacheIndex,
 					lastInactiveAction = actions[ actions.length - 1 ];
@@ -40376,7 +40529,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 				actions[ cacheIndex ] = lastInactiveAction;
 				actions.pop();
 
-				this._removeInactiveBindingsForAction( action );
+				this$1._removeInactiveBindingsForAction( action );
 
 			}
 
@@ -40388,6 +40541,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 	// free all resources specific to a particular root target object
 	uncacheRoot: function ( root ) {
+		var this$1 = this;
+
 
 		var rootUuid = root.uuid,
 			actionsByClip = this._actionsByClip;
@@ -40399,8 +40554,8 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 			if ( action !== undefined ) {
 
-				this._deactivateAction( action );
-				this._removeInactiveAction( action );
+				this$1._deactivateAction( action );
+				this$1._removeInactiveAction( action );
 
 			}
 
@@ -40415,7 +40570,7 @@ Object.assign( AnimationMixer.prototype, EventDispatcher.prototype, {
 
 				var binding = bindingByName[ trackName ];
 				binding.restoreOriginalState();
-				this._removeInactiveBinding( binding );
+				this$1._removeInactiveBinding( binding );
 
 			}
 
@@ -40662,7 +40817,7 @@ Object.defineProperty( InterleavedBuffer.prototype, 'needsUpdate', {
 
 	set: function ( value ) {
 
-		if ( value === true ) this.version ++;
+		if ( value === true ) { this.version ++; }
 
 	}
 
@@ -40705,13 +40860,15 @@ Object.assign( InterleavedBuffer.prototype, {
 	},
 
 	copyAt: function ( index1, attribute, index2 ) {
+		var this$1 = this;
+
 
 		index1 *= this.stride;
 		index2 *= attribute.stride;
 
 		for ( var i = 0, l = this.stride; i < l; i ++ ) {
 
-			this.array[ index1 + i ] = attribute.array[ index2 + i ];
+			this$1.array[ index1 + i ] = attribute.array[ index2 + i ];
 
 		}
 
@@ -40721,7 +40878,7 @@ Object.assign( InterleavedBuffer.prototype, {
 
 	set: function ( value, offset ) {
 
-		if ( offset === undefined ) offset = 0;
+		if ( offset === undefined ) { offset = 0; }
 
 		this.array.set( value, offset );
 
@@ -40848,7 +41005,7 @@ function ascSort( a, b ) {
 
 function intersectObject( object, raycaster, intersects, recursive ) {
 
-	if ( object.visible === false ) return;
+	if ( object.visible === false ) { return; }
 
 	object.raycast( raycaster, intersects );
 
@@ -40911,6 +41068,8 @@ Object.assign( Raycaster.prototype, {
 	},
 
 	intersectObjects: function ( objects, recursive ) {
+		var this$1 = this;
+
 
 		var intersects = [];
 
@@ -40923,7 +41082,7 @@ Object.assign( Raycaster.prototype, {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			intersectObject( objects[ i ], this, intersects, recursive );
+			intersectObject( objects[ i ], this$1, intersects, recursive );
 
 		}
 
@@ -41220,6 +41379,8 @@ VertexNormalsHelper.prototype.update = ( function () {
 	var normalMatrix = new Matrix3();
 
 	return function update() {
+		var this$1 = this;
+
 
 		var keys = [ 'a', 'b', 'c' ];
 
@@ -41255,7 +41416,7 @@ VertexNormalsHelper.prototype.update = ( function () {
 
 					v1.copy( vertex ).applyMatrix4( matrixWorld );
 
-					v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
+					v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
 
 					position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -41285,7 +41446,7 @@ VertexNormalsHelper.prototype.update = ( function () {
 
 				v2.set( objNorm.getX( j ), objNorm.getY( j ), objNorm.getZ( j ) );
 
-				v2.applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
+				v2.applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
 
 				position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -41698,7 +41859,7 @@ function HemisphereLightHelper( light, size, color ) {
 	geometry.rotateY( Math.PI * 0.5 );
 
 	this.material = new MeshBasicMaterial( { wireframe: true, fog: false } );
-	if ( this.color === undefined ) this.material.vertexColors = VertexColors;
+	if ( this.color === undefined ) { this.material.vertexColors = VertexColors; }
 
 	var position = geometry.getAttribute( 'position' );
 	var colors = new Float32Array( position.count * 3 );
@@ -41952,6 +42113,8 @@ FaceNormalsHelper.prototype.update = ( function () {
 	var normalMatrix = new Matrix3();
 
 	return function update() {
+		var this$1 = this;
+
 
 		this.object.updateMatrixWorld( true );
 
@@ -41983,7 +42146,7 @@ FaceNormalsHelper.prototype.update = ( function () {
 				.divideScalar( 3 )
 				.applyMatrix4( matrixWorld );
 
-			v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
+			v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
 
 			position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -42019,7 +42182,7 @@ function DirectionalLightHelper( light, size, color ) {
 
 	this.color = color;
 
-	if ( size === undefined ) size = 1;
+	if ( size === undefined ) { size = 1; }
 
 	var geometry = new BufferGeometry();
 	geometry.addAttribute( 'position', new Float32BufferAttribute( [
@@ -42193,7 +42356,7 @@ function CameraHelper( camera ) {
 	LineSegments.call( this, geometry, material );
 
 	this.camera = camera;
-	if ( this.camera.updateProjectionMatrix ) this.camera.updateProjectionMatrix();
+	if ( this.camera.updateProjectionMatrix ) { this.camera.updateProjectionMatrix(); }
 
 	this.matrix = camera.matrixWorld;
 	this.matrixAutoUpdate = false;
@@ -42298,7 +42461,7 @@ function BoxHelper( object, color ) {
 
 	this.object = object;
 
-	if ( color === undefined ) color = 0xffff00;
+	if ( color === undefined ) { color = 0xffff00; }
 
 	var indices = new Uint16Array( [ 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 ] );
 	var positions = new Float32Array( 8 * 3 );
@@ -42336,7 +42499,7 @@ BoxHelper.prototype.update = ( function () {
 
 		}
 
-		if ( box.isEmpty() ) return;
+		if ( box.isEmpty() ) { return; }
 
 		var min = box.min;
 		var max = box.max;
@@ -42421,7 +42584,7 @@ Box3Helper.prototype.updateMatrixWorld = function ( force ) {
 
 	var box = this.box;
 
-	if ( box.isEmpty() ) return;
+	if ( box.isEmpty() ) { return; }
 
 	box.getCenter( this.position );
 
@@ -42474,7 +42637,7 @@ PlaneHelper.prototype.updateMatrixWorld = function ( force ) {
 
 	var scale = - this.plane.constant;
 
-	if ( Math.abs( scale ) < 1e-8 ) scale = 1e-8; // sign does not matter
+	if ( Math.abs( scale ) < 1e-8 ) { scale = 1e-8; } // sign does not matter
 
 	this.scale.set( 0.5 * this.size, 0.5 * this.size, scale );
 
@@ -42509,10 +42672,10 @@ function ArrowHelper( dir, origin, length, color, headLength, headWidth ) {
 
 	Object3D.call( this );
 
-	if ( color === undefined ) color = 0xffff00;
-	if ( length === undefined ) length = 1;
-	if ( headLength === undefined ) headLength = 0.2 * length;
-	if ( headWidth === undefined ) headWidth = 0.2 * headLength;
+	if ( color === undefined ) { color = 0xffff00; }
+	if ( length === undefined ) { length = 1; }
+	if ( headLength === undefined ) { headLength = 0.2 * length; }
+	if ( headWidth === undefined ) { headWidth = 0.2 * headLength; }
 
 	if ( lineGeometry === undefined ) {
 
@@ -42575,8 +42738,8 @@ ArrowHelper.prototype.setDirection = ( function () {
 
 ArrowHelper.prototype.setLength = function ( length, headLength, headWidth ) {
 
-	if ( headLength === undefined ) headLength = 0.2 * length;
-	if ( headWidth === undefined ) headWidth = 0.2 * headLength;
+	if ( headLength === undefined ) { headLength = 0.2 * length; }
+	if ( headWidth === undefined ) { headWidth = 0.2 * headLength; }
 
 	this.line.scale.set( 1, Math.max( 0, length - headLength ), 1 );
 	this.line.updateMatrix();
@@ -42790,9 +42953,9 @@ CatmullRomCurve3.prototype.getPoint = function ( t, optionalTarget ) {
 		var dt2 = Math.pow( p2.distanceToSquared( p3 ), pow );
 
 		// safety check for repeated points
-		if ( dt1 < 1e-4 ) dt1 = 1.0;
-		if ( dt0 < 1e-4 ) dt0 = dt1;
-		if ( dt2 < 1e-4 ) dt2 = dt1;
+		if ( dt1 < 1e-4 ) { dt1 = 1.0; }
+		if ( dt0 < 1e-4 ) { dt0 = dt1; }
+		if ( dt2 < 1e-4 ) { dt2 = dt1; }
 
 		px.initNonuniformCatmullRom( p0.x, p1.x, p2.x, p3.x, dt0, dt1, dt2 );
 		py.initNonuniformCatmullRom( p0.y, p1.y, p2.y, p3.y, dt0, dt1, dt2 );
@@ -42817,6 +42980,8 @@ CatmullRomCurve3.prototype.getPoint = function ( t, optionalTarget ) {
 };
 
 CatmullRomCurve3.prototype.copy = function ( source ) {
+	var this$1 = this;
+
 
 	Curve.prototype.copy.call( this, source );
 
@@ -42826,7 +42991,7 @@ CatmullRomCurve3.prototype.copy = function ( source ) {
 
 		var point = source.points[ i ];
 
-		this.points.push( point.clone() );
+		this$1.points.push( point.clone() );
 
 	}
 
@@ -43060,7 +43225,7 @@ function MeshFaceMaterial( materials ) {
 
 function MultiMaterial( materials ) {
 
-	if ( materials === undefined ) materials = [];
+	if ( materials === undefined ) { materials = []; }
 
 	console.warn( 'THREE.MultiMaterial has been removed. Use an Array instead.' );
 	materials.isMultiMaterial = true;
@@ -43534,7 +43699,7 @@ Object.assign( Matrix4.prototype, {
 
 		return function getPosition() {
 
-			if ( v1 === undefined ) v1 = new Vector3();
+			if ( v1 === undefined ) { v1 = new Vector3(); }
 			console.warn( 'THREE.Matrix4: .getPosition() has been removed. Use Vector3.setFromMatrixPosition( matrix ) instead.' );
 			return v1.setFromMatrixColumn( this, 3 );
 
@@ -43896,7 +44061,7 @@ PerspectiveCamera.prototype.setLens = function ( focalLength, filmGauge ) {
 	console.warn( "THREE.PerspectiveCamera.setLens is deprecated. " +
 			"Use .setFocalLength and .filmGauge for a photographic setup." );
 
-	if ( filmGauge !== undefined ) this.filmGauge = filmGauge;
+	if ( filmGauge !== undefined ) { this.filmGauge = filmGauge; }
 	this.setFocalLength( focalLength );
 
 };
@@ -44575,7 +44740,7 @@ var ImageUtils = {
 
 		var texture = loader.load( url, onLoad, undefined, onError );
 
-		if ( mapping ) texture.mapping = mapping;
+		if ( mapping ) { texture.mapping = mapping; }
 
 		return texture;
 
@@ -44590,7 +44755,7 @@ var ImageUtils = {
 
 		var texture = loader.load( urls, onLoad, undefined, onError );
 
-		if ( mapping ) texture.mapping = mapping;
+		if ( mapping ) { texture.mapping = mapping; }
 
 		return texture;
 
@@ -45046,43 +45211,43 @@ var THREE$1 = Object.assign({}, THREE)
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-const REVISION$1 = '0.18.0';
+var REVISION$1 = '0.18.0';
 
 // Marker types
-const MARKER_ARROW = 0;
-const MARKER_CUBE = 1;
-const MARKER_SPHERE = 2;
-const MARKER_CYLINDER = 3;
-const MARKER_LINE_STRIP = 4;
-const MARKER_LINE_LIST = 5;
-const MARKER_CUBE_LIST = 6;
-const MARKER_SPHERE_LIST = 7;
-const MARKER_POINTS = 8;
-const MARKER_TEXT_VIEW_FACING = 9;
-const MARKER_MESH_RESOURCE = 10;
-const MARKER_TRIANGLE_LIST = 11;
+var MARKER_ARROW = 0;
+var MARKER_CUBE = 1;
+var MARKER_SPHERE = 2;
+var MARKER_CYLINDER = 3;
+var MARKER_LINE_STRIP = 4;
+var MARKER_LINE_LIST = 5;
+var MARKER_CUBE_LIST = 6;
+var MARKER_SPHERE_LIST = 7;
+var MARKER_POINTS = 8;
+var MARKER_TEXT_VIEW_FACING = 9;
+var MARKER_MESH_RESOURCE = 10;
+var MARKER_TRIANGLE_LIST = 11;
 
 // Interactive marker feedback types
-const INTERACTIVE_MARKER_KEEP_ALIVE = 0;
-const INTERACTIVE_MARKER_POSE_UPDATE = 1;
-const INTERACTIVE_MARKER_MENU_SELECT = 2;
-const INTERACTIVE_MARKER_BUTTON_CLICK = 3;
-const INTERACTIVE_MARKER_MOUSE_DOWN = 4;
-const INTERACTIVE_MARKER_MOUSE_UP = 5;
+var INTERACTIVE_MARKER_KEEP_ALIVE = 0;
+var INTERACTIVE_MARKER_POSE_UPDATE = 1;
+var INTERACTIVE_MARKER_MENU_SELECT = 2;
+var INTERACTIVE_MARKER_BUTTON_CLICK = 3;
+var INTERACTIVE_MARKER_MOUSE_DOWN = 4;
+var INTERACTIVE_MARKER_MOUSE_UP = 5;
 
 // Interactive marker control types
-const INTERACTIVE_MARKER_NONE = 0;
-const INTERACTIVE_MARKER_MENU = 1;
-const INTERACTIVE_MARKER_BUTTON = 2;
-const INTERACTIVE_MARKER_MOVE_AXIS = 3;
-const INTERACTIVE_MARKER_MOVE_PLANE = 4;
-const INTERACTIVE_MARKER_ROTATE_AXIS = 5;
-const INTERACTIVE_MARKER_MOVE_ROTATE = 6;
+var INTERACTIVE_MARKER_NONE = 0;
+var INTERACTIVE_MARKER_MENU = 1;
+var INTERACTIVE_MARKER_BUTTON = 2;
+var INTERACTIVE_MARKER_MOVE_AXIS = 3;
+var INTERACTIVE_MARKER_MOVE_PLANE = 4;
+var INTERACTIVE_MARKER_ROTATE_AXIS = 5;
+var INTERACTIVE_MARKER_MOVE_ROTATE = 6;
 
 // Interactive marker rotation behavior
-const INTERACTIVE_MARKER_INHERIT = 0;
-const INTERACTIVE_MARKER_FIXED = 1;
-const INTERACTIVE_MARKER_VIEW_FACING = 2;
+var INTERACTIVE_MARKER_INHERIT = 0;
+var INTERACTIVE_MARKER_FIXED = 1;
+var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
  * Create a THREE material based on the given RGBA values.
@@ -45093,7 +45258,7 @@ const INTERACTIVE_MARKER_VIEW_FACING = 2;
  * @param a - the alpha value
  * @returns the THREE material
  */
-const makeColorMaterial = function(r, g, b, a) {
+var makeColorMaterial = function(r, g, b, a) {
   var color = new THREE$1.Color();
   color.setRGB(r, g, b);
   if (a <= 0.99) {
@@ -45124,7 +45289,7 @@ const makeColorMaterial = function(r, g, b, a) {
  * @param planeNormal - the normal of the plane
  * @returns the intersection point
  */
-const intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
+var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE$1.Vector3();
   var intersectPoint = new THREE$1.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
@@ -45150,7 +45315,7 @@ const intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
  * @param mouseRay - the mouse ray
  * @param the closest point between the two rays
  */
-const findClosestPoint = function(targetRay, mouseRay) {
+var findClosestPoint = function(targetRay, mouseRay) {
   var v13 = new THREE$1.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
@@ -45180,7 +45345,7 @@ const findClosestPoint = function(targetRay, mouseRay) {
  * @param mousePos - the mouse position
  * @returns the closest axis point
  */
-const closestAxisPoint = function(axisRay, camera, mousePos) {
+var closestAxisPoint = function(axisRay, camera, mousePos) {
   // project axis onto screen
   var o = axisRay.origin.clone();
   o.project(camera);
@@ -45211,26 +45376,9 @@ const closestAxisPoint = function(axisRay, camera, mousePos) {
  * @author Julius Kammerl - jkammerl@willowgarage.com
  */
 
-class DepthCloud extends THREE$1.Object3D {
-
-  /**
-   * The DepthCloud object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * url - the URL of the stream
-   *   * streamType (optional) - the stream type: mjpeg or vp8 video (defaults to vp8)
-   *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
-   *   * maxDepthPerTile (optional) - the factor with which we control the desired depth range (defaults to 1.0)
-   *   * pointSize (optional) - point size (pixels) for rendered point cloud
-   *   * width (optional) - width of the video stream
-   *   * height (optional) - height of the video stream
-   *   * whiteness (optional) - blends rgb values to white (0..100)
-   *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
-   */
-  constructor(options) {
-    super();
+var DepthCloud = (function (superclass) {
+  function DepthCloud(options) {
+    superclass.call(this);
     options = options || {};
 
     this.url = options.url;
@@ -45427,20 +45575,24 @@ class DepthCloud extends THREE$1.Object3D {
       '  ',
       '}'
       ].join('\n');
-  };
+  }
 
+  if ( superclass ) DepthCloud.__proto__ = superclass;
+  DepthCloud.prototype = Object.create( superclass && superclass.prototype );
+  DepthCloud.prototype.constructor = DepthCloud;
   /**
    * Callback called when video metadata is ready
    */
-  metaLoaded() {
+  DepthCloud.prototype.metaLoaded = function metaLoaded () {
     this.metaLoaded = true;
     this.initStreamer();
   };
-
   /**
    * Callback called when video metadata is ready
    */
-  initStreamer() {
+  DepthCloud.prototype.initStreamer = function initStreamer () {
+    var this$1 = this;
+
 
     if (this.metaLoaded) {
       this.texture = new THREE$1.Texture(this.video);
@@ -45449,10 +45601,10 @@ class DepthCloud extends THREE$1.Object3D {
       for (var i = 0, l = this.width * this.height; i < l; i++) {
 
         var vertex = new THREE$1.Vector3();
-        vertex.x = (i % this.width);
-        vertex.y = Math.floor(i / this.width);
+        vertex.x = (i % this$1.width);
+        vertex.y = Math.floor(i / this$1.width);
 
-        this.geometry.vertices.push(vertex);
+        this$1.geometry.vertices.push(vertex);
       }
 
       this.material = new THREE$1.ShaderMaterial({
@@ -45512,47 +45664,32 @@ class DepthCloud extends THREE$1.Object3D {
       }, 1000 / 30);
     }
   };
-
   /**
    * Start video playback
    */
-  startStream() {
+  DepthCloud.prototype.startStream = function startStream () {
     if (!this.isMjpeg) {
       this.video.play();
     }
   };
-
   /**
    * Stop video playback
    */
-  stopStream() {
+  DepthCloud.prototype.stopStream = function stopStream () {
     if (!this.isMjpeg) {
       this.video.pause();
     }
   };
-}
+
+  return DepthCloud;
+}(THREE$1.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class Arrow extends THREE$1.Mesh {
-
-  /**
-   * A Arrow is a THREE object that can be used to display an arrow model.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * origin (optional) - the origin of the arrow
-   *   * direction (optional) - the direction vector of the arrow
-   *   * length (optional) - the length of the arrow
-   *   * headLength (optional) - the head length of the arrow
-   *   * shaftDiameter (optional) - the shaft diameter of the arrow
-   *   * headDiameter (optional) - the head diameter of the arrow
-   *   * material (optional) - the material to use for this arrow
-   */
-  constructor(options) {
+var Arrow = (function (superclass) {
+  function Arrow(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
     var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
@@ -45579,46 +45716,46 @@ class Arrow extends THREE$1.Mesh {
     // put the arrow together
     geometry.merge(coneGeometry);
 
-    super(geometry, material);
+    superclass.call(this, geometry, material);
 
     this.position.copy(origin);
     this.setDirection(direction);
-  };
+  }
 
+  if ( superclass ) Arrow.__proto__ = superclass;
+  Arrow.prototype = Object.create( superclass && superclass.prototype );
+  Arrow.prototype.constructor = Arrow;
   /**
    * Set the direction of this arrow to that of the given vector.
    *
    * @param direction - the direction to set this arrow
    */
-  setDirection(direction) {
+  Arrow.prototype.setDirection = function setDirection (direction) {
     var axis = new THREE$1.Vector3(0, 1, 0).cross(direction);
     var radians = Math.acos(new THREE$1.Vector3(0, 1, 0).dot(direction.clone().normalize()));
     this.matrix = new THREE$1.Matrix4().makeRotationAxis(axis.normalize(), radians);
     this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
   };
-
   /**
    * Set this arrow to be the given length.
    *
    * @param length - the new length of the arrow
    */
-  setLength(length) {
+  Arrow.prototype.setLength = function setLength (length) {
     this.scale.set(length, length, length);
   };
-
   /**
    * Set the color of this arrow to the given hex value.
    *
    * @param hex - the hex value of the color to use
    */
-  setColor(hex) {
+  Arrow.prototype.setColor = function setColor (hex) {
     this.material.color.setHex(hex);
   };
-
   /*
    * Free memory of elements in this marker.
    */
-  dispose() {
+  Arrow.prototype.dispose = function dispose () {
     if (this.geometry !== undefined) {
         this.geometry.dispose();
     }
@@ -45626,7 +45763,9 @@ class Arrow extends THREE$1.Mesh {
         this.material.dispose();
     }
   };
-}
+
+  return Arrow;
+}(THREE$1.Mesh));
 
 /**
  * @author aleeper / http://adamleeper.com/
@@ -45712,7 +45851,7 @@ THREE$1.STLLoader.prototype = {
         // If solid[ i ] does not match the i-th byte, then it is not an
         // ASCII STL; hence, it is binary and return true.
 
-        if (solid[i] != reader.getUint8(i, false)) return true;
+        if (solid[i] != reader.getUint8(i, false)) { return true; }
 
       }
 
@@ -46033,7 +46172,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseStrings(text) {
 
-      if (text.length === 0) return [];
+      if (text.length === 0) { return []; }
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -46050,7 +46189,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseFloats(text) {
 
-      if (text.length === 0) return [];
+      if (text.length === 0) { return []; }
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -46067,7 +46206,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseInts(text) {
 
-      if (text.length === 0) return [];
+      if (text.length === 0) { return []; }
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -46158,7 +46297,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function getBuild(data, builder) {
 
-      if (data.build !== undefined) return data.build;
+      if (data.build !== undefined) { return data.build; }
 
       data.build = builder(data);
 
@@ -46180,7 +46319,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         var id;
 
@@ -46222,7 +46361,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46359,7 +46498,7 @@ THREE$1.ColladaLoader.prototype = {
             time = inputSource.array[i];
             stride = i * outputSource.stride;
 
-            if (data[time] === undefined) data[time] = {};
+            if (data[time] === undefined) { data[time] = {}; }
 
             if (channel.arraySyntax === true) {
 
@@ -46474,9 +46613,9 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (positionData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData));
-      if (quaternionData.length > 0) tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData));
-      if (scaleData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData));
+      if (positionData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData)); }
+      if (quaternionData.length > 0) { tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
+      if (scaleData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
 
       return tracks;
 
@@ -46570,7 +46709,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var keyframe = keyframes[i];
 
-        if (keyframe.value[property] !== null) return keyframe;
+        if (keyframe.value[property] !== null) { return keyframe; }
 
         i--;
 
@@ -46586,7 +46725,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var keyframe = keyframes[i];
 
-        if (keyframe.value[property] !== null) return keyframe;
+        if (keyframe.value[property] !== null) { return keyframe; }
 
         i++;
 
@@ -46624,7 +46763,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46680,7 +46819,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46713,7 +46852,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46752,7 +46891,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46780,7 +46919,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -46956,7 +47095,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildImage(data) {
 
-      if (data.build !== undefined) return data.build;
+      if (data.build !== undefined) { return data.build; }
 
       return data.init_from;
 
@@ -46978,7 +47117,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47005,7 +47144,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47033,7 +47172,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47059,7 +47198,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47083,7 +47222,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47107,7 +47246,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47135,7 +47274,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47164,7 +47303,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47198,7 +47337,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47220,7 +47359,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47240,7 +47379,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47302,7 +47441,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47392,27 +47531,27 @@ THREE$1.ColladaLoader.prototype = {
         switch (key) {
 
           case 'diffuse':
-            if (parameter.color) material.color.fromArray(parameter.color);
-            if (parameter.texture) material.map = getTexture(parameter.texture);
+            if (parameter.color) { material.color.fromArray(parameter.color); }
+            if (parameter.texture) { material.map = getTexture(parameter.texture); }
             break;
           case 'specular':
-            if (parameter.color && material.specular) material.specular.fromArray(parameter.color);
-            if (parameter.texture) material.specularMap = getTexture(parameter.texture);
+            if (parameter.color && material.specular) { material.specular.fromArray(parameter.color); }
+            if (parameter.texture) { material.specularMap = getTexture(parameter.texture); }
             break;
           case 'shininess':
             if (parameter.float && material.shininess)
-              material.shininess = parameter.float;
+              { material.shininess = parameter.float; }
             break;
           case 'emission':
             if (parameter.color && material.emissive)
-              material.emissive.fromArray(parameter.color);
+              { material.emissive.fromArray(parameter.color); }
             break;
           case 'transparent':
             // if ( parameter.texture ) material.alphaMap = getTexture( parameter.texture );
             material.transparent = true;
             break;
           case 'transparency':
-            if (parameter.float !== undefined) material.opacity = parameter.float;
+            if (parameter.float !== undefined) { material.opacity = parameter.float; }
             material.transparent = true;
             break;
 
@@ -47442,7 +47581,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47594,7 +47733,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47618,7 +47757,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47646,7 +47785,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47696,8 +47835,8 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (data.parameters.color) light.color.copy(data.parameters.color);
-      if (data.parameters.distance) light.distance = data.parameters.distance;
+      if (data.parameters.color) { light.color.copy(data.parameters.color); }
+      if (data.parameters.distance) { light.distance = data.parameters.distance; }
 
       return light;
 
@@ -47720,7 +47859,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = mesh.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         var id = child.getAttribute('id');
 
@@ -47768,7 +47907,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47806,7 +47945,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         data[child.getAttribute('semantic')] = parseId(child.getAttribute('source'));
 
@@ -47830,7 +47969,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -47866,7 +48005,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var primitive = primitives[i];
 
-        if (build[primitive.type] === undefined) build[primitive.type] = [];
+        if (build[primitive.type] === undefined) { build[primitive.type] = []; }
 
         build[primitive.type].push(primitive);
 
@@ -47884,7 +48023,7 @@ THREE$1.ColladaLoader.prototype = {
       var vertices = data.vertices;
       var primitives = data.primitives;
 
-      if (primitives.length === 0) return {};
+      if (primitives.length === 0) { return {}; }
 
       // our goal is to create one buffer geoemtry for a single type of primitives
       // first, we group all primitives by their type
@@ -48029,13 +48168,13 @@ THREE$1.ColladaLoader.prototype = {
 
       // build geometry
 
-      if (position.array.length > 0) geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride));
-      if (normal.array.length > 0) geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride));
-      if (color.array.length > 0) geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride));
-      if (uv.array.length > 0) geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride));
+      if (position.array.length > 0) { geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride)); }
+      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride)); }
+      if (color.array.length > 0) { geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride)); }
+      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride)); }
 
-      if (skinIndex.array.length > 0) geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride));
-      if (skinWeight.array.length > 0) geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride));
+      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
+      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
 
       build.data = geometry;
       build.type = primitives[0].type;
@@ -48143,7 +48282,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48161,7 +48300,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildKinematicsModel(data) {
 
-      if (data.build !== undefined) return data.build;
+      if (data.build !== undefined) { return data.build; }
 
       return data;
 
@@ -48179,7 +48318,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48205,7 +48344,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48242,7 +48381,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48291,7 +48430,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48325,7 +48464,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48389,7 +48528,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48415,7 +48554,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48436,7 +48575,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildKinematicsScene(data) {
 
-      if (data.build !== undefined) return data.build;
+      if (data.build !== undefined) { return data.build; }
 
       return data;
 
@@ -48454,7 +48593,7 @@ THREE$1.ColladaLoader.prototype = {
       var kinematicsSceneId = Object.keys(library.kinematicsScenes)[0];
       var visualSceneId = Object.keys(library.visualScenes)[0];
 
-      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) return;
+      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) { return; }
 
       var kinematicsModel = getKinematicsModel(kinematicsModelId);
       var kinematicsScene = getKinematicsScene(kinematicsSceneId);
@@ -48634,7 +48773,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -48725,7 +48864,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) continue;
+        if (child.nodeType !== 1) { continue; }
 
         switch (child.nodeName) {
 
@@ -49420,22 +49559,9 @@ THREE$1.ColladaLoader.prototype = {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class MeshResource extends THREE$1.Object3D {
-
-  /**
-   * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
-   * Collada files.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * path (optional) - the base path to the associated models that will be loaded
-   *  * resource - the resource file name to load
-   *  * material (optional) - the material to use for the object
-   *  * warnings (optional) - if warnings should be printed
-   */
-  constructor(options) {
-    super();
+var MeshResource = (function (superclass) {
+  function MeshResource(options) {
+    superclass.call(this);
     var that = this;
     options = options || {};
     var path = options.path || '/';
@@ -49503,32 +49629,27 @@ class MeshResource extends THREE$1.Object3D {
                     });
       }
     }
-  };
-}
+  }
+
+  if ( superclass ) MeshResource.__proto__ = superclass;
+  MeshResource.prototype = Object.create( superclass && superclass.prototype );
+  MeshResource.prototype.constructor = MeshResource;
+
+  return MeshResource;
+}(THREE$1.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class TriangleList extends THREE$1.Object3D {
-
-  /**
-   * A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * material (optional) - the material to use for the object
-   *   * vertices - the array of vertices to use
-   *   * colors - the associated array of colors to use
-   */
-  constructor(options) {
+var TriangleList = (function (superclass) {
+  function TriangleList(options) {
     options = options || {};
     var material = options.material || new THREE$1.MeshBasicMaterial();
     var vertices = options.vertices;
     var colors = options.colors;
 
-    super();
+    superclass.call(this);
 
     // set the material to be double sided
     material.side = THREE$1.DoubleSide;
@@ -49574,36 +49695,31 @@ class TriangleList extends THREE$1.Object3D {
     geometry.computeFaceNormals();
 
     this.add(new THREE$1.Mesh(geometry, material));
-  };
+  }
 
+  if ( superclass ) TriangleList.__proto__ = superclass;
+  TriangleList.prototype = Object.create( superclass && superclass.prototype );
+  TriangleList.prototype.constructor = TriangleList;
   /**
    * Set the color of this object to the given hex value.
    *
    * @param hex - the hex value of the color to set
    */
-  setColor(hex) {
+  TriangleList.prototype.setColor = function setColor (hex) {
     this.mesh.material.color.setHex(hex);
   };
-}
+
+  return TriangleList;
+}(THREE$1.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class Marker extends THREE$1.Object3D {
-
-  /**
-   * A Marker can convert a ROS marker message into a THREE object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * path - the base path or URL for any mesh files that will be loaded for this marker
-   *   * message - the marker message
-   */
-  constructor(options) {
-    super();
+var Marker = (function (superclass) {
+  function Marker(options) {
+    superclass.call(this);
 
     options = options || {};
     var path = options.path || '/';
@@ -49917,14 +50033,17 @@ class Marker extends THREE$1.Object3D {
         console.error('Currently unsupported marker type: ' + message.type);
         break;
     }
-  };
+  }
 
+  if ( superclass ) Marker.__proto__ = superclass;
+  Marker.prototype = Object.create( superclass && superclass.prototype );
+  Marker.prototype.constructor = Marker;
   /**
    * Set the pose of this marker to the given values.
    *
    * @param pose - the pose to set for this marker
    */
-  setPose(pose) {
+  Marker.prototype.setPose = function setPose (pose) {
     // set position information
     this.position.x = pose.position.x;
     this.position.y = pose.position.y;
@@ -49938,14 +50057,13 @@ class Marker extends THREE$1.Object3D {
     // update the world
     this.updateMatrixWorld();
   };
-
   /**
    * Update this marker.
    *
    * @param message - the marker message
    * @return true on success otherwhise false is returned
    */
-  update(message) {
+  Marker.prototype.update = function update (message) {
     // set the pose and get the color
     this.setPose(message.pose);
 
@@ -50043,11 +50161,10 @@ class Marker extends THREE$1.Object3D {
 
     return true;
   };
-
   /*
    * Free memory of elements in this marker.
    */
-  dispose() {
+  Marker.prototype.dispose = function dispose () {
     this.children.forEach(function(element) {
       if (element instanceof MeshResource) {
         element.children.forEach(function(scene) {
@@ -50076,28 +50193,17 @@ class Marker extends THREE$1.Object3D {
       element.parent.remove(element);
     });
   };
-}
+
+  return Marker;
+}(THREE$1.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class InteractiveMarkerControl extends THREE$1.Object3D {
-
-  /**
-   * The main marker control object for an interactive marker.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * parent - the parent of this control
-   *  * message - the interactive marker control message
-   *  * camera - the main camera associated with the viewer for this marker client
-   *  * path (optional) - the base path to any meshes that will be loaded
-   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
-   */
-  constructor(options) {
-    super();
+var InteractiveMarkerControl = (function (superclass) {
+  function InteractiveMarkerControl(options) {
+    superclass.call(this);
     var that = this;
 
     options = options || {};
@@ -50282,14 +50388,17 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
         addMarker(null);
       }
     });
-  };
+  }
 
-  updateMatrixWorld (force) {
-    const that = this;
-    const message = this.message;
+  if ( superclass ) InteractiveMarkerControl.__proto__ = superclass;
+  InteractiveMarkerControl.prototype = Object.create( superclass && superclass.prototype );
+  InteractiveMarkerControl.prototype.constructor = InteractiveMarkerControl;
+  InteractiveMarkerControl.prototype.updateMatrixWorld = function updateMatrixWorld (force) {
+    var that = this;
+    var message = this.message;
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
-        super.updateMatrixWorld(force);
+        superclass.prototype.updateMatrixWorld.call(this, force);
         that.currentControlOri.copy(that.quaternion);
         that.currentControlOri.normalize();
         break;
@@ -50297,7 +50406,7 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
         that.quaternion.copy(that.parent.quaternion.clone().inverse());
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
-        super.updateMatrixWorld(force);
+        superclass.prototype.updateMatrixWorld.call(this, force);
         that.currentControlOri.copy(that.quaternion);
         break;
       case INTERACTIVE_MARKER_VIEW_FACING:
@@ -50323,35 +50432,24 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
           that.updateMatrix();
           that.matrixWorldNeedsUpdate = true;
         }
-        super.updateMatrixWorld(force);
+        superclass.prototype.updateMatrixWorld.call(this, force);
         break;
       default:
         console.error('Unkown orientation mode: ' + message.orientation_mode);
         break;
     }
-  }
-}
+  };
+
+  return InteractiveMarkerControl;
+}(THREE$1.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
-
-  /**
-   * A menu for an interactive marker. This will be overlayed on the canvas.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * menuEntries - the menu entries to add
-   *  * className (optional) - a custom CSS class for the menu div
-   *  * entryClassName (optional) - a custom CSS class for the menu entry
-   *  * overlayClassName (optional) - a custom CSS class for the menu overlay
-   *  * menuFontSize (optional) - the menu font size
-   */
-  constructor(options) {
-    super();
+var InteractiveMarkerMenu = (function (superclass) {
+  function InteractiveMarkerMenu(options) {
+    superclass.call(this);
     var that = this;
     options = options || {};
     var menuEntries = options.menuEntries;
@@ -50471,15 +50569,18 @@ class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
 
     // construct DOM element
     makeUl(this.menuDomElem, allMenus[0]);
-  };
+  }
 
+  if ( superclass ) InteractiveMarkerMenu.__proto__ = superclass;
+  InteractiveMarkerMenu.prototype = Object.create( superclass && superclass.prototype );
+  InteractiveMarkerMenu.prototype.constructor = InteractiveMarkerMenu;
   /**
    * Shoe the menu DOM element.
    *
    * @param control - the control for the menu
    * @param event - the event that caused this
    */
-  show(control, event) {
+  InteractiveMarkerMenu.prototype.show = function show (control, event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -50499,13 +50600,12 @@ class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
     document.body.appendChild(this.overlayDomElem);
     document.body.appendChild(this.menuDomElem);
   };
-
   /**
    * Hide the menu DOM element.
    *
    * @param event (optional) - the event that caused this
    */
-  hide(event) {
+  InteractiveMarkerMenu.prototype.hide = function hide (event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -50513,27 +50613,17 @@ class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
     document.body.removeChild(this.overlayDomElem);
     document.body.removeChild(this.menuDomElem);
   };
-}
+
+  return InteractiveMarkerMenu;
+}(THREE$1.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class InteractiveMarker extends THREE$1.Object3D {
-
-  /**
-   * The main interactive marker object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
-   *  * camera - the main camera associated with the viewer for this marker
-   *  * path (optional) - the base path to any meshes that will be loaded
-   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
-   */
-  constructor(options) {
-    super();
+var InteractiveMarker = (function (superclass) {
+  function InteractiveMarker(options) {
+    superclass.call(this);
 
     var that = this;
     options = options || {};
@@ -50582,20 +50672,22 @@ class InteractiveMarker extends THREE$1.Object3D {
         that.dispatchEvent(event);
       });
     }
-  };
+  }
 
+  if ( superclass ) InteractiveMarker.__proto__ = superclass;
+  InteractiveMarker.prototype = Object.create( superclass && superclass.prototype );
+  InteractiveMarker.prototype.constructor = InteractiveMarker;
   /**
    * Show the interactive marker menu associated with this marker.
    *
    * @param control - the control to use
    * @param event - the event that caused this
    */
-  showMenu(control, event) {
+  InteractiveMarker.prototype.showMenu = function showMenu (control, event) {
     if (this.menu) {
       this.menu.show(control, event);
     }
   };
-
   /**
    * Move the axis based on the given event information.
    *
@@ -50603,7 +50695,7 @@ class InteractiveMarker extends THREE$1.Object3D {
    * @param origAxis - the origin of the axis
    * @param event3d - the event that caused this
    */
-  moveAxis(control, origAxis, event3d) {
+  InteractiveMarker.prototype.moveAxis = function moveAxis (control, origAxis, event3d) {
     if (this.dragging) {
       var currentControlOri = control.currentControlOri;
       var axis = origAxis.clone().applyQuaternion(currentControlOri);
@@ -50626,7 +50718,6 @@ class InteractiveMarker extends THREE$1.Object3D {
       event3d.stopPropagation();
     }
   };
-
   /**
    * Move with respect to the plane based on the contorl and event.
    *
@@ -50634,7 +50725,7 @@ class InteractiveMarker extends THREE$1.Object3D {
    * @param origNormal - the normal of the origin
    * @param event3d - the event that caused this
    */
-  movePlane(control, origNormal, event3d) {
+  InteractiveMarker.prototype.movePlane = function movePlane (control, origNormal, event3d) {
     if (this.dragging) {
       var currentControlOri = control.currentControlOri;
       var normal = origNormal.clone().applyQuaternion(currentControlOri);
@@ -50653,7 +50744,6 @@ class InteractiveMarker extends THREE$1.Object3D {
       event3d.stopPropagation();
     }
   };
-
   /**
    * Rotate based on the control and event given.
    *
@@ -50661,7 +50751,7 @@ class InteractiveMarker extends THREE$1.Object3D {
    * @param origOrientation - the orientation of the origin
    * @param event3d - the event that caused this
    */
-  rotateAxis(control, origOrientation, event3d) {
+  InteractiveMarker.prototype.rotateAxis = function rotateAxis (control, origOrientation, event3d) {
     if (this.dragging) {
       control.updateMatrixWorld();
 
@@ -50708,14 +50798,13 @@ class InteractiveMarker extends THREE$1.Object3D {
       event3d.stopPropagation();
     }
   };
-
   /**
    * Dispatch the given event type.
    *
    * @param type - the type of event
    * @param control - the control to use
    */
-  feedbackEvent(type, control) {
+  InteractiveMarker.prototype.feedbackEvent = function feedbackEvent (type, control) {
     this.dispatchEvent({
       type : type,
       position : this.position.clone(),
@@ -50723,14 +50812,13 @@ class InteractiveMarker extends THREE$1.Object3D {
       controlName : control.name
     });
   };
-
   /**
    * Start a drag action.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  startDrag(control, event3d) {
+  InteractiveMarker.prototype.startDrag = function startDrag (control, event3d) {
     if (event3d.domEvent.button === 0) {
       event3d.stopPropagation();
       this.dragging = true;
@@ -50745,14 +50833,13 @@ class InteractiveMarker extends THREE$1.Object3D {
       this.feedbackEvent('user-mousedown', control);
     }
   };
-
   /**
    * Stop a drag action.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  stopDrag(control, event3d) {
+  InteractiveMarker.prototype.stopDrag = function stopDrag (control, event3d) {
     if (event3d.domEvent.button === 0) {
       event3d.stopPropagation();
       this.dragging = false;
@@ -50763,47 +50850,43 @@ class InteractiveMarker extends THREE$1.Object3D {
       this.feedbackEvent('user-mouseup', control);
     }
   };
-
   /**
    * Handle a button click.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  buttonClick(control, event3d) {
+  InteractiveMarker.prototype.buttonClick = function buttonClick (control, event3d) {
     event3d.stopPropagation();
     this.feedbackEvent('user-button-click', control);
   };
-
   /**
    * Handle a user pose change for the position.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  setPosition(control, position) {
+  InteractiveMarker.prototype.setPosition = function setPosition (control, position) {
     this.position.copy(position);
     this.feedbackEvent('user-pose-change', control);
   };
-
   /**
    * Handle a user pose change for the orientation.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  setOrientation(control, orientation) {
+  InteractiveMarker.prototype.setOrientation = function setOrientation (control, orientation) {
     orientation.normalize();
     this.quaternion.copy(orientation);
     this.feedbackEvent('user-pose-change', control);
   };
-
   /**
    * Update the marker based when the pose is set from the server.
    *
    * @param event - the event that caused this
    */
-  onServerSetPose(event) {
+  InteractiveMarker.prototype.onServerSetPose = function onServerSetPose (event) {
     if (event !== undefined) {
       // don't update while dragging
       if (this.dragging) {
@@ -50816,11 +50899,10 @@ class InteractiveMarker extends THREE$1.Object3D {
       }
     }
   };
-
   /**
    * Free memory of elements in this marker.
    */
-  dispose() {
+  InteractiveMarker.prototype.dispose = function dispose () {
     var that = this;
     this.children.forEach(function(intMarkerControl) {
       intMarkerControl.children.forEach(function(marker) {
@@ -50830,7 +50912,9 @@ class InteractiveMarker extends THREE$1.Object3D {
       that.remove(intMarkerControl);
     });
   };
-}
+
+  return InteractiveMarker;
+}(THREE$1.Object3D));
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -51006,6 +51090,8 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   }
 
   function growListenerTree(type, listener) {
+    var this$1 = this;
+
 
     type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
 
@@ -51043,11 +51129,11 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
           if (
             !tree._listeners.warned &&
-            this._events.maxListeners > 0 &&
-            tree._listeners.length > this._events.maxListeners
+            this$1._events.maxListeners > 0 &&
+            tree._listeners.length > this$1._events.maxListeners
           ) {
             tree._listeners.warned = true;
-            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
+            logPossibleMemoryLeak.call(this$1, tree._listeners.length, name);
           }
         }
         return true;
@@ -51070,7 +51156,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     if (n !== undefined) {
       this._events || init.call(this);
       this._events.maxListeners = n;
-      if (!this._conf) this._conf = {};
+      if (!this._conf) { this._conf = {}; }
       this._conf.maxListeners = n;
     }
   };
@@ -51104,6 +51190,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.emit = function() {
+    var arguments$1 = arguments;
+    var this$1 = this;
+
 
     this._events || init.call(this);
 
@@ -51123,23 +51212,23 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       handler = this._all.slice();
       if (al > 3) {
         args = new Array(al);
-        for (j = 0; j < al; j++) args[j] = arguments[j];
+        for (j = 0; j < al; j++) { args[j] = arguments$1[j]; }
       }
 
       for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
+        this$1.event = type;
         switch (al) {
         case 1:
-          handler[i].call(this, type);
+          handler[i].call(this$1, type);
           break;
         case 2:
-          handler[i].call(this, type, arguments[1]);
+          handler[i].call(this$1, type, arguments$1[1]);
           break;
         case 3:
-          handler[i].call(this, type, arguments[1], arguments[2]);
+          handler[i].call(this$1, type, arguments$1[1], arguments$1[2]);
           break;
         default:
-          handler[i].apply(this, args);
+          handler[i].apply(this$1, args);
         }
       }
     }
@@ -51164,7 +51253,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           break;
         default:
           args = new Array(al - 1);
-          for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+          for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
           handler.apply(this, args);
         }
         return true;
@@ -51178,22 +51267,22 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     if (handler && handler.length) {
       if (al > 3) {
         args = new Array(al - 1);
-        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
       }
       for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
+        this$1.event = type;
         switch (al) {
         case 1:
-          handler[i].call(this);
+          handler[i].call(this$1);
           break;
         case 2:
-          handler[i].call(this, arguments[1]);
+          handler[i].call(this$1, arguments$1[1]);
           break;
         case 3:
-          handler[i].call(this, arguments[1], arguments[2]);
+          handler[i].call(this$1, arguments$1[1], arguments$1[2]);
           break;
         default:
-          handler[i].apply(this, args);
+          handler[i].apply(this$1, args);
         }
       }
       return true;
@@ -51210,6 +51299,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.emitAsync = function() {
+    var arguments$1 = arguments;
+    var this$1 = this;
+
 
     this._events || init.call(this);
 
@@ -51228,22 +51320,22 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     if (this._all) {
       if (al > 3) {
         args = new Array(al);
-        for (j = 1; j < al; j++) args[j] = arguments[j];
+        for (j = 1; j < al; j++) { args[j] = arguments$1[j]; }
       }
       for (i = 0, l = this._all.length; i < l; i++) {
-        this.event = type;
+        this$1.event = type;
         switch (al) {
         case 1:
-          promises.push(this._all[i].call(this, type));
+          promises.push(this$1._all[i].call(this$1, type));
           break;
         case 2:
-          promises.push(this._all[i].call(this, type, arguments[1]));
+          promises.push(this$1._all[i].call(this$1, type, arguments$1[1]));
           break;
         case 3:
-          promises.push(this._all[i].call(this, type, arguments[1], arguments[2]));
+          promises.push(this$1._all[i].call(this$1, type, arguments$1[1], arguments$1[2]));
           break;
         default:
-          promises.push(this._all[i].apply(this, args));
+          promises.push(this$1._all[i].apply(this$1, args));
         }
       }
     }
@@ -51270,28 +51362,28 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         break;
       default:
         args = new Array(al - 1);
-        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
         promises.push(handler.apply(this, args));
       }
     } else if (handler && handler.length) {
       if (al > 3) {
         args = new Array(al - 1);
-        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
       }
       for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
+        this$1.event = type;
         switch (al) {
         case 1:
-          promises.push(handler[i].call(this));
+          promises.push(handler[i].call(this$1));
           break;
         case 2:
-          promises.push(handler[i].call(this, arguments[1]));
+          promises.push(handler[i].call(this$1, arguments$1[1]));
           break;
         case 3:
-          promises.push(handler[i].call(this, arguments[1], arguments[2]));
+          promises.push(handler[i].call(this$1, arguments$1[1], arguments$1[2]));
           break;
         default:
-          promises.push(handler[i].apply(this, args));
+          promises.push(handler[i].apply(this$1, args));
         }
       }
     } else if (!this._all && type === 'error') {
@@ -51369,6 +51461,8 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   EventEmitter.prototype.addListener = EventEmitter.prototype.on;
 
   EventEmitter.prototype.off = function(type, listener) {
+    var this$1 = this;
+
     if (typeof listener !== 'function') {
       throw new Error('removeListener only takes instances of Function');
     }
@@ -51381,7 +51475,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     }
     else {
       // does not use listeners(), so no side effect of creating _events[type]
-      if (!this._events[type]) return this;
+      if (!this._events[type]) { return this; }
       handlers = this._events[type];
       leafs.push({_listeners:handlers});
     }
@@ -51406,37 +51500,37 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           continue;
         }
 
-        if(this.wildcard) {
+        if(this$1.wildcard) {
           leaf._listeners.splice(position, 1);
         }
         else {
-          this._events[type].splice(position, 1);
+          this$1._events[type].splice(position, 1);
         }
 
         if (handlers.length === 0) {
-          if(this.wildcard) {
+          if(this$1.wildcard) {
             delete leaf._listeners;
           }
           else {
-            delete this._events[type];
+            delete this$1._events[type];
           }
         }
 
-        this.emit("removeListener", type, listener);
+        this$1.emit("removeListener", type, listener);
 
-        return this;
+        return this$1;
       }
       else if (handlers === listener ||
         (handlers.listener && handlers.listener === listener) ||
         (handlers._origin && handlers._origin === listener)) {
-        if(this.wildcard) {
+        if(this$1.wildcard) {
           delete leaf._listeners;
         }
         else {
-          delete this._events[type];
+          delete this$1._events[type];
         }
 
-        this.emit("removeListener", type, listener);
+        this$1.emit("removeListener", type, listener);
       }
     }
 
@@ -51449,7 +51543,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         var key = keys[i];
         var obj = root[key];
         if ((obj instanceof Function) || (typeof obj !== "object") || (obj === null))
-          continue;
+          { continue; }
         if (Object.keys(obj).length > 0) {
           recursivelyGarbageCollect(root[key]);
         }
@@ -51464,20 +51558,22 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.offAny = function(fn) {
+    var this$1 = this;
+
     var i = 0, l = 0, fns;
     if (fn && this._all && this._all.length > 0) {
       fns = this._all;
       for(i = 0, l = fns.length; i < l; i++) {
         if(fn === fns[i]) {
           fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
-          return this;
+          this$1.emit("removeListenerAny", fn);
+          return this$1;
         }
       }
     } else {
       fns = this._all;
       for(i = 0, l = fns.length; i < l; i++)
-        this.emit("removeListenerAny", fns[i]);
+        { this$1.emit("removeListenerAny", fns[i]); }
       this._all = [];
     }
     return this;
@@ -51516,7 +51612,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
     this._events || init.call(this);
 
-    if (!this._events[type]) this._events[type] = [];
+    if (!this._events[type]) { this._events[type] = []; }
     if (!isArray(this._events[type])) {
       this._events[type] = [this._events[type]];
     }
@@ -51554,25 +51650,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class InteractiveMarkerHandle extends eventemitter2 {
-
-  /**
-   * Handle with signals for a single interactive marker.
-   *
-   * Emits the following events:
-   *
-   *  * 'pose' - emitted when a new pose comes from the server
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * message - the interactive marker message
-   *  * feedbackTopic - the ROSLIB.Topic associated with the feedback
-   *  * tfClient - a handle to the TF client to use
-   *  * menuFontSize (optional) - the menu font size
-   */
-  constructor(options) {
-    super();
+var InteractiveMarkerHandle = (function (EventEmitter2) {
+  function InteractiveMarkerHandle(options) {
+    EventEmitter2.call(this);
     options = options || {};
     this.message = options.message;
     this.feedbackTopic = options.feedbackTopic;
@@ -51596,57 +51676,55 @@ class InteractiveMarkerHandle extends eventemitter2 {
     // start by setting the pose
     this.setPoseFromServer(this.message.pose);
     this.tfUpdateBound = this.tfUpdate.bind(this);
-  };
+  }
 
+  if ( EventEmitter2 ) InteractiveMarkerHandle.__proto__ = EventEmitter2;
+  InteractiveMarkerHandle.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
+  InteractiveMarkerHandle.prototype.constructor = InteractiveMarkerHandle;
   /**
    * Subscribe to the TF associated with this interactive marker.
    */
-  subscribeTf() {
+  InteractiveMarkerHandle.prototype.subscribeTf = function subscribeTf () {
     // subscribe to tf updates if frame-fixed
     if (this.message.header.stamp.secs === 0.0 && this.message.header.stamp.nsecs === 0.0) {
       this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdateBound);
     }
   };
-
-  unsubscribeTf() {
+  InteractiveMarkerHandle.prototype.unsubscribeTf = function unsubscribeTf () {
     this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdateBound);
   };
-
   /**
    * Emit the new pose that has come from the server.
    */
-  emitServerPoseUpdate() {
+  InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function emitServerPoseUpdate () {
     var poseTransformed = new Pose(this.pose);
     poseTransformed.applyTransform(this.tfTransform);
     this.emit('pose', poseTransformed);
   };
-
   /**
    * Update the pose based on the pose given by the server.
    *
    * @param poseMsg - the pose given by the server
    */
-  setPoseFromServer(poseMsg) {
+  InteractiveMarkerHandle.prototype.setPoseFromServer = function setPoseFromServer (poseMsg) {
     this.pose = new Pose(poseMsg);
     this.emitServerPoseUpdate();
   };
-
   /**
    * Update the pose based on the TF given by the server.
    *
    * @param transformMsg - the TF given by the server
    */
-  tfUpdate(transformMsg) {
+  InteractiveMarkerHandle.prototype.tfUpdate = function tfUpdate (transformMsg) {
     this.tfTransform = new Transform(transformMsg);
     this.emitServerPoseUpdate();
   };
-
   /**
    * Set the pose from the client based on the given event.
    *
    * @param event - the event to base the change off of
    */
-  setPoseFromClient(event) {
+  InteractiveMarkerHandle.prototype.setPoseFromClient = function setPoseFromClient (event) {
     // apply the transform
     this.pose = new Pose(event);
     var inv = this.tfTransform.clone();
@@ -51668,49 +51746,44 @@ class InteractiveMarkerHandle extends eventemitter2 {
       this.timeoutHandle = setTimeout(this.setPoseFromClient.bind(this, event), 250);
     }
   };
-
   /**
    * Send the button click feedback to the server.
    *
    * @param event - the event associated with the button click
    */
-  onButtonClick(event) {
+  InteractiveMarkerHandle.prototype.onButtonClick = function onButtonClick (event) {
     this.sendFeedback(INTERACTIVE_MARKER_BUTTON_CLICK, event.clickPosition, 0,
         event.controlName);
   };
-
   /**
    * Send the mousedown feedback to the server.
    *
    * @param event - the event associated with the mousedown
    */
-  onMouseDown(event) {
+  InteractiveMarkerHandle.prototype.onMouseDown = function onMouseDown (event) {
     this.sendFeedback(INTERACTIVE_MARKER_MOUSE_DOWN, event.clickPosition, 0, event.controlName);
     this.dragging = true;
   };
-
   /**
    * Send the mouseup feedback to the server.
    *
    * @param event - the event associated with the mouseup
    */
-  onMouseUp(event) {
+  InteractiveMarkerHandle.prototype.onMouseUp = function onMouseUp (event) {
     this.sendFeedback(INTERACTIVE_MARKER_MOUSE_UP, event.clickPosition, 0, event.controlName);
     this.dragging = false;
     if (this.timeoutHandle) {
       clearTimeout(this.timeoutHandle);
     }
   };
-
   /**
    * Send the menu select feedback to the server.
    *
    * @param event - the event associated with the menu select
    */
-  onMenuSelect(event) {
+  InteractiveMarkerHandle.prototype.onMenuSelect = function onMenuSelect (event) {
     this.sendFeedback(INTERACTIVE_MARKER_MENU_SELECT, undefined, event.id, event.controlName);
   };
-
   /**
    * Send feedback to the interactive marker server.
    *
@@ -51719,7 +51792,7 @@ class InteractiveMarkerHandle extends eventemitter2 {
    * @param menuEntryID (optional) - the menu entry ID that is associated
    * @param controlName - the name of the control
    */
-  sendFeedback(eventType, clickPosition,
+  InteractiveMarkerHandle.prototype.sendFeedback = function sendFeedback (eventType, clickPosition,
       menuEntryID, controlName) {
 
     // check for the click position
@@ -51743,237 +51816,208 @@ class InteractiveMarkerHandle extends eventemitter2 {
     };
     this.feedbackTopic.publish(feedback);
   };
-}
+
+  return InteractiveMarkerHandle;
+}(eventemitter2));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class InteractiveMarkerClient {
+var InteractiveMarkerClient = function InteractiveMarkerClient(options) {
+  options = options || {};
+  this.ros = options.ros;
+  this.tfClient = options.tfClient;
+  this.topicName = options.topic;
+  this.path = options.path || '/';
+  this.camera = options.camera;
+  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.loader = options.loader;
+  this.menuFontSize = options.menuFontSize || '0.8em';
 
-  /**
-   * A client for an interactive marker topic.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - a handle to the ROS connection
-   *  * tfClient - a handle to the TF client
-   *  * topic (optional) - the topic to subscribe to, like '/basic_controls', if not provided use subscribe() to start message receiving
-   *  * path (optional) - the base path to any meshes that will be loaded
-   *  * camera - the main camera associated with the viewer for this marker client
-   *  * rootObject (optional) - the root THREE 3D object to render to
-   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
-   *  * menuFontSize (optional) - the menu font size
-   */
-  constructor(options) {
-    options = options || {};
-    this.ros = options.ros;
-    this.tfClient = options.tfClient;
-    this.topicName = options.topic;
-    this.path = options.path || '/';
-    this.camera = options.camera;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
-    this.loader = options.loader;
-    this.menuFontSize = options.menuFontSize || '0.8em';
+  this.interactiveMarkers = {};
+  this.updateTopic = null;
+  this.feedbackTopic = null;
 
-    this.interactiveMarkers = {};
-    this.updateTopic = null;
-    this.feedbackTopic = null;
+  // check for an initial topic
+  if (this.topicName) {
+    this.subscribe(this.topicName);
+  }
+};
+/**
+ * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
+ *
+ * @param topic - the topic to subscribe to, like '/basic_controls'
+ */
+InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
+  // unsubscribe to the other topics
+  this.unsubscribe();
 
-    // check for an initial topic
-    if (this.topicName) {
-      this.subscribe(this.topicName);
+  this.updateTopic = new Topic({
+    ros : this.ros,
+    name : topic + '/tunneled/update',
+    messageType : 'visualization_msgs/InteractiveMarkerUpdate',
+    compression : 'png'
+  });
+  this.updateTopic.subscribe(this.processUpdate.bind(this));
+
+  this.feedbackTopic = new Topic({
+    ros : this.ros,
+    name : topic + '/feedback',
+    messageType : 'visualization_msgs/InteractiveMarkerFeedback',
+    compression : 'png'
+  });
+  this.feedbackTopic.advertise();
+
+  this.initService = new Service({
+    ros : this.ros,
+    name : topic + '/tunneled/get_init',
+    serviceType : 'demo_interactive_markers/GetInit'
+  });
+  var request = new ServiceRequest({});
+  this.initService.callService(request, this.processInit.bind(this));
+};
+/**
+ * Unsubscribe from the current interactive marker topic.
+ */
+InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
+    var this$1 = this;
+
+  if (this.updateTopic) {
+    this.updateTopic.unsubscribe();
+  }
+  if (this.feedbackTopic) {
+    this.feedbackTopic.unadvertise();
+  }
+  // erase all markers
+  for (var intMarkerName in this$1.interactiveMarkers) {
+    this$1.eraseIntMarker(intMarkerName);
+  }
+  this.interactiveMarkers = {};
+};
+/**
+ * Process the given interactive marker initialization message.
+ *
+ * @param initMessage - the interactive marker initialization message to process
+ */
+InteractiveMarkerClient.prototype.processInit = function processInit (initMessage) {
+    var this$1 = this;
+
+  var message = initMessage.msg;
+
+  // erase any old markers
+  message.erases = [];
+  for (var intMarkerName in this$1.interactiveMarkers) {
+    message.erases.push(intMarkerName);
+  }
+  message.poses = [];
+
+  // treat it as an update
+  this.processUpdate(message);
+};
+/**
+ * Process the given interactive marker update message.
+ *
+ * @param initMessage - the interactive marker update message to process
+ */
+InteractiveMarkerClient.prototype.processUpdate = function processUpdate (message) {
+  var that = this;
+
+  // erase any markers
+  message.erases.forEach(function(name) {
+    that.eraseIntMarker(name);
+  });
+
+  // updates marker poses
+  message.poses.forEach(function(poseMessage) {
+    var marker = that.interactiveMarkers[poseMessage.name];
+    if (marker) {
+      marker.setPoseFromServer(poseMessage.pose);
     }
-  };
+  });
 
-  /**
-   * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
-   *
-   * @param topic - the topic to subscribe to, like '/basic_controls'
-   */
-  subscribe(topic) {
-    // unsubscribe to the other topics
-    this.unsubscribe();
-
-    this.updateTopic = new Topic({
-      ros : this.ros,
-      name : topic + '/tunneled/update',
-      messageType : 'visualization_msgs/InteractiveMarkerUpdate',
-      compression : 'png'
-    });
-    this.updateTopic.subscribe(this.processUpdate.bind(this));
-
-    this.feedbackTopic = new Topic({
-      ros : this.ros,
-      name : topic + '/feedback',
-      messageType : 'visualization_msgs/InteractiveMarkerFeedback',
-      compression : 'png'
-    });
-    this.feedbackTopic.advertise();
-
-    this.initService = new Service({
-      ros : this.ros,
-      name : topic + '/tunneled/get_init',
-      serviceType : 'demo_interactive_markers/GetInit'
-    });
-    var request = new ServiceRequest({});
-    this.initService.callService(request, this.processInit.bind(this));
-  };
-
-  /**
-   * Unsubscribe from the current interactive marker topic.
-   */
-  unsubscribe() {
-    if (this.updateTopic) {
-      this.updateTopic.unsubscribe();
+  // add new markers
+  message.markers.forEach(function(msg) {
+    // get rid of anything with the same name
+    var oldhandle = that.interactiveMarkers[msg.name];
+    if (oldhandle) {
+      that.eraseIntMarker(oldhandle.name);
     }
-    if (this.feedbackTopic) {
-      this.feedbackTopic.unadvertise();
-    }
-    // erase all markers
-    for (var intMarkerName in this.interactiveMarkers) {
-      this.eraseIntMarker(intMarkerName);
-    }
-    this.interactiveMarkers = {};
-  };
 
-  /**
-   * Process the given interactive marker initialization message.
-   *
-   * @param initMessage - the interactive marker initialization message to process
-   */
-  processInit(initMessage) {
-    var message = initMessage.msg;
-
-    // erase any old markers
-    message.erases = [];
-    for (var intMarkerName in this.interactiveMarkers) {
-      message.erases.push(intMarkerName);
-    }
-    message.poses = [];
-
-    // treat it as an update
-    this.processUpdate(message);
-  };
-
-  /**
-   * Process the given interactive marker update message.
-   *
-   * @param initMessage - the interactive marker update message to process
-   */
-  processUpdate(message) {
-    var that = this;
-
-    // erase any markers
-    message.erases.forEach(function(name) {
-      that.eraseIntMarker(name);
+    // create the handle
+    var handle = new InteractiveMarkerHandle({
+      message : msg,
+      feedbackTopic : that.feedbackTopic,
+      tfClient : that.tfClient,
+      menuFontSize : that.menuFontSize
     });
+    that.interactiveMarkers[msg.name] = handle;
 
-    // updates marker poses
-    message.poses.forEach(function(poseMessage) {
-      var marker = that.interactiveMarkers[poseMessage.name];
-      if (marker) {
-        marker.setPoseFromServer(poseMessage.pose);
-      }
+    // create the actual marker
+    var intMarker = new InteractiveMarker({
+      handle : handle,
+      camera : that.camera,
+      path : that.path,
+      loader : that.loader
     });
+    // add it to the scene
+    intMarker.name = msg.name;
+    that.rootObject.add(intMarker);
 
-    // add new markers
-    message.markers.forEach(function(msg) {
-      // get rid of anything with the same name
-      var oldhandle = that.interactiveMarkers[msg.name];
-      if (oldhandle) {
-        that.eraseIntMarker(oldhandle.name);
-      }
-
-      // create the handle
-      var handle = new InteractiveMarkerHandle({
-        message : msg,
-        feedbackTopic : that.feedbackTopic,
-        tfClient : that.tfClient,
-        menuFontSize : that.menuFontSize
+    // listen for any pose updates from the server
+    handle.on('pose', function(pose) {
+      intMarker.onServerSetPose({
+        pose : pose
       });
-      that.interactiveMarkers[msg.name] = handle;
-
-      // create the actual marker
-      var intMarker = new InteractiveMarker({
-        handle : handle,
-        camera : that.camera,
-        path : that.path,
-        loader : that.loader
-      });
-      // add it to the scene
-      intMarker.name = msg.name;
-      that.rootObject.add(intMarker);
-
-      // listen for any pose updates from the server
-      handle.on('pose', function(pose) {
-        intMarker.onServerSetPose({
-          pose : pose
-        });
-      });
-
-      // add bound versions of UI handlers
-      intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
-      intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
-      intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
-      intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
-      intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
-
-      // now listen for any TF changes
-      handle.subscribeTf();
     });
-  };
 
-  /**
-   * Erase the interactive marker with the given name.
-   *
-   * @param intMarkerName - the interactive marker name to delete
-   */
-  eraseIntMarker(intMarkerName) {
-    if (this.interactiveMarkers[intMarkerName]) {
-      // remove the object
-      var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
-      this.rootObject.remove(targetIntMarker);
-      // unsubscribe from TF topic!
-      var handle = this.interactiveMarkers[intMarkerName];
-      handle.unsubscribeTf();
+    // add bound versions of UI handlers
+    intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
+    intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
+    intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
+    intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
+    intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
 
-      // remove all other listeners
+    // now listen for any TF changes
+    handle.subscribeTf();
+  });
+};
+/**
+ * Erase the interactive marker with the given name.
+ *
+ * @param intMarkerName - the interactive marker name to delete
+ */
+InteractiveMarkerClient.prototype.eraseIntMarker = function eraseIntMarker (intMarkerName) {
+  if (this.interactiveMarkers[intMarkerName]) {
+    // remove the object
+    var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
+    this.rootObject.remove(targetIntMarker);
+    // unsubscribe from TF topic!
+    var handle = this.interactiveMarkers[intMarkerName];
+    handle.unsubscribeTf();
 
-      targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
-      targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
-      targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
-      targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
-      targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
+    // remove all other listeners
 
-      // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
-      delete this.interactiveMarkers[intMarkerName];
-      targetIntMarker.dispose();
-    }
-  };
-}
+    targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+    targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
+    targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
+    targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
+    targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
+
+    // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
+    delete this.interactiveMarkers[intMarkerName];
+    targetIntMarker.dispose();
+  }
+};
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class SceneNode extends THREE$1.Object3D {
-
-  /**
-   * A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * tfClient - a handle to the TF client
-   *  * frameID - the frame ID this object belongs to
-   *  * pose (optional) - the pose associated with this object
-   *  * object - the THREE 3D object to be rendered
-   */
-  constructor(options) {
-    super();
+var SceneNode = (function (superclass) {
+  function SceneNode(options) {
+    superclass.call(this);
     options = options || {};
     var that = this;
     this.tfClient = options.tfClient;
@@ -52005,50 +52049,37 @@ class SceneNode extends THREE$1.Object3D {
 
     // listen for TF updates
     this.tfClient.subscribe(this.frameID, this.tfUpdate);
-  };
+  }
 
+  if ( superclass ) SceneNode.__proto__ = superclass;
+  SceneNode.prototype = Object.create( superclass && superclass.prototype );
+  SceneNode.prototype.constructor = SceneNode;
   /**
    * Set the pose of the associated model.
    *
    * @param pose - the pose to update with
    */
-  updatePose(pose) {
+  SceneNode.prototype.updatePose = function updatePose (pose) {
     this.position.set( pose.position.x, pose.position.y, pose.position.z );
     this.quaternion.set(pose.orientation.x, pose.orientation.y,
         pose.orientation.z, pose.orientation.w);
     this.updateMatrixWorld(true);
   };
-
-  unsubscribeTf() {
+  SceneNode.prototype.unsubscribeTf = function unsubscribeTf () {
     this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
   };
-}
+
+  return SceneNode;
+}(THREE$1.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
  */
 
-class MarkerArrayClient extends eventemitter2 {
-
-  /**
-   * A MarkerArray client that listens to a given topic.
-   *
-   * Emits the following events:
-   *
-   *  * 'change' - there was an update or change in the MarkerArray
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * ros - the ROSLIB.Ros connection handle
-   *   * topic - the marker topic to listen to
-   *   * tfClient - the TF client handle to use
-   *   * rootObject (optional) - the root object to add the markers to
-   *   * path (optional) - the base path to any meshes that will be loaded
-   */
-  constructor(options) {
-    super();
+var MarkerArrayClient = (function (EventEmitter2) {
+  function MarkerArrayClient(options) {
+    EventEmitter2.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic;
@@ -52061,9 +52092,12 @@ class MarkerArrayClient extends eventemitter2 {
     this.rosTopic = undefined;
 
     this.subscribe();
-  };
+  }
 
-  subscribe(){
+  if ( EventEmitter2 ) MarkerArrayClient.__proto__ = EventEmitter2;
+  MarkerArrayClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
+  MarkerArrayClient.prototype.constructor = MarkerArrayClient;
+  MarkerArrayClient.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to MarkerArray topic
@@ -52075,9 +52109,10 @@ class MarkerArrayClient extends eventemitter2 {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(arrayMessage){
+  MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
     arrayMessage.markers.forEach(function(message) {
+      var this$1 = this;
+
       if(message.action === 0) {
         var updated = false;
         if(message.ns + message.id in this.markers) { // "MODIFY"
@@ -52109,9 +52144,9 @@ class MarkerArrayClient extends eventemitter2 {
         delete this.markers[message.ns + message.id];
       }
       else if(message.action === 3) { // "DELETE ALL"
-        for (var m in this.markers){
-          this.markers[m].unsubscribeTf();
-          this.rootObject.remove(this.markers[m]);
+        for (var m in this$1.markers){
+          this$1.markers[m].unsubscribeTf();
+          this$1.rootObject.remove(this$1.markers[m]);
         }
         this.markers = {};
       }
@@ -52122,38 +52157,22 @@ class MarkerArrayClient extends eventemitter2 {
 
     this.emit('change');
   };
-
-  unsubscribe(){
+  MarkerArrayClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-}
+
+  return MarkerArrayClient;
+}(eventemitter2));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class MarkerClient extends eventemitter2 {
-
-  /**
-   * A marker client that listens to a given marker topic.
-   *
-   * Emits the following events:
-   *
-   *  * 'change' - there was an update or change in the marker
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * ros - the ROSLIB.Ros connection handle
-   *   * topic - the marker topic to listen to
-   *   * tfClient - the TF client handle to use
-   *   * rootObject (optional) - the root object to add this marker to
-   *   * path (optional) - the base path to any meshes that will be loaded
-   */
-  constructor(options) {
-    super();
+var MarkerClient = (function (EventEmitter2) {
+  function MarkerClient(options) {
+    EventEmitter2.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic;
@@ -52166,15 +52185,17 @@ class MarkerClient extends eventemitter2 {
     this.rosTopic = undefined;
 
     this.subscribe();
-  };
+  }
 
-  unsubscribe(){
+  if ( EventEmitter2 ) MarkerClient.__proto__ = EventEmitter2;
+  MarkerClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
+  MarkerClient.prototype.constructor = MarkerClient;
+  MarkerClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  MarkerClient.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52186,8 +52207,7 @@ class MarkerClient extends eventemitter2 {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  MarkerClient.prototype.processMessage = function processMessage (message){
     var newMarker = new Marker({
       message : message,
       path : this.path,
@@ -52209,29 +52229,16 @@ class MarkerClient extends eventemitter2 {
 
     this.emit('change');
   };
-}
+
+  return MarkerClient;
+}(eventemitter2));
 
 /**
  * @author Jihoon Lee - lee@magazino.eu
  */
 
-class Arrow2 extends THREE$1.ArrowHelper {
-
-  /**
-   * A Arrow is a THREE object that can be used to display an arrow model using ArrowHelper
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * origin (optional) - the origin of the arrow
-   *   * direction (optional) - the direction vector of the arrow
-   *   * length (optional) - the length of the arrow
-   *   * headLength (optional) - the head length of the arrow
-   *   * shaftDiameter (optional) - the shaft diameter of the arrow
-   *   * headDiameter (optional) - the head diameter of the arrow
-   *   * material (optional) - the material to use for this arrow
-   */
-  constructor(options) {
+var Arrow2 = (function (superclass) {
+  function Arrow2(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
     var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
@@ -52241,15 +52248,18 @@ class Arrow2 extends THREE$1.ArrowHelper {
     var headDiameter = options.headDiameter || 0.1;
     var material = options.material || new THREE$1.MeshBasicMaterial();
 
-    super(direction, origin, length, 0xff0000);
+    superclass.call(this, direction, origin, length, 0xff0000);
 
-  };
+  }
 
+  if ( superclass ) Arrow2.__proto__ = superclass;
+  Arrow2.prototype = Object.create( superclass && superclass.prototype );
+  Arrow2.prototype.constructor = Arrow2;
 
   /*
    * Free memory of elements in this object.
    */
-  dispose() {
+  Arrow2.prototype.dispose = function dispose () {
     if (this.line !== undefined) {
         this.line.material.dispose();
         this.line.geometry.dispose();
@@ -52260,44 +52270,16 @@ class Arrow2 extends THREE$1.ArrowHelper {
     }
   };
 
-  /*
-  setLength ( length, headLength, headWidth ) {
-  	if ( headLength === undefined ) {
-      headLength = 0.2 * length;
-    }
-  	if ( headWidth === undefined ) {
-      headWidth = 0.2 * headLength;
-    }
-
-  	this.line.scale.set( 1, Math.max( 0, length), 1 );
-  	this.line.updateMatrix();
-
-  	this.cone.scale.set( headWidth, headLength, headWidth );
-  	this.cone.position.y = length;
-  	this.cone.updateMatrix();
-
-  };
-  */
-}
+  return Arrow2;
+}(THREE$1.ArrowHelper));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class Axes extends THREE$1.Object3D {
-
-  /**
-   * An Axes object can be used to display the axis of a particular coordinate frame.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * shaftRadius (optional) - the radius of the shaft to render
-   *   * headRadius (optional) - the radius of the head to render
-   *   * headLength (optional) - the length of the head to render
-   */
-  constructor(options) {
-    super();
+var Axes = (function (superclass) {
+  function Axes(options) {
+    superclass.call(this);
     var that = this;
     options = options || {};
     var shaftRadius = options.shaftRadius || 0.008;
@@ -52349,34 +52331,30 @@ class Axes extends THREE$1.Object3D {
     addAxis(new THREE$1.Vector3(1, 0, 0));
     addAxis(new THREE$1.Vector3(0, 1, 0));
     addAxis(new THREE$1.Vector3(0, 0, 1));
-  };
-}
+  }
+
+  if ( superclass ) Axes.__proto__ = superclass;
+  Axes.prototype = Object.create( superclass && superclass.prototype );
+  Axes.prototype.constructor = Axes;
+
+  return Axes;
+}(THREE$1.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class Grid extends THREE$1.Object3D {
+var Grid = (function (superclass) {
+  function Grid(options) {
+    var this$1 = this;
 
-  /**
-   * Create a grid object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * num_cells (optional) - The number of cells of the grid
-   *  * color (optional) - the line color of the grid, like '#cccccc'
-   *  * lineWidth (optional) - the width of the lines in the grid
-   *  * cellSize (optional) - The length, in meters, of the side of each cell
-   */
-  constructor(options) {
     options = options || {};
     var num_cells = options.num_cells || 10;
     var color = options.color || '#cccccc';
     var lineWidth = options.lineWidth || 1;
     var cellSize = options.cellSize || 1;
 
-    super();
+    superclass.call(this);
 
     var material = new THREE$1.LineBasicMaterial({
       color: color,
@@ -52396,29 +52374,24 @@ class Grid extends THREE$1.Object3D {
         new THREE$1.Vector3( position, -edge, 0 ),
         new THREE$1.Vector3( position, edge, 0 )
       );
-      this.add(new THREE$1.Line(geometryH, material));
-      this.add(new THREE$1.Line(geometryV, material));
+      this$1.add(new THREE$1.Line(geometryH, material));
+      this$1.add(new THREE$1.Line(geometryV, material));
     }
-  };
-}
+  }
+
+  if ( superclass ) Grid.__proto__ = superclass;
+  Grid.prototype = Object.create( superclass && superclass.prototype );
+  Grid.prototype.constructor = Grid;
+
+  return Grid;
+}(THREE$1.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class OccupancyGrid extends THREE$1.Mesh {
-
-  /**
-   * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * message - the occupancy grid message
-   *   * color (optional) - color of the visualized grid
-   *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
-   */
-  constructor(options) {
+var OccupancyGrid = (function (superclass) {
+  function OccupancyGrid(options) {
     options = options || {};
     var message = options.message;
     var color = options.color || {r:255,g:255,b:255};
@@ -52476,7 +52449,7 @@ class OccupancyGrid extends THREE$1.Mesh {
     material.side = THREE$1.DoubleSide;
 
     // create the mesh
-    super(geom, material);
+    superclass.call(this, geom, material);
     // move the map so the corner is at X, Y and correct orientation (informations from message.info)
     this.quaternion = new THREE$1.Quaternion(
         message.info.origin.orientation.x,
@@ -52489,36 +52462,22 @@ class OccupancyGrid extends THREE$1.Mesh {
     this.position.z = message.info.origin.position.z;
     this.scale.x = message.info.resolution;
     this.scale.y = message.info.resolution;
-  };
-}
+  }
+
+  if ( superclass ) OccupancyGrid.__proto__ = superclass;
+  OccupancyGrid.prototype = Object.create( superclass && superclass.prototype );
+  OccupancyGrid.prototype.constructor = OccupancyGrid;
+
+  return OccupancyGrid;
+}(THREE$1.Mesh));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class OccupancyGridClient extends eventemitter2 {
-
-  /**
-   * An occupancy grid client that listens to a given map topic.
-   *
-   * Emits the following events:
-   *
-   *  * 'change' - there was an update or change in the marker
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * ros - the ROSLIB.Ros connection handle
-   *   * topic (optional) - the map topic to listen to
-   *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
-   *   * tfClient (optional) - the TF client handle to use for a scene node
-   *   * rootObject (optional) - the root object to add this marker to
-   *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
-   *   * color (optional) - color of the visualized grid
-   *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
-   */
-  constructor(options) {
-    super();
+var OccupancyGridClient = (function (EventEmitter2) {
+  function OccupancyGridClient(options) {
+    EventEmitter2.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/map';
@@ -52535,15 +52494,17 @@ class OccupancyGridClient extends eventemitter2 {
     // subscribe to the topic
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
-  unsubscribe(){
+  if ( EventEmitter2 ) OccupancyGridClient.__proto__ = EventEmitter2;
+  OccupancyGridClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
+  OccupancyGridClient.prototype.constructor = OccupancyGridClient;
+  OccupancyGridClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  OccupancyGridClient.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52555,8 +52516,7 @@ class OccupancyGridClient extends eventemitter2 {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  OccupancyGridClient.prototype.processMessage = function processMessage (message){
     // check for an old map
     if (this.currentGrid) {
       // check if it there is a tf client
@@ -52595,33 +52555,17 @@ class OccupancyGridClient extends eventemitter2 {
       this.rosTopic.unsubscribe();
     }
   };
-}
+
+  return OccupancyGridClient;
+}(eventemitter2));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Odometry extends THREE$1.Object3D {
-
-  /**
-   * An Odometry client
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * keep (optional) - number of markers to keep around (default: 1)
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   *  * length (optional) - the length of the arrow (default: 1.0)
-   *  * headLength (optional) - the head length of the arrow (default: 0.2)
-   *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
-   *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
-   */
-  constructor(options) {
-    super();
+var Odometry = (function (superclass) {
+  function Odometry(options) {
+    superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/particlecloud';
@@ -52635,16 +52579,18 @@ class Odometry extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) Odometry.__proto__ = superclass;
+  Odometry.prototype = Object.create( superclass && superclass.prototype );
+  Odometry.prototype.constructor = Odometry;
 
-  unsubscribe(){
+  Odometry.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  Odometry.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52655,8 +52601,7 @@ class Odometry extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  Odometry.prototype.processMessage = function processMessage (message){
     if(this.sns.length >= this.keep) {
         this.sns[0].unsubscribeTf();
         this.rootObject.remove(this.sns[0]);
@@ -52681,28 +52626,17 @@ class Odometry extends THREE$1.Object3D {
 
     this.rootObject.add(this.sns[ this.sns.length - 1]);
   };
-}
+
+  return Odometry;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Path$1 extends THREE$1.Object3D {
-
-  /**
-   * A Path client that listens to a given topic and displays a line connecting the poses.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   */
-  constructor(options) {
-    super();
+var Path$1 = (function (superclass) {
+  function Path(options) {
+    superclass.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/path';
@@ -52715,16 +52649,18 @@ class Path$1 extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) Path.__proto__ = superclass;
+  Path.prototype = Object.create( superclass && superclass.prototype );
+  Path.prototype.constructor = Path;
 
-  unsubscribe(){
+  Path.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  Path.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52735,8 +52671,7 @@ class Path$1 extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  Path.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -52761,29 +52696,17 @@ class Path$1 extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return Path;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Point extends THREE$1.Object3D {
-
-  /**
-   * A PointStamped client
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   *  * radius (optional) - radius of the point (default: 0.2)
-   */
-  constructor(options) {
-    super();
+var Point = (function (superclass) {
+  function Point(options) {
+    superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/point';
@@ -52796,16 +52719,18 @@ class Point extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) Point.__proto__ = superclass;
+  Point.prototype = Object.create( superclass && superclass.prototype );
+  Point.prototype.constructor = Point;
 
-  unsubscribe(){
+  Point.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  Point.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52816,8 +52741,7 @@ class Point extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  Point.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -52836,28 +52760,17 @@ class Point extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return Point;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Polygon extends THREE$1.Object3D {
-
-  /**
-   * A PolygonStamped client that listens to a given topic and displays the polygon
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   */
-  constructor(options) {
-    super();
+var Polygon = (function (superclass) {
+  function Polygon(options) {
+    superclass.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/path';
@@ -52870,16 +52783,18 @@ class Polygon extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) Polygon.__proto__ = superclass;
+  Polygon.prototype = Object.create( superclass && superclass.prototype );
+  Polygon.prototype.constructor = Polygon;
 
-  unsubscribe(){
+  Polygon.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  Polygon.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52890,8 +52805,7 @@ class Polygon extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  Polygon.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -52919,32 +52833,17 @@ class Polygon extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return Polygon;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Pose$1 extends THREE$1.Object3D {
-
-  /**
-   * A PoseStamped client
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   *  * length (optional) - the length of the arrow (default: 1.0)
-   *  * headLength (optional) - the head length of the arrow (default: 0.2)
-   *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
-   *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
-   */
-  constructor(options) {
-    super();
+var Pose$1 = (function (superclass) {
+  function Pose$$1(options) {
+    superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/pose';
@@ -52956,16 +52855,18 @@ class Pose$1 extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) Pose$$1.__proto__ = superclass;
+  Pose$$1.prototype = Object.create( superclass && superclass.prototype );
+  Pose$$1.prototype.constructor = Pose$$1;
 
-  unsubscribe(){
+  Pose$$1.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  Pose$$1.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -52976,8 +52877,7 @@ class Pose$1 extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  Pose$$1.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -53001,29 +52901,17 @@ class Pose$1 extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return Pose$$1;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class PoseArray extends THREE$1.Object3D {
-
-  /**
-   * A PoseArray client
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   *  * length (optional) - the length of the arrow (default: 1.0)
-   */
-  constructor(options) {
-    super();
+var PoseArray = (function (superclass) {
+  function PoseArray(options) {
+    superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/particlecloud';
@@ -53036,16 +52924,18 @@ class PoseArray extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) PoseArray.__proto__ = superclass;
+  PoseArray.prototype = Object.create( superclass && superclass.prototype );
+  PoseArray.prototype.constructor = PoseArray;
 
-  unsubscribe(){
+  PoseArray.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  PoseArray.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -53056,8 +52946,9 @@ class PoseArray extends THREE$1.Object3D {
    });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
+  PoseArray.prototype.processMessage = function processMessage (message){
+    var this$1 = this;
 
-  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -53076,9 +52967,9 @@ class PoseArray extends THREE$1.Object3D {
         var rot = new THREE$1.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
                                        message.poses[i].orientation.z, message.poses[i].orientation.w);
 
-        var tip = new THREE$1.Vector3(this.length,0,0);
-        var side1 = new THREE$1.Vector3(this.length*0.8, this.length*0.2, 0);
-        var side2 = new THREE$1.Vector3(this.length*0.8, -this.length*0.2, 0);
+        var tip = new THREE$1.Vector3(this$1.length,0,0);
+        var side1 = new THREE$1.Vector3(this$1.length*0.8, this$1.length*0.2, 0);
+        var side2 = new THREE$1.Vector3(this$1.length*0.8, -this$1.length*0.2, 0);
         tip.applyQuaternion(rot);
         side1.applyQuaternion(rot);
         side2.applyQuaternion(rot);
@@ -53089,7 +52980,7 @@ class PoseArray extends THREE$1.Object3D {
         lineGeometry.vertices.push(tip);
 
         lineGeometry.computeLineDistances();
-        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
+        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this$1.color } );
         line = new THREE$1.Line( lineGeometry, lineMaterial );
 
         group.add(line);
@@ -53103,28 +52994,17 @@ class PoseArray extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return PoseArray;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class PoseWithCovariance extends THREE$1.Object3D {
-
-  /**
-   * A PoseWithCovarianceStamped client
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to
-   *  * color (optional) - color for line (default: 0xcc00ff)
-   */
-  constructor(options) {
-    super();
+var PoseWithCovariance = (function (superclass) {
+  function PoseWithCovariance(options) {
+    superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/PoseWithCovariance';
@@ -53136,16 +53016,18 @@ class PoseWithCovariance extends THREE$1.Object3D {
 
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) PoseWithCovariance.__proto__ = superclass;
+  PoseWithCovariance.prototype = Object.create( superclass && superclass.prototype );
+  PoseWithCovariance.prototype.constructor = PoseWithCovariance;
 
-  unsubscribe(){
+  PoseWithCovariance.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  PoseWithCovariance.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -53156,8 +53038,7 @@ class PoseWithCovariance extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-
-  processMessage(message){
+  PoseWithCovariance.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -53181,31 +53062,17 @@ class PoseWithCovariance extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+
+  return PoseWithCovariance;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-class Points$1 extends THREE$1.Object3D {
-
-  /**
-   * A set of points. Used by PointCloud2 and LaserScan.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to use for the points.
-   *  * max_pts (optional) - number of points to draw (default: 10000)
-   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
-   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
-   *  * material (optional) - a material object or an option to construct a PointsMaterial.
-   *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
-   *  * colormap (optional) - function that turns the colorsrc field value to a color
-   */
-  constructor(options) {
+var Points$1 = (function (superclass) {
+  function Points(options) {
     options = options || {};
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -53216,7 +53083,7 @@ class Points$1 extends THREE$1.Object3D {
     this.material = options.material || {};
     this.colorsrc = options.colorsrc;
     this.colormap = options.colormap;
-    super();
+    superclass.call(this);
 
     if(('color' in options) || ('size' in options) || ('texture' in options)) {
         console.warn(
@@ -53228,11 +53095,16 @@ class Points$1 extends THREE$1.Object3D {
 
     this.sn = null;
     this.buffer = null;
-  };
+  }
 
+  if ( superclass ) Points.__proto__ = superclass;
+  Points.prototype = Object.create( superclass && superclass.prototype );
+  Points.prototype.constructor = Points;
 
-  setup(frame, point_step, fields)
+  Points.prototype.setup = function setup (frame, point_step, fields)
   {
+      var this$1 = this;
+
       if(this.sn===null){
           // scratch space to decode base64 buffers
           if(point_step) {
@@ -53242,7 +53114,7 @@ class Points$1 extends THREE$1.Object3D {
           fields = fields || [];
           this.fields = {};
           for(var i=0; i<fields.length; i++) {
-              this.fields[fields[i].name] = fields[i];
+              this$1.fields[fields[i].name] = fields[i];
           }
           this.geom = new THREE$1.BufferGeometry();
 
@@ -53293,8 +53165,7 @@ class Points$1 extends THREE$1.Object3D {
       }
       return (this.messageCount++ % this.messageRatio) === 0;
   };
-
-  update(n)
+  Points.prototype.update = function update (n)
   {
     this.geom.setDrawRange(0,n);
 
@@ -53306,31 +53177,17 @@ class Points$1 extends THREE$1.Object3D {
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
   };
-}
+
+  return Points;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class LaserScan extends THREE$1.Object3D {
-
-  /**
-   * A LaserScan client that listens to a given topic and displays the points.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to (default '/scan')
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to use for the points.
-   *  * max_pts (optional) - number of points to draw (default: 10000)
-   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
-   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
-   *  * material (optional) - a material object or an option to construct a PointsMaterial.
-   */
-  constructor(options) {
-    super();
+var LaserScan = (function (superclass) {
+  function LaserScan(options) {
+    superclass.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/scan';
@@ -53338,16 +53195,18 @@ class LaserScan extends THREE$1.Object3D {
     this.rosTopic = undefined;
     this.subscribe();
 
-  };
+  }
 
+  if ( superclass ) LaserScan.__proto__ = superclass;
+  LaserScan.prototype = Object.create( superclass && superclass.prototype );
+  LaserScan.prototype.constructor = LaserScan;
 
-  unsubscribe(){
+  LaserScan.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  LaserScan.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -53358,8 +53217,9 @@ class LaserScan extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
+  LaserScan.prototype.processMessage = function processMessage (message){
+    var this$1 = this;
 
-  processMessage(message){
     if(!this.points.setup(message.header.frame_id)) {
         return;
     }
@@ -53369,14 +53229,16 @@ class LaserScan extends THREE$1.Object3D {
       var range = message.ranges[i];
       if(range >= message.range_min && range <= message.range_max){
           var angle = message.angle_min + i * message.angle_increment;
-          this.points.positions.array[j++] = range * Math.cos(angle);
-          this.points.positions.array[j++] = range * Math.sin(angle);
-          this.points.positions.array[j++] = 0.0;
+          this$1.points.positions.array[j++] = range * Math.cos(angle);
+          this$1.points.positions.array[j++] = range * Math.sin(angle);
+          this$1.points.positions.array[j++] = 0.0;
       }
     }
     this.points.update(j/3);
   };
-}
+
+  return LaserScan;
+}(THREE$1.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -53419,43 +53281,27 @@ decode64.e={};
 for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
 
 
-class PointCloud2 extends THREE$1.Object3D {
-
-  /**
-   * A PointCloud2 client that listens to a given topic and displays the points.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * ros - the ROSLIB.Ros connection handle
-   *  * topic - the marker topic to listen to (default: '/points')
-   *  * tfClient - the TF client handle to use
-   *  * rootObject (optional) - the root object to add this marker to use for the points.
-   *  * max_pts (optional) - number of points to draw (default: 10000)
-   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
-   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
-   *  * material (optional) - a material object or an option to construct a PointsMaterial.
-   *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
-   *  * colormap (optional) - function that turns the colorsrc field value to a color
-   */
-  constructor(options) {
-    super();
+var PointCloud2 = (function (superclass) {
+  function PointCloud2(options) {
+    superclass.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/points';
     this.points = new Points$1(options);
     this.rosTopic = undefined;
     this.subscribe();
-  };
+  }
 
+  if ( superclass ) PointCloud2.__proto__ = superclass;
+  PointCloud2.prototype = Object.create( superclass && superclass.prototype );
+  PointCloud2.prototype.constructor = PointCloud2;
 
-  unsubscribe(){
+  PointCloud2.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-
-  subscribe(){
+  PointCloud2.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -53466,8 +53312,9 @@ class PointCloud2 extends THREE$1.Object3D {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
+  PointCloud2.prototype.processMessage = function processMessage (msg){
+    var this$1 = this;
 
-  processMessage(msg){
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }
@@ -53490,41 +53337,32 @@ class PointCloud2 extends THREE$1.Object3D {
     var base, color;
     for(var i = 0; i < n; i++){
       base = i * pointRatio * msg.point_step;
-      this.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
-      this.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
-      this.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
+      this$1.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
+      this$1.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
+      this$1.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
 
-      if(this.points.colors){
-          color = this.points.colormap(this.points.getColor(dv,base,littleEndian));
-          this.points.colors.array[3*i    ] = color.r;
-          this.points.colors.array[3*i + 1] = color.g;
-          this.points.colors.array[3*i + 2] = color.b;
+      if(this$1.points.colors){
+          color = this$1.points.colormap(this$1.points.getColor(dv,base,littleEndian));
+          this$1.points.colors.array[3*i    ] = color.r;
+          this$1.points.colors.array[3*i + 1] = color.g;
+          this$1.points.colors.array[3*i + 2] = color.b;
       }
     }
     this.points.update(n);
   };
-}
+
+  return PointCloud2;
+}(THREE$1.Object3D));
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class Urdf extends THREE$1.Object3D {
+var Urdf = (function (superclass) {
+  function Urdf(options) {
+    var this$1 = this;
 
-  /**
-   * A URDF can be used to load a ROSLIB.UrdfModel and its associated models into a 3D object.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * urdfModel - the ROSLIB.UrdfModel to load
-   *   * tfClient - the TF client handle to use
-   *   * path (optional) - the base path to the associated Collada models that will be loaded
-   *   * tfPrefix (optional) - the TF prefix to used for multi-robots
-   *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
-   */
-  constructor(options) {
     options = options || {};
     var urdfModel = options.urdfModel;
     var path = options.path || '/';
@@ -53532,7 +53370,7 @@ class Urdf extends THREE$1.Object3D {
     var tfPrefix = options.tfPrefix || '';
     var loader = options.loader;
 
-    super();
+    superclass.call(this);
 
     // load all models
     var links = urdfModel.links;
@@ -53580,7 +53418,7 @@ class Urdf extends THREE$1.Object3D {
                   tfClient : tfClient,
                   object : mesh
               });
-              this.add(sceneNode);
+              this$1.add(sceneNode);
             } else {
               console.warn('Could not load geometry mesh: '+uri);
             }
@@ -53615,242 +53453,198 @@ class Urdf extends THREE$1.Object3D {
                 tfClient: tfClient,
                 object: shapeMesh
             });
-            this.add(scene);
+            this$1.add(scene);
           }
         }
       }
     }
-  };
+  }
 
-  unsubscribeTf () {
+  if ( superclass ) Urdf.__proto__ = superclass;
+  Urdf.prototype = Object.create( superclass && superclass.prototype );
+  Urdf.prototype.constructor = Urdf;
+  Urdf.prototype.unsubscribeTf = function unsubscribeTf () {
     this.children.forEach(function(n) {
       if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
     });
   };
-}
+
+  return Urdf;
+}(THREE$1.Object3D));
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-class UrdfClient {
+var UrdfClient = function UrdfClient(options) {
+  var that = this;
+  options = options || {};
+  var ros = options.ros;
+  this.param = options.param || 'robot_description';
+  this.path = options.path || '/';
+  this.tfClient = options.tfClient;
+  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.tfPrefix = options.tfPrefix || '';
+  this.loader = options.loader;
 
-  /**
-   * A URDF client can be used to load a URDF and its associated models into a 3D object from the ROS
-   * parameter server.
-   *
-   * Emits the following events:
-   *
-   * * 'change' - emited after the URDF and its meshes have been loaded into the root object
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * ros - the ROSLIB.Ros connection handle
-   *   * param (optional) - the paramter to load the URDF from, like 'robot_description'
-   *   * tfClient - the TF client handle to use
-   *   * path (optional) - the base path to the associated Collada models that will be loaded
-   *   * rootObject (optional) - the root object to add this marker to
-   *   * tfPrefix (optional) - the TF prefix to used for multi-robots
-   *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
-   */
-  constructor(options) {
-    var that = this;
-    options = options || {};
-    var ros = options.ros;
-    this.param = options.param || 'robot_description';
-    this.path = options.path || '/';
-    this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
-    this.tfPrefix = options.tfPrefix || '';
-    this.loader = options.loader;
-
-    // get the URDF value from ROS
-    var getParam = new Param({
-      ros : ros,
-      name : this.param
+  // get the URDF value from ROS
+  var getParam = new Param({
+    ros : ros,
+    name : this.param
+  });
+  getParam.get(function(string) {
+    // hand off the XML string to the URDF model
+    var urdfModel = new UrdfModel({
+      string : string
     });
-    getParam.get(function(string) {
-      // hand off the XML string to the URDF model
-      var urdfModel = new UrdfModel({
-        string : string
-      });
 
-      // load all models
-      that.urdf = new Urdf({
-        urdfModel : urdfModel,
-        path : that.path,
-        tfClient : that.tfClient,
-        tfPrefix : that.tfPrefix,
-        loader : that.loader
-      });
-      that.rootObject.add(that.urdf);
+    // load all models
+    that.urdf = new Urdf({
+      urdfModel : urdfModel,
+      path : that.path,
+      tfClient : that.tfClient,
+      tfPrefix : that.tfPrefix,
+      loader : that.loader
     });
-  };
-}
+    that.rootObject.add(that.urdf);
+  });
+};
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class Highlighter {
+var Highlighter = function Highlighter(options) {
+  options = options || {};
+  this.mouseHandler = options.mouseHandler;
+  this.hoverObjs = {};
 
-  /**
-   * A mouseover highlighter for 3D objects in the scene.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * mouseHandler - the handler for the mouseover and mouseout events
-   */
-  constructor(options) {
-    options = options || {};
-    this.mouseHandler = options.mouseHandler;
-    this.hoverObjs = {};
+  // bind the mouse events
+  this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
+  this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
+};
+/**
+ * Add the current target of the mouseover to the hover list.
+ *
+ * @param event - the event that contains the target of the mouseover
+ */
+Highlighter.prototype.onMouseOver = function onMouseOver (event) {
+  this.hoverObjs[event.currentTarget.uuid] = event.currentTarget;
+};
+/**
+ * Remove the current target of the mouseover from the hover list.
+ *
+ * @param event - the event that contains the target of the mouseout
+ */
+Highlighter.prototype.onMouseOut = function onMouseOut (event) {
+  var uuid = event.currentTarget.uuid;
+  if (uuid in this.hoverObjs)
+  {
+    delete this.hoverObjs[uuid];
+  }
+};
 
-    // bind the mouse events
-    this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
-    this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
-  };
+/**
+ * Render the highlights for all objects that are currently highlighted.
+ *
+ * This method should be executed after clearing the renderer and
+ * rendering the regular scene.
+ *
+ * @param scene - the current scene, which should contain the highlighted objects (among others)
+ * @param renderer - the renderer used to render the scene.
+ * @param camera - the scene's camera
+ */
+Highlighter.prototype.renderHighlights = function renderHighlights (scene, renderer, camera) {
 
-  /**
-   * Add the current target of the mouseover to the hover list.
-   *
-   * @param event - the event that contains the target of the mouseover
-   */
-  onMouseOver(event) {
-    this.hoverObjs[event.currentTarget.uuid] = event.currentTarget;
-  };
+  // Render highlights by making everything but the highlighted
+  // objects invisible...
+  this.makeEverythingInvisible(scene);
+  this.makeHighlightedVisible(scene);
 
-  /**
-   * Remove the current target of the mouseover from the hover list.
-   *
-   * @param event - the event that contains the target of the mouseout
-   */
-  onMouseOut(event) {
-    var uuid = event.currentTarget.uuid;
-    if (uuid in this.hoverObjs)
-    {
-      delete this.hoverObjs[uuid];
+  // Providing a transparent overrideMaterial...
+  var originalOverrideMaterial = scene.overrideMaterial;
+  scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
+      fog : false,
+      opacity : 0.5,
+      transparent : true,
+      depthTest : true,
+      depthWrite : false,
+      polygonOffset : true,
+      polygonOffsetUnits : -1,
+      side : THREE$1.DoubleSide
+  });
+
+  // And then rendering over the regular scene
+  renderer.render(scene, camera);
+
+  // Finally, restore the original overrideMaterial (if any) and
+  // object visibility.
+  scene.overrideMaterial = originalOverrideMaterial;
+  this.restoreVisibility(scene);
+};
+
+/**
+ * Traverses the given object and makes every object that's a Mesh,
+ * Line or Sprite invisible. Also saves the previous visibility state
+ * so we can restore it later.
+ *
+ * @param scene - the object to traverse
+ */
+Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible (scene) {
+  scene.traverse(function(currentObject) {
+    if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
+         || currentObject instanceof THREE$1.Sprite ) {
+      currentObject.previousVisibility = currentObject.visible;
+      currentObject.visible = false;
     }
-  };
+  });
+};
 
+/**
+ * Make the objects in the scene that are currently highlighted (and
+ * all of their children!) visible.
+ *
+ * @param scene - the object to traverse
+ */
+Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (scene) {
+    var this$1 = this;
 
-  /**
-   * Render the highlights for all objects that are currently highlighted.
-   *
-   * This method should be executed after clearing the renderer and
-   * rendering the regular scene.
-   *
-   * @param scene - the current scene, which should contain the highlighted objects (among others)
-   * @param renderer - the renderer used to render the scene.
-   * @param camera - the scene's camera
-   */
-  renderHighlights(scene, renderer, camera) {
-
-    // Render highlights by making everything but the highlighted
-    // objects invisible...
-    this.makeEverythingInvisible(scene);
-    this.makeHighlightedVisible(scene);
-
-    // Providing a transparent overrideMaterial...
-    var originalOverrideMaterial = scene.overrideMaterial;
-    scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
-        fog : false,
-        opacity : 0.5,
-        transparent : true,
-        depthTest : true,
-        depthWrite : false,
-        polygonOffset : true,
-        polygonOffsetUnits : -1,
-        side : THREE$1.DoubleSide
-    });
-
-    // And then rendering over the regular scene
-    renderer.render(scene, camera);
-
-    // Finally, restore the original overrideMaterial (if any) and
-    // object visibility.
-    scene.overrideMaterial = originalOverrideMaterial;
-    this.restoreVisibility(scene);
-  };
-
-
-  /**
-   * Traverses the given object and makes every object that's a Mesh,
-   * Line or Sprite invisible. Also saves the previous visibility state
-   * so we can restore it later.
-   *
-   * @param scene - the object to traverse
-   */
-  makeEverythingInvisible (scene) {
-    scene.traverse(function(currentObject) {
+  var makeVisible = function(currentObject) {
       if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
            || currentObject instanceof THREE$1.Sprite ) {
-        currentObject.previousVisibility = currentObject.visible;
-        currentObject.visible = false;
+        currentObject.visible = true;
       }
-    });
   };
 
-
-  /**
-   * Make the objects in the scene that are currently highlighted (and
-   * all of their children!) visible.
-   *
-   * @param scene - the object to traverse
-   */
-  makeHighlightedVisible (scene) {
-    var makeVisible = function(currentObject) {
-        if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-             || currentObject instanceof THREE$1.Sprite ) {
-          currentObject.visible = true;
-        }
-    };
-
-    for (var uuid in this.hoverObjs) {
-      var selectedObject = this.hoverObjs[uuid];
-      // Make each selected object and all of its children visible
-      selectedObject.visible = true;
-      selectedObject.traverse(makeVisible);
+  for (var uuid in this$1.hoverObjs) {
+    var selectedObject = this$1.hoverObjs[uuid];
+    // Make each selected object and all of its children visible
+    selectedObject.visible = true;
+    selectedObject.traverse(makeVisible);
+  }
+};
+/**
+ * Restore the old visibility state that was saved by
+ * makeEverythinginvisible.
+ *
+ * @param scene - the object to traverse
+ */
+Highlighter.prototype.restoreVisibility = function restoreVisibility (scene) {
+  scene.traverse(function(currentObject) {
+    if (currentObject.hasOwnProperty('previousVisibility')) {
+      currentObject.visible = currentObject.previousVisibility;
     }
-  };
-
-  /**
-   * Restore the old visibility state that was saved by
-   * makeEverythinginvisible.
-   *
-   * @param scene - the object to traverse
-   */
-  restoreVisibility (scene) {
-    scene.traverse(function(currentObject) {
-      if (currentObject.hasOwnProperty('previousVisibility')) {
-        currentObject.visible = currentObject.previousVisibility;
-      }
-    }.bind(this));
-  };
-}
+  }.bind(this));
+};
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-class MouseHandler extends THREE$1.EventDispatcher {
-
-  /**
-   * A handler for mouse events within a 3D viewer.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *   * renderer - the main renderer
-   *   * camera - the main camera in the scene
-   *   * rootObject - the root object to check for mouse events
-   *   * fallbackTarget - the fallback target, e.g., the camera controls
-   */
-  constructor(options) {
-    super();
+var MouseHandler = (function (superclass) {
+  function MouseHandler(options) {
+    superclass.call(this);
     this.renderer = options.renderer;
     this.camera = options.camera;
     this.rootObject = options.rootObject;
@@ -53869,14 +53663,17 @@ class MouseHandler extends THREE$1.EventDispatcher {
       this.listeners[eventName] = this.processDomEvent.bind(this);
       this.renderer.domElement.addEventListener(eventName, this.listeners[eventName], false);
     }, this);
-  };
+  }
 
+  if ( superclass ) MouseHandler.__proto__ = superclass;
+  MouseHandler.prototype = Object.create( superclass && superclass.prototype );
+  MouseHandler.prototype.constructor = MouseHandler;
   /**
    * Process the particular DOM even that has occurred based on the mouse's position in the scene.
    *
    * @param domEvent - the DOM event to process
    */
-  processDomEvent(domEvent) {
+  MouseHandler.prototype.processDomEvent = function processDomEvent (domEvent) {
     // don't deal with the default handler
     domEvent.preventDefault();
 
@@ -54007,7 +53804,6 @@ class MouseHandler extends THREE$1.EventDispatcher {
     }
     this.lastTarget = target;
   };
-
   /**
    * Notify the listener of the type of event that occurred.
    *
@@ -54016,7 +53812,9 @@ class MouseHandler extends THREE$1.EventDispatcher {
    * @param event3D - the 3D mouse even information
    * @returns if an event was canceled
    */
-  notify(target, type, event3D) {
+  MouseHandler.prototype.notify = function notify (target, type, event3D) {
+    var this$1 = this;
+
     // ensure the type is set
     //
     event3D.type = type;
@@ -54042,7 +53840,7 @@ class MouseHandler extends THREE$1.EventDispatcher {
           && event3D.currentTarget.dispatchEvent instanceof Function) {
         event3D.currentTarget.dispatchEvent(event3D);
         if (event3D.cancelBubble) {
-          this.dispatchEvent(event3D);
+          this$1.dispatchEvent(event3D);
           return 0; // Event Accepted
         }
         else if(event3D.continueBubble) {
@@ -54055,7 +53853,9 @@ class MouseHandler extends THREE$1.EventDispatcher {
 
     return 1; // Event Failed
   };
-}
+
+  return MouseHandler;
+}(THREE$1.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -54064,21 +53864,9 @@ class MouseHandler extends THREE$1.EventDispatcher {
  * @author AlteredQualia - http://alteredqualia.com
  */
 
-class OrbitControls extends THREE$1.EventDispatcher {
-
-  /**
-   * Behaves like THREE.OrbitControls, but uses right-handed coordinates and z as up vector.
-   *
-   * @constructor
-   * @param scene - the global scene to use
-   * @param camera - the camera to use
-   * @param userZoomSpeed (optional) - the speed for zooming
-   * @param userRotateSpeed (optional) - the speed for rotating
-   * @param autoRotate (optional) - if the orbit should auto rotate
-   * @param autoRotate (optional) - the speed for auto rotating
-   */
-  constructor(options) {
-    super();
+var OrbitControls = (function (superclass) {
+  function OrbitControls(options) {
+    superclass.call(this);
     var that = this;
     options = options || {};
     var scene = options.scene;
@@ -54416,12 +54204,15 @@ class OrbitControls extends THREE$1.EventDispatcher {
     // Chrome/Firefox have different events here
     this.addEventListener('mousewheel', onMouseWheel);
     this.addEventListener('DOMMouseScroll', onMouseWheel);
-  };
+  }
 
+  if ( superclass ) OrbitControls.__proto__ = superclass;
+  OrbitControls.prototype = Object.create( superclass && superclass.prototype );
+  OrbitControls.prototype.constructor = OrbitControls;
   /**
    * Display the main axes for 1 second.
    */
-  showAxes() {
+  OrbitControls.prototype.showAxes = function showAxes () {
     var that = this;
 
     this.axes.traverse(function(obj) {
@@ -54437,83 +54228,76 @@ class OrbitControls extends THREE$1.EventDispatcher {
       that.hideTimeout = false;
     }, 1000);
   };
-
   /**
    * Rotate the camera to the left by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  rotateLeft(angle) {
+  OrbitControls.prototype.rotateLeft = function rotateLeft (angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.thetaDelta -= angle;
   };
-
   /**
    * Rotate the camera to the right by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  rotateRight(angle) {
+  OrbitControls.prototype.rotateRight = function rotateRight (angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.thetaDelta += angle;
   };
-
   /**
    * Rotate the camera up by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  rotateUp(angle) {
+  OrbitControls.prototype.rotateUp = function rotateUp (angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.phiDelta -= angle;
   };
-
   /**
    * Rotate the camera down by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  rotateDown(angle) {
+  OrbitControls.prototype.rotateDown = function rotateDown (angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.phiDelta += angle;
   };
-
   /**
    * Zoom in by the given scale.
    *
    * @param zoomScale (optional) - the scale to zoom in by
    */
-  zoomIn(zoomScale) {
+  OrbitControls.prototype.zoomIn = function zoomIn (zoomScale) {
     if (zoomScale === undefined) {
       zoomScale = Math.pow(0.95, this.userZoomSpeed);
     }
     this.scale /= zoomScale;
   };
-
   /**
    * Zoom out by the given scale.
    *
    * @param zoomScale (optional) - the scale to zoom in by
    */
-  zoomOut(zoomScale) {
+  OrbitControls.prototype.zoomOut = function zoomOut (zoomScale) {
     if (zoomScale === undefined) {
       zoomScale = Math.pow(0.95, this.userZoomSpeed);
     }
     this.scale *= zoomScale;
   };
-
   /**
    * Update the camera to the current settings.
    */
-  update() {
+  OrbitControls.prototype.update = function update () {
     // x->y, y->z, z->x
     var position = this.camera.position;
     var offset = position.clone().sub(this.center);
@@ -54563,7 +54347,9 @@ class OrbitControls extends THREE$1.EventDispatcher {
       this.lastPosition.copy(this.camera.position);
     }
   };
-}
+
+  return OrbitControls;
+}(THREE$1.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -54571,168 +54357,145 @@ class OrbitControls extends THREE$1.EventDispatcher {
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  */
 
-class Viewer {
-
-  /**
-   * A Viewer can be used to render an interactive 3D scene to a HTML5 canvas.
-   *
-   * @constructor
-   * @param options - object with following keys:
-   *
-   *  * divID - the ID of the div to place the viewer in
-   *  * width - the initial width, in pixels, of the canvas
-   *  * height - the initial height, in pixels, of the canvas
-   *  * background (optional) - the color to render the background, like '#efefef'
-   *  * alpha (optional) - the alpha of the background
-   *  * antialias (optional) - if antialiasing should be used
-   *  * intensity (optional) - the lighting intensity setting to use
-   *  * cameraPosition (optional) - the starting position of the camera
-   */
-  constructor(options) {
-    options = options || {};
-    var divID = options.divID;
-    var width = options.width;
-    var height = options.height;
-    var background = options.background || '#111111';
-    var antialias = options.antialias;
-    var intensity = options.intensity || 0.66;
-    var near = options.near || 0.01;
-    var far = options.far || 1000;
-    var alpha = options.alpha || 1.0;
-    var cameraPosition = options.cameraPose || {
-      x : 3,
-      y : 3,
-      z : 3
-    };
-    var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
-
-    // create the canvas to render to
-    this.renderer = new THREE$1.WebGLRenderer({
-      antialias : antialias,
-      alpha: true
-    });
-    this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
-    this.renderer.sortObjects = false;
-    this.renderer.setSize(width, height);
-    this.renderer.shadowMap.enabled = false;
-    this.renderer.autoClear = false;
-
-    // create the global scene
-    this.scene = new THREE$1.Scene();
-
-    // create the global camera
-    this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
-    this.camera.position.x = cameraPosition.x;
-    this.camera.position.y = cameraPosition.y;
-    this.camera.position.z = cameraPosition.z;
-    // add controls to the camera
-    this.cameraControls = new OrbitControls({
-      scene : this.scene,
-      camera : this.camera
-    });
-    this.cameraControls.userZoomSpeed = cameraZoomSpeed;
-
-    // lights
-    this.scene.add(new THREE$1.AmbientLight(0x555555));
-    this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
-    this.scene.add(this.directionalLight);
-
-    // propagates mouse events to three.js objects
-    this.selectableObjects = new THREE$1.Object3D();
-    this.scene.add(this.selectableObjects);
-    var mouseHandler = new MouseHandler({
-      renderer : this.renderer,
-      camera : this.camera,
-      rootObject : this.selectableObjects,
-      fallbackTarget : this.cameraControls
-    });
-
-    // highlights the receiver of mouse events
-    this.highlighter = new Highlighter({
-      mouseHandler : mouseHandler
-    });
-
-    this.stopped = true;
-    this.animationRequestId = undefined;
-
-    // add the renderer to the page
-    document.getElementById(divID).appendChild(this.renderer.domElement);
-
-    // begin the render loop
-    this.start();
+var Viewer = function Viewer(options) {
+  options = options || {};
+  var divID = options.divID;
+  var width = options.width;
+  var height = options.height;
+  var background = options.background || '#111111';
+  var antialias = options.antialias;
+  var intensity = options.intensity || 0.66;
+  var near = options.near || 0.01;
+  var far = options.far || 1000;
+  var alpha = options.alpha || 1.0;
+  var cameraPosition = options.cameraPose || {
+    x : 3,
+    y : 3,
+    z : 3
   };
+  var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
 
-  /**
-   *  Start the render loop
-   */
-  start(){
-    this.stopped = false;
-    this.draw();
-  };
+  // create the canvas to render to
+  this.renderer = new THREE$1.WebGLRenderer({
+    antialias : antialias,
+    alpha: true
+  });
+  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
+  this.renderer.sortObjects = false;
+  this.renderer.setSize(width, height);
+  this.renderer.shadowMap.enabled = false;
+  this.renderer.autoClear = false;
 
-  /**
-   * Renders the associated scene to the viewer.
-   */
-  draw(){
-    if(this.stopped){
-      // Do nothing if stopped
-      return;
-    }
+  // create the global scene
+  this.scene = new THREE$1.Scene();
 
-    // update the controls
-    this.cameraControls.update();
+  // create the global camera
+  this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
+  this.camera.position.x = cameraPosition.x;
+  this.camera.position.y = cameraPosition.y;
+  this.camera.position.z = cameraPosition.z;
+  // add controls to the camera
+  this.cameraControls = new OrbitControls({
+    scene : this.scene,
+    camera : this.camera
+  });
+  this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
-    // put light to the top-left of the camera
-    // BUG: position is a read-only property of DirectionalLight,
-    // attempting to assign to it either does nothing or throws an error.
-    //this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-    this.directionalLight.position.normalize();
+  // lights
+  this.scene.add(new THREE$1.AmbientLight(0x555555));
+  this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
+  this.scene.add(this.directionalLight);
 
-    // set the scene
-    this.renderer.clear(true, true, true);
-    this.renderer.render(this.scene, this.camera);
-    this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
+  // propagates mouse events to three.js objects
+  this.selectableObjects = new THREE$1.Object3D();
+  this.scene.add(this.selectableObjects);
+  var mouseHandler = new MouseHandler({
+    renderer : this.renderer,
+    camera : this.camera,
+    rootObject : this.selectableObjects,
+    fallbackTarget : this.cameraControls
+  });
 
-    // draw the frame
-    this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
-  };
+  // highlights the receiver of mouse events
+  this.highlighter = new Highlighter({
+    mouseHandler : mouseHandler
+  });
 
-  /**
-   *  Stop the render loop
-   */
-  stop(){
-    if(!this.stopped){
-      // Stop animation render loop
-      cancelAnimationFrame(this.animationRequestId);
-    }
-    this.stopped = true;
-  };
+  this.stopped = true;
+  this.animationRequestId = undefined;
 
-  /**
-   * Add the given THREE Object3D to the global scene in the viewer.
-   *
-   * @param object - the THREE Object3D to add
-   * @param selectable (optional) - if the object should be added to the selectable list
-   */
-  addObject(object, selectable) {
-    if (selectable) {
-      this.selectableObjects.add(object);
-    } else {
-      this.scene.add(object);
-    }
-  };
+  // add the renderer to the page
+  document.getElementById(divID).appendChild(this.renderer.domElement);
 
-  /**
-   * Resize 3D viewer
-   *
-   * @param width - new width value
-   * @param height - new height value
-   */
-  resize(width, height) {
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
-  };
-}
+  // begin the render loop
+  this.start();
+};
+/**
+ *Start the render loop
+ */
+Viewer.prototype.start = function start (){
+  this.stopped = false;
+  this.draw();
+};
+/**
+ * Renders the associated scene to the viewer.
+ */
+Viewer.prototype.draw = function draw (){
+  if(this.stopped){
+    // Do nothing if stopped
+    return;
+  }
+
+  // update the controls
+  this.cameraControls.update();
+
+  // put light to the top-left of the camera
+  // BUG: position is a read-only property of DirectionalLight,
+  // attempting to assign to it either does nothing or throws an error.
+  //this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+  this.directionalLight.position.normalize();
+
+  // set the scene
+  this.renderer.clear(true, true, true);
+  this.renderer.render(this.scene, this.camera);
+  this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
+
+  // draw the frame
+  this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
+};
+/**
+ *Stop the render loop
+ */
+Viewer.prototype.stop = function stop (){
+  if(!this.stopped){
+    // Stop animation render loop
+    cancelAnimationFrame(this.animationRequestId);
+  }
+  this.stopped = true;
+};
+/**
+ * Add the given THREE Object3D to the global scene in the viewer.
+ *
+ * @param object - the THREE Object3D to add
+ * @param selectable (optional) - if the object should be added to the selectable list
+ */
+Viewer.prototype.addObject = function addObject (object, selectable) {
+  if (selectable) {
+    this.selectableObjects.add(object);
+  } else {
+    this.scene.add(object);
+  }
+};
+/**
+ * Resize 3D viewer
+ *
+ * @param width - new width value
+ * @param height - new height value
+ */
+Viewer.prototype.resize = function resize (width, height) {
+  this.camera.aspect = width / height;
+  this.camera.updateProjectionMatrix();
+  this.renderer.setSize(width, height);
+};
 
 export { REVISION$1 as REVISION, MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Points$1 as Points, PointCloud2, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
