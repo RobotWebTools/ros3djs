@@ -2,8 +2,8 @@ import THREE from '../../shims/three/core.js';
 import EventEmitter2 from 'eventemitter2';
 import * as ROSLIB from 'roslib';
 
-import { Marker } from './Marker'
-import { SceneNode } from '../visualization/SceneNode'
+import { Marker } from './Marker';
+import { SceneNode } from '../visualization/SceneNode';
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
