@@ -2,6 +2,8 @@ const rollup = require('rollup');
 
 // plugin that transpiles output into commonjs format
 const commonjs = require('rollup-plugin-commonjs');
+// plugin that transpiles es6 to es5 for legacy platforms
+const buble = require('rollup-plugin-buble');
 // plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
@@ -10,22 +12,22 @@ const resolve = require('rollup-plugin-node-resolve');
 const uglify = require('rollup-plugin-uglify');
 
 const pkg = require('./package.json');
-const input = 'src/index.js'
+const input = 'src/index.js';
 
 const browserGlobals = {
   roslib: 'ROSLIB',
-}
+};
 
 const moduleGlobals = {
   roslib: 'ROSLIB',
-}
+};
 
 const outputFiles = {
   commonModule: pkg.main,
   esModule: pkg.module,
   browserGlobal: './build/ros3d.js',
   browserGlobalMinified: './build/ros3d.min.js',
-}
+};
 
 export default [
   // build main as a CommonJS module for compatibility
@@ -44,15 +46,8 @@ export default [
     ],
     plugins: [
       resolve({ browser: true }),
-      commonjs({
-        include: [
-          'node_modules/**',
-          'node_modules/roslib/**'
-        ],
-        namedExports: {
-          'node_modules/roslib/src/RosLib.js': ['UrdfModel', 'Ros']
-        }
-      }),
+      commonjs(),
+      buble(),
       filesize(),
     ],
   },
@@ -121,4 +116,4 @@ export default [
       uglify(),
     ],
   },
-]
+];

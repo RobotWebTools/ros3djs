@@ -52687,7 +52687,7 @@ class Odometry extends THREE$1.Object3D {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-let Path$1 = class Path extends THREE$1.Object3D {
+class Path$1 extends THREE$1.Object3D {
 
   /**
    * A Path client that listens to a given topic and displays a line connecting the poses.
@@ -52761,7 +52761,7 @@ let Path$1 = class Path extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-};
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -52925,7 +52925,7 @@ class Polygon extends THREE$1.Object3D {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-let Pose$1 = class Pose extends THREE$1.Object3D {
+class Pose$1 extends THREE$1.Object3D {
 
   /**
    * A PoseStamped client
@@ -53001,7 +53001,7 @@ let Pose$1 = class Pose extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-};
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -53188,7 +53188,7 @@ class PoseWithCovariance extends THREE$1.Object3D {
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-let Points$1 = class Points extends THREE$1.Object3D {
+class Points$1 extends THREE$1.Object3D {
 
   /**
    * A set of points. Used by PointCloud2 and LaserScan.
@@ -53306,7 +53306,7 @@ let Points$1 = class Points extends THREE$1.Object3D {
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
   };
-};
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
