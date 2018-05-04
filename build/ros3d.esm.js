@@ -53073,6 +53073,7 @@ var PoseWithCovariance = (function (superclass) {
 
 var Points$1 = (function (superclass) {
   function Points(options) {
+    superclass.call(this);
     options = options || {};
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -53083,7 +53084,6 @@ var Points$1 = (function (superclass) {
     this.material = options.material || {};
     this.colorsrc = options.colorsrc;
     this.colormap = options.colormap;
-    superclass.call(this);
 
     if(('color' in options) || ('size' in options) || ('texture' in options)) {
         console.warn(
