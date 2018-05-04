@@ -208,7 +208,7 @@ const transpile = {
     // from
     /var ROS3D = ROS3D \|\| \{\n  REVISION \: '0.18.0'\n\};/m,
     // to
-    `export const REVISION = '0.18.0';`,
+    `export var REVISION = '0.18.0';`,
   ],
   // Replace mutations with exported properties
   exportedProperites: (filepath) => [
@@ -216,14 +216,14 @@ const transpile = {
     // ROS3D.MARKER_ARROW = 0;
     /\nROS3D\.(.*)\s+?=\s+?(.*)/g,
     // to:
-    // export const MARKER_ARROW = 0;
+    // export var MARKER_ARROW = 0;
     (match, $1, $2) => {
       const prop = $1
       const rhs = $2
 
       exported.track(filepath, prop)
 
-      return `\nexport const ${prop} = ${rhs}`
+      return `\nexport var ${prop} = ${rhs}`
     },
   ],
   // Remove ROS3D prefix on internal dependencies
