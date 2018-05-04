@@ -25,6 +25,7 @@ export class Points extends THREE.Object3D {
    *  * colormap (optional) - function that turns the colorsrc field value to a color
    */
   constructor(options) {
+    super();
     options = options || {};
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE.Object3D();
@@ -35,7 +36,6 @@ export class Points extends THREE.Object3D {
     this.material = options.material || {};
     this.colorsrc = options.colorsrc;
     this.colormap = options.colormap;
-    super();
 
     if(('color' in options) || ('size' in options) || ('texture' in options)) {
         console.warn(

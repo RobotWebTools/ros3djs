@@ -45047,43 +45047,43 @@ var THREE$1 = Object.assign({}, THREE)
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-const REVISION$1 = '0.18.0';
+var REVISION$1 = '0.18.0';
 
 // Marker types
-const MARKER_ARROW = 0;
-const MARKER_CUBE = 1;
-const MARKER_SPHERE = 2;
-const MARKER_CYLINDER = 3;
-const MARKER_LINE_STRIP = 4;
-const MARKER_LINE_LIST = 5;
-const MARKER_CUBE_LIST = 6;
-const MARKER_SPHERE_LIST = 7;
-const MARKER_POINTS = 8;
-const MARKER_TEXT_VIEW_FACING = 9;
-const MARKER_MESH_RESOURCE = 10;
-const MARKER_TRIANGLE_LIST = 11;
+var MARKER_ARROW = 0;
+var MARKER_CUBE = 1;
+var MARKER_SPHERE = 2;
+var MARKER_CYLINDER = 3;
+var MARKER_LINE_STRIP = 4;
+var MARKER_LINE_LIST = 5;
+var MARKER_CUBE_LIST = 6;
+var MARKER_SPHERE_LIST = 7;
+var MARKER_POINTS = 8;
+var MARKER_TEXT_VIEW_FACING = 9;
+var MARKER_MESH_RESOURCE = 10;
+var MARKER_TRIANGLE_LIST = 11;
 
 // Interactive marker feedback types
-const INTERACTIVE_MARKER_KEEP_ALIVE = 0;
-const INTERACTIVE_MARKER_POSE_UPDATE = 1;
-const INTERACTIVE_MARKER_MENU_SELECT = 2;
-const INTERACTIVE_MARKER_BUTTON_CLICK = 3;
-const INTERACTIVE_MARKER_MOUSE_DOWN = 4;
-const INTERACTIVE_MARKER_MOUSE_UP = 5;
+var INTERACTIVE_MARKER_KEEP_ALIVE = 0;
+var INTERACTIVE_MARKER_POSE_UPDATE = 1;
+var INTERACTIVE_MARKER_MENU_SELECT = 2;
+var INTERACTIVE_MARKER_BUTTON_CLICK = 3;
+var INTERACTIVE_MARKER_MOUSE_DOWN = 4;
+var INTERACTIVE_MARKER_MOUSE_UP = 5;
 
 // Interactive marker control types
-const INTERACTIVE_MARKER_NONE = 0;
-const INTERACTIVE_MARKER_MENU = 1;
-const INTERACTIVE_MARKER_BUTTON = 2;
-const INTERACTIVE_MARKER_MOVE_AXIS = 3;
-const INTERACTIVE_MARKER_MOVE_PLANE = 4;
-const INTERACTIVE_MARKER_ROTATE_AXIS = 5;
-const INTERACTIVE_MARKER_MOVE_ROTATE = 6;
+var INTERACTIVE_MARKER_NONE = 0;
+var INTERACTIVE_MARKER_MENU = 1;
+var INTERACTIVE_MARKER_BUTTON = 2;
+var INTERACTIVE_MARKER_MOVE_AXIS = 3;
+var INTERACTIVE_MARKER_MOVE_PLANE = 4;
+var INTERACTIVE_MARKER_ROTATE_AXIS = 5;
+var INTERACTIVE_MARKER_MOVE_ROTATE = 6;
 
 // Interactive marker rotation behavior
-const INTERACTIVE_MARKER_INHERIT = 0;
-const INTERACTIVE_MARKER_FIXED = 1;
-const INTERACTIVE_MARKER_VIEW_FACING = 2;
+var INTERACTIVE_MARKER_INHERIT = 0;
+var INTERACTIVE_MARKER_FIXED = 1;
+var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
  * Create a THREE material based on the given RGBA values.
@@ -45094,7 +45094,7 @@ const INTERACTIVE_MARKER_VIEW_FACING = 2;
  * @param a - the alpha value
  * @returns the THREE material
  */
-const makeColorMaterial = function(r, g, b, a) {
+var makeColorMaterial = function(r, g, b, a) {
   var color = new THREE$1.Color();
   color.setRGB(r, g, b);
   if (a <= 0.99) {
@@ -45125,7 +45125,7 @@ const makeColorMaterial = function(r, g, b, a) {
  * @param planeNormal - the normal of the plane
  * @returns the intersection point
  */
-const intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
+var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE$1.Vector3();
   var intersectPoint = new THREE$1.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
@@ -45151,7 +45151,7 @@ const intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
  * @param mouseRay - the mouse ray
  * @param the closest point between the two rays
  */
-const findClosestPoint = function(targetRay, mouseRay) {
+var findClosestPoint = function(targetRay, mouseRay) {
   var v13 = new THREE$1.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
@@ -45181,7 +45181,7 @@ const findClosestPoint = function(targetRay, mouseRay) {
  * @param mousePos - the mouse position
  * @returns the closest axis point
  */
-const closestAxisPoint = function(axisRay, camera, mousePos) {
+var closestAxisPoint = function(axisRay, camera, mousePos) {
   // project axis onto screen
   var o = axisRay.origin.clone();
   o.project(camera);
@@ -50286,8 +50286,8 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
   };
 
   updateMatrixWorld (force) {
-    const that = this;
-    const message = this.message;
+    var that = this;
+    var message = this.message;
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
         super.updateMatrixWorld(force);
@@ -50330,7 +50330,7 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
         console.error('Unkown orientation mode: ' + message.orientation_mode);
         break;
     }
-  }
+  };
 }
 
 /**
@@ -53207,6 +53207,7 @@ class Points$1 extends THREE$1.Object3D {
    *  * colormap (optional) - function that turns the colorsrc field value to a color
    */
   constructor(options) {
+    super();
     options = options || {};
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -53217,7 +53218,6 @@ class Points$1 extends THREE$1.Object3D {
     this.material = options.material || {};
     this.colorsrc = options.colorsrc;
     this.colormap = options.colormap;
-    super();
 
     if(('color' in options) || ('size' in options) || ('texture' in options)) {
         console.warn(
