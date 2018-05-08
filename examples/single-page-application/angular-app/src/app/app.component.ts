@@ -10,6 +10,7 @@ import * as ROSLIB from 'roslib';
       <p>Examples:</p>
       <ul>
         <li><a routerLink="examples/markers">Markers</a></li>
+        <li><a routerLink="examples/point-cloud-2">PointCloud2</a></li>
       </ul>
 
       <div id="examples">

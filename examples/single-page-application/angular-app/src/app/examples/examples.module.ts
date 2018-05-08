@@ -3,12 +3,16 @@ import { CommonModule } from '@angular/common';
 
 import { ExamplesRoutingModule } from './examples-routing.module';
 import { MarkersComponent } from './markers.component';
+import { PointCloud2Component } from './point-cloud-2.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    ExamplesRoutingModule
+    ExamplesRoutingModule,
   ],
-  declarations: [MarkersComponent]
+  declarations: [
+    MarkersComponent,
+    PointCloud2Component,
+  ]
 })
 export class ExamplesModule { }
