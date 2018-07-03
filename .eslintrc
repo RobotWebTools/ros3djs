@@ -1,0 +1,40 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "mocha": true
+  },
+  "globals": {
+    "EventEmitter2": true,
+    "THREE": true,
+    "ROS3D": true,
+    "ROSLIB": true,
+    "requestAnimationFrame": true,
+    "cancelAnimationFrame": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    },
+    "ecmaVersion": 5,
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": ["warn", "always"],
+    "curly": "error",
+    "eqeqeq": "error",
+    "wrap-iife": ["error", "any"],
+    "no-use-before-define": "off",
+    "new-cap": "error",
+    "no-caller": "error",
+    "dot-notation": "off",
+    "no-undef": "error",
+    "no-cond-assign": "off",
+    "no-eq-null": "off",
+    "no-proto": "off",
+    "strict": "off",
+    "quotes": ["error", "single"],
+    "linebreak-style": "error"
+  }
+}

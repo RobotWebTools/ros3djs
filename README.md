@@ -94,6 +94,15 @@ Utilizes [mocha](https://mochajs.org/) and [chai](http://chaijs.com/) for in bro
 
 To run tests simply open `tests/index.html` in a web browser
 
+### Examples
+There are a variety of [examples](examples) of the different things that can be done with ros3djs.
+
+There are also some examples of how ros3djs can be used in different environments:
+
+- [Classic html script tag inclusion](examples)
+- [Modular html script tag inclusion](examples/html-import)
+- [Modular import for a Single Page Application](examples/single-page-application)
+
 ### License
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.
 

@@ -20,6 +20,7 @@
  *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
  */
 ROS3D.Odometry = function(options) {
+  THREE.Object3D.call(this);
   this.options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/particlecloud';
@@ -28,7 +29,6 @@ ROS3D.Odometry = function(options) {
   this.length = options.length || 1.0;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.keep = options.keep || 1;
-  THREE.Object3D.call(this);
 
   this.sns = [];
 

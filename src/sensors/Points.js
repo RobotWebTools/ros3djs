@@ -19,6 +19,7 @@
  *  * colormap (optional) - function that turns the colorsrc field value to a color
  */
 ROS3D.Points = function(options) {
+  THREE.Object3D.call(this);
   options = options || {};
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -29,7 +30,6 @@ ROS3D.Points = function(options) {
   this.material = options.material || {};
   this.colorsrc = options.colorsrc;
   this.colormap = options.colormap;
-  THREE.Object3D.call(this);
 
   if(('color' in options) || ('size' in options) || ('texture' in options)) {
       console.warn(
@@ -42,6 +42,8 @@ ROS3D.Points = function(options) {
   this.sn = null;
   this.buffer = null;
 };
+
+ROS3D.Points.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Points.prototype.setup = function(frame, point_step, fields)
 {
@@ -90,7 +92,7 @@ ROS3D.Points.prototype.setup = function(frame, point_step, fields)
             if(this.colors && this.material.vertexColors === undefined) {
                 this.material.vertexColors = THREE.VertexColors;
             }
-            this.material = new THREE.PointsMaterial(this.material);      
+            this.material = new THREE.PointsMaterial(this.material);
         }
 
         this.object = new THREE.Points( this.geom, this.material );

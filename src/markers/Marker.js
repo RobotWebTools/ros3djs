@@ -13,6 +13,8 @@
  *   * message - the marker message
  */
 ROS3D.Marker = function(options) {
+  THREE.Object3D.call(this);
+
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
@@ -22,8 +24,6 @@ ROS3D.Marker = function(options) {
     path += '/';
   }
 
-  THREE.Object3D.call(this);
-  
   if(message.scale) {
     this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
   }
@@ -161,13 +161,13 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_CUBE_LIST:
       // holds the main object
       var object = new THREE.Object3D();
-      
+
       // check if custom colors should be used
       var numPoints = message.points.length;
       var createColors = (numPoints === message.colors.length);
       // do not render giant lists
       var stepSize = Math.ceil(numPoints / 1250);
-        
+
       // add the points
       var p, cube, curColor, newMesh;
       for (p = 0; p < numPoints; p+=stepSize) {
@@ -192,25 +192,25 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_SPHERE_LIST:
       // holds the main object
       var sphereObject = new THREE.Object3D();
-      
+
       // check if custom colors should be used
       var numSpherePoints = message.points.length;
       var createSphereColors = (numSpherePoints === message.colors.length);
       // do not render giant lists
       var sphereStepSize = Math.ceil(numSpherePoints / 1250);
-        
+
       // add the points
       var q, sphere, curSphereColor, newSphereMesh;
       for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
         sphere = new THREE.SphereGeometry(0.5, 8, 8);
-        
+
         // check the color
         if(createSphereColors) {
           curSphereColor = ROS3D.makeColorMaterial(message.colors[q].r, message.colors[q].g, message.colors[q].b, message.colors[q].a);
         } else {
           curSphereColor = colorMaterial;
         }
-        
+
         newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
         newSphereMesh.scale.x = message.scale.x;
         newSphereMesh.scale.y = message.scale.y;
@@ -359,7 +359,7 @@ ROS3D.Marker.prototype.setPose = function(pose) {
 ROS3D.Marker.prototype.update = function(message) {
   // set the pose and get the color
   this.setPose(message.pose);
-  
+
   // Update color
   if(message.color.r !== this.msgColor.r ||
      message.color.g !== this.msgColor.g ||
@@ -369,7 +369,7 @@ ROS3D.Marker.prototype.update = function(message) {
       var colorMaterial = ROS3D.makeColorMaterial(
           message.color.r, message.color.g,
           message.color.b, message.color.a);
-  
+
       switch (message.type) {
       case ROS3D.MARKER_LINE_STRIP:
       case ROS3D.MARKER_LINE_LIST:
@@ -406,17 +406,17 @@ ROS3D.Marker.prototype.update = function(message) {
       default:
           return false;
       }
-      
+
       this.msgColor = message.color;
   }
-  
+
   // Update geometry
   var scaleChanged =
         Math.abs(this.msgScale[0] - message.scale.x) > 1.0e-6 ||
         Math.abs(this.msgScale[1] - message.scale.y) > 1.0e-6 ||
         Math.abs(this.msgScale[2] - message.scale.z) > 1.0e-6;
   this.msgScale = [message.scale.x, message.scale.y, message.scale.z];
-  
+
   switch (message.type) {
     case ROS3D.MARKER_CUBE:
     case ROS3D.MARKER_SPHERE:
@@ -451,7 +451,7 @@ ROS3D.Marker.prototype.update = function(message) {
     default:
         break;
   }
-  
+
   return true;
 };
 

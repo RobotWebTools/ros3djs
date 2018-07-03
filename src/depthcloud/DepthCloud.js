@@ -19,8 +19,8 @@
  *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
  */
 ROS3D.DepthCloud = function(options) {
-  options = options || {};
   THREE.Object3D.call(this);
+  options = options || {};
 
   this.url = options.url;
   this.streamType = options.streamType || 'vp8';

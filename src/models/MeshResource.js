@@ -16,6 +16,7 @@
  *  * warnings (optional) - if warnings should be printed
  */
 ROS3D.MeshResource = function(options) {
+  THREE.Object3D.call(this);
   var that = this;
   options = options || {};
   var path = options.path || '/';
@@ -23,7 +24,6 @@ ROS3D.MeshResource = function(options) {
   var material = options.material || null;
   this.warnings = options.warnings;
 
-  THREE.Object3D.call(this);
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
