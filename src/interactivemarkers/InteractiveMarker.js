@@ -87,19 +87,6 @@ ROS3D.InteractiveMarker.prototype.showMenu = function(control, event) {
  */
 ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d) {
   if (this.dragging) {
-    if(control.is3d && control.isShift){
-      // this doesn't work
-      // // use the camera position and the marker position to determine the axis
-      // var newAxis = control.camera.position.clone();
-      // newAxis.sub(this.position);
-      // // now mimic same steps constructor uses to create origAxis
-      // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
-      //     newAxis.z, 1);
-      // controlOri.normalize();
-      // var controlAxis = new THREE.Vector3(1, 0, 0);
-      // controlAxis.applyQuaternion(controlOri);
-      // origAxis = controlAxis;
-    }
     var currentControlOri = control.currentControlOri;
     var axis = origAxis.clone().applyQuaternion(currentControlOri);
     // get move axis in world coords
@@ -122,6 +109,54 @@ ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d
   }
 };
 
+
+/**
+ * Move with respect to the plane based on the contorl and event.
+ *
+ * @param control - the control to use
+ * @param origNormal - the normal of the origin
+ * @param event3d - the event that caused this
+ */
+ROS3D.InteractiveMarker.prototype.move3d = function(control, origNormal, event3d) {
+  // by default, move in a plane
+  if (this.dragging) {
+
+    if(control.isShift){
+      // this doesn't work
+      // // use the camera position and the marker position to determine the axis
+      // var newAxis = control.camera.position.clone();
+      // newAxis.sub(this.position);
+      // // now mimic same steps constructor uses to create origAxis
+      // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
+      //     newAxis.z, 1);
+      // controlOri.normalize();
+      // var controlAxis = new THREE.Vector3(1, 0, 0);
+      // controlAxis.applyQuaternion(controlOri);
+      // origAxis = controlAxis;
+    }else{
+      // we want to use the origin plane that is closest to the camera
+      var cameraVector = control.camera.getWorldDirection();
+      var x = Math.abs(cameraVector.x);
+      var y = Math.abs(cameraVector.y);
+      var z = Math.abs(cameraVector.z);
+      var controlOri = new THREE.Quaternion(1, 0, 0, 1);
+      if(y > x && y > z){
+        // orientation for the control
+        controlOri = new THREE.Quaternion(0, 0, 1, 1);
+      }else if(z > x && z > y){
+        // orientation for the control
+        controlOri = new THREE.Quaternion(0, 1, 0, 1)
+      }
+      controlOri.normalize();
+
+      // transform x axis into local frame
+      origNormal = new THREE.Vector3(1, 0, 0);
+      origNormal.applyQuaternion(controlOri);
+      this.movePlane(control, origNormal, event3d);
+    }
+  }
+}
+
 /**
  * Move with respect to the plane based on the contorl and event.
  *
@@ -131,26 +166,6 @@ ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d
  */
 ROS3D.InteractiveMarker.prototype.movePlane = function(control, origNormal, event3d) {
   if (this.dragging) {
-    if(control.is3d){
-      // we want to use the origin plane that is closest to the camera
-      var cameraVector = control.camera.getWorldDirection();
-      var x = Math.abs(cameraVector.x);
-      var y = Math.abs(cameraVector.y);
-      var z = Math.abs(cameraVector.z);
-      var controlOri = new THREE.Quaternion(1, 0, 0, 1);
-      if(y > x && y > z){
-         // orientation for the control
-         controlOri = new THREE.Quaternion(0, 0, 1, 1);
-      }else if(z > x && z > y){
-         // orientation for the control
-         controlOri = new THREE.Quaternion(0, 1, 0, 1)
-      }
-      controlOri.normalize();
-
-      // transform x axis into local frame
-      origNormal = new THREE.Vector3(1, 0, 0);
-      origNormal.applyQuaternion(controlOri);
-    } 
     var currentControlOri = control.currentControlOri;
     var normal = origNormal.clone().applyQuaternion(currentControlOri);
     // get plane params in world coords

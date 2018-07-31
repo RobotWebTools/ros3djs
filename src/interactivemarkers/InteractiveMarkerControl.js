@@ -29,7 +29,6 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.loader = options.loader;
   this.dragging = false;
   this.startMousePos = new THREE.Vector2();
-  this.is3d = false;
   this.isShift = false;
 
 
@@ -48,11 +47,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   switch (message.interaction_mode) {
     case ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE_3D:
     case ROS3D.INTERACTIVE_MARKER_MOVE_3D:
-      this.is3d = true;
-      this.addEventListener('mousemove', this.parent.movePlane.bind(this.parent, this, controlAxis));
-      // this uses is3d and isShift
-      //this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
-      // todo: add rototate too
+      this.addEventListener('mousemove', this.parent.move3d.bind(this.parent, this, controlAxis));
     case ROS3D.INTERACTIVE_MARKER_MOVE_AXIS:
       this.addEventListener('mousemove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
       this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
