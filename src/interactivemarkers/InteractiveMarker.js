@@ -145,7 +145,7 @@ ROS3D.InteractiveMarker.prototype.move3d = function(control, origNormal, event3d
         controlOri = new THREE.Quaternion(0, 0, 1, 1);
       }else if(z > x && z > y){
         // orientation for the control
-        controlOri = new THREE.Quaternion(0, 1, 0, 1)
+        controlOri = new THREE.Quaternion(0, 1, 0, 1);
       }
       controlOri.normalize();
 
@@ -155,7 +155,7 @@ ROS3D.InteractiveMarker.prototype.move3d = function(control, origNormal, event3d
       this.movePlane(control, origNormal, event3d);
     }
   }
-}
+};
 
 /**
  * Move with respect to the plane based on the contorl and event.

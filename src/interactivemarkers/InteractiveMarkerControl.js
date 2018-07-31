@@ -119,13 +119,13 @@ ROS3D.InteractiveMarkerControl = function(options) {
       }
     });
 
-    window.addEventListener("keydown", function(event){
-      if(event.keyCode == 16){
+    window.addEventListener('keydown', function(event){
+      if(event.keyCode === 16){
         that.isShift = true;
       }
     });
-    window.addEventListener("keyup", function(event){
-      if(event.keyCode == 16){
+    window.addEventListener('keyup', function(event){
+      if(event.keyCode === 16){
         that.isShift = false;
       }
     });
