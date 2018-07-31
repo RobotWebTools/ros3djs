@@ -29,6 +29,9 @@ ROS3D.InteractiveMarkerControl = function(options) {
   this.loader = options.loader;
   this.dragging = false;
   this.startMousePos = new THREE.Vector2();
+  this.is3d = false;
+  this.isShift = false;
+
 
   // orientation for the control
   var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
@@ -43,6 +46,13 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
   // determine mouse interaction
   switch (message.interaction_mode) {
+    case ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE_3D:
+    case ROS3D.INTERACTIVE_MARKER_MOVE_3D:
+      this.is3d = true;
+      this.addEventListener('mousemove', this.parent.movePlane.bind(this.parent, this, controlAxis));
+      // this uses is3d and isShift
+      //this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
+      // todo: add rototate too
     case ROS3D.INTERACTIVE_MARKER_MOVE_AXIS:
       this.addEventListener('mousemove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
       this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
@@ -111,6 +121,17 @@ ROS3D.InteractiveMarkerControl = function(options) {
         that.dispatchEvent(event3d);
         event3d.type = 'click';
         that.dispatchEvent(event3d);
+      }
+    });
+
+    window.addEventListener("keydown", function(event){
+      if(event.keyCode == 16){
+        that.isShift = true;
+      }
+    });
+    window.addEventListener("keyup", function(event){
+      if(event.keyCode == 16){
+        that.isShift = false;
       }
     });
   }
