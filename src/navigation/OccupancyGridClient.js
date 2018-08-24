@@ -22,6 +22,7 @@
  *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGridClient = function(options) {
+  EventEmitter2.call(this);
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/map';

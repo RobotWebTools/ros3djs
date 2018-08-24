@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="https://static.robotwebtools.org/threejs/current/three.js"></script>
+<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
+<script src="../build/ros3d.js"></script>
+
+<script>
+  /**
+   * Setup all visualization elements when the page is loaded.
+   */
+  function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'viewer',
+      width : 800,
+      height : 600,
+      antialias : true
+    });
+
+    // Zoom out the camera to see the trajectory
+    viewer.cameraControls.zoomOut(20);
+
+    // Place the cartesian origin near the gps fixes of the kitti rosbag
+    var lon0 =  8.4320 * Math.PI/180;
+    var lat0 = 49.0145 * Math.PI/180;
+    var alt0 = 116;
+
+    // Earth radius for the LLA -> ENU approximate conversion (no earth flattening)
+    var radius = 6378137;
+
+    // This object will be translated to the gps position
+    var geom = new THREE.SphereGeometry( 0.5, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var object3d = new THREE.Mesh(geom, material);
+
+    // This function converts the longitude/latitude/altitude of the gps fix
+    // to the cartesian frame of its rootObject
+    function convert(lon,lat,alt){
+        lon = lon * Math.PI/180;
+        lat = lat * Math.PI/180;
+        return new THREE.Vector3(
+            (lon-lon0) * radius * Math.cos(lat),
+            (lat-lat0) * radius,
+            (alt-alt0)
+        );
+    }
+
+    var navsatfix = new ROS3D.NavSatFix({
+        ros: ros,
+        topic: '/kitti/oxts/gps/fix',
+        rootObject: viewer.scene,
+        object3d: object3d,
+        convert: convert,
+        material: { color: 0x00ffff, linewidth: 2 },
+        keep: 50,
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1><a href="http://www.cvlibs.net/datasets/kitti">Kitti</a> NavSatFix Example</h1>
+  <p>Run the following commands in the terminal then refresh the page.</p>
+  <ol>
+    <li><tt>roslaunch ros3djs.launch</tt></li>
+    <li><tt>rosparam set use_sim_time true</tt></li>
+    <li><tt>rosbag play -l --clock <a href="https://github.com/tomas789/kitti2bag">kitti_2011_09_26_drive_0002_synced.bag</a></tt></li>
+  </ol>
+  <div id="viewer"></div>
+</body>
+</html>
