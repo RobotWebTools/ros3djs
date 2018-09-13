@@ -21,15 +21,10 @@ ROS3D.OccupancyGrid = function(options) {
   // create the geometry
   var width = message.info.width;
   var height = message.info.height;
-  var geom = new THREE.PlaneGeometry(width, height);
+  var geom = new THREE.PlaneBufferGeometry(width, height);
 
-  // internal drawing canvas
-  var canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  var context = canvas.getContext('2d');
   // create the color material
-  var imageData = context.createImageData(width, height);
+  var imageData = new Uint8Array(width * height * 3);
   for ( var row = 0; row < height; row++) {
     for ( var col = 0; col < width; col++) {
       // determine the index into the map data
@@ -46,20 +41,20 @@ ROS3D.OccupancyGrid = function(options) {
       }
 
       // determine the index into the image data array
-      var i = (col + (row * width)) * 4;
+      var i = (col + (row * width)) * 3;
       // r
-      imageData.data[i] = (val * color.r) / 255;
+      imageData[i] = (val * color.r) / 255;
       // g
-      imageData.data[++i] = (val * color.g) / 255;
+      imageData[++i] = (val * color.g) / 255;
       // b
-      imageData.data[++i] = (val * color.b) / 255;
-      // a
-      imageData.data[++i] = 255;
+      imageData[++i] = (val * color.b) / 255;
     }
   }
-  context.putImageData(imageData, 0, 0);
 
-  var texture = new THREE.Texture(canvas);
+  var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBFormat);
+  texture.flipY = true;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
 
   var material = new THREE.MeshBasicMaterial({
