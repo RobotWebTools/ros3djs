@@ -77,7 +77,7 @@ ROS3D.OccupancyGrid = function(options) {
       message.info.origin.orientation.y,
       message.info.origin.orientation.z,
       message.info.origin.orientation.w
-  );
+  ));
   this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
   this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
   this.position.z = message.info.origin.position.z;
