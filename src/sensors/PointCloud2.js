@@ -80,7 +80,8 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : this.topicName,
-    messageType : 'sensor_msgs/PointCloud2'
+    messageType : 'sensor_msgs/PointCloud2',
+    compression: 'cbor'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
