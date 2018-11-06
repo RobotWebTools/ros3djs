@@ -94,7 +94,7 @@ ROS3D.PointCloud2.prototype.processMessage = function(msg){
   var n, pointRatio = this.points.pointRatio;
 
   if (msg.data.buffer) {
-    this.points.buffer = msg.data.buffer;
+    this.points.buffer.set(msg.data);
     n = msg.height*msg.width / pointRatio;
   } else {
     n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
