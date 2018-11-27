@@ -48,6 +48,7 @@ for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
  *  * ros - the ROSLIB.Ros connection handle
  *  * topic - the marker topic to listen to (default: '/points')
  *  * tfClient - the TF client handle to use
+ *  * compression (optional) - message compression (default: 'cbor')
  *  * rootObject (optional) - the root object to add this marker to use for the points.
  *  * max_pts (optional) - number of points to draw (default: 10000)
  *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
@@ -60,6 +61,7 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
+  this.compression = options.compression || 'cbor';
   this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
   this.subscribe();
@@ -81,7 +83,7 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     messageType : 'sensor_msgs/PointCloud2',
-    compression: 'cbor'
+    compression: this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
