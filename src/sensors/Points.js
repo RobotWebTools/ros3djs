@@ -40,7 +40,6 @@ ROS3D.Points = function(options) {
   }
 
   this.sn = null;
-  this.buffer = null;
 };
 
 ROS3D.Points.prototype.__proto__ = THREE.Object3D.prototype;
@@ -48,10 +47,6 @@ ROS3D.Points.prototype.__proto__ = THREE.Object3D.prototype;
 ROS3D.Points.prototype.setup = function(frame, point_step, fields)
 {
     if(this.sn===null){
-        // scratch space to decode base64 buffers
-        if(point_step) {
-            this.buffer = new Uint8Array( this.max_pts * point_step );
-        }
         // turn fields to a map
         fields = fields || [];
         this.fields = {};
