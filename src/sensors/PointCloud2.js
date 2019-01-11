@@ -100,7 +100,7 @@ ROS3D.PointCloud2.prototype.processMessage = function(msg){
 
   if (msg.data.buffer) {
     this.buffer = msg.data.slice(0, Math.min(msg.data.byteLength, bufSz));
-    n = msg.height*msg.width / pointRatio;
+     n = Math.min(msg.height*msg.width / pointRatio, this.points.positions.array.length / 3);
   } else {
     if (!this.buffer || this.buffer.byteLength < bufSz) {
       this.buffer = new Uint8Array(bufSz);
