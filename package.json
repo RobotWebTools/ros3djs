@@ -7,7 +7,7 @@
   "main": "./build/ros3d.cjs.js",
   "module": "./build/ros3d.esm.js",
   "dependencies": {
-    "eventemitter2": "~2.2.0",
+    "eventemitter2": "^4.1.0",
     "roslib": ">=0.14.0",
     "three": "^0.88.0"
   },
