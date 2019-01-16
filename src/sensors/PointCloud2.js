@@ -62,8 +62,10 @@ ROS3D.PointCloud2 = function(options) {
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
   this.compression = options.compression || 'cbor';
+  this.max_pts = options.max_pts || 10000;
   this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
+  this.buffer = null;
   this.subscribe();
 };
 ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
@@ -94,16 +96,20 @@ ROS3D.PointCloud2.prototype.processMessage = function(msg){
   }
 
   var n, pointRatio = this.points.pointRatio;
+  var bufSz = this.max_pts * msg.point_step;
 
   if (msg.data.buffer) {
-    this.points.buffer.set(msg.data);
-    n = msg.height*msg.width / pointRatio;
+    this.buffer = msg.data.slice(0, Math.min(msg.data.byteLength, bufSz));
+     n = Math.min(msg.height*msg.width / pointRatio, this.points.positions.array.length / 3);
   } else {
-    n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
+    if (!this.buffer || this.buffer.byteLength < bufSz) {
+      this.buffer = new Uint8Array(bufSz);
+    }
+    n = decode64(msg.data, this.buffer, msg.point_step, pointRatio);
     pointRatio = 1;
   }
 
-  var dv = new DataView(this.points.buffer.buffer);
+  var dv = new DataView(this.buffer.buffer);
   var littleEndian = !msg.is_bigendian;
   var x = this.points.fields.x.offset;
   var y = this.points.fields.y.offset;
