@@ -1,5 +1,21 @@
 ## Change Log
 
+### 1.0.0 (2019/01/16 14:48 +00:00)
+- [#245](https://github.com/RobotWebTools/ros3djs/pull/245) Update and normalize EventEmitter2 dependency (@mvollrath)
+- [#244](https://github.com/RobotWebTools/ros3djs/pull/244) Fix PointCloud2 buffers (@mvollrath)
+- [#239](https://github.com/RobotWebTools/ros3djs/pull/239) Use CBOR compression for PointCloud2 (@mvollrath)
+- [#238](https://github.com/RobotWebTools/ros3djs/pull/238) Add quaternion copy method call to avoid read-only exception (@epaezrubio)
+- [#235](https://github.com/RobotWebTools/ros3djs/pull/235) Use DataTexture for OccupancyGrid (@mvollrath)
+- [#232](https://github.com/RobotWebTools/ros3djs/pull/232) add initial support for 3d markers with plane movement (@duwke)
+- [#229](https://github.com/RobotWebTools/ros3djs/pull/229) Adding an ES6 only branch (@keego)
+- [#223](https://github.com/RobotWebTools/ros3djs/pull/223) fix: pointRatio option in PointCloud2 and LaserScan (@mbredif)
+- [#221](https://github.com/RobotWebTools/ros3djs/pull/221) NavSatFix support (@mbredif)
+- [#219](https://github.com/RobotWebTools/ros3djs/pull/219) NavSatFix support (@mbredif)
+- [#218](https://github.com/RobotWebTools/ros3djs/pull/218) PointCloud2 and LaserScan (@mbredif)
+- [#214](https://github.com/RobotWebTools/ros3djs/pull/214) Add ES6 module support (@keego)
+- [#210](https://github.com/RobotWebTools/ros3djs/pull/210) add error reporting to MeshResource (@T045T)
+- [#206](https://github.com/RobotWebTools/ros3djs/pull/206) Fix links in example and readme (@jihoonl)
+
 ### 0.18.0 (2018/01/04 16:00 +00:00)
 - [#203](https://github.com/RobotWebTools/ros3djs/pull/203) fix highlighting with Three.js r88 (@T045T)
 - [#202](https://github.com/RobotWebTools/ros3djs/pull/202) Update coadebase to use Three.js version r88 (@jihoonl)
