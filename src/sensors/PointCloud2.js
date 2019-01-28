@@ -48,6 +48,7 @@ for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
  *  * ros - the ROSLIB.Ros connection handle
  *  * topic - the marker topic to listen to (default: '/points')
  *  * tfClient - the TF client handle to use
+ *  * compression (optional) - message compression (default: 'cbor')
  *  * rootObject (optional) - the root object to add this marker to use for the points.
  *  * max_pts (optional) - number of points to draw (default: 10000)
  *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
@@ -60,8 +61,11 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
+  this.compression = options.compression || 'cbor';
+  this.max_pts = options.max_pts || 10000;
   this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
+  this.buffer = null;
   this.subscribe();
 };
 ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
@@ -80,7 +84,8 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : this.topicName,
-    messageType : 'sensor_msgs/PointCloud2'
+    messageType : 'sensor_msgs/PointCloud2',
+    compression: this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
@@ -91,16 +96,20 @@ ROS3D.PointCloud2.prototype.processMessage = function(msg){
   }
 
   var n, pointRatio = this.points.pointRatio;
+  var bufSz = this.max_pts * msg.point_step;
 
   if (msg.data.buffer) {
-    this.points.buffer = msg.data.buffer;
-    n = msg.height*msg.width / pointRatio;
+    this.buffer = msg.data.slice(0, Math.min(msg.data.byteLength, bufSz));
+     n = Math.min(msg.height*msg.width / pointRatio, this.points.positions.array.length / 3);
   } else {
-    n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
+    if (!this.buffer || this.buffer.byteLength < bufSz) {
+      this.buffer = new Uint8Array(bufSz);
+    }
+    n = decode64(msg.data, this.buffer, msg.point_step, pointRatio);
     pointRatio = 1;
   }
 
-  var dv = new DataView(this.points.buffer.buffer);
+  var dv = new DataView(this.buffer.buffer);
   var littleEndian = !msg.is_bigendian;
   var x = this.points.fields.x.offset;
   var y = this.points.fields.y.offset;
