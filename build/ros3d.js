@@ -35939,7 +35939,7 @@ function EllipseCurve( aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockw
 	this.xRadius = xRadius || 1;
 	this.yRadius = yRadius || 1;
 
-	this.aStartAngle = aStartAngle || 0;
+	this.aStartAngle = aStartAngle || 0;
 	this.aEndAngle = aEndAngle || 2 * Math.PI;
 
 	this.aClockwise = aClockwise || false;
@@ -45042,13 +45042,6 @@ var THREE = Object.freeze({
 
 var THREE$1 = Object.assign({}, THREE)
 
-/**
- * @author Russell Toris - rctoris@wpi.edu
- * @author David Gossow - dgossow@willowgarage.com
- */
-
-var REVISION$1 = '0.18.0';
-
 // Marker types
 var MARKER_ARROW = 0;
 var MARKER_CUBE = 1;
@@ -45079,6 +45072,9 @@ var INTERACTIVE_MARKER_MOVE_AXIS = 3;
 var INTERACTIVE_MARKER_MOVE_PLANE = 4;
 var INTERACTIVE_MARKER_ROTATE_AXIS = 5;
 var INTERACTIVE_MARKER_MOVE_ROTATE = 6;
+var INTERACTIVE_MARKER_MOVE_3D = 7;
+var INTERACTIVE_MARKER_ROTATE_3D = 8;
+var INTERACTIVE_MARKER_MOVE_ROTATE_3D = 9;
 
 // Interactive marker rotation behavior
 var INTERACTIVE_MARKER_INHERIT = 0;
@@ -50112,6 +50108,8 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
     this.loader = options.loader;
     this.dragging = false;
     this.startMousePos = new THREE$1.Vector2();
+    this.isShift = false;
+
 
     // orientation for the control
     var controlOri = new THREE$1.Quaternion(message.orientation.x, message.orientation.y,
@@ -50126,6 +50124,9 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
 
     // determine mouse interaction
     switch (message.interaction_mode) {
+      case INTERACTIVE_MARKER_MOVE_ROTATE_3D:
+      case INTERACTIVE_MARKER_MOVE_3D:
+        this.addEventListener('mousemove', this.parent.move3d.bind(this.parent, this, controlAxis));
       case INTERACTIVE_MARKER_MOVE_AXIS:
         this.addEventListener('mousemove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
         this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
@@ -50194,6 +50195,17 @@ class InteractiveMarkerControl extends THREE$1.Object3D {
           that.dispatchEvent(event3d);
           event3d.type = 'click';
           that.dispatchEvent(event3d);
+        }
+      });
+
+      window.addEventListener('keydown', function(event){
+        if(event.keyCode === 16){
+          that.isShift = true;
+        }
+      });
+      window.addEventListener('keyup', function(event){
+        if(event.keyCode === 16){
+          that.isShift = false;
         }
       });
     }
@@ -50628,6 +50640,54 @@ class InteractiveMarker extends THREE$1.Object3D {
     }
   };
 
+
+  /**
+   * Move with respect to the plane based on the contorl and event.
+   *
+   * @param control - the control to use
+   * @param origNormal - the normal of the origin
+   * @param event3d - the event that caused this
+   */
+  move3d(control, origNormal, event3d) {
+    // by default, move in a plane
+    if (this.dragging) {
+
+      if(control.isShift){
+        // this doesn't work
+        // // use the camera position and the marker position to determine the axis
+        // var newAxis = control.camera.position.clone();
+        // newAxis.sub(this.position);
+        // // now mimic same steps constructor uses to create origAxis
+        // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
+        //     newAxis.z, 1);
+        // controlOri.normalize();
+        // var controlAxis = new THREE.Vector3(1, 0, 0);
+        // controlAxis.applyQuaternion(controlOri);
+        // origAxis = controlAxis;
+      }else{
+        // we want to use the origin plane that is closest to the camera
+        var cameraVector = control.camera.getWorldDirection();
+        var x = Math.abs(cameraVector.x);
+        var y = Math.abs(cameraVector.y);
+        var z = Math.abs(cameraVector.z);
+        var controlOri = new THREE$1.Quaternion(1, 0, 0, 1);
+        if(y > x && y > z){
+          // orientation for the control
+          controlOri = new THREE$1.Quaternion(0, 0, 1, 1);
+        }else if(z > x && z > y){
+          // orientation for the control
+          controlOri = new THREE$1.Quaternion(0, 1, 0, 1);
+        }
+        controlOri.normalize();
+
+        // transform x axis into local frame
+        origNormal = new THREE$1.Vector3(1, 0, 0);
+        origNormal.applyQuaternion(controlOri);
+        this.movePlane(control, origNormal, event3d);
+      }
+    }
+  };
+
   /**
    * Move with respect to the plane based on the contorl and event.
    *
@@ -50857,7 +50917,8 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       this._conf = conf;
 
       conf.delimiter && (this.delimiter = conf.delimiter);
-      this._events.maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
+      this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
+
       conf.wildcard && (this.wildcard = conf.wildcard);
       conf.newListener && (this.newListener = conf.newListener);
       conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
@@ -50866,24 +50927,31 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         this.listenerTree = {};
       }
     } else {
-      this._events.maxListeners = defaultMaxListeners;
+      this._maxListeners = defaultMaxListeners;
     }
   }
 
   function logPossibleMemoryLeak(count, eventName) {
     var errorMsg = '(node) warning: possible EventEmitter memory ' +
-        'leak detected. %d listeners added. ' +
+        'leak detected. ' + count + ' listeners added. ' +
         'Use emitter.setMaxListeners() to increase limit.';
 
     if(this.verboseMemoryLeak){
-      errorMsg += ' Event name: %s.';
-      console.error(errorMsg, count, eventName);
-    } else {
-      console.error(errorMsg, count);
+      errorMsg += ' Event name: ' + eventName + '.';
     }
 
-    if (console.trace){
-      console.trace();
+    if(typeof process !== 'undefined' && process.emitWarning){
+      var e = new Error(errorMsg);
+      e.name = 'MaxListenersExceededWarning';
+      e.emitter = this;
+      e.count = count;
+      process.emitWarning(e);
+    } else {
+      console.error(errorMsg);
+
+      if (console.trace){
+        console.trace();
+      }
     }
   }
 
@@ -51044,8 +51112,8 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
           if (
             !tree._listeners.warned &&
-            this._events.maxListeners > 0 &&
-            tree._listeners.length > this._events.maxListeners
+            this._maxListeners > 0 &&
+            tree._listeners.length > this._maxListeners
           ) {
             tree._listeners.warned = true;
             logPossibleMemoryLeak.call(this, tree._listeners.length, name);
@@ -51069,8 +51137,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
   EventEmitter.prototype.setMaxListeners = function(n) {
     if (n !== undefined) {
-      this._events || init.call(this);
-      this._events.maxListeners = n;
+      this._maxListeners = n;
       if (!this._conf) this._conf = {};
       this._conf.maxListeners = n;
     }
@@ -51078,12 +51145,29 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
   EventEmitter.prototype.event = '';
 
+
   EventEmitter.prototype.once = function(event, fn) {
-    this.many(event, 1, fn);
+    return this._once(event, fn, false);
+  };
+
+  EventEmitter.prototype.prependOnceListener = function(event, fn) {
+    return this._once(event, fn, true);
+  };
+
+  EventEmitter.prototype._once = function(event, fn, prepend) {
+    this._many(event, 1, fn, prepend);
     return this;
   };
 
   EventEmitter.prototype.many = function(event, ttl, fn) {
+    return this._many(event, ttl, fn, false);
+  };
+
+  EventEmitter.prototype.prependMany = function(event, ttl, fn) {
+    return this._many(event, ttl, fn, true);
+  };
+
+  EventEmitter.prototype._many = function(event, ttl, fn, prepend) {
     var self = this;
 
     if (typeof fn !== 'function') {
@@ -51094,12 +51178,12 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       if (--ttl === 0) {
         self.off(event, listener);
       }
-      fn.apply(this, arguments);
+      return fn.apply(this, arguments);
     }
 
     listener._origin = fn;
 
-    this.on(event, listener);
+    this._on(event, listener, prepend);
 
     return self;
   };
@@ -51275,6 +51359,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         promises.push(handler.apply(this, args));
       }
     } else if (handler && handler.length) {
+      handler = handler.slice();
       if (al > 3) {
         args = new Array(al - 1);
         for (j = 1; j < al; j++) args[j - 1] = arguments[j];
@@ -51307,8 +51392,45 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.on = function(type, listener) {
+    return this._on(type, listener, false);
+  };
+
+  EventEmitter.prototype.prependListener = function(type, listener) {
+    return this._on(type, listener, true);
+  };
+
+  EventEmitter.prototype.onAny = function(fn) {
+    return this._onAny(fn, false);
+  };
+
+  EventEmitter.prototype.prependAny = function(fn) {
+    return this._onAny(fn, true);
+  };
+
+  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+  EventEmitter.prototype._onAny = function(fn, prepend){
+    if (typeof fn !== 'function') {
+      throw new Error('onAny only accepts instances of Function');
+    }
+
+    if (!this._all) {
+      this._all = [];
+    }
+
+    // Add the function to the event listener collection.
+    if(prepend){
+      this._all.unshift(fn);
+    }else{
+      this._all.push(fn);
+    }
+
+    return this;
+  };
+
+  EventEmitter.prototype._on = function(type, listener, prepend) {
     if (typeof type === 'function') {
-      this.onAny(type);
+      this._onAny(type, listener);
       return this;
     }
 
@@ -51336,14 +51458,18 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         this._events[type] = [this._events[type]];
       }
 
-      // If we've already got an array, just append.
-      this._events[type].push(listener);
+      // If we've already got an array, just add
+      if(prepend){
+        this._events[type].unshift(listener);
+      }else{
+        this._events[type].push(listener);
+      }
 
       // Check for listener leak
       if (
         !this._events[type].warned &&
-        this._events.maxListeners > 0 &&
-        this._events[type].length > this._events.maxListeners
+        this._maxListeners > 0 &&
+        this._events[type].length > this._maxListeners
       ) {
         this._events[type].warned = true;
         logPossibleMemoryLeak.call(this, this._events[type].length, type);
@@ -51352,22 +51478,6 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
     return this;
   };
-
-  EventEmitter.prototype.onAny = function(fn) {
-    if (typeof fn !== 'function') {
-      throw new Error('onAny only accepts instances of Function');
-    }
-
-    if (!this._all) {
-      this._all = [];
-    }
-
-    // Add the function to the event listener collection.
-    this._all.push(fn);
-    return this;
-  };
-
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
 
   EventEmitter.prototype.off = function(type, listener) {
     if (typeof listener !== 'function') {
@@ -51522,6 +51632,10 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       this._events[type] = [this._events[type]];
     }
     return this._events[type];
+  };
+
+  EventEmitter.prototype.eventNames = function(){
+    return Object.keys(this._events);
   };
 
   EventEmitter.prototype.listenerCount = function(type) {
@@ -52428,15 +52542,10 @@ class OccupancyGrid extends THREE$1.Mesh {
     // create the geometry
     var width = message.info.width;
     var height = message.info.height;
-    var geom = new THREE$1.PlaneGeometry(width, height);
+    var geom = new THREE$1.PlaneBufferGeometry(width, height);
 
-    // internal drawing canvas
-    var canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    var context = canvas.getContext('2d');
     // create the color material
-    var imageData = context.createImageData(width, height);
+    var imageData = new Uint8Array(width * height * 3);
     for ( var row = 0; row < height; row++) {
       for ( var col = 0; col < width; col++) {
         // determine the index into the map data
@@ -52453,20 +52562,20 @@ class OccupancyGrid extends THREE$1.Mesh {
         }
 
         // determine the index into the image data array
-        var i = (col + (row * width)) * 4;
+        var i = (col + (row * width)) * 3;
         // r
-        imageData.data[i] = (val * color.r) / 255;
+        imageData[i] = (val * color.r) / 255;
         // g
-        imageData.data[++i] = (val * color.g) / 255;
+        imageData[++i] = (val * color.g) / 255;
         // b
-        imageData.data[++i] = (val * color.b) / 255;
-        // a
-        imageData.data[++i] = 255;
+        imageData[++i] = (val * color.b) / 255;
       }
     }
-    context.putImageData(imageData, 0, 0);
 
-    var texture = new THREE$1.Texture(canvas);
+    var texture = new THREE$1.DataTexture(imageData, width, height, THREE$1.RGBFormat);
+    texture.flipY = true;
+    texture.minFilter = THREE$1.LinearFilter;
+    texture.magFilter = THREE$1.LinearFilter;
     texture.needsUpdate = true;
 
     var material = new THREE$1.MeshBasicMaterial({
@@ -52479,12 +52588,12 @@ class OccupancyGrid extends THREE$1.Mesh {
     // create the mesh
     super(geom, material);
     // move the map so the corner is at X, Y and correct orientation (informations from message.info)
-    this.quaternion = new THREE$1.Quaternion(
+    this.quaternion.copy(new THREE$1.Quaternion(
         message.info.origin.orientation.x,
         message.info.origin.orientation.y,
         message.info.origin.orientation.z,
         message.info.origin.orientation.w
-    );
+    ));
     this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
     this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
     this.position.z = message.info.origin.position.z;
@@ -52688,7 +52797,7 @@ class Odometry extends THREE$1.Object3D {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-class Path$1 extends THREE$1.Object3D {
+let Path$1 = class Path extends THREE$1.Object3D {
 
   /**
    * A Path client that listens to a given topic and displays a line connecting the poses.
@@ -52762,7 +52871,7 @@ class Path$1 extends THREE$1.Object3D {
 
     this.rootObject.add(this.sn);
   };
-}
+};
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -53189,7 +53298,7 @@ class PoseWithCovariance extends THREE$1.Object3D {
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-class Points$1 extends THREE$1.Object3D {
+let Points$1 = class Points extends THREE$1.Object3D {
 
   /**
    * A set of points. Used by PointCloud2 and LaserScan.
@@ -53228,17 +53337,12 @@ class Points$1 extends THREE$1.Object3D {
     }
 
     this.sn = null;
-    this.buffer = null;
   };
 
 
   setup(frame, point_step, fields)
   {
       if(this.sn===null){
-          // scratch space to decode base64 buffers
-          if(point_step) {
-              this.buffer = new Uint8Array( this.max_pts * point_step );
-          }
           // turn fields to a map
           fields = fields || [];
           this.fields = {};
@@ -53307,7 +53411,7 @@ class Points$1 extends THREE$1.Object3D {
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
   };
-}
+};
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -53431,6 +53535,7 @@ class PointCloud2 extends THREE$1.Object3D {
    *  * ros - the ROSLIB.Ros connection handle
    *  * topic - the marker topic to listen to (default: '/points')
    *  * tfClient - the TF client handle to use
+   *  * compression (optional) - message compression (default: 'cbor')
    *  * rootObject (optional) - the root object to add this marker to use for the points.
    *  * max_pts (optional) - number of points to draw (default: 10000)
    *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
@@ -53444,8 +53549,11 @@ class PointCloud2 extends THREE$1.Object3D {
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/points';
+    this.compression = options.compression || 'cbor';
+    this.max_pts = options.max_pts || 10000;
     this.points = new Points$1(options);
     this.rosTopic = undefined;
+    this.buffer = null;
     this.subscribe();
   };
 
@@ -53463,7 +53571,8 @@ class PointCloud2 extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
-      messageType : 'sensor_msgs/PointCloud2'
+      messageType : 'sensor_msgs/PointCloud2',
+      compression: this.compression
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
@@ -53474,16 +53583,20 @@ class PointCloud2 extends THREE$1.Object3D {
     }
 
     var n, pointRatio = this.points.pointRatio;
+    var bufSz = this.max_pts * msg.point_step;
 
     if (msg.data.buffer) {
-      this.points.buffer = msg.data.buffer;
-      n = msg.height*msg.width / pointRatio;
+      this.buffer = msg.data.slice(0, Math.min(msg.data.byteLength, bufSz));
+       n = Math.min(msg.height*msg.width / pointRatio, this.points.positions.array.length / 3);
     } else {
-      n = decode64(msg.data, this.points.buffer, msg.point_step, pointRatio);
+      if (!this.buffer || this.buffer.byteLength < bufSz) {
+        this.buffer = new Uint8Array(bufSz);
+      }
+      n = decode64(msg.data, this.buffer, msg.point_step, pointRatio);
       pointRatio = 1;
     }
 
-    var dv = new DataView(this.points.buffer.buffer);
+    var dv = new DataView(this.buffer.buffer);
     var littleEndian = !msg.is_bigendian;
     var x = this.points.fields.x.offset;
     var y = this.points.fields.y.offset;
@@ -54736,7 +54849,6 @@ class Viewer {
   };
 }
 
-exports.REVISION = REVISION$1;
 exports.MARKER_ARROW = MARKER_ARROW;
 exports.MARKER_CUBE = MARKER_CUBE;
 exports.MARKER_SPHERE = MARKER_SPHERE;
@@ -54762,6 +54874,9 @@ exports.INTERACTIVE_MARKER_MOVE_AXIS = INTERACTIVE_MARKER_MOVE_AXIS;
 exports.INTERACTIVE_MARKER_MOVE_PLANE = INTERACTIVE_MARKER_MOVE_PLANE;
 exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS;
 exports.INTERACTIVE_MARKER_MOVE_ROTATE = INTERACTIVE_MARKER_MOVE_ROTATE;
+exports.INTERACTIVE_MARKER_MOVE_3D = INTERACTIVE_MARKER_MOVE_3D;
+exports.INTERACTIVE_MARKER_ROTATE_3D = INTERACTIVE_MARKER_ROTATE_3D;
+exports.INTERACTIVE_MARKER_MOVE_ROTATE_3D = INTERACTIVE_MARKER_MOVE_ROTATE_3D;
 exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT;
 exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED;
 exports.INTERACTIVE_MARKER_VIEW_FACING = INTERACTIVE_MARKER_VIEW_FACING;
