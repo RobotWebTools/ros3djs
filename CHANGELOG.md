@@ -1,6 +1,7 @@
 ## Change Log
 
 ### 1.0.0 (2019/01/16 14:48 +00:00)
+- [#242](https://github.com/RobotWebTools/ros3djs/pull/242) DepthCloud: support custom resolutions properly (@viktorku)
 - [#245](https://github.com/RobotWebTools/ros3djs/pull/245) Update and normalize EventEmitter2 dependency (@mvollrath)
 - [#244](https://github.com/RobotWebTools/ros3djs/pull/244) Fix PointCloud2 buffers (@mvollrath)
 - [#239](https://github.com/RobotWebTools/ros3djs/pull/239) Use CBOR compression for PointCloud2 (@mvollrath)
