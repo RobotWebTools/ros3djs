@@ -45237,6 +45237,7 @@ class DepthCloud extends THREE$1.Object3D {
     this.pointSize = options.pointSize || 3;
     this.width = options.width || 1024;
     this.height = options.height || 1024;
+    this.resolutionFactor = Math.max(this.width, this.height) / 1024;
     this.whiteness = options.whiteness || 0;
     this.varianceThreshold = options.varianceThreshold || 0.000016667;
 
@@ -45266,6 +45267,7 @@ class DepthCloud extends THREE$1.Object3D {
       '',
       'uniform float focallength;',
       'uniform float maxDepthPerTile;',
+      'uniform float resolutionFactor;',
       '',
       'varying vec2 vUvP;',
       'varying vec2 colorP;',
@@ -45369,8 +45371,8 @@ class DepthCloud extends THREE$1.Object3D {
       '    float z = -depth;',
       '    ',
       '    pos = vec4(',
-      '      ( position.x / width - 0.5 ) * z * 0.5 * maxDepthPerTile * (1000.0/focallength) * -1.0,',
-      '      ( position.y / height - 0.5 ) * z * 0.5 * maxDepthPerTile * (1000.0/focallength),',
+      '      ( position.x / width - 0.5 ) * z * 0.5 * maxDepthPerTile * resolutionFactor * (1000.0/focallength) * -1.0,',
+      '      ( position.y / height - 0.5 ) * z * 0.5 * maxDepthPerTile * resolutionFactor * (1000.0/focallength),',
       '      (- z + zOffset / 1000.0) * maxDepthPerTile,',
       '      1.0);',
       '    ',
@@ -45489,6 +45491,10 @@ class DepthCloud extends THREE$1.Object3D {
           'maxDepthPerTile': {
             type : 'f',
             value : this.maxDepthPerTile
+          },
+          'resolutionFactor': {
+            type : 'f',
+            value : this.resolutionFactor
           },
         },
         vertexShader : this.vertex_shader,
