@@ -9,7 +9,7 @@
   "dependencies": {
     "eventemitter2": "^4.1.0",
     "roslib": "^1.0.0",
-    "three": "^0.88.0"
+    "three": "git+https://git@github.com/mrdoob/three.js.git#8ae9ff79b427f70be03a80f824708dee38df1007"
   },
   "devDependencies": {
     "chai": "^3.5.0",
