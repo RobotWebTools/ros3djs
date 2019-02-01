@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "eventemitter2": "^4.1.0",
-    "threejs": "mrdoob/three.js#r88",
+    "threejs": "mrdoob/three.js#r89",
     "roslibjs": "RobotWebTools/roslibjs#1.0.0"
   }
 }
