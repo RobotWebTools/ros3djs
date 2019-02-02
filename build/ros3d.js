@@ -53210,6 +53210,7 @@ class MarkerClient extends eventemitter2 {
    *   * tfClient - the TF client handle to use
    *   * rootObject (optional) - the root object to add this marker to
    *   * path (optional) - the base path to any meshes that will be loaded
+   *   * lifetime - the lifetime of marker
    */
   constructor(options) {
     super();
@@ -53219,10 +53220,12 @@ class MarkerClient extends eventemitter2 {
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
     this.path = options.path || '/';
+    this.lifetime = options.lifetime || 0;
 
     // Markers that are displayed (Map ns+id--Marker)
     this.markers = {};
     this.rosTopic = undefined;
+    this.updatedTime = {};
 
     this.subscribe();
   };
@@ -53231,6 +53234,20 @@ class MarkerClient extends eventemitter2 {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
+  };
+
+  checkTime(name){
+      var curTime = new Date().getTime();
+      if (curTime - this.updatedTime[name] > this.lifetime) {
+          var oldNode = this.markers[name];
+          oldNode.unsubscribeTf();
+          this.rootObject.remove(oldNode);
+          this.emit('change');
+      } else {
+          var that = this;
+          setTimeout(function() {that.checkTime(name);},
+                     100);
+      }
   };
 
   subscribe(){
@@ -53254,9 +53271,12 @@ class MarkerClient extends eventemitter2 {
 
     // remove old marker from Three.Object3D children buffer
     var oldNode = this.markers[message.ns + message.id];
+    this.updatedTime[message.ns + message.id] = new Date().getTime();
     if (oldNode) {
       oldNode.unsubscribeTf();
       this.rootObject.remove(oldNode);
+    } else if (this.lifetime) {
+      this.checkTime(message.ns + message.id);
     }
 
     this.markers[message.ns + message.id] = new SceneNode({
@@ -53566,6 +53586,7 @@ class OccupancyGridClient extends eventemitter2 {
    *   * topic (optional) - the map topic to listen to
    *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
    *   * tfClient (optional) - the TF client handle to use for a scene node
+   *   * compression (optional) - message compression (default: 'cbor')
    *   * rootObject (optional) - the root object to add this marker to
    *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
    *   * color (optional) - color of the visualized grid
@@ -53576,6 +53597,7 @@ class OccupancyGridClient extends eventemitter2 {
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/map';
+    this.compression = options.compression || 'cbor';
     this.continuous = options.continuous;
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -53605,7 +53627,7 @@ class OccupancyGridClient extends eventemitter2 {
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
-      compression : 'png'
+      compression : this.compression
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };

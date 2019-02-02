@@ -163,8 +163,6 @@ Object.assign( EventDispatcher.prototype, {
 	},
 
 	dispatchEvent: function ( event ) {
-		var this$1 = this;
-
 
 		if ( this._listeners === undefined ) { return; }
 
@@ -179,7 +177,7 @@ Object.assign( EventDispatcher.prototype, {
 
 			for ( var i = 0, l = array.length; i < l; i ++ ) {
 
-				array[ i ].call( this$1, event );
+				array[ i ].call( this, event );
 
 			}
 
@@ -1401,8 +1399,6 @@ Object.assign( Matrix4.prototype, {
 		var v1 = new Vector3();
 
 		return function applyToBufferAttribute( attribute ) {
-			var this$1 = this;
-
 
 			for ( var i = 0, l = attribute.count; i < l; i ++ ) {
 
@@ -1410,7 +1406,7 @@ Object.assign( Matrix4.prototype, {
 				v1.y = attribute.getY( i );
 				v1.z = attribute.getZ( i );
 
-				v1.applyMatrix4( this$1 );
+				v1.applyMatrix4( this );
 
 				attribute.setXYZ( i, v1.x, v1.y, v1.z );
 
@@ -1832,14 +1828,12 @@ Object.assign( Matrix4.prototype, {
 	},
 
 	fromArray: function ( array, offset ) {
-		var this$1 = this;
-
 
 		if ( offset === undefined ) { offset = 0; }
 
 		for ( var i = 0; i < 16; i ++ ) {
 
-			this$1.elements[ i ] = array[ i + offset ];
+			this.elements[ i ] = array[ i + offset ];
 
 		}
 
@@ -3305,8 +3299,6 @@ Object.assign( Matrix3.prototype, {
 		var v1 = new Vector3();
 
 		return function applyToBufferAttribute( attribute ) {
-			var this$1 = this;
-
 
 			for ( var i = 0, l = attribute.count; i < l; i ++ ) {
 
@@ -3314,7 +3306,7 @@ Object.assign( Matrix3.prototype, {
 				v1.y = attribute.getY( i );
 				v1.z = attribute.getZ( i );
 
-				v1.applyMatrix3( this$1 );
+				v1.applyMatrix3( this );
 
 				attribute.setXYZ( i, v1.x, v1.y, v1.z );
 
@@ -3558,14 +3550,12 @@ Object.assign( Matrix3.prototype, {
 	},
 
 	fromArray: function ( array, offset ) {
-		var this$1 = this;
-
 
 		if ( offset === undefined ) { offset = 0; }
 
 		for ( var i = 0; i < 9; i ++ ) {
 
-			this$1.elements[ i ] = array[ i + offset ];
+			this.elements[ i ] = array[ i + offset ];
 
 		}
 
@@ -5239,8 +5229,6 @@ function parseUniform( activeInfo, addr, container ) {
 // Root Container
 
 function WebGLUniforms( gl, program, renderer ) {
-	var this$1 = this;
-
 
 	UniformContainer.call( this );
 
@@ -5254,7 +5242,7 @@ function WebGLUniforms( gl, program, renderer ) {
 			path = info.name,
 			addr = gl.getUniformLocation( program, path );
 
-		parseUniform( info, addr, this$1 );
+		parseUniform( info, addr, this );
 
 	}
 
@@ -6021,14 +6009,12 @@ var UniformsLib = {
 var UniformsUtils = {
 
 	merge: function ( uniforms ) {
-		var this$1 = this;
-
 
 		var merged = {};
 
 		for ( var u = 0; u < uniforms.length; u ++ ) {
 
-			var tmp = this$1.clone( uniforms[ u ] );
+			var tmp = this.clone( uniforms[ u ] );
 
 			for ( var p in tmp ) {
 
@@ -6670,14 +6656,12 @@ Object.assign( Box2.prototype, {
 	},
 
 	setFromPoints: function ( points ) {
-		var this$1 = this;
-
 
 		this.makeEmpty();
 
 		for ( var i = 0, il = points.length; i < il; i ++ ) {
 
-			this$1.expandByPoint( points[ i ] );
+			this.expandByPoint( points[ i ] );
 
 		}
 
@@ -7710,8 +7694,6 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	onBeforeCompile: function () {},
 
 	setValues: function ( values ) {
-		var this$1 = this;
-
 
 		if ( values === undefined ) { return; }
 
@@ -7729,17 +7711,17 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 			// for backward compatability if shading is set in the constructor
 			if ( key === 'shading' ) {
 
-				console.warn( 'THREE.' + this$1.type + ': .shading has been removed. Use the boolean .flatShading instead.' );
-				this$1.flatShading = ( newValue === FlatShading ) ? true : false;
+				console.warn( 'THREE.' + this.type + ': .shading has been removed. Use the boolean .flatShading instead.' );
+				this.flatShading = ( newValue === FlatShading ) ? true : false;
 				continue;
 
 			}
 
-			var currentValue = this$1[ key ];
+			var currentValue = this[ key ];
 
 			if ( currentValue === undefined ) {
 
-				console.warn( "THREE." + this$1.type + ": '" + key + "' is not a property of this material." );
+				console.warn( "THREE." + this.type + ": '" + key + "' is not a property of this material." );
 				continue;
 
 			}
@@ -7755,11 +7737,11 @@ Material.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 			} else if ( key === 'overdraw' ) {
 
 				// ensure overdraw is backwards-compatible with legacy boolean type
-				this$1[ key ] = Number( newValue );
+				this[ key ] = Number( newValue );
 
 			} else {
 
-				this$1[ key ] = newValue;
+				this[ key ] = newValue;
 
 			}
 
@@ -8251,14 +8233,12 @@ Object.assign( Box3.prototype, {
 	},
 
 	setFromPoints: function ( points ) {
-		var this$1 = this;
-
 
 		this.makeEmpty();
 
 		for ( var i = 0, il = points.length; i < il; i ++ ) {
 
-			this$1.expandByPoint( points[ i ] );
+			this.expandByPoint( points[ i ] );
 
 		}
 
@@ -10535,14 +10515,13 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 	add: function ( object ) {
 		var arguments$1 = arguments;
-		var this$1 = this;
 
 
 		if ( arguments.length > 1 ) {
 
 			for ( var i = 0; i < arguments.length; i ++ ) {
 
-				this$1.add( arguments$1[ i ] );
+				this.add( arguments$1[ i ] );
 
 			}
 
@@ -10582,14 +10561,13 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 	remove: function ( object ) {
 		var arguments$1 = arguments;
-		var this$1 = this;
 
 
 		if ( arguments.length > 1 ) {
 
 			for ( var i = 0; i < arguments.length; i ++ ) {
 
-				this$1.remove( arguments$1[ i ] );
+				this.remove( arguments$1[ i ] );
 
 			}
 
@@ -10626,14 +10604,12 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	getObjectByProperty: function ( name, value ) {
-		var this$1 = this;
-
 
 		if ( this[ name ] === value ) { return this; }
 
 		for ( var i = 0, l = this.children.length; i < l; i ++ ) {
 
-			var child = this$1.children[ i ];
+			var child = this.children[ i ];
 			var object = child.getObjectByProperty( name, value );
 
 			if ( object !== undefined ) {
@@ -10817,8 +10793,6 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	toJSON: function ( meta ) {
-		var this$1 = this;
-
 
 		// meta is a string when called from JSON.stringify
 		var isRootObject = ( meta === undefined || typeof meta === 'string' );
@@ -10914,7 +10888,7 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 				for ( var i = 0, l = this.material.length; i < l; i ++ ) {
 
-					uuids.push( serialize( meta.materials, this$1.material[ i ] ) );
+					uuids.push( serialize( meta.materials, this.material[ i ] ) );
 
 				}
 
@@ -10936,7 +10910,7 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			for ( var i = 0; i < this.children.length; i ++ ) {
 
-				object.children.push( this$1.children[ i ].toJSON( meta ).object );
+				object.children.push( this.children[ i ].toJSON( meta ).object );
 
 			}
 
@@ -10988,8 +10962,6 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	copy: function ( source, recursive ) {
-		var this$1 = this;
-
 
 		if ( recursive === undefined ) { recursive = true; }
 
@@ -11023,7 +10995,7 @@ Object3D.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 			for ( var i = 0; i < source.children.length; i ++ ) {
 
 				var child = source.children[ i ];
-				this$1.add( child.clone() );
+				this.add( child.clone() );
 
 			}
 
@@ -11271,8 +11243,6 @@ Object.assign( Face3.prototype, {
 	},
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		this.a = source.a;
 		this.b = source.b;
@@ -11285,13 +11255,13 @@ Object.assign( Face3.prototype, {
 
 		for ( var i = 0, il = source.vertexNormals.length; i < il; i ++ ) {
 
-			this$1.vertexNormals[ i ] = source.vertexNormals[ i ].clone();
+			this.vertexNormals[ i ] = source.vertexNormals[ i ].clone();
 
 		}
 
 		for ( var i = 0, il = source.vertexColors.length; i < il; i ++ ) {
 
-			this$1.vertexColors[ i ] = source.vertexColors[ i ].clone();
+			this.vertexColors[ i ] = source.vertexColors[ i ].clone();
 
 		}
 
@@ -11356,21 +11326,19 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	isGeometry: true,
 
 	applyMatrix: function ( matrix ) {
-		var this$1 = this;
-
 
 		var normalMatrix = new Matrix3().getNormalMatrix( matrix );
 
 		for ( var i = 0, il = this.vertices.length; i < il; i ++ ) {
 
-			var vertex = this$1.vertices[ i ];
+			var vertex = this.vertices[ i ];
 			vertex.applyMatrix4( matrix );
 
 		}
 
 		for ( var i = 0, il = this.faces.length; i < il; i ++ ) {
 
-			var face = this$1.faces[ i ];
+			var face = this.faces[ i ];
 			face.normal.applyMatrix3( normalMatrix ).normalize();
 
 			for ( var j = 0, jl = face.vertexNormals.length; j < jl; j ++ ) {
@@ -11681,18 +11649,16 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	computeFaceNormals: function () {
-		var this$1 = this;
-
 
 		var cb = new Vector3(), ab = new Vector3();
 
 		for ( var f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			var face = this$1.faces[ f ];
+			var face = this.faces[ f ];
 
-			var vA = this$1.vertices[ face.a ];
-			var vB = this$1.vertices[ face.b ];
-			var vC = this$1.vertices[ face.c ];
+			var vA = this.vertices[ face.a ];
+			var vB = this.vertices[ face.b ];
+			var vC = this.vertices[ face.c ];
 
 			cb.subVectors( vC, vB );
 			ab.subVectors( vA, vB );
@@ -11707,8 +11673,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	computeVertexNormals: function ( areaWeighted ) {
-		var this$1 = this;
-
 
 		if ( areaWeighted === undefined ) { areaWeighted = true; }
 
@@ -11732,11 +11696,11 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this$1.faces[ f ];
+				face = this.faces[ f ];
 
-				vA = this$1.vertices[ face.a ];
-				vB = this$1.vertices[ face.b ];
-				vC = this$1.vertices[ face.c ];
+				vA = this.vertices[ face.a ];
+				vB = this.vertices[ face.b ];
+				vC = this.vertices[ face.c ];
 
 				cb.subVectors( vC, vB );
 				ab.subVectors( vA, vB );
@@ -11754,7 +11718,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this$1.faces[ f ];
+				face = this.faces[ f ];
 
 				vertices[ face.a ].add( face.normal );
 				vertices[ face.b ].add( face.normal );
@@ -11772,7 +11736,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this$1.faces[ f ];
+			face = this.faces[ f ];
 
 			var vertexNormals = face.vertexNormals;
 
@@ -11801,8 +11765,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	computeFlatVertexNormals: function () {
-		var this$1 = this;
-
 
 		var f, fl, face;
 
@@ -11810,7 +11772,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this$1.faces[ f ];
+			face = this.faces[ f ];
 
 			var vertexNormals = face.vertexNormals;
 
@@ -11839,8 +11801,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	computeMorphNormals: function () {
-		var this$1 = this;
-
 
 		var i, il, f, fl, face;
 
@@ -11850,7 +11810,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this$1.faces[ f ];
+			face = this.faces[ f ];
 
 			if ( ! face.__originalFaceNormal ) {
 
@@ -11889,14 +11849,14 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			// create on first access
 
-			if ( ! this$1.morphNormals[ i ] ) {
+			if ( ! this.morphNormals[ i ] ) {
 
-				this$1.morphNormals[ i ] = {};
-				this$1.morphNormals[ i ].faceNormals = [];
-				this$1.morphNormals[ i ].vertexNormals = [];
+				this.morphNormals[ i ] = {};
+				this.morphNormals[ i ].faceNormals = [];
+				this.morphNormals[ i ].vertexNormals = [];
 
-				var dstNormalsFace = this$1.morphNormals[ i ].faceNormals;
-				var dstNormalsVertex = this$1.morphNormals[ i ].vertexNormals;
+				var dstNormalsFace = this.morphNormals[ i ].faceNormals;
+				var dstNormalsVertex = this.morphNormals[ i ].vertexNormals;
 
 				var faceNormal, vertexNormals;
 
@@ -11912,11 +11872,11 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			}
 
-			var morphNormals = this$1.morphNormals[ i ];
+			var morphNormals = this.morphNormals[ i ];
 
 			// set vertices to morph target
 
-			tmpGeo.vertices = this$1.morphTargets[ i ].vertices;
+			tmpGeo.vertices = this.morphTargets[ i ].vertices;
 
 			// compute morph normals
 
@@ -11929,7 +11889,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-				face = this$1.faces[ f ];
+				face = this.faces[ f ];
 
 				faceNormal = morphNormals.faceNormals[ f ];
 				vertexNormals = morphNormals.vertexNormals[ f ];
@@ -11948,7 +11908,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( f = 0, fl = this.faces.length; f < fl; f ++ ) {
 
-			face = this$1.faces[ f ];
+			face = this.faces[ f ];
 
 			face.normal = face.__originalFaceNormal;
 			face.vertexNormals = face.__originalVertexNormals;
@@ -11958,8 +11918,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	computeLineDistances: function () {
-		var this$1 = this;
-
 
 		var d = 0;
 		var vertices = this.vertices;
@@ -11972,7 +11930,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			}
 
-			this$1.lineDistances[ i ] = d;
+			this.lineDistances[ i ] = d;
 
 		}
 
@@ -12144,8 +12102,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	 */
 
 	mergeVertices: function () {
-		var this$1 = this;
-
 
 		var verticesMap = {}; // Hashmap for looking up vertices by position coordinates (and making sure they are unique)
 		var unique = [], changes = [];
@@ -12158,13 +12114,13 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = this.vertices.length; i < il; i ++ ) {
 
-			v = this$1.vertices[ i ];
+			v = this.vertices[ i ];
 			key = Math.round( v.x * precision ) + '_' + Math.round( v.y * precision ) + '_' + Math.round( v.z * precision );
 
 			if ( verticesMap[ key ] === undefined ) {
 
 				verticesMap[ key ] = i;
-				unique.push( this$1.vertices[ i ] );
+				unique.push( this.vertices[ i ] );
 				changes[ i ] = unique.length - 1;
 
 			} else {
@@ -12183,7 +12139,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = this.faces.length; i < il; i ++ ) {
 
-			face = this$1.faces[ i ];
+			face = this.faces[ i ];
 
 			face.a = changes[ face.a ];
 			face.b = changes[ face.b ];
@@ -12210,11 +12166,11 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			var idx = faceIndicesToRemove[ i ];
 
-			this$1.faces.splice( idx, 1 );
+			this.faces.splice( idx, 1 );
 
 			for ( j = 0, jl = this.faceVertexUvs.length; j < jl; j ++ ) {
 
-				this$1.faceVertexUvs[ j ].splice( idx, 1 );
+				this.faceVertexUvs[ j ].splice( idx, 1 );
 
 			}
 
@@ -12229,15 +12185,13 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	setFromPoints: function ( points ) {
-		var this$1 = this;
-
 
 		this.vertices = [];
 
 		for ( var i = 0, l = points.length; i < l; i ++ ) {
 
 			var point = points[ i ];
-			this$1.vertices.push( new Vector3( point.x, point.y, point.z || 0 ) );
+			this.vertices.push( new Vector3( point.x, point.y, point.z || 0 ) );
 
 		}
 
@@ -12293,8 +12247,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	toJSON: function () {
-		var this$1 = this;
-
 
 		var data = {
 			metadata: {
@@ -12328,7 +12280,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( var i = 0; i < this.vertices.length; i ++ ) {
 
-			var vertex = this$1.vertices[ i ];
+			var vertex = this.vertices[ i ];
 			vertices.push( vertex.x, vertex.y, vertex.z );
 
 		}
@@ -12343,11 +12295,11 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( var i = 0; i < this.faces.length; i ++ ) {
 
-			var face = this$1.faces[ i ];
+			var face = this.faces[ i ];
 
 			var hasMaterial = true;
 			var hasFaceUv = false; // deprecated
-			var hasFaceVertexUv = this$1.faceVertexUvs[ 0 ][ i ] !== undefined;
+			var hasFaceVertexUv = this.faceVertexUvs[ 0 ][ i ] !== undefined;
 			var hasFaceNormal = face.normal.length() > 0;
 			var hasFaceVertexNormal = face.vertexNormals.length > 0;
 			var hasFaceColor = face.color.r !== 1 || face.color.g !== 1 || face.color.b !== 1;
@@ -12370,7 +12322,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			if ( hasFaceVertexUv ) {
 
-				var faceVertexUvs = this$1.faceVertexUvs[ 0 ][ i ];
+				var faceVertexUvs = this.faceVertexUvs[ 0 ][ i ];
 
 				faces.push(
 					getUvIndex( faceVertexUvs[ 0 ] ),
@@ -12518,8 +12470,6 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 	},
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		var i, il, j, jl, k, kl;
 
@@ -12547,7 +12497,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = vertices.length; i < il; i ++ ) {
 
-			this$1.vertices.push( vertices[ i ].clone() );
+			this.vertices.push( vertices[ i ].clone() );
 
 		}
 
@@ -12557,7 +12507,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = colors.length; i < il; i ++ ) {
 
-			this$1.colors.push( colors[ i ].clone() );
+			this.colors.push( colors[ i ].clone() );
 
 		}
 
@@ -12567,7 +12517,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = faces.length; i < il; i ++ ) {
 
-			this$1.faces.push( faces[ i ].clone() );
+			this.faces.push( faces[ i ].clone() );
 
 		}
 
@@ -12577,9 +12527,9 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			var faceVertexUvs = source.faceVertexUvs[ i ];
 
-			if ( this$1.faceVertexUvs[ i ] === undefined ) {
+			if ( this.faceVertexUvs[ i ] === undefined ) {
 
-				this$1.faceVertexUvs[ i ] = [];
+				this.faceVertexUvs[ i ] = [];
 
 			}
 
@@ -12595,7 +12545,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 				}
 
-				this$1.faceVertexUvs[ i ].push( uvsCopy );
+				this.faceVertexUvs[ i ].push( uvsCopy );
 
 			}
 
@@ -12638,7 +12588,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			}
 
-			this$1.morphTargets.push( morphTarget );
+			this.morphTargets.push( morphTarget );
 
 		}
 
@@ -12685,7 +12635,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 			}
 
-			this$1.morphNormals.push( morphNormal );
+			this.morphNormals.push( morphNormal );
 
 		}
 
@@ -12695,7 +12645,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = skinWeights.length; i < il; i ++ ) {
 
-			this$1.skinWeights.push( skinWeights[ i ].clone() );
+			this.skinWeights.push( skinWeights[ i ].clone() );
 
 		}
 
@@ -12705,7 +12655,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = skinIndices.length; i < il; i ++ ) {
 
-			this$1.skinIndices.push( skinIndices[ i ].clone() );
+			this.skinIndices.push( skinIndices[ i ].clone() );
 
 		}
 
@@ -12715,7 +12665,7 @@ Geometry.prototype = Object.assign( Object.create( EventDispatcher.prototype ), 
 
 		for ( i = 0, il = lineDistances.length; i < il; i ++ ) {
 
-			this$1.lineDistances.push( lineDistances[ i ] );
+			this.lineDistances.push( lineDistances[ i ] );
 
 		}
 
@@ -12839,15 +12789,13 @@ Object.assign( BufferAttribute.prototype, {
 	},
 
 	copyAt: function ( index1, attribute, index2 ) {
-		var this$1 = this;
-
 
 		index1 *= this.itemSize;
 		index2 *= attribute.itemSize;
 
 		for ( var i = 0, l = this.itemSize; i < l; i ++ ) {
 
-			this$1.array[ index1 + i ] = attribute.array[ index2 + i ];
+			this.array[ index1 + i ] = attribute.array[ index2 + i ];
 
 		}
 
@@ -13273,8 +13221,6 @@ Object.assign( DirectGeometry.prototype, {
 	},
 
 	fromGeometry: function ( geometry ) {
-		var this$1 = this;
-
 
 		var faces = geometry.faces;
 		var vertices = geometry.vertices;
@@ -13337,19 +13283,19 @@ Object.assign( DirectGeometry.prototype, {
 
 			var face = faces[ i ];
 
-			this$1.vertices.push( vertices[ face.a ], vertices[ face.b ], vertices[ face.c ] );
+			this.vertices.push( vertices[ face.a ], vertices[ face.b ], vertices[ face.c ] );
 
 			var vertexNormals = face.vertexNormals;
 
 			if ( vertexNormals.length === 3 ) {
 
-				this$1.normals.push( vertexNormals[ 0 ], vertexNormals[ 1 ], vertexNormals[ 2 ] );
+				this.normals.push( vertexNormals[ 0 ], vertexNormals[ 1 ], vertexNormals[ 2 ] );
 
 			} else {
 
 				var normal = face.normal;
 
-				this$1.normals.push( normal, normal, normal );
+				this.normals.push( normal, normal, normal );
 
 			}
 
@@ -13357,13 +13303,13 @@ Object.assign( DirectGeometry.prototype, {
 
 			if ( vertexColors.length === 3 ) {
 
-				this$1.colors.push( vertexColors[ 0 ], vertexColors[ 1 ], vertexColors[ 2 ] );
+				this.colors.push( vertexColors[ 0 ], vertexColors[ 1 ], vertexColors[ 2 ] );
 
 			} else {
 
 				var color = face.color;
 
-				this$1.colors.push( color, color, color );
+				this.colors.push( color, color, color );
 
 			}
 
@@ -13373,13 +13319,13 @@ Object.assign( DirectGeometry.prototype, {
 
 				if ( vertexUvs !== undefined ) {
 
-					this$1.uvs.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
+					this.uvs.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
 
 				} else {
 
 					console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv ', i );
 
-					this$1.uvs.push( new Vector2(), new Vector2(), new Vector2() );
+					this.uvs.push( new Vector2(), new Vector2(), new Vector2() );
 
 				}
 
@@ -13391,13 +13337,13 @@ Object.assign( DirectGeometry.prototype, {
 
 				if ( vertexUvs !== undefined ) {
 
-					this$1.uvs2.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
+					this.uvs2.push( vertexUvs[ 0 ], vertexUvs[ 1 ], vertexUvs[ 2 ] );
 
 				} else {
 
 					console.warn( 'THREE.DirectGeometry.fromGeometry(): Undefined vertexUv2 ', i );
 
-					this$1.uvs2.push( new Vector2(), new Vector2(), new Vector2() );
+					this.uvs2.push( new Vector2(), new Vector2(), new Vector2() );
 
 				}
 
@@ -13425,13 +13371,13 @@ Object.assign( DirectGeometry.prototype, {
 
 			if ( hasSkinIndices ) {
 
-				this$1.skinIndices.push( skinIndices[ face.a ], skinIndices[ face.b ], skinIndices[ face.c ] );
+				this.skinIndices.push( skinIndices[ face.a ], skinIndices[ face.b ], skinIndices[ face.c ] );
 
 			}
 
 			if ( hasSkinWeights ) {
 
-				this$1.skinWeights.push( skinWeights[ face.a ], skinWeights[ face.b ], skinWeights[ face.c ] );
+				this.skinWeights.push( skinWeights[ face.a ], skinWeights[ face.b ], skinWeights[ face.c ] );
 
 			}
 
@@ -13950,8 +13896,6 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	},
 
 	fromDirectGeometry: function ( geometry ) {
-		var this$1 = this;
-
 
 		var positions = new Float32Array( geometry.vertices.length * 3 );
 		this.addAttribute( 'position', new BufferAttribute( positions, 3 ).copyVector3sArray( geometry.vertices ) );
@@ -14013,7 +13957,7 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 			}
 
-			this$1.morphAttributes[ name ] = array;
+			this.morphAttributes[ name ] = array;
 
 		}
 
@@ -14478,8 +14422,6 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	},
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		var name, i, l;
 
@@ -14513,7 +14455,7 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 		for ( name in attributes ) {
 
 			var attribute = attributes[ name ];
-			this$1.addAttribute( name, attribute.clone() );
+			this.addAttribute( name, attribute.clone() );
 
 		}
 
@@ -14532,7 +14474,7 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 			}
 
-			this$1.morphAttributes[ name ] = array;
+			this.morphAttributes[ name ] = array;
 
 		}
 
@@ -14543,7 +14485,7 @@ BufferGeometry.prototype = Object.assign( Object.create( EventDispatcher.prototy
 		for ( i = 0, l = groups.length; i < l; i ++ ) {
 
 			var group = groups[ i ];
-			this$1.addGroup( group.start, group.count, group.materialIndex );
+			this.addGroup( group.start, group.count, group.materialIndex );
 
 		}
 
@@ -16100,8 +16042,6 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	updateMorphTargets: function () {
-		var this$1 = this;
-
 
 		var geometry = this.geometry;
 		var m, ml, name;
@@ -16124,8 +16064,8 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						name = morphAttribute[ m ].name || String( m );
 
-						this$1.morphTargetInfluences.push( 0 );
-						this$1.morphTargetDictionary[ name ] = m;
+						this.morphTargetInfluences.push( 0 );
+						this.morphTargetDictionary[ name ] = m;
 
 					}
 
@@ -16146,8 +16086,8 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					name = morphTargets[ m ].name || String( m );
 
-					this$1.morphTargetInfluences.push( 0 );
-					this$1.morphTargetDictionary[ name ] = m;
+					this.morphTargetInfluences.push( 0 );
+					this.morphTargetDictionary[ name ] = m;
 
 				}
 
@@ -16255,8 +16195,6 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		}
 
 		return function raycast( raycaster, intersects ) {
-			var this$1 = this;
-
 
 			var geometry = this.geometry;
 			var material = this.material;
@@ -16306,7 +16244,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 						b = index.getX( i + 1 );
 						c = index.getX( i + 2 );
 
-						intersection = checkBufferGeometryIntersection( this$1, raycaster, ray, position, uv, a, b, c );
+						intersection = checkBufferGeometryIntersection( this, raycaster, ray, position, uv, a, b, c );
 
 						if ( intersection ) {
 
@@ -16327,7 +16265,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 						b = i + 1;
 						c = i + 2;
 
-						intersection = checkBufferGeometryIntersection( this$1, raycaster, ray, position, uv, a, b, c );
+						intersection = checkBufferGeometryIntersection( this, raycaster, ray, position, uv, a, b, c );
 
 						if ( intersection ) {
 
@@ -16366,7 +16304,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 					if ( faceMaterial.morphTargets === true ) {
 
 						var morphTargets = geometry.morphTargets;
-						var morphInfluences = this$1.morphTargetInfluences;
+						var morphInfluences = this.morphTargetInfluences;
 
 						vA.set( 0, 0, 0 );
 						vB.set( 0, 0, 0 );
@@ -16396,7 +16334,7 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					}
 
-					intersection = checkIntersection( this$1, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
+					intersection = checkIntersection( this, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
 
 					if ( intersection ) {
 
@@ -23951,8 +23889,6 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	isLensFlare: true,
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		Object3D.prototype.copy.call( this, source );
 
@@ -23961,7 +23897,7 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		for ( var i = 0, l = source.lensFlares.length; i < l; i ++ ) {
 
-			this$1.lensFlares.push( source.lensFlares[ i ] );
+			this.lensFlares.push( source.lensFlares[ i ] );
 
 		}
 
@@ -23999,8 +23935,6 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	 */
 
 	updateLensFlares: function () {
-		var this$1 = this;
-
 
 		var f, fl = this.lensFlares.length;
 		var flare;
@@ -24009,10 +23943,10 @@ LensFlare.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 		for ( f = 0; f < fl; f ++ ) {
 
-			flare = this$1.lensFlares[ f ];
+			flare = this.lensFlares[ f ];
 
-			flare.x = this$1.positionScreen.x + vecX * flare.distance;
-			flare.y = this$1.positionScreen.y + vecY * flare.distance;
+			flare.x = this.positionScreen.x + vecX * flare.distance;
+			flare.y = this.positionScreen.y + vecY * flare.distance;
 
 			flare.wantedRotation = flare.x * Math.PI * 0.25;
 			flare.rotation += ( flare.wantedRotation - flare.rotation ) * 0.25;
@@ -24159,8 +24093,6 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	constructor: LOD,
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		Object3D.prototype.copy.call( this, source, false );
 
@@ -24170,7 +24102,7 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			var level = levels[ i ];
 
-			this$1.addLevel( level.object.clone(), level.distance );
+			this.addLevel( level.object.clone(), level.distance );
 
 		}
 
@@ -24314,8 +24246,6 @@ LOD.prototype = Object.assign( Object.create( Object3D.prototype ), {
  */
 
 function Skeleton( bones, boneInverses ) {
-	var this$1 = this;
-
 
 	// copy the bone array
 
@@ -24344,7 +24274,7 @@ function Skeleton( bones, boneInverses ) {
 
 			for ( var i = 0, il = this.bones.length; i < il; i ++ ) {
 
-				this$1.boneInverses.push( new Matrix4() );
+				this.boneInverses.push( new Matrix4() );
 
 			}
 
@@ -24357,8 +24287,6 @@ function Skeleton( bones, boneInverses ) {
 Object.assign( Skeleton.prototype, {
 
 	calculateInverses: function () {
-		var this$1 = this;
-
 
 		this.boneInverses = [];
 
@@ -24366,21 +24294,19 @@ Object.assign( Skeleton.prototype, {
 
 			var inverse = new Matrix4();
 
-			if ( this$1.bones[ i ] ) {
+			if ( this.bones[ i ] ) {
 
-				inverse.getInverse( this$1.bones[ i ].matrixWorld );
+				inverse.getInverse( this.bones[ i ].matrixWorld );
 
 			}
 
-			this$1.boneInverses.push( inverse );
+			this.boneInverses.push( inverse );
 
 		}
 
 	},
 
 	pose: function () {
-		var this$1 = this;
-
 
 		var bone, i, il;
 
@@ -24388,11 +24314,11 @@ Object.assign( Skeleton.prototype, {
 
 		for ( i = 0, il = this.bones.length; i < il; i ++ ) {
 
-			bone = this$1.bones[ i ];
+			bone = this.bones[ i ];
 
 			if ( bone ) {
 
-				bone.matrixWorld.getInverse( this$1.boneInverses[ i ] );
+				bone.matrixWorld.getInverse( this.boneInverses[ i ] );
 
 			}
 
@@ -24402,7 +24328,7 @@ Object.assign( Skeleton.prototype, {
 
 		for ( i = 0, il = this.bones.length; i < il; i ++ ) {
 
-			bone = this$1.bones[ i ];
+			bone = this.bones[ i ];
 
 			if ( bone ) {
 
@@ -24522,8 +24448,6 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 	isSkinnedMesh: true,
 
 	initBones: function () {
-		var this$1 = this;
-
 
 		var bones = [], bone, gbone;
 		var i, il;
@@ -24534,7 +24458,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0, il = this.geometry.bones.length; i < il; i ++ ) {
 
-				gbone = this$1.geometry.bones[ i ];
+				gbone = this.geometry.bones[ i ];
 
 				// create new 'Bone' object
 
@@ -24554,7 +24478,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0, il = this.geometry.bones.length; i < il; i ++ ) {
 
-				gbone = this$1.geometry.bones[ i ];
+				gbone = this.geometry.bones[ i ];
 
 				if ( ( gbone.parent !== - 1 ) && ( gbone.parent !== null ) && ( bones[ gbone.parent ] !== undefined ) ) {
 
@@ -24566,7 +24490,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 					// topmost bone, immediate child of the skinned mesh
 
-					this$1.add( bones[ i ] );
+					this.add( bones[ i ] );
 
 				}
 
@@ -24609,8 +24533,6 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 	},
 
 	normalizeSkinWeights: function () {
-		var this$1 = this;
-
 
 		var scale, i;
 
@@ -24618,7 +24540,7 @@ SkinnedMesh.prototype = Object.assign( Object.create( Mesh.prototype ), {
 
 			for ( i = 0; i < this.geometry.skinWeights.length; i ++ ) {
 
-				var sw = this$1.geometry.skinWeights[ i ];
+				var sw = this.geometry.skinWeights[ i ];
 
 				scale = 1.0 / sw.manhattanLength();
 
@@ -24781,8 +24703,6 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 		var sphere = new Sphere();
 
 		return function raycast( raycaster, intersects ) {
-			var this$1 = this;
-
 
 			var precision = raycaster.linePrecision;
 			var precisionSq = precision * precision;
@@ -24832,7 +24752,7 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						if ( distSq > precisionSq ) { continue; }
 
-						interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
+						interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
 
 						var distance = raycaster.ray.origin.distanceTo( interRay );
 
@@ -24843,11 +24763,11 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 							distance: distance,
 							// What do we want? intersection point on the ray or on the segment??
 							// point: raycaster.ray.at( distance ),
-							point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
+							point: interSegment.clone().applyMatrix4( this.matrixWorld ),
 							index: i,
 							face: null,
 							faceIndex: null,
-							object: this$1
+							object: this
 
 						} );
 
@@ -24864,7 +24784,7 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 						if ( distSq > precisionSq ) { continue; }
 
-						interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
+						interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
 
 						var distance = raycaster.ray.origin.distanceTo( interRay );
 
@@ -24875,11 +24795,11 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 							distance: distance,
 							// What do we want? intersection point on the ray or on the segment??
 							// point: raycaster.ray.at( distance ),
-							point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
+							point: interSegment.clone().applyMatrix4( this.matrixWorld ),
 							index: i,
 							face: null,
 							faceIndex: null,
-							object: this$1
+							object: this
 
 						} );
 
@@ -24898,7 +24818,7 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 					if ( distSq > precisionSq ) { continue; }
 
-					interRay.applyMatrix4( this$1.matrixWorld ); //Move back to world space for distance calculation
+					interRay.applyMatrix4( this.matrixWorld ); //Move back to world space for distance calculation
 
 					var distance = raycaster.ray.origin.distanceTo( interRay );
 
@@ -24909,11 +24829,11 @@ Line.prototype = Object.assign( Object.create( Object3D.prototype ), {
 						distance: distance,
 						// What do we want? intersection point on the ray or on the segment??
 						// point: raycaster.ray.at( distance ),
-						point: interSegment.clone().applyMatrix4( this$1.matrixWorld ),
+						point: interSegment.clone().applyMatrix4( this.matrixWorld ),
 						index: i,
 						face: null,
 						faceIndex: null,
-						object: this$1
+						object: this
 
 					} );
 
@@ -27731,8 +27651,6 @@ ExtrudeBufferGeometry.prototype.getArrays = function () {
 };
 
 ExtrudeBufferGeometry.prototype.addShapeList = function ( shapes, options ) {
-	var this$1 = this;
-
 
 	var sl = shapes.length;
 	options.arrays = this.getArrays();
@@ -27740,7 +27658,7 @@ ExtrudeBufferGeometry.prototype.addShapeList = function ( shapes, options ) {
 	for ( var s = 0; s < sl; s ++ ) {
 
 		var shape = shapes[ s ];
-		this$1.addShape( shape, options );
+		this.addShape( shape, options );
 
 	}
 
@@ -29030,8 +28948,6 @@ ShapeGeometry.prototype.toJSON = function () {
 // ShapeBufferGeometry
 
 function ShapeBufferGeometry( shapes, curveSegments ) {
-	var this$1 = this;
-
 
 	BufferGeometry.call( this );
 
@@ -29068,7 +28984,7 @@ function ShapeBufferGeometry( shapes, curveSegments ) {
 
 			addShape( shapes[ i ] );
 
-			this$1.addGroup( groupStart, groupCount, i ); // enables MultiMaterial support
+			this.addGroup( groupStart, groupCount, i ); // enables MultiMaterial support
 
 			groupStart += groupCount;
 			groupCount = 0;
@@ -30715,8 +30631,6 @@ function FileLoader( manager ) {
 Object.assign( FileLoader.prototype, {
 
 	load: function ( url, onLoad, onProgress, onError ) {
-		var this$1 = this;
-
 
 		if ( url === undefined ) { url = ''; }
 
@@ -30956,9 +30870,9 @@ Object.assign( FileLoader.prototype, {
 
 			if ( request.overrideMimeType ) { request.overrideMimeType( this.mimeType !== undefined ? this.mimeType : 'text/plain' ); }
 
-			for ( var header in this$1.requestHeader ) {
+			for ( var header in this.requestHeader ) {
 
-				request.setRequestHeader( header, this$1.requestHeader[ header ] );
+				request.setRequestHeader( header, this.requestHeader[ header ] );
 
 			}
 
@@ -31530,8 +31444,6 @@ Object.assign( Curve.prototype, {
 	// Get sequence of points using getPoint( t )
 
 	getPoints: function ( divisions ) {
-		var this$1 = this;
-
 
 		if ( divisions === undefined ) { divisions = 5; }
 
@@ -31539,7 +31451,7 @@ Object.assign( Curve.prototype, {
 
 		for ( var d = 0; d <= divisions; d ++ ) {
 
-			points.push( this$1.getPoint( d / divisions ) );
+			points.push( this.getPoint( d / divisions ) );
 
 		}
 
@@ -31550,8 +31462,6 @@ Object.assign( Curve.prototype, {
 	// Get sequence of points using getPointAt( u )
 
 	getSpacedPoints: function ( divisions ) {
-		var this$1 = this;
-
 
 		if ( divisions === undefined ) { divisions = 5; }
 
@@ -31559,7 +31469,7 @@ Object.assign( Curve.prototype, {
 
 		for ( var d = 0; d <= divisions; d ++ ) {
 
-			points.push( this$1.getPointAt( d / divisions ) );
+			points.push( this.getPointAt( d / divisions ) );
 
 		}
 
@@ -31579,8 +31489,6 @@ Object.assign( Curve.prototype, {
 	// Get list of cumulative segment lengths
 
 	getLengths: function ( divisions ) {
-		var this$1 = this;
-
 
 		if ( divisions === undefined ) { divisions = this.arcLengthDivisions; }
 
@@ -31602,7 +31510,7 @@ Object.assign( Curve.prototype, {
 
 		for ( p = 1; p <= divisions; p ++ ) {
 
-			current = this$1.getPoint( p / divisions );
+			current = this.getPoint( p / divisions );
 			sum += current.distanceTo( last );
 			cache.push( sum );
 			last = current;
@@ -31730,8 +31638,6 @@ Object.assign( Curve.prototype, {
 	},
 
 	computeFrenetFrames: function ( segments, closed ) {
-		var this$1 = this;
-
 
 		// see http://www.cs.indiana.edu/pub/techreports/TR425.pdf
 
@@ -31752,7 +31658,7 @@ Object.assign( Curve.prototype, {
 
 			u = i / segments;
 
-			tangents[ i ] = this$1.getTangentAt( u );
+			tangents[ i ] = this.getTangentAt( u );
 			tangents[ i ].normalize();
 
 		}
@@ -32243,8 +32149,6 @@ CatmullRomCurve3.prototype.getPoint = function ( t, optionalTarget ) {
 };
 
 CatmullRomCurve3.prototype.copy = function ( source ) {
-	var this$1 = this;
-
 
 	Curve.prototype.copy.call( this, source );
 
@@ -32254,7 +32158,7 @@ CatmullRomCurve3.prototype.copy = function ( source ) {
 
 		var point = source.points[ i ];
 
-		this$1.points.push( point.clone() );
+		this.points.push( point.clone() );
 
 	}
 
@@ -32267,8 +32171,6 @@ CatmullRomCurve3.prototype.copy = function ( source ) {
 };
 
 CatmullRomCurve3.prototype.toJSON = function () {
-	var this$1 = this;
-
 
 	var data = Curve.prototype.toJSON.call( this );
 
@@ -32276,7 +32178,7 @@ CatmullRomCurve3.prototype.toJSON = function () {
 
 	for ( var i = 0, l = this.points.length; i < l; i ++ ) {
 
-		var point = this$1.points[ i ];
+		var point = this.points[ i ];
 		data.points.push( point.toArray() );
 
 	}
@@ -32290,8 +32192,6 @@ CatmullRomCurve3.prototype.toJSON = function () {
 };
 
 CatmullRomCurve3.prototype.fromJSON = function ( json ) {
-	var this$1 = this;
-
 
 	Curve.prototype.fromJSON.call( this, json );
 
@@ -32300,7 +32200,7 @@ CatmullRomCurve3.prototype.fromJSON = function ( json ) {
 	for ( var i = 0, l = json.points.length; i < l; i ++ ) {
 
 		var point = json.points[ i ];
-		this$1.points.push( new Vector3().fromArray( point ) );
+		this.points.push( new Vector3().fromArray( point ) );
 
 	}
 
@@ -32874,8 +32774,6 @@ SplineCurve.prototype.getPoint = function ( t, optionalTarget ) {
 };
 
 SplineCurve.prototype.copy = function ( source ) {
-	var this$1 = this;
-
 
 	Curve.prototype.copy.call( this, source );
 
@@ -32885,7 +32783,7 @@ SplineCurve.prototype.copy = function ( source ) {
 
 		var point = source.points[ i ];
 
-		this$1.points.push( point.clone() );
+		this.points.push( point.clone() );
 
 	}
 
@@ -32894,8 +32792,6 @@ SplineCurve.prototype.copy = function ( source ) {
 };
 
 SplineCurve.prototype.toJSON = function () {
-	var this$1 = this;
-
 
 	var data = Curve.prototype.toJSON.call( this );
 
@@ -32903,7 +32799,7 @@ SplineCurve.prototype.toJSON = function () {
 
 	for ( var i = 0, l = this.points.length; i < l; i ++ ) {
 
-		var point = this$1.points[ i ];
+		var point = this.points[ i ];
 		data.points.push( point.toArray() );
 
 	}
@@ -32913,8 +32809,6 @@ SplineCurve.prototype.toJSON = function () {
 };
 
 SplineCurve.prototype.fromJSON = function ( json ) {
-	var this$1 = this;
-
 
 	Curve.prototype.fromJSON.call( this, json );
 
@@ -32923,7 +32817,7 @@ SplineCurve.prototype.fromJSON = function ( json ) {
 	for ( var i = 0, l = json.points.length; i < l; i ++ ) {
 
 		var point = json.points[ i ];
-		this$1.points.push( new Vector2().fromArray( point ) );
+		this.points.push( new Vector2().fromArray( point ) );
 
 	}
 
@@ -33001,8 +32895,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	// 4. Return curve.getPointAt(t')
 
 	getPoint: function ( t ) {
-		var this$1 = this;
-
 
 		var d = t * this.getLength();
 		var curveLengths = this.getCurveLengths();
@@ -33015,7 +32907,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 			if ( curveLengths[ i ] >= d ) {
 
 				var diff = curveLengths[ i ] - d;
-				var curve = this$1.curves[ i ];
+				var curve = this.curves[ i ];
 
 				var segmentLength = curve.getLength();
 				var u = segmentLength === 0 ? 0 : 1 - diff / segmentLength;
@@ -33058,8 +32950,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	// We cannot overwrite getLengths() because UtoT mapping uses it.
 
 	getCurveLengths: function () {
-		var this$1 = this;
-
 
 		// We use cache values if curves and cache array are same length
 
@@ -33076,7 +32966,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		for ( var i = 0, l = this.curves.length; i < l; i ++ ) {
 
-			sums += this$1.curves[ i ].getLength();
+			sums += this.curves[ i ].getLength();
 			lengths.push( sums );
 
 		}
@@ -33088,8 +32978,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	getSpacedPoints: function ( divisions ) {
-		var this$1 = this;
-
 
 		if ( divisions === undefined ) { divisions = 40; }
 
@@ -33097,7 +32985,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		for ( var i = 0; i <= divisions; i ++ ) {
 
-			points.push( this$1.getPoint( i / divisions ) );
+			points.push( this.getPoint( i / divisions ) );
 
 		}
 
@@ -33151,8 +33039,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		Curve.prototype.copy.call( this, source );
 
@@ -33162,7 +33048,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 			var curve = source.curves[ i ];
 
-			this$1.curves.push( curve.clone() );
+			this.curves.push( curve.clone() );
 
 		}
 
@@ -33173,8 +33059,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	toJSON: function () {
-		var this$1 = this;
-
 
 		var data = Curve.prototype.toJSON.call( this );
 
@@ -33183,7 +33067,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 
 		for ( var i = 0, l = this.curves.length; i < l; i ++ ) {
 
-			var curve = this$1.curves[ i ];
+			var curve = this.curves[ i ];
 			data.curves.push( curve.toJSON() );
 
 		}
@@ -33193,8 +33077,6 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 	},
 
 	fromJSON: function ( json ) {
-		var this$1 = this;
-
 
 		Curve.prototype.fromJSON.call( this, json );
 
@@ -33204,7 +33086,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
 		for ( var i = 0, l = json.curves.length; i < l; i ++ ) {
 
 			var curve = json.curves[ i ];
-			this$1.curves.push( new Curves[ curve.type ]().fromJSON( curve ) );
+			this.curves.push( new Curves[ curve.type ]().fromJSON( curve ) );
 
 		}
 
@@ -33240,14 +33122,12 @@ Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 	constructor: Path,
 
 	setFromPoints: function ( points ) {
-		var this$1 = this;
-
 
 		this.moveTo( points[ 0 ].x, points[ 0 ].y );
 
 		for ( var i = 1, l = points.length; i < l; i ++ ) {
 
-			this$1.lineTo( points[ i ].x, points[ i ].y );
+			this.lineTo( points[ i ].x, points[ i ].y );
 
 		}
 
@@ -33417,14 +33297,12 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 	constructor: Shape,
 
 	getPointsHoles: function ( divisions ) {
-		var this$1 = this;
-
 
 		var holesPts = [];
 
 		for ( var i = 0, l = this.holes.length; i < l; i ++ ) {
 
-			holesPts[ i ] = this$1.holes[ i ].getPoints( divisions );
+			holesPts[ i ] = this.holes[ i ].getPoints( divisions );
 
 		}
 
@@ -33446,8 +33324,6 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 	},
 
 	copy: function ( source ) {
-		var this$1 = this;
-
 
 		Path.prototype.copy.call( this, source );
 
@@ -33457,7 +33333,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 			var hole = source.holes[ i ];
 
-			this$1.holes.push( hole.clone() );
+			this.holes.push( hole.clone() );
 
 		}
 
@@ -33466,8 +33342,6 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 	},
 
 	toJSON: function () {
-		var this$1 = this;
-
 
 		var data = Path.prototype.toJSON.call( this );
 
@@ -33476,7 +33350,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 		for ( var i = 0, l = this.holes.length; i < l; i ++ ) {
 
-			var hole = this$1.holes[ i ];
+			var hole = this.holes[ i ];
 			data.holes.push( hole.toJSON() );
 
 		}
@@ -33486,8 +33360,6 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 	},
 
 	fromJSON: function ( json ) {
-		var this$1 = this;
-
 
 		Path.prototype.fromJSON.call( this, json );
 
@@ -33497,7 +33369,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 		for ( var i = 0, l = json.holes.length; i < l; i ++ ) {
 
 			var hole = json.holes[ i ];
-			this$1.holes.push( new Path().fromJSON( hole ) );
+			this.holes.push( new Path().fromJSON( hole ) );
 
 		}
 
@@ -34051,8 +33923,6 @@ function Interpolant( parameterPositions, sampleValues, sampleSize, resultBuffer
 Object.assign( Interpolant.prototype, {
 
 	evaluate: function ( t ) {
-		var this$1 = this;
-
 
 		var pp = this.parameterPositions,
 			i1 = this._cachedIndex,
@@ -34083,8 +33953,8 @@ Object.assign( Interpolant.prototype, {
 								// after end
 
 								i1 = pp.length;
-								this$1._cachedIndex = i1;
-								return this$1.afterEnd_( i1 - 1, t, t0 );
+								this._cachedIndex = i1;
+								return this.afterEnd_( i1 - 1, t, t0 );
 
 							}
 
@@ -34131,8 +34001,8 @@ Object.assign( Interpolant.prototype, {
 
 								// before start
 
-								this$1._cachedIndex = 0;
-								return this$1.beforeStart_( 0, t, t1 );
+								this._cachedIndex = 0;
+								return this.beforeStart_( 0, t, t1 );
 
 							}
 
@@ -35122,8 +34992,6 @@ Object.assign( KeyframeTrack.prototype, {
 
 	// ensure we do not get a GarbageInGarbageOut situation, make sure tracks are at least minimally viable
 	validate: function () {
-		var this$1 = this;
-
 
 		var valid = true;
 
@@ -35155,7 +35023,7 @@ Object.assign( KeyframeTrack.prototype, {
 
 			if ( typeof currTime === 'number' && isNaN( currTime ) ) {
 
-				console.error( 'THREE.KeyframeTrack: Time is not a valid number.', this$1, i, currTime );
+				console.error( 'THREE.KeyframeTrack: Time is not a valid number.', this, i, currTime );
 				valid = false;
 				break;
 
@@ -35163,7 +35031,7 @@ Object.assign( KeyframeTrack.prototype, {
 
 			if ( prevTime !== null && prevTime > currTime ) {
 
-				console.error( 'THREE.KeyframeTrack: Out of order keys.', this$1, i, currTime, prevTime );
+				console.error( 'THREE.KeyframeTrack: Out of order keys.', this, i, currTime, prevTime );
 				valid = false;
 				break;
 
@@ -35183,7 +35051,7 @@ Object.assign( KeyframeTrack.prototype, {
 
 					if ( isNaN( value ) ) {
 
-						console.error( 'THREE.KeyframeTrack: Value is not a valid number.', this$1, i, value );
+						console.error( 'THREE.KeyframeTrack: Value is not a valid number.', this, i, value );
 						valid = false;
 						break;
 
@@ -35643,14 +35511,12 @@ Object.assign( AnimationClip, {
 Object.assign( AnimationClip.prototype, {
 
 	resetDuration: function () {
-		var this$1 = this;
-
 
 		var tracks = this.tracks, duration = 0;
 
 		for ( var i = 0, n = tracks.length; i !== n; ++ i ) {
 
-			var track = this$1.tracks[ i ];
+			var track = this.tracks[ i ];
 
 			duration = Math.max( duration, track.times[ track.times.length - 1 ] );
 
@@ -35661,12 +35527,10 @@ Object.assign( AnimationClip.prototype, {
 	},
 
 	trim: function () {
-		var this$1 = this;
-
 
 		for ( var i = 0; i < this.tracks.length; i ++ ) {
 
-			this$1.tracks[ i ].trim( 0, this$1.duration );
+			this.tracks[ i ].trim( 0, this.duration );
 
 		}
 
@@ -35675,12 +35539,10 @@ Object.assign( AnimationClip.prototype, {
 	},
 
 	optimize: function () {
-		var this$1 = this;
-
 
 		for ( var i = 0; i < this.tracks.length; i ++ ) {
 
-			this$1.tracks[ i ].optimize();
+			this.tracks[ i ].optimize();
 
 		}
 
@@ -36001,14 +35863,12 @@ Object.assign( Loader.prototype, {
 	crossOrigin: undefined,
 
 	initMaterials: function ( materials, texturePath, crossOrigin ) {
-		var this$1 = this;
-
 
 		var array = [];
 
 		for ( var i = 0; i < materials.length; ++ i ) {
 
-			array[ i ] = this$1.createMaterial( materials[ i ], texturePath, crossOrigin );
+			array[ i ] = this.createMaterial( materials[ i ], texturePath, crossOrigin );
 
 		}
 
@@ -37000,8 +36860,6 @@ Object.assign( ObjectLoader.prototype, {
 	},
 
 	parseGeometries: function ( json, shapes ) {
-		var this$1 = this;
-
 
 		var geometries = {};
 
@@ -37211,7 +37069,7 @@ Object.assign( ObjectLoader.prototype, {
 
 					case 'Geometry':
 
-						geometry = geometryLoader.parse( data, this$1.texturePath ).geometry;
+						geometry = geometryLoader.parse( data, this.texturePath ).geometry;
 
 						break;
 
@@ -37412,8 +37270,6 @@ Object.assign( ObjectLoader.prototype, {
 		var matrix = new Matrix4();
 
 		return function parseObject( data, geometries, materials ) {
-			var this$1 = this;
-
 
 			var object;
 
@@ -37659,7 +37515,7 @@ Object.assign( ObjectLoader.prototype, {
 
 				for ( var i = 0; i < children.length; i ++ ) {
 
-					object.add( this$1.parseObject( children[ i ], geometries, materials ) );
+					object.add( this.parseObject( children[ i ], geometries, materials ) );
 
 				}
 
@@ -38838,8 +38694,6 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	connect: function () {
-		var this$1 = this;
-
 
 		if ( this.filters.length > 0 ) {
 
@@ -38847,7 +38701,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			for ( var i = 1, l = this.filters.length; i < l; i ++ ) {
 
-				this$1.filters[ i - 1 ].connect( this$1.filters[ i ] );
+				this.filters[ i - 1 ].connect( this.filters[ i ] );
 
 			}
 
@@ -38864,8 +38718,6 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 	},
 
 	disconnect: function () {
-		var this$1 = this;
-
 
 		if ( this.filters.length > 0 ) {
 
@@ -38873,7 +38725,7 @@ Audio.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 			for ( var i = 1, l = this.filters.length; i < l; i ++ ) {
 
-				this$1.filters[ i - 1 ].disconnect( this$1.filters[ i ] );
+				this.filters[ i - 1 ].disconnect( this.filters[ i ] );
 
 			}
 
@@ -41149,8 +41001,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	constructor: AnimationMixer,
 
 	_bindAction: function ( action, prototypeAction ) {
-		var this$1 = this;
-
 
 		var root = action._localRoot || this._root,
 			tracks = action._clip.tracks,
@@ -41189,7 +41039,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 					if ( binding._cacheIndex === null ) {
 
 						++ binding.referenceCount;
-						this$1._addInactiveBinding( binding, rootUuid, trackName );
+						this._addInactiveBinding( binding, rootUuid, trackName );
 
 					}
 
@@ -41205,7 +41055,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 					track.ValueTypeName, track.getValueSize() );
 
 				++ binding.referenceCount;
-				this$1._addInactiveBinding( binding, rootUuid, trackName );
+				this._addInactiveBinding( binding, rootUuid, trackName );
 
 				bindings[ i ] = binding;
 
@@ -41218,8 +41068,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	},
 
 	_activateAction: function ( action ) {
-		var this$1 = this;
-
 
 		if ( ! this._isActiveAction( action ) ) {
 
@@ -41248,7 +41096,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 				if ( binding.useCount ++ === 0 ) {
 
-					this$1._lendBinding( binding );
+					this._lendBinding( binding );
 					binding.saveOriginalState();
 
 				}
@@ -41262,8 +41110,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	},
 
 	_deactivateAction: function ( action ) {
-		var this$1 = this;
-
 
 		if ( this._isActiveAction( action ) ) {
 
@@ -41277,7 +41123,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 				if ( -- binding.useCount === 0 ) {
 
 					binding.restoreOriginalState();
-					this$1._takeBackBinding( binding );
+					this._takeBackBinding( binding );
 
 				}
 
@@ -41448,8 +41294,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 	},
 
 	_removeInactiveBindingsForAction: function ( action ) {
-		var this$1 = this;
-
 
 		var bindings = action._propertyBindings;
 		for ( var i = 0, n = bindings.length; i !== n; ++ i ) {
@@ -41458,7 +41302,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 			if ( -- binding.referenceCount === 0 ) {
 
-				this$1._removeInactiveBinding( binding );
+				this._removeInactiveBinding( binding );
 
 			}
 
@@ -41789,8 +41633,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 	// free all resources specific to a particular clip
 	uncacheClip: function ( clip ) {
-		var this$1 = this;
-
 
 		var actions = this._actions,
 			clipUuid = clip.uuid,
@@ -41809,7 +41651,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 				var action = actionsToRemove[ i ];
 
-				this$1._deactivateAction( action );
+				this._deactivateAction( action );
 
 				var cacheIndex = action._cacheIndex,
 					lastInactiveAction = actions[ actions.length - 1 ];
@@ -41821,7 +41663,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 				actions[ cacheIndex ] = lastInactiveAction;
 				actions.pop();
 
-				this$1._removeInactiveBindingsForAction( action );
+				this._removeInactiveBindingsForAction( action );
 
 			}
 
@@ -41833,8 +41675,6 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 	// free all resources specific to a particular root target object
 	uncacheRoot: function ( root ) {
-		var this$1 = this;
-
 
 		var rootUuid = root.uuid,
 			actionsByClip = this._actionsByClip;
@@ -41846,8 +41686,8 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 			if ( action !== undefined ) {
 
-				this$1._deactivateAction( action );
-				this$1._removeInactiveAction( action );
+				this._deactivateAction( action );
+				this._removeInactiveAction( action );
 
 			}
 
@@ -41862,7 +41702,7 @@ AnimationMixer.prototype = Object.assign( Object.create( EventDispatcher.prototy
 
 				var binding = bindingByName[ trackName ];
 				binding.restoreOriginalState();
-				this$1._removeInactiveBinding( binding );
+				this._removeInactiveBinding( binding );
 
 			}
 
@@ -42152,15 +41992,13 @@ Object.assign( InterleavedBuffer.prototype, {
 	},
 
 	copyAt: function ( index1, attribute, index2 ) {
-		var this$1 = this;
-
 
 		index1 *= this.stride;
 		index2 *= attribute.stride;
 
 		for ( var i = 0, l = this.stride; i < l; i ++ ) {
 
-			this$1.array[ index1 + i ] = attribute.array[ index2 + i ];
+			this.array[ index1 + i ] = attribute.array[ index2 + i ];
 
 		}
 
@@ -42360,8 +42198,6 @@ Object.assign( Raycaster.prototype, {
 	},
 
 	intersectObjects: function ( objects, recursive ) {
-		var this$1 = this;
-
 
 		var intersects = [];
 
@@ -42374,7 +42210,7 @@ Object.assign( Raycaster.prototype, {
 
 		for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
-			intersectObject( objects[ i ], this$1, intersects, recursive );
+			intersectObject( objects[ i ], this, intersects, recursive );
 
 		}
 
@@ -42671,8 +42507,6 @@ VertexNormalsHelper.prototype.update = ( function () {
 	var normalMatrix = new Matrix3();
 
 	return function update() {
-		var this$1 = this;
-
 
 		var keys = [ 'a', 'b', 'c' ];
 
@@ -42708,7 +42542,7 @@ VertexNormalsHelper.prototype.update = ( function () {
 
 					v1.copy( vertex ).applyMatrix4( matrixWorld );
 
-					v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
+					v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
 
 					position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -42738,7 +42572,7 @@ VertexNormalsHelper.prototype.update = ( function () {
 
 				v2.set( objNorm.getX( j ), objNorm.getY( j ), objNorm.getZ( j ) );
 
-				v2.applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
+				v2.applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
 
 				position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -43405,8 +43239,6 @@ FaceNormalsHelper.prototype.update = ( function () {
 	var normalMatrix = new Matrix3();
 
 	return function update() {
-		var this$1 = this;
-
 
 		this.object.updateMatrixWorld( true );
 
@@ -43438,7 +43270,7 @@ FaceNormalsHelper.prototype.update = ( function () {
 				.divideScalar( 3 )
 				.applyMatrix4( matrixWorld );
 
-			v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this$1.size ).add( v1 );
+			v2.copy( normal ).applyMatrix3( normalMatrix ).normalize().multiplyScalar( this.size ).add( v1 );
 
 			position.setXYZ( idx, v1.x, v1.y, v1.z );
 
@@ -46330,7 +46162,7 @@ var closestAxisPoint = function(axisRay, camera, mousePos) {
  * @author Julius Kammerl - jkammerl@willowgarage.com
  */
 
-var DepthCloud = (function (superclass) {
+var DepthCloud = /*@__PURE__*/(function (superclass) {
   function DepthCloud(options) {
     superclass.call(this);
     options = options || {};
@@ -46547,8 +46379,6 @@ var DepthCloud = (function (superclass) {
    * Callback called when video metadata is ready
    */
   DepthCloud.prototype.initStreamer = function initStreamer () {
-    var this$1 = this;
-
 
     if (this.metaLoaded) {
       this.texture = new THREE$1.Texture(this.video);
@@ -46557,10 +46387,10 @@ var DepthCloud = (function (superclass) {
       for (var i = 0, l = this.width * this.height; i < l; i++) {
 
         var vertex = new THREE$1.Vector3();
-        vertex.x = (i % this$1.width);
-        vertex.y = Math.floor(i / this$1.width);
+        vertex.x = (i % this.width);
+        vertex.y = Math.floor(i / this.width);
 
-        this$1.geometry.vertices.push(vertex);
+        this.geometry.vertices.push(vertex);
       }
 
       this.material = new THREE$1.ShaderMaterial({
@@ -46648,7 +46478,7 @@ var DepthCloud = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var Arrow = (function (superclass) {
+var Arrow = /*@__PURE__*/(function (superclass) {
   function Arrow(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
@@ -50519,7 +50349,7 @@ THREE$1.ColladaLoader.prototype = {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var MeshResource = (function (superclass) {
+var MeshResource = /*@__PURE__*/(function (superclass) {
   function MeshResource(options) {
     superclass.call(this);
     var that = this;
@@ -50602,7 +50432,7 @@ var MeshResource = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var TriangleList = (function (superclass) {
+var TriangleList = /*@__PURE__*/(function (superclass) {
   function TriangleList(options) {
     options = options || {};
     var material = options.material || new THREE$1.MeshBasicMaterial();
@@ -50677,7 +50507,7 @@ var TriangleList = (function (superclass) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Marker = (function (superclass) {
+var Marker = /*@__PURE__*/(function (superclass) {
   function Marker(options) {
     superclass.call(this);
 
@@ -51161,7 +50991,7 @@ var Marker = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerControl = (function (superclass) {
+var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
   function InteractiveMarkerControl(options) {
     superclass.call(this);
     var that = this;
@@ -51423,7 +51253,7 @@ var InteractiveMarkerControl = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerMenu = (function (superclass) {
+var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
   function InteractiveMarkerMenu(options) {
     superclass.call(this);
     var that = this;
@@ -51597,7 +51427,7 @@ var InteractiveMarkerMenu = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarker = (function (superclass) {
+var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   function InteractiveMarker(options) {
     superclass.call(this);
 
@@ -52121,8 +51951,6 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   }
 
   function growListenerTree(type, listener) {
-    var this$1 = this;
-
 
     type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
 
@@ -52160,11 +51988,11 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
           if (
             !tree._listeners.warned &&
-            this$1._maxListeners > 0 &&
-            tree._listeners.length > this$1._maxListeners
+            this._maxListeners > 0 &&
+            tree._listeners.length > this._maxListeners
           ) {
             tree._listeners.warned = true;
-            logPossibleMemoryLeak.call(this$1, tree._listeners.length, name);
+            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
           }
         }
         return true;
@@ -52238,7 +52066,6 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
   EventEmitter.prototype.emit = function() {
     var arguments$1 = arguments;
-    var this$1 = this;
 
 
     this._events || init.call(this);
@@ -52263,19 +52090,19 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       }
 
       for (i = 0, l = handler.length; i < l; i++) {
-        this$1.event = type;
+        this.event = type;
         switch (al) {
         case 1:
-          handler[i].call(this$1, type);
+          handler[i].call(this, type);
           break;
         case 2:
-          handler[i].call(this$1, type, arguments$1[1]);
+          handler[i].call(this, type, arguments$1[1]);
           break;
         case 3:
-          handler[i].call(this$1, type, arguments$1[1], arguments$1[2]);
+          handler[i].call(this, type, arguments$1[1], arguments$1[2]);
           break;
         default:
-          handler[i].apply(this$1, args);
+          handler[i].apply(this, args);
         }
       }
     }
@@ -52317,19 +52144,19 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
       }
       for (i = 0, l = handler.length; i < l; i++) {
-        this$1.event = type;
+        this.event = type;
         switch (al) {
         case 1:
-          handler[i].call(this$1);
+          handler[i].call(this);
           break;
         case 2:
-          handler[i].call(this$1, arguments$1[1]);
+          handler[i].call(this, arguments$1[1]);
           break;
         case 3:
-          handler[i].call(this$1, arguments$1[1], arguments$1[2]);
+          handler[i].call(this, arguments$1[1], arguments$1[2]);
           break;
         default:
-          handler[i].apply(this$1, args);
+          handler[i].apply(this, args);
         }
       }
       return true;
@@ -52347,7 +52174,6 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
   EventEmitter.prototype.emitAsync = function() {
     var arguments$1 = arguments;
-    var this$1 = this;
 
 
     this._events || init.call(this);
@@ -52370,19 +52196,19 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         for (j = 1; j < al; j++) { args[j] = arguments$1[j]; }
       }
       for (i = 0, l = this._all.length; i < l; i++) {
-        this$1.event = type;
+        this.event = type;
         switch (al) {
         case 1:
-          promises.push(this$1._all[i].call(this$1, type));
+          promises.push(this._all[i].call(this, type));
           break;
         case 2:
-          promises.push(this$1._all[i].call(this$1, type, arguments$1[1]));
+          promises.push(this._all[i].call(this, type, arguments$1[1]));
           break;
         case 3:
-          promises.push(this$1._all[i].call(this$1, type, arguments$1[1], arguments$1[2]));
+          promises.push(this._all[i].call(this, type, arguments$1[1], arguments$1[2]));
           break;
         default:
-          promises.push(this$1._all[i].apply(this$1, args));
+          promises.push(this._all[i].apply(this, args));
         }
       }
     }
@@ -52419,19 +52245,19 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
       }
       for (i = 0, l = handler.length; i < l; i++) {
-        this$1.event = type;
+        this.event = type;
         switch (al) {
         case 1:
-          promises.push(handler[i].call(this$1));
+          promises.push(handler[i].call(this));
           break;
         case 2:
-          promises.push(handler[i].call(this$1, arguments$1[1]));
+          promises.push(handler[i].call(this, arguments$1[1]));
           break;
         case 3:
-          promises.push(handler[i].call(this$1, arguments$1[1], arguments$1[2]));
+          promises.push(handler[i].call(this, arguments$1[1], arguments$1[2]));
           break;
         default:
-          promises.push(handler[i].apply(this$1, args));
+          promises.push(handler[i].apply(this, args));
         }
       }
     } else if (!this._all && type === 'error') {
@@ -52534,8 +52360,6 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.off = function(type, listener) {
-    var this$1 = this;
-
     if (typeof listener !== 'function') {
       throw new Error('removeListener only takes instances of Function');
     }
@@ -52573,37 +52397,37 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           continue;
         }
 
-        if(this$1.wildcard) {
+        if(this.wildcard) {
           leaf._listeners.splice(position, 1);
         }
         else {
-          this$1._events[type].splice(position, 1);
+          this._events[type].splice(position, 1);
         }
 
         if (handlers.length === 0) {
-          if(this$1.wildcard) {
+          if(this.wildcard) {
             delete leaf._listeners;
           }
           else {
-            delete this$1._events[type];
+            delete this._events[type];
           }
         }
 
-        this$1.emit("removeListener", type, listener);
+        this.emit("removeListener", type, listener);
 
-        return this$1;
+        return this;
       }
       else if (handlers === listener ||
         (handlers.listener && handlers.listener === listener) ||
         (handlers._origin && handlers._origin === listener)) {
-        if(this$1.wildcard) {
+        if(this.wildcard) {
           delete leaf._listeners;
         }
         else {
-          delete this$1._events[type];
+          delete this._events[type];
         }
 
-        this$1.emit("removeListener", type, listener);
+        this.emit("removeListener", type, listener);
       }
     }
 
@@ -52631,22 +52455,20 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   };
 
   EventEmitter.prototype.offAny = function(fn) {
-    var this$1 = this;
-
     var i = 0, l = 0, fns;
     if (fn && this._all && this._all.length > 0) {
       fns = this._all;
       for(i = 0, l = fns.length; i < l; i++) {
         if(fn === fns[i]) {
           fns.splice(i, 1);
-          this$1.emit("removeListenerAny", fn);
-          return this$1;
+          this.emit("removeListenerAny", fn);
+          return this;
         }
       }
     } else {
       fns = this._all;
       for(i = 0, l = fns.length; i < l; i++)
-        { this$1.emit("removeListenerAny", fns[i]); }
+        { this.emit("removeListenerAny", fns[i]); }
       this._all = [];
     }
     return this;
@@ -52727,7 +52549,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerHandle = (function (EventEmitter2) {
+var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
   function InteractiveMarkerHandle(options) {
     EventEmitter2.call(this);
     options = options || {};
@@ -52958,8 +52780,6 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
  * Unsubscribe from the current interactive marker topic.
  */
 InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
-    var this$1 = this;
-
   if (this.updateTopic) {
     this.updateTopic.unsubscribe();
   }
@@ -52967,8 +52787,8 @@ InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
     this.feedbackTopic.unadvertise();
   }
   // erase all markers
-  for (var intMarkerName in this$1.interactiveMarkers) {
-    this$1.eraseIntMarker(intMarkerName);
+  for (var intMarkerName in this.interactiveMarkers) {
+    this.eraseIntMarker(intMarkerName);
   }
   this.interactiveMarkers = {};
 };
@@ -52978,13 +52798,11 @@ InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
  * @param initMessage - the interactive marker initialization message to process
  */
 InteractiveMarkerClient.prototype.processInit = function processInit (initMessage) {
-    var this$1 = this;
-
   var message = initMessage.msg;
 
   // erase any old markers
   message.erases = [];
-  for (var intMarkerName in this$1.interactiveMarkers) {
+  for (var intMarkerName in this.interactiveMarkers) {
     message.erases.push(intMarkerName);
   }
   message.poses = [];
@@ -53092,7 +52910,7 @@ InteractiveMarkerClient.prototype.eraseIntMarker = function eraseIntMarker (intM
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var SceneNode = (function (superclass) {
+var SceneNode = /*@__PURE__*/(function (superclass) {
   function SceneNode(options) {
     superclass.call(this);
     options = options || {};
@@ -53154,7 +52972,7 @@ var SceneNode = (function (superclass) {
  * @author Nils Berg - berg.nils@gmail.com
  */
 
-var MarkerArrayClient = (function (EventEmitter2) {
+var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   function MarkerArrayClient(options) {
     EventEmitter2.call(this);
     options = options || {};
@@ -53188,8 +53006,6 @@ var MarkerArrayClient = (function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
     arrayMessage.markers.forEach(function(message) {
-      var this$1 = this;
-
       if(message.action === 0) {
         var updated = false;
         if(message.ns + message.id in this.markers) { // "MODIFY"
@@ -53221,9 +53037,9 @@ var MarkerArrayClient = (function (EventEmitter2) {
         delete this.markers[message.ns + message.id];
       }
       else if(message.action === 3) { // "DELETE ALL"
-        for (var m in this$1.markers){
-          this$1.markers[m].unsubscribeTf();
-          this$1.rootObject.remove(this$1.markers[m]);
+        for (var m in this.markers){
+          this.markers[m].unsubscribeTf();
+          this.rootObject.remove(this.markers[m]);
         }
         this.markers = {};
       }
@@ -53247,7 +53063,7 @@ var MarkerArrayClient = (function (EventEmitter2) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var MarkerClient = (function (EventEmitter2) {
+var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   function MarkerClient(options) {
     EventEmitter2.call(this);
     options = options || {};
@@ -53256,10 +53072,12 @@ var MarkerClient = (function (EventEmitter2) {
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
     this.path = options.path || '/';
+    this.lifetime = options.lifetime || 0;
 
     // Markers that are displayed (Map ns+id--Marker)
     this.markers = {};
     this.rosTopic = undefined;
+    this.updatedTime = {};
 
     this.subscribe();
   }
@@ -53271,6 +53089,19 @@ var MarkerClient = (function (EventEmitter2) {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
+  };
+  MarkerClient.prototype.checkTime = function checkTime (name){
+      var curTime = new Date().getTime();
+      if (curTime - this.updatedTime[name] > this.lifetime) {
+          var oldNode = this.markers[name];
+          oldNode.unsubscribeTf();
+          this.rootObject.remove(oldNode);
+          this.emit('change');
+      } else {
+          var that = this;
+          setTimeout(function() {that.checkTime(name);},
+                     100);
+      }
   };
   MarkerClient.prototype.subscribe = function subscribe (){
     this.unsubscribe();
@@ -53292,9 +53123,12 @@ var MarkerClient = (function (EventEmitter2) {
 
     // remove old marker from Three.Object3D children buffer
     var oldNode = this.markers[message.ns + message.id];
+    this.updatedTime[message.ns + message.id] = new Date().getTime();
     if (oldNode) {
       oldNode.unsubscribeTf();
       this.rootObject.remove(oldNode);
+    } else if (this.lifetime) {
+      this.checkTime(message.ns + message.id);
     }
 
     this.markers[message.ns + message.id] = new SceneNode({
@@ -53314,7 +53148,7 @@ var MarkerClient = (function (EventEmitter2) {
  * @author Jihoon Lee - lee@magazino.eu
  */
 
-var Arrow2 = (function (superclass) {
+var Arrow2 = /*@__PURE__*/(function (superclass) {
   function Arrow2(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
@@ -53354,7 +53188,7 @@ var Arrow2 = (function (superclass) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var Axes = (function (superclass) {
+var Axes = /*@__PURE__*/(function (superclass) {
   function Axes(options) {
     superclass.call(this);
     var that = this;
@@ -53421,10 +53255,8 @@ var Axes = (function (superclass) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Grid = (function (superclass) {
+var Grid = /*@__PURE__*/(function (superclass) {
   function Grid(options) {
-    var this$1 = this;
-
     options = options || {};
     var num_cells = options.num_cells || 10;
     var color = options.color || '#cccccc';
@@ -53451,8 +53283,8 @@ var Grid = (function (superclass) {
         new THREE$1.Vector3( position, -edge, 0 ),
         new THREE$1.Vector3( position, edge, 0 )
       );
-      this$1.add(new THREE$1.Line(geometryH, material));
-      this$1.add(new THREE$1.Line(geometryV, material));
+      this.add(new THREE$1.Line(geometryH, material));
+      this.add(new THREE$1.Line(geometryV, material));
     }
   }
 
@@ -53467,7 +53299,7 @@ var Grid = (function (superclass) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var OccupancyGrid = (function (superclass) {
+var OccupancyGrid = /*@__PURE__*/(function (superclass) {
   function OccupancyGrid(options) {
     options = options || {};
     var message = options.message;
@@ -53547,12 +53379,13 @@ var OccupancyGrid = (function (superclass) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var OccupancyGridClient = (function (EventEmitter2) {
+var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
   function OccupancyGridClient(options) {
     EventEmitter2.call(this);
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/map';
+    this.compression = options.compression || 'cbor';
     this.continuous = options.continuous;
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -53584,7 +53417,7 @@ var OccupancyGridClient = (function (EventEmitter2) {
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
-      compression : 'png'
+      compression : this.compression
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
@@ -53635,7 +53468,7 @@ var OccupancyGridClient = (function (EventEmitter2) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Odometry = (function (superclass) {
+var Odometry = /*@__PURE__*/(function (superclass) {
   function Odometry(options) {
     superclass.call(this);
     this.options = options || {};
@@ -53706,7 +53539,7 @@ var Odometry = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Path$1 = (function (superclass) {
+var Path$1 = /*@__PURE__*/(function (superclass) {
   function Path(options) {
     superclass.call(this);
     options = options || {};
@@ -53776,7 +53609,7 @@ var Path$1 = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Point = (function (superclass) {
+var Point = /*@__PURE__*/(function (superclass) {
   function Point(options) {
     superclass.call(this);
     this.options = options || {};
@@ -53840,7 +53673,7 @@ var Point = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Polygon = (function (superclass) {
+var Polygon = /*@__PURE__*/(function (superclass) {
   function Polygon(options) {
     superclass.call(this);
     options = options || {};
@@ -53913,7 +53746,7 @@ var Polygon = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Pose = (function (superclass) {
+var Pose = /*@__PURE__*/(function (superclass) {
   function Pose(options) {
     superclass.call(this);
     this.options = options || {};
@@ -53981,7 +53814,7 @@ var Pose = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var PoseArray = (function (superclass) {
+var PoseArray = /*@__PURE__*/(function (superclass) {
   function PoseArray(options) {
     superclass.call(this);
     this.options = options || {};
@@ -54019,8 +53852,6 @@ var PoseArray = (function (superclass) {
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   PoseArray.prototype.processMessage = function processMessage (message){
-    var this$1 = this;
-
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -54039,9 +53870,9 @@ var PoseArray = (function (superclass) {
         var rot = new THREE$1.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
                                        message.poses[i].orientation.z, message.poses[i].orientation.w);
 
-        var tip = new THREE$1.Vector3(this$1.length,0,0);
-        var side1 = new THREE$1.Vector3(this$1.length*0.8, this$1.length*0.2, 0);
-        var side2 = new THREE$1.Vector3(this$1.length*0.8, -this$1.length*0.2, 0);
+        var tip = new THREE$1.Vector3(this.length,0,0);
+        var side1 = new THREE$1.Vector3(this.length*0.8, this.length*0.2, 0);
+        var side2 = new THREE$1.Vector3(this.length*0.8, -this.length*0.2, 0);
         tip.applyQuaternion(rot);
         side1.applyQuaternion(rot);
         side2.applyQuaternion(rot);
@@ -54052,7 +53883,7 @@ var PoseArray = (function (superclass) {
         lineGeometry.vertices.push(tip);
 
         lineGeometry.computeLineDistances();
-        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this$1.color } );
+        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
         line = new THREE$1.Line( lineGeometry, lineMaterial );
 
         group.add(line);
@@ -54074,7 +53905,7 @@ var PoseArray = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var PoseWithCovariance = (function (superclass) {
+var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
   function PoseWithCovariance(options) {
     superclass.call(this);
     this.options = options || {};
@@ -54143,7 +53974,7 @@ var PoseWithCovariance = (function (superclass) {
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-var Points$1 = (function (superclass) {
+var Points$1 = /*@__PURE__*/(function (superclass) {
   function Points(options) {
     superclass.call(this);
     options = options || {};
@@ -54174,14 +54005,12 @@ var Points$1 = (function (superclass) {
 
   Points.prototype.setup = function setup (frame, point_step, fields)
   {
-      var this$1 = this;
-
       if(this.sn===null){
           // turn fields to a map
           fields = fields || [];
           this.fields = {};
           for(var i=0; i<fields.length; i++) {
-              this$1.fields[fields[i].name] = fields[i];
+              this.fields[fields[i].name] = fields[i];
           }
           this.geom = new THREE$1.BufferGeometry();
 
@@ -54252,7 +54081,7 @@ var Points$1 = (function (superclass) {
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var LaserScan = (function (superclass) {
+var LaserScan = /*@__PURE__*/(function (superclass) {
   function LaserScan(options) {
     superclass.call(this);
     options = options || {};
@@ -54285,8 +54114,6 @@ var LaserScan = (function (superclass) {
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   LaserScan.prototype.processMessage = function processMessage (message){
-    var this$1 = this;
-
     if(!this.points.setup(message.header.frame_id)) {
         return;
     }
@@ -54296,9 +54123,9 @@ var LaserScan = (function (superclass) {
       var range = message.ranges[i];
       if(range >= message.range_min && range <= message.range_max){
           var angle = message.angle_min + i * message.angle_increment;
-          this$1.points.positions.array[j++] = range * Math.cos(angle);
-          this$1.points.positions.array[j++] = range * Math.sin(angle);
-          this$1.points.positions.array[j++] = 0.0;
+          this.points.positions.array[j++] = range * Math.cos(angle);
+          this.points.positions.array[j++] = range * Math.sin(angle);
+          this.points.positions.array[j++] = 0.0;
       }
     }
     this.points.update(j/3);
@@ -54348,7 +54175,7 @@ decode64.e={};
 for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
 
 
-var PointCloud2 = (function (superclass) {
+var PointCloud2 = /*@__PURE__*/(function (superclass) {
   function PointCloud2(options) {
     superclass.call(this);
     options = options || {};
@@ -54384,8 +54211,6 @@ var PointCloud2 = (function (superclass) {
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   PointCloud2.prototype.processMessage = function processMessage (msg){
-    var this$1 = this;
-
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }
@@ -54412,15 +54237,15 @@ var PointCloud2 = (function (superclass) {
     var base, color;
     for(var i = 0; i < n; i++){
       base = i * pointRatio * msg.point_step;
-      this$1.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
-      this$1.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
-      this$1.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
+      this.points.positions.array[3*i    ] = dv.getFloat32(base+x, littleEndian);
+      this.points.positions.array[3*i + 1] = dv.getFloat32(base+y, littleEndian);
+      this.points.positions.array[3*i + 2] = dv.getFloat32(base+z, littleEndian);
 
-      if(this$1.points.colors){
-          color = this$1.points.colormap(this$1.points.getColor(dv,base,littleEndian));
-          this$1.points.colors.array[3*i    ] = color.r;
-          this$1.points.colors.array[3*i + 1] = color.g;
-          this$1.points.colors.array[3*i + 2] = color.b;
+      if(this.points.colors){
+          color = this.points.colormap(this.points.getColor(dv,base,littleEndian));
+          this.points.colors.array[3*i    ] = color.r;
+          this.points.colors.array[3*i + 1] = color.g;
+          this.points.colors.array[3*i + 2] = color.b;
       }
     }
     this.points.update(n);
@@ -54434,10 +54259,8 @@ var PointCloud2 = (function (superclass) {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Urdf = (function (superclass) {
+var Urdf = /*@__PURE__*/(function (superclass) {
   function Urdf(options) {
-    var this$1 = this;
-
     options = options || {};
     var urdfModel = options.urdfModel;
     var path = options.path || '/';
@@ -54493,7 +54316,7 @@ var Urdf = (function (superclass) {
                   tfClient : tfClient,
                   object : mesh
               });
-              this$1.add(sceneNode);
+              this.add(sceneNode);
             } else {
               console.warn('Could not load geometry mesh: '+uri);
             }
@@ -54528,7 +54351,7 @@ var Urdf = (function (superclass) {
                 tfClient: tfClient,
                 object: shapeMesh
             });
-            this$1.add(scene);
+            this.add(scene);
           }
         }
       }
@@ -54683,8 +54506,6 @@ Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible
  * @param scene - the object to traverse
  */
 Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (scene) {
-    var this$1 = this;
-
   var makeVisible = function(currentObject) {
       if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
            || currentObject instanceof THREE$1.Sprite ) {
@@ -54692,8 +54513,8 @@ Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (
       }
   };
 
-  for (var uuid in this$1.hoverObjs) {
-    var selectedObject = this$1.hoverObjs[uuid];
+  for (var uuid in this.hoverObjs) {
+    var selectedObject = this.hoverObjs[uuid];
     // Make each selected object and all of its children visible
     selectedObject.visible = true;
     selectedObject.traverse(makeVisible);
@@ -54717,7 +54538,7 @@ Highlighter.prototype.restoreVisibility = function restoreVisibility (scene) {
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var MouseHandler = (function (superclass) {
+var MouseHandler = /*@__PURE__*/(function (superclass) {
   function MouseHandler(options) {
     superclass.call(this);
     this.renderer = options.renderer;
@@ -54888,8 +54709,6 @@ var MouseHandler = (function (superclass) {
    * @returns if an event was canceled
    */
   MouseHandler.prototype.notify = function notify (target, type, event3D) {
-    var this$1 = this;
-
     // ensure the type is set
     //
     event3D.type = type;
@@ -54915,7 +54734,7 @@ var MouseHandler = (function (superclass) {
           && event3D.currentTarget.dispatchEvent instanceof Function) {
         event3D.currentTarget.dispatchEvent(event3D);
         if (event3D.cancelBubble) {
-          this$1.dispatchEvent(event3D);
+          this.dispatchEvent(event3D);
           return 0; // Event Accepted
         }
         else if(event3D.continueBubble) {
@@ -54939,7 +54758,7 @@ var MouseHandler = (function (superclass) {
  * @author AlteredQualia - http://alteredqualia.com
  */
 
-var OrbitControls = (function (superclass) {
+var OrbitControls = /*@__PURE__*/(function (superclass) {
   function OrbitControls(options) {
     superclass.call(this);
     var that = this;
