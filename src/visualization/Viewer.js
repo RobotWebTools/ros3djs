@@ -18,6 +18,11 @@
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
  *  * cameraPosition (optional) - the starting position of the camera
+ *  * displayPanAndZoomFrame (optional) - whether to display a frame when
+ *  *                                     panning/zooming. Defaults to true.
+ *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
+ *  *                           panning/zooming. Only has effect when
+ *  *                           displayPanAndZoomFrame is set to true.
  */
 ROS3D.Viewer = function(options) {
   options = options || {};
@@ -36,6 +41,8 @@ ROS3D.Viewer = function(options) {
     z : 3
   };
   var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+  var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
+  var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -59,7 +66,9 @@ ROS3D.Viewer = function(options) {
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,
-    camera : this.camera
+    camera : this.camera,
+    displayPanAndZoomFrame : displayPanAndZoomFrame,
+    lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 

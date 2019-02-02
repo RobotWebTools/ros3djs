@@ -53192,7 +53192,12 @@ var Axes = /*@__PURE__*/(function (superclass) {
     var shaftRadius = options.shaftRadius || 0.008;
     var headRadius = options.headRadius || 0.023;
     var headLength = options.headLength || 0.1;
+    var scaleArg = options.scale || 1.0;
+    var lineType = options.lineType || 'full';
+    var lineDashLength = options.lineDashLength || 0.1;
 
+
+    this.scale = new THREE$1.Vector3(scaleArg, scaleArg, scaleArg);
 
     // create the cylinders for the objects
     this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
@@ -53226,12 +53231,29 @@ var Axes = /*@__PURE__*/(function (superclass) {
       that.add(arrow);
 
       // create the line
-      var line = new THREE$1.Mesh(that.lineGeom, material);
-      line.position.copy(axis);
-      line.position.multiplyScalar(0.45);
-      line.quaternion.copy(rot);
-      line.updateMatrix();
-      that.add(line);
+      var line;
+      if (lineType === 'dashed') {
+        var l = lineDashLength;
+        for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
+          var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
+          line = new THREE$1.Mesh(geom, material);
+          line.position.copy(axis);
+          // Make spacing between dashes equal to 1.5 times the dash length.
+          line.position.multiplyScalar(l / 2 + 3 * l * i);
+          line.quaternion.copy(rot);
+          line.updateMatrix();
+          that.add(line);
+        }
+      } else if (lineType === 'full') {
+        line = new THREE$1.Mesh(that.lineGeom, material);
+        line.position.copy(axis);
+        line.position.multiplyScalar(0.45);
+        line.quaternion.copy(rot);
+        line.updateMatrix();
+        that.add(line);
+      } else {
+        console.warn('[Axes]: Unsupported line type. Not drawing any axes.');
+      }
     }
 
     // add the three markers to the axes
@@ -54768,7 +54790,10 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     this.userRotateSpeed = options.userRotateSpeed || 1.0;
     this.autoRotate = options.autoRotate;
     this.autoRotateSpeed = options.autoRotateSpeed || 2.0;
-
+    this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ?
+        true :
+        !!options.displayPanAndZoomFrame;
+    this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
     // In ROS, z is pointing upwards
     this.camera.up = new THREE$1.Vector3(0, 0, 1);
 
@@ -54800,17 +54825,19 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     };
     var state = STATE.NONE;
 
-    // add the axes for the main coordinate frame
     this.axes = new Axes({
       shaftRadius : 0.025,
       headRadius : 0.07,
-      headLength : 0.2
+      headLength : 0.2,
+      lineType: this.lineTypePanAndZoomFrame
     });
-    // initially not visible
-    scene.add(this.axes);
-    this.axes.traverse(function(obj) {
-      obj.visible = false;
-    });
+    if (this.displayPanAndZoomFrame) {
+      // initially not visible
+      scene.add(this.axes);
+      this.axes.traverse(function(obj) {
+        obj.visible = false;
+      });
+    }
 
     /**
      * Handle the mousedown 3D event.
@@ -55264,6 +55291,8 @@ var Viewer = function Viewer(options) {
     z : 3
   };
   var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+  var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
+  var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
   this.renderer = new THREE$1.WebGLRenderer({
@@ -55287,7 +55316,9 @@ var Viewer = function Viewer(options) {
   // add controls to the camera
   this.cameraControls = new OrbitControls({
     scene : this.scene,
-    camera : this.camera
+    camera : this.camera,
+    displayPanAndZoomFrame : displayPanAndZoomFrame,
+    lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 

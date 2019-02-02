@@ -53374,6 +53374,13 @@ class Axes extends THREE$1.Object3D {
    *   * shaftRadius (optional) - the radius of the shaft to render
    *   * headRadius (optional) - the radius of the head to render
    *   * headLength (optional) - the length of the head to render
+   *   * scale (optional) - the scale of the frame (defaults to 1.0)
+   *   * lineType (optional) - the line type for the axes. Supported line types:
+   *                           'dashed' and 'full'.
+   *   * lineDashLength (optional) - the length of the dashes, relative to the length of the axis.
+   *                                 Maximum value is 1, which means the dash length is
+   *                                 equal to the length of the axis. Parameter only applies when
+   *                                 lineType is set to dashed.
    */
   constructor(options) {
     super();
@@ -53382,7 +53389,12 @@ class Axes extends THREE$1.Object3D {
     var shaftRadius = options.shaftRadius || 0.008;
     var headRadius = options.headRadius || 0.023;
     var headLength = options.headLength || 0.1;
+    var scaleArg = options.scale || 1.0;
+    var lineType = options.lineType || 'full';
+    var lineDashLength = options.lineDashLength || 0.1;
 
+
+    this.scale = new THREE$1.Vector3(scaleArg, scaleArg, scaleArg);
 
     // create the cylinders for the objects
     this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
@@ -53416,12 +53428,29 @@ class Axes extends THREE$1.Object3D {
       that.add(arrow);
 
       // create the line
-      var line = new THREE$1.Mesh(that.lineGeom, material);
-      line.position.copy(axis);
-      line.position.multiplyScalar(0.45);
-      line.quaternion.copy(rot);
-      line.updateMatrix();
-      that.add(line);
+      var line;
+      if (lineType === 'dashed') {
+        var l = lineDashLength;
+        for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
+          var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
+          line = new THREE$1.Mesh(geom, material);
+          line.position.copy(axis);
+          // Make spacing between dashes equal to 1.5 times the dash length.
+          line.position.multiplyScalar(l / 2 + 3 * l * i);
+          line.quaternion.copy(rot);
+          line.updateMatrix();
+          that.add(line);
+        }
+      } else if (lineType === 'full') {
+        line = new THREE$1.Mesh(that.lineGeom, material);
+        line.position.copy(axis);
+        line.position.multiplyScalar(0.45);
+        line.quaternion.copy(rot);
+        line.updateMatrix();
+        that.add(line);
+      } else {
+        console.warn('[Axes]: Unsupported line type. Not drawing any axes.');
+      }
     }
 
     // add the three markers to the axes
@@ -55155,7 +55184,12 @@ class OrbitControls extends THREE$1.EventDispatcher {
    * @param userZoomSpeed (optional) - the speed for zooming
    * @param userRotateSpeed (optional) - the speed for rotating
    * @param autoRotate (optional) - if the orbit should auto rotate
-   * @param autoRotate (optional) - the speed for auto rotating
+   * @param autoRotateSpeed (optional) - the speed for auto rotating
+   * @param displayPanAndZoomFrame - whether to display a frame when panning/zooming
+   *                                 (defaults to true)
+   * @param lineTypePanAndZoomFrame - line type for the frame that is displayed when
+   *                                  panning/zooming. Only has effect when
+   *                                  displayPanAndZoomFrame is set to true.
    */
   constructor(options) {
     super();
@@ -55170,7 +55204,10 @@ class OrbitControls extends THREE$1.EventDispatcher {
     this.userRotateSpeed = options.userRotateSpeed || 1.0;
     this.autoRotate = options.autoRotate;
     this.autoRotateSpeed = options.autoRotateSpeed || 2.0;
-
+    this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ?
+        true :
+        !!options.displayPanAndZoomFrame;
+    this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
     // In ROS, z is pointing upwards
     this.camera.up = new THREE$1.Vector3(0, 0, 1);
 
@@ -55202,17 +55239,19 @@ class OrbitControls extends THREE$1.EventDispatcher {
     };
     var state = STATE.NONE;
 
-    // add the axes for the main coordinate frame
     this.axes = new Axes({
       shaftRadius : 0.025,
       headRadius : 0.07,
-      headLength : 0.2
+      headLength : 0.2,
+      lineType: this.lineTypePanAndZoomFrame
     });
-    // initially not visible
-    scene.add(this.axes);
-    this.axes.traverse(function(obj) {
-      obj.visible = false;
-    });
+    if (this.displayPanAndZoomFrame) {
+      // initially not visible
+      scene.add(this.axes);
+      this.axes.traverse(function(obj) {
+        obj.visible = false;
+      });
+    }
 
     /**
      * Handle the mousedown 3D event.
@@ -55667,6 +55706,11 @@ class Viewer {
    *  * antialias (optional) - if antialiasing should be used
    *  * intensity (optional) - the lighting intensity setting to use
    *  * cameraPosition (optional) - the starting position of the camera
+   *  * displayPanAndZoomFrame (optional) - whether to display a frame when
+   *  *                                     panning/zooming. Defaults to true.
+   *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
+   *  *                           panning/zooming. Only has effect when
+   *  *                           displayPanAndZoomFrame is set to true.
    */
   constructor(options) {
     options = options || {};
@@ -55685,6 +55729,8 @@ class Viewer {
       z : 3
     };
     var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+    var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
+    var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
     // create the canvas to render to
     this.renderer = new THREE$1.WebGLRenderer({
@@ -55708,7 +55754,9 @@ class Viewer {
     // add controls to the camera
     this.cameraControls = new OrbitControls({
       scene : this.scene,
-      camera : this.camera
+      camera : this.camera,
+      displayPanAndZoomFrame : displayPanAndZoomFrame,
+      lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
     });
     this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
