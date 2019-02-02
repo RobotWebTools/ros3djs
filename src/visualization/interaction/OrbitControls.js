@@ -14,7 +14,12 @@
  * @param userZoomSpeed (optional) - the speed for zooming
  * @param userRotateSpeed (optional) - the speed for rotating
  * @param autoRotate (optional) - if the orbit should auto rotate
- * @param autoRotate (optional) - the speed for auto rotating
+ * @param autoRotateSpeed (optional) - the speed for auto rotating
+ * @param displayPanAndZoomFrame - whether to display a frame when panning/zooming
+ *                                 (defaults to true)
+ * @param lineTypePanAndZoomFrame - line type for the frame that is displayed when
+ *                                  panning/zooming. Only has effect when
+ *                                  displayPanAndZoomFrame is set to true.
  */
 ROS3D.OrbitControls = function(options) {
   THREE.EventDispatcher.call(this);
@@ -29,7 +34,10 @@ ROS3D.OrbitControls = function(options) {
   this.userRotateSpeed = options.userRotateSpeed || 1.0;
   this.autoRotate = options.autoRotate;
   this.autoRotateSpeed = options.autoRotateSpeed || 2.0;
-
+  this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ?
+      true :
+      !!options.displayPanAndZoomFrame;
+  this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
   // In ROS, z is pointing upwards
   this.camera.up = new THREE.Vector3(0, 0, 1);
 
@@ -61,17 +69,19 @@ ROS3D.OrbitControls = function(options) {
   };
   var state = STATE.NONE;
 
-  // add the axes for the main coordinate frame
   this.axes = new ROS3D.Axes({
     shaftRadius : 0.025,
     headRadius : 0.07,
-    headLength : 0.2
+    headLength : 0.2,
+    lineType: this.lineTypePanAndZoomFrame
   });
-  // initially not visible
-  scene.add(this.axes);
-  this.axes.traverse(function(obj) {
-    obj.visible = false;
-  });
+  if (this.displayPanAndZoomFrame) {
+    // initially not visible
+    scene.add(this.axes);
+    this.axes.traverse(function(obj) {
+      obj.visible = false;
+    });
+  }
 
   /**
    * Handle the mousedown 3D event.
