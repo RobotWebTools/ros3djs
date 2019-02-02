@@ -14,8 +14,7 @@
  *  * path (optional) - the base path to any meshes that will be loaded
  *  * camera - the main camera associated with the viewer for this marker client
  *  * rootObject (optional) - the root THREE 3D object to render to
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerClient = function(options) {
@@ -27,7 +26,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.path = options.path || '/';
   this.camera = options.camera;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.loader = options.loader;
   this.menuFontSize = options.menuFontSize || '0.8em';
 
   this.interactiveMarkers = {};

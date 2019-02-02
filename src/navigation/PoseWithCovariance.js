@@ -15,13 +15,13 @@
  *  * color (optional) - color for line (default: 0xcc00ff)
  */
 ROS3D.PoseWithCovariance = function(options) {
+  THREE.Object3D.call(this);
   this.options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/PoseWithCovariance';
   this.tfClient = options.tfClient;
   this.color = options.color || 0xcc00ff;
   this.rootObject = options.rootObject || new THREE.Object3D();
-  THREE.Object3D.call(this);
 
   this.sn = null;
 

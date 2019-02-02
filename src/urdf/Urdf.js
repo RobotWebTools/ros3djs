@@ -13,8 +13,7 @@
  *   * tfClient - the TF client handle to use
  *   * path (optional) - the base path to the associated Collada models that will be loaded
  *   * tfPrefix (optional) - the TF prefix to used for multi-robots
- *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                         ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.Urdf = function(options) {
   options = options || {};
@@ -22,7 +21,7 @@ ROS3D.Urdf = function(options) {
   var path = options.path || '/';
   var tfClient = options.tfClient;
   var tfPrefix = options.tfPrefix || '';
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  var loader = options.loader;
 
   THREE.Object3D.call(this);
 

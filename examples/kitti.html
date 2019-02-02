@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="https://static.robotwebtools.org/threejs/current/three.js"></script>
+<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
+<script src="../build/ros3d.js"></script>
+
+<script>
+  /**
+   * Setup all visualization elements when the page is loaded.
+   */
+  function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'viewer',
+      width : 800,
+      height : 600,
+      antialias : true
+    });
+
+    // Setup a client to listen to TFs.
+    var tfClient = new ROSLIB.TFClient({
+      ros : ros,
+      angularThres : 0.01,
+      transThres : 0.01,
+      rate : 10.0,
+      fixedFrame : 'velo_link'
+    });
+
+    // var texture = new THREE.TextureLoader().load( "https://threejs.org/examples/textures/sprites/ball.png" );
+
+    var cloudClient = new ROS3D.PointCloud2({
+        ros: ros,
+        tfClient: tfClient,
+        rootObject: viewer.scene,
+        topic: '/kitti/velo/pointcloud',
+        max_pts: 200000,
+        pointRatio: 3,
+        messageRatio: 2,
+        // material: { size: 7, sizeAttenuation: false, alphaTest: 0.5, transparent: true, map: texture },
+        material: { size: 3, sizeAttenuation: false },
+        // colorsrc: 'i', colormap: function(i) { return new THREE.Color(3*i,0,1-3*i); }
+        colorsrc: 'z', colormap: function(z) { z=z+2; return new THREE.Color(z,0,1-z); }
+    });
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1><a href="http://www.cvlibs.net/datasets/kitti">Kitti</a> PointCloud2 Example</h1>
+  <p>Run the following commands in the terminal then refresh the page.</p>
+  <ol>
+    <li><tt>roslaunch ros3djs.launch</tt></li>
+    <li><tt>rosparam set use_sim_time true</tt></li>
+    <li><tt>rosbag play -l --clock <a href="https://github.com/tomas789/kitti2bag">kitti_2011_09_26_drive_0002_synced.bag</a></tt></li>
+  </ol>
+  <div id="viewer"></div>
+</body>
+</html>

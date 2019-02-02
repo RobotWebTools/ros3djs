@@ -20,6 +20,7 @@
  *                                 lineType is set to dashed.
  */
 ROS3D.Axes = function(options) {
+  THREE.Object3D.call(this);
   var that = this;
   options = options || {};
   var shaftRadius = options.shaftRadius || 0.008;
@@ -29,7 +30,6 @@ ROS3D.Axes = function(options) {
   var lineType = options.lineType || 'full';
   var lineDashLength = options.lineDashLength || 0.1;
 
-  THREE.Object3D.call(this);
 
   this.scale = new THREE.Vector3(scaleArg, scaleArg, scaleArg);
 

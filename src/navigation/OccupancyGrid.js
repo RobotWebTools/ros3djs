@@ -21,15 +21,10 @@ ROS3D.OccupancyGrid = function(options) {
   // create the geometry
   var width = message.info.width;
   var height = message.info.height;
-  var geom = new THREE.PlaneGeometry(width, height);
+  var geom = new THREE.PlaneBufferGeometry(width, height);
 
-  // internal drawing canvas
-  var canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  var context = canvas.getContext('2d');
   // create the color material
-  var imageData = context.createImageData(width, height);
+  var imageData = new Uint8Array(width * height * 3);
   for ( var row = 0; row < height; row++) {
     for ( var col = 0; col < width; col++) {
       // determine the index into the map data
@@ -46,20 +41,20 @@ ROS3D.OccupancyGrid = function(options) {
       }
 
       // determine the index into the image data array
-      var i = (col + (row * width)) * 4;
+      var i = (col + (row * width)) * 3;
       // r
-      imageData.data[i] = (val * color.r) / 255;
+      imageData[i] = (val * color.r) / 255;
       // g
-      imageData.data[++i] = (val * color.g) / 255;
+      imageData[++i] = (val * color.g) / 255;
       // b
-      imageData.data[++i] = (val * color.b) / 255;
-      // a
-      imageData.data[++i] = 255;
+      imageData[++i] = (val * color.b) / 255;
     }
   }
-  context.putImageData(imageData, 0, 0);
 
-  var texture = new THREE.Texture(canvas);
+  var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBFormat);
+  texture.flipY = true;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
 
   var material = new THREE.MeshBasicMaterial({
@@ -72,12 +67,12 @@ ROS3D.OccupancyGrid = function(options) {
   // create the mesh
   THREE.Mesh.call(this, geom, material);
   // move the map so the corner is at X, Y and correct orientation (informations from message.info)
-  this.quaternion = new THREE.Quaternion(
+  this.quaternion.copy(new THREE.Quaternion(
       message.info.origin.orientation.x,
       message.info.origin.orientation.y,
       message.info.origin.orientation.z,
       message.info.origin.orientation.w
-  );
+  ));
   this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
   this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
   this.position.z = message.info.origin.position.z;

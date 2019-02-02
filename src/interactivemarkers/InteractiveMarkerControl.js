@@ -12,23 +12,25 @@
  *  * message - the interactive marker control message
  *  * camera - the main camera associated with the viewer for this marker client
  *  * path (optional) - the base path to any meshes that will be loaded
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.InteractiveMarkerControl = function(options) {
-  var that = this;
   THREE.Object3D.call(this);
+  var that = this;
 
   options = options || {};
   this.parent = options.parent;
   var handle = options.handle;
   var message = options.message;
+  this.message = message;
   this.name = message.name;
   this.camera = options.camera;
   this.path = options.path || '/';
-  this.loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  this.loader = options.loader;
   this.dragging = false;
   this.startMousePos = new THREE.Vector2();
+  this.isShift = false;
+
 
   // orientation for the control
   var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
@@ -43,6 +45,9 @@ ROS3D.InteractiveMarkerControl = function(options) {
 
   // determine mouse interaction
   switch (message.interaction_mode) {
+    case ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE_3D:
+    case ROS3D.INTERACTIVE_MARKER_MOVE_3D:
+      this.addEventListener('mousemove', this.parent.move3d.bind(this.parent, this, controlAxis));
     case ROS3D.INTERACTIVE_MARKER_MOVE_AXIS:
       this.addEventListener('mousemove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
       this.addEventListener('touchmove', this.parent.moveAxis.bind(this.parent, this, controlAxis));
@@ -113,6 +118,17 @@ ROS3D.InteractiveMarkerControl = function(options) {
         that.dispatchEvent(event3d);
       }
     });
+
+    window.addEventListener('keydown', function(event){
+      if(event.keyCode === 16){
+        that.isShift = true;
+      }
+    });
+    window.addEventListener('keyup', function(event){
+      if(event.keyCode === 16){
+        that.isShift = false;
+      }
+    });
   }
 
   // rotation behavior
@@ -121,48 +137,10 @@ ROS3D.InteractiveMarkerControl = function(options) {
   switch (message.orientation_mode) {
     case ROS3D.INTERACTIVE_MARKER_INHERIT:
       rotInv = this.parent.quaternion.clone().inverse();
-      this.updateMatrixWorld = function(force) {
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-        that.currentControlOri.copy(that.quaternion);
-        that.currentControlOri.normalize();
-      };
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
-      this.updateMatrixWorld = function(force) {
-        that.quaternion.copy(that.parent.quaternion.clone().inverse());
-        that.updateMatrix();
-        that.matrixWorldNeedsUpdate = true;
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-        that.currentControlOri.copy(that.quaternion);
-      };
       break;
     case ROS3D.INTERACTIVE_MARKER_VIEW_FACING:
-      var independentMarkerOrientation = message.independent_marker_orientation;
-      this.updateMatrixWorld = function(force) {
-        that.camera.updateMatrixWorld();
-        var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
-
-        var ros2Gl = new THREE.Matrix4();
-        var r90 = Math.PI * 0.5;
-        var rv = new THREE.Euler(-r90, 0, r90);
-        ros2Gl.makeRotationFromEuler(rv);
-
-        var worldToLocal = new THREE.Matrix4();
-        worldToLocal.getInverse(that.parent.matrixWorld);
-
-        cameraRot.multiplyMatrices(cameraRot, ros2Gl);
-        cameraRot.multiplyMatrices(worldToLocal, cameraRot);
-
-        that.currentControlOri.setFromRotationMatrix(cameraRot);
-
-        // check the orientation
-        if (!independentMarkerOrientation) {
-          that.quaternion.copy(that.currentControlOri);
-          that.updateMatrix();
-          that.matrixWorldNeedsUpdate = true;
-        }
-        ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
-      };
       break;
     default:
       console.error('Unkown orientation mode: ' + message.orientation_mode);
@@ -240,3 +218,50 @@ ROS3D.InteractiveMarkerControl = function(options) {
   });
 };
 ROS3D.InteractiveMarkerControl.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld = function (force) {
+  var that = this;
+  var message = this.message;
+  switch (message.orientation_mode) {
+    case ROS3D.INTERACTIVE_MARKER_INHERIT:
+      ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+      that.currentControlOri.copy(that.quaternion);
+      that.currentControlOri.normalize();
+      break;
+    case ROS3D.INTERACTIVE_MARKER_FIXED:
+      that.quaternion.copy(that.parent.quaternion.clone().inverse());
+      that.updateMatrix();
+      that.matrixWorldNeedsUpdate = true;
+      ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+      that.currentControlOri.copy(that.quaternion);
+      break;
+    case ROS3D.INTERACTIVE_MARKER_VIEW_FACING:
+      that.camera.updateMatrixWorld();
+      var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
+
+      var ros2Gl = new THREE.Matrix4();
+      var r90 = Math.PI * 0.5;
+      var rv = new THREE.Euler(-r90, 0, r90);
+      ros2Gl.makeRotationFromEuler(rv);
+
+      var worldToLocal = new THREE.Matrix4();
+      worldToLocal.getInverse(that.parent.matrixWorld);
+
+      cameraRot.multiplyMatrices(cameraRot, ros2Gl);
+      cameraRot.multiplyMatrices(worldToLocal, cameraRot);
+
+      that.currentControlOri.setFromRotationMatrix(cameraRot);
+
+      // check the orientation
+      if (!message.independent_marker_orientation) {
+        that.quaternion.copy(that.currentControlOri);
+        that.updateMatrix();
+        that.matrixWorldNeedsUpdate = true;
+      }
+      ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
+      break;
+    default:
+      console.error('Unkown orientation mode: ' + message.orientation_mode);
+      break;
+  }
+};

@@ -11,12 +11,10 @@
  *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
  *  * camera - the main camera associated with the viewer for this marker
  *  * path (optional) - the base path to any meshes that will be loaded
- *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER
- *                        ROS3D.COLLADA_LOADER_2) -- defaults to ROS3D.COLLADA_LOADER_2
+ *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.InteractiveMarker = function(options) {
   THREE.Object3D.call(this);
-  THREE.EventDispatcher.call(this);
 
   var that = this;
   options = options || {};
@@ -24,7 +22,7 @@ ROS3D.InteractiveMarker = function(options) {
   this.name = handle.name;
   var camera = options.camera;
   var path = options.path || '/';
-  var loader = options.loader || ROS3D.COLLADA_LOADER_2;
+  var loader = options.loader;
   this.dragging = false;
 
   // set the initial pose
@@ -108,6 +106,54 @@ ROS3D.InteractiveMarker.prototype.moveAxis = function(control, origAxis, event3d
 
 
     event3d.stopPropagation();
+  }
+};
+
+
+/**
+ * Move with respect to the plane based on the contorl and event.
+ *
+ * @param control - the control to use
+ * @param origNormal - the normal of the origin
+ * @param event3d - the event that caused this
+ */
+ROS3D.InteractiveMarker.prototype.move3d = function(control, origNormal, event3d) {
+  // by default, move in a plane
+  if (this.dragging) {
+
+    if(control.isShift){
+      // this doesn't work
+      // // use the camera position and the marker position to determine the axis
+      // var newAxis = control.camera.position.clone();
+      // newAxis.sub(this.position);
+      // // now mimic same steps constructor uses to create origAxis
+      // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
+      //     newAxis.z, 1);
+      // controlOri.normalize();
+      // var controlAxis = new THREE.Vector3(1, 0, 0);
+      // controlAxis.applyQuaternion(controlOri);
+      // origAxis = controlAxis;
+    }else{
+      // we want to use the origin plane that is closest to the camera
+      var cameraVector = control.camera.getWorldDirection();
+      var x = Math.abs(cameraVector.x);
+      var y = Math.abs(cameraVector.y);
+      var z = Math.abs(cameraVector.z);
+      var controlOri = new THREE.Quaternion(1, 0, 0, 1);
+      if(y > x && y > z){
+        // orientation for the control
+        controlOri = new THREE.Quaternion(0, 0, 1, 1);
+      }else if(z > x && z > y){
+        // orientation for the control
+        controlOri = new THREE.Quaternion(0, 1, 0, 1);
+      }
+      controlOri.normalize();
+
+      // transform x axis into local frame
+      origNormal = new THREE.Vector3(1, 0, 0);
+      origNormal.applyQuaternion(controlOri);
+      this.movePlane(control, origNormal, event3d);
+    }
   }
 };
 

@@ -16,15 +16,18 @@
  *   * topic (optional) - the map topic to listen to
  *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
  *   * tfClient (optional) - the TF client handle to use for a scene node
+ *   * compression (optional) - message compression (default: 'cbor')
  *   * rootObject (optional) - the root object to add this marker to
  *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
  *   * color (optional) - color of the visualized grid
  *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
  */
 ROS3D.OccupancyGridClient = function(options) {
+  EventEmitter2.call(this);
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/map';
+  this.compression = options.compression || 'cbor';
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
@@ -55,7 +58,7 @@ ROS3D.OccupancyGridClient.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     messageType : 'nav_msgs/OccupancyGrid',
-    compression : 'png'
+    compression : this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
