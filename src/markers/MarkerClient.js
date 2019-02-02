@@ -17,6 +17,7 @@
  *   * tfClient - the TF client handle to use
  *   * rootObject (optional) - the root object to add this marker to
  *   * path (optional) - the base path to any meshes that will be loaded
+ *   * lifetime - the lifetime of marker
  */
 ROS3D.MarkerClient = function(options) {
   options = options || {};
@@ -25,10 +26,12 @@ ROS3D.MarkerClient = function(options) {
   this.tfClient = options.tfClient;
   this.rootObject = options.rootObject || new THREE.Object3D();
   this.path = options.path || '/';
+  this.lifetime = options.lifetime || 0;
 
   // Markers that are displayed (Map ns+id--Marker)
   this.markers = {};
   this.rosTopic = undefined;
+  this.updatedTime = {};
 
   this.subscribe();
 };
@@ -38,6 +41,20 @@ ROS3D.MarkerClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
     this.rosTopic.unsubscribe();
   }
+};
+
+ROS3D.MarkerClient.prototype.checkTime = function(name){
+    var curTime = new Date().getTime();
+    if (curTime - this.updatedTime[name] > this.lifetime) {
+        var oldNode = this.markers[name];
+        oldNode.unsubscribeTf();
+        this.rootObject.remove(oldNode);
+        this.emit('change');
+    } else {
+        var that = this;
+        setTimeout(function() {that.checkTime(name)},
+                   100);
+    }
 };
 
 ROS3D.MarkerClient.prototype.subscribe = function(){
@@ -61,9 +78,12 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
 
   // remove old marker from Three.Object3D children buffer
   var oldNode = this.markers[message.ns + message.id];
+  this.updatedTime[message.ns + message.id] = new Date().getTime();
   if (oldNode) {
     oldNode.unsubscribeTf();
     this.rootObject.remove(oldNode);
+  } else if (this.lifetime) {
+    this.checkTime(message.ns + message.id);
   }
 
   this.markers[message.ns + message.id] = new ROS3D.SceneNode({
