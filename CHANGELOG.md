@@ -1,6 +1,9 @@
 ## Change Log
 
-### 1.0.0 (2019/01/16 14:48 +00:00)
+### 1.0.0 (2019/02/02 14:48 +00:00)
+- [#208](https://github.com/RobotWebTools/ros3djs/pull/208) Custom frame axes options: scale, dashed lines and no pan&zoom frame (@viktorku)
+- [#247](https://github.com/RobotWebTools/ros3djs/pull/247) Use CBOR by default for OccupancyGrid (@mvollrath)
+- [#240](https://github.com/RobotWebTools/ros3djs/pull/240) add lifetime in MarkerClient class (@KazutoMurase)
 - [#252](https://github.com/RobotWebTools/ros3djs/pull/252) THREE r89 (@mvollrath)
 - [#242](https://github.com/RobotWebTools/ros3djs/pull/242) DepthCloud: support custom resolutions properly (@viktorku)
 - [#245](https://github.com/RobotWebTools/ros3djs/pull/245) Update and normalize EventEmitter2 dependency (@mvollrath)
