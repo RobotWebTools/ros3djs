@@ -53394,7 +53394,7 @@ class Axes extends THREE$1.Object3D {
     var lineDashLength = options.lineDashLength || 0.1;
 
 
-    this.scale = new THREE$1.Vector3(scaleArg, scaleArg, scaleArg);
+    this.scale.set(scaleArg, scaleArg, scaleArg);
 
     // create the cylinders for the objects
     this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
