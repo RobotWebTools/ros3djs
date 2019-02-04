@@ -31,7 +31,7 @@ ROS3D.Axes = function(options) {
   var lineDashLength = options.lineDashLength || 0.1;
 
 
-  this.scale = new THREE.Vector3(scaleArg, scaleArg, scaleArg);
+  this.scale.set(scaleArg, scaleArg, scaleArg);
 
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
