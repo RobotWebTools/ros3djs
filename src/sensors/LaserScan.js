@@ -11,6 +11,7 @@
  *  * ros - the ROSLIB.Ros connection handle
  *  * topic - the marker topic to listen to (default '/scan')
  *  * tfClient - the TF client handle to use
+ *  * compression (optional) - message compression (default: 'cbor')
  *  * rootObject (optional) - the root object to add this marker to use for the points.
  *  * max_pts (optional) - number of points to draw (default: 10000)
  *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
@@ -21,6 +22,7 @@ ROS3D.LaserScan = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/scan';
+  this.compression = options.compression || 'cbor';
   this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
   this.subscribe();
@@ -42,6 +44,7 @@ ROS3D.LaserScan.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : this.topicName,
+    compression : this.compression,
     messageType : 'sensor_msgs/LaserScan'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
