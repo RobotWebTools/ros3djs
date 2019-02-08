@@ -45,6 +45,7 @@ ROS3D.Polygon.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
+      queue_length : 1,
       messageType : 'geometry_msgs/PolygonStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

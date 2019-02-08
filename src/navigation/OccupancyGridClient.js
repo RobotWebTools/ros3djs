@@ -58,6 +58,7 @@ ROS3D.OccupancyGridClient.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     messageType : 'nav_msgs/OccupancyGrid',
+    queue_length : 1,
     compression : this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

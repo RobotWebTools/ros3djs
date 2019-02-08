@@ -51,6 +51,7 @@ ROS3D.Odometry.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : this.topicName,
+    queue_length : 1,
     messageType : 'nav_msgs/Odometry'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
