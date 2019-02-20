@@ -85,6 +85,7 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     messageType : 'sensor_msgs/PointCloud2',
+    queue_length : 1,
     compression: this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

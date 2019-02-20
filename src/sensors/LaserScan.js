@@ -45,6 +45,7 @@ ROS3D.LaserScan.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     compression : this.compression,
+    queue_length : 1,
     messageType : 'sensor_msgs/LaserScan'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));

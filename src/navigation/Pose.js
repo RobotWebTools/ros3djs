@@ -48,6 +48,7 @@ ROS3D.Pose.prototype.subscribe = function(){
   this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
+      queue_length : 1,
       messageType : 'geometry_msgs/PoseStamped'
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
