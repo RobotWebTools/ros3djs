@@ -53656,6 +53656,7 @@ class OccupancyGridClient extends eventemitter2 {
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
+      queue_length : 1,
       compression : this.compression
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -53756,6 +53757,7 @@ class Odometry extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
+      queue_length : 1,
       messageType : 'nav_msgs/Odometry'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -53836,6 +53838,7 @@ let Path$1 = class Path extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
+        queue_length : 1,
         messageType : 'nav_msgs/Path'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -53917,6 +53920,7 @@ class Point extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
+        queue_length : 1,
         messageType : 'geometry_msgs/PointStamped'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -53991,6 +53995,7 @@ class Polygon extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
+        queue_length : 1,
         messageType : 'geometry_msgs/PolygonStamped'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -54077,6 +54082,7 @@ class Pose extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
+        queue_length : 1,
         messageType : 'geometry_msgs/PoseStamped'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -54157,6 +54163,7 @@ class PoseArray extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
        ros : this.ros,
        name : this.topicName,
+       queue_length : 1,
        messageType : 'geometry_msgs/PoseArray'
    });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -54257,6 +54264,7 @@ class PoseWithCovariance extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
+        queue_length : 1,
         messageType : 'geometry_msgs/PoseWithCovarianceStamped'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -54423,6 +54431,7 @@ class LaserScan extends THREE$1.Object3D {
    *  * ros - the ROSLIB.Ros connection handle
    *  * topic - the marker topic to listen to (default '/scan')
    *  * tfClient - the TF client handle to use
+   *  * compression (optional) - message compression (default: 'cbor')
    *  * rootObject (optional) - the root object to add this marker to use for the points.
    *  * max_pts (optional) - number of points to draw (default: 10000)
    *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
@@ -54434,6 +54443,7 @@ class LaserScan extends THREE$1.Object3D {
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/scan';
+    this.compression = options.compression || 'cbor';
     this.points = new Points$1(options);
     this.rosTopic = undefined;
     this.subscribe();
@@ -54454,6 +54464,8 @@ class LaserScan extends THREE$1.Object3D {
     this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
+      compression : this.compression,
+      queue_length : 1,
       messageType : 'sensor_msgs/LaserScan'
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
@@ -54567,6 +54579,7 @@ class PointCloud2 extends THREE$1.Object3D {
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/PointCloud2',
+      queue_length : 1,
       compression: this.compression
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
