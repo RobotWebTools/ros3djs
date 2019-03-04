@@ -1,5 +1,11 @@
 ## Change Log
 
+### 1.0.1 (2019/03/04 16:23 +00:00)
+- [#254](https://github.com/RobotWebTools/ros3djs/pull/254) Use single item queue for unreliable topics (@mvollrath)
+- [#256](https://github.com/RobotWebTools/ros3djs/pull/256) Use loose roslibjs version (@mvollrath)
+- [#253](https://github.com/RobotWebTools/ros3djs/pull/253) Default LaserScan to CBOR (@mvollrath)
+
+
 ### 1.0.0 (2019/02/02 14:48 +00:00)
 - [#208](https://github.com/RobotWebTools/ros3djs/pull/208) Custom frame axes options: scale, dashed lines and no pan&zoom frame (@viktorku)
 - [#247](https://github.com/RobotWebTools/ros3djs/pull/247) Use CBOR by default for OccupancyGrid (@mvollrath)
