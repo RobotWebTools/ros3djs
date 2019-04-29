@@ -33,6 +33,7 @@ export * from './navigation/PoseWithCovariance'
 export * from './sensors/LaserScan'
 export * from './sensors/Points'
 export * from './sensors/PointCloud2'
+export * from './sensors/TFAxes'
 
 export * from './urdf/Urdf'
 export * from './urdf/UrdfClient'
