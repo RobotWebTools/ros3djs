@@ -54285,6 +54285,41 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 }(THREE$1.Object3D));
 
 /**
+ * @author Jihoon Lee - jihoon.lee@kakaobrain.com
+ */
+var TFAxes = /*@__PURE__*/(function (superclass) {
+  function TFAxes(options) {
+    superclass.call(this);
+    options = options || {};
+
+    this.frame_id = options.frame_id;
+    this.tfClient = options.tfClient;
+    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.axes = new Axes(
+      {
+        shaftRadius: options.shaftRadius || 0.025,
+        headRadius: options.headRaidus || 0.07,
+        headLength: options.headLength || 0.2,
+      });
+
+    this.sn = new SceneNode({
+      frameID: this.frame_id,
+      tfClient : this.tfClient,
+      object : this.axes
+    });
+
+    this.rootObject.add(this.sn);
+
+  }
+
+  if ( superclass ) TFAxes.__proto__ = superclass;
+  TFAxes.prototype = Object.create( superclass && superclass.prototype );
+  TFAxes.prototype.constructor = TFAxes;
+
+  return TFAxes;
+}(THREE$1.Object3D));
+
+/**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -55431,4 +55466,4 @@ Viewer.prototype.resize = function resize (width, height) {
   this.renderer.setSize(width, height);
 };
 
-export { MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Points$1 as Points, PointCloud2, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
+export { MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Points$1 as Points, PointCloud2, TFAxes, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };

@@ -54289,6 +54289,41 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 }(THREE$1.Object3D));
 
 /**
+ * @author Jihoon Lee - jihoon.lee@kakaobrain.com
+ */
+var TFAxes = /*@__PURE__*/(function (superclass) {
+  function TFAxes(options) {
+    superclass.call(this);
+    options = options || {};
+
+    this.frame_id = options.frame_id;
+    this.tfClient = options.tfClient;
+    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.axes = new Axes(
+      {
+        shaftRadius: options.shaftRadius || 0.025,
+        headRadius: options.headRaidus || 0.07,
+        headLength: options.headLength || 0.2,
+      });
+
+    this.sn = new SceneNode({
+      frameID: this.frame_id,
+      tfClient : this.tfClient,
+      object : this.axes
+    });
+
+    this.rootObject.add(this.sn);
+
+  }
+
+  if ( superclass ) TFAxes.__proto__ = superclass;
+  TFAxes.prototype = Object.create( superclass && superclass.prototype );
+  TFAxes.prototype.constructor = TFAxes;
+
+  return TFAxes;
+}(THREE$1.Object3D));
+
+/**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -55497,6 +55532,7 @@ exports.PoseWithCovariance = PoseWithCovariance;
 exports.LaserScan = LaserScan;
 exports.Points = Points$1;
 exports.PointCloud2 = PointCloud2;
+exports.TFAxes = TFAxes;
 exports.Urdf = Urdf;
 exports.UrdfClient = UrdfClient;
 exports.Highlighter = Highlighter;
