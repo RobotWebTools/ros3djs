@@ -54304,6 +54304,9 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
         shaftRadius: options.shaftRadius || 0.025,
         headRadius: options.headRaidus || 0.07,
         headLength: options.headLength || 0.2,
+        scale: options.scale || 1.0,
+        lineType: options.lineType || 'full',
+        lineDashLength: options.lineDashLength || 0.1
       });
 
     this.sn = new SceneNode({
