@@ -10,7 +10,8 @@
  * @constructor
  * @param options - object with following keys:
  *
- *  * divID - the ID of the div to place the viewer in
+ *  * divID - the ID of the div to place the viewer in [optional (if canvas omitted)].
+ *  * canvas - the canvas which will be used for rendering [optional (if divID omitted)].
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
  *  * background (optional) - the color to render the background, like '#efefef'
@@ -23,10 +24,15 @@
  *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
  *  *                           panning/zooming. Only has effect when
  *  *                           displayPanAndZoomFrame is set to true.
+ *  * cameraZoomSpeed - Camera zoom speed [optional].
  */
 ROS3D.Viewer = function(options) {
   options = options || {};
   var divID = options.divID;
+  var canvas = (!!options.canvas &&
+                options.canvas.nodeName.toLowerCase() === 'canvas')
+                  ? options.canvas
+                  : undefined;
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
@@ -46,6 +52,7 @@ ROS3D.Viewer = function(options) {
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
     antialias : antialias,
     alpha: true
   });
@@ -60,9 +67,7 @@ ROS3D.Viewer = function(options) {
 
   // create the global camera
   this.camera = new THREE.PerspectiveCamera(40, width / height, near, far);
-  this.camera.position.x = cameraPosition.x;
-  this.camera.position.y = cameraPosition.y;
-  this.camera.position.z = cameraPosition.z;
+  this.camera.position.set( cameraPosition.x, cameraPosition.y, cameraPosition.z );
   // add controls to the camera
   this.cameraControls = new ROS3D.OrbitControls({
     scene : this.scene,
@@ -96,7 +101,11 @@ ROS3D.Viewer = function(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  document.getElementById(divID).appendChild(this.renderer.domElement);
+  if (divID && !canvas) {
+    document.getElementById(divID).appendChild(this.renderer.domElement);
+  } else if (!canvas) {
+    throw new Error('No canvas nor HTML container provided for rendering.');
+  }
 
   // begin the render loop
   this.start();
