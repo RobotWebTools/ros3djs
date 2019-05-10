@@ -65,7 +65,7 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
           path : this.path,
         });
         this.markers[message.ns + message.id] = new ROS3D.SceneNode({
-          frameID : message.header.frame_id,
+          frameID : message.header.frame_id.replace(/^\//, ''),
           tfClient : this.tfClient,
           object : newMarker
         });
@@ -76,9 +76,11 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
       console.warn('Received marker message with deprecated action identifier "1"');
     }
     else if(message.action === 2) { // "DELETE"
-      this.markers[message.ns + message.id].unsubscribeTf();
-      this.rootObject.remove(this.markers[message.ns + message.id]);
-      delete this.markers[message.ns + message.id];
+      if (message.ns + message.id in this.markers) {
+        this.markers[message.ns + message.id].unsubscribeTf();
+        this.rootObject.remove(this.markers[message.ns + message.id]);
+        delete this.markers[message.ns + message.id];
+      }
     }
     else if(message.action === 3) { // "DELETE ALL"
       for (var m in this.markers){
