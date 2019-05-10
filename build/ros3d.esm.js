@@ -52920,26 +52920,22 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.visible = false;
 
     // add the model
-    this.add(object);
+    if (object) {
+      this.add(object);
+    }
 
     // set the inital pose
     this.updatePose(this.pose);
 
     // save the TF handler so we can remove it later
     this.tfUpdate = function(msg) {
-
-      // apply the transform
-      var tf = new Transform(msg);
-      var poseTransformed = new Pose(that.pose);
-      poseTransformed.applyTransform(tf);
-
-      // update the world
-      that.updatePose(poseTransformed);
-      that.visible = true;
+      that.transformPose(msg);
     };
 
     // listen for TF updates
-    this.tfClient.subscribe(this.frameID, this.tfUpdate);
+    if (this.tfClient) {
+      this.tfClient.subscribe(this.frameID, this.tfUpdate);
+    }
   }
 
   if ( superclass ) SceneNode.__proto__ = superclass;
@@ -52958,6 +52954,20 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
   };
   SceneNode.prototype.unsubscribeTf = function unsubscribeTf () {
     this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
+  };
+  /**
+   * Transform the pose of the associated model.
+   * @param transform - A ROS Transform like object which has a translation and orientation property.
+   */
+  SceneNode.prototype.transformPose = function transformPose (transform) {
+    // apply the transform
+    var tf = new Transform( transform );
+    var poseTransformed = new Pose(this.pose);
+    poseTransformed.applyTransform(tf);
+
+    // update the world
+    this.updatePose(poseTransformed);
+    this.visible = true;
   };
 
   return SceneNode;
