@@ -53055,6 +53055,16 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
       this.rosTopic.unsubscribe();
     }
   };
+  MarkerArrayClient.prototype.removeArray = function removeArray () {
+    this.rosTopic.unsubscribe();
+    for (var key in this.markers) {
+      if (this.markers.hasOwnProperty(key)) {
+        this.markers[key].unsubscribeTf();
+        this.rootObject.remove( this.markers[key] );
+      }
+    }
+    this.markers = {};
+  };
 
   return MarkerArrayClient;
 }(eventemitter2));
