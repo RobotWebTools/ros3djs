@@ -27,26 +27,22 @@ ROS3D.SceneNode = function(options) {
   this.visible = false;
 
   // add the model
-  this.add(object);
+  if (object) {
+    this.add(object);
+  }
 
   // set the inital pose
   this.updatePose(this.pose);
 
   // save the TF handler so we can remove it later
   this.tfUpdate = function(msg) {
-
-    // apply the transform
-    var tf = new ROSLIB.Transform(msg);
-    var poseTransformed = new ROSLIB.Pose(that.pose);
-    poseTransformed.applyTransform(tf);
-
-    // update the world
-    that.updatePose(poseTransformed);
-    that.visible = true;
+    that.transformPose(msg);
   };
 
   // listen for TF updates
-  this.tfClient.subscribe(this.frameID, this.tfUpdate);
+  if (this.tfClient) {
+    this.tfClient.subscribe(this.frameID, this.tfUpdate);
+  }
 };
 ROS3D.SceneNode.prototype.__proto__ = THREE.Object3D.prototype;
 
@@ -64,4 +60,19 @@ ROS3D.SceneNode.prototype.updatePose = function(pose) {
 
 ROS3D.SceneNode.prototype.unsubscribeTf = function() {
   this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
+};
+
+/**
+ * Transform the pose of the associated model.
+ * @param transform - A ROS Transform like object which has a translation and orientation property.
+ */
+ROS3D.SceneNode.prototype.transformPose = function(transform) {
+  // apply the transform
+  var tf = new ROSLIB.Transform( transform );
+  var poseTransformed = new ROSLIB.Pose(this.pose);
+  poseTransformed.applyTransform(tf);
+
+  // update the world
+  this.updatePose(poseTransformed);
+  this.visible = true;
 };
