@@ -20,6 +20,7 @@ const browserGlobals = {
 
 const moduleGlobals = {
   roslib: 'ROSLIB',
+  three: 'THREE',
 };
 
 const outputFiles = {
