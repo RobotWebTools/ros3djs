@@ -21,6 +21,7 @@ const browserGlobals = {
 const moduleGlobals = {
   roslib: 'ROSLIB',
   three: 'THREE',
+  eventemitter2: 'EventEmitter2',
 };
 
 const outputFiles = {
@@ -67,9 +68,9 @@ export default [
       ...Object.keys(moduleGlobals)
     ],
     plugins: [
-      resolve({ browser: true }),
-      commonjs(),
-      buble(),
+      resolve(),
+      // commonjs(),
+      // buble(),
       filesize(),
     ],
   },

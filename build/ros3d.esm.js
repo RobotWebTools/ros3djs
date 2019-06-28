@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { TFClient, Pose, Transform, Topic, Service, ServiceRequest, URDF_MESH, URDF_BOX, URDF_CYLINDER, URDF_SPHERE, Param, UrdfModel } from 'roslib';
+import EventEmitter2 from 'eventemitter2';
 
 var THREE$1 = Object.assign({}, THREE)
 
@@ -169,9 +170,26 @@ var closestAxisPoint = function(axisRay, camera, mousePos) {
  * @author Julius Kammerl - jkammerl@willowgarage.com
  */
 
-var DepthCloud = /*@__PURE__*/(function (superclass) {
-  function DepthCloud(options) {
-    superclass.call(this);
+class DepthCloud extends THREE$1.Object3D {
+
+  /**
+   * The DepthCloud object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * url - the URL of the stream
+   *   * streamType (optional) - the stream type: mjpeg or vp8 video (defaults to vp8)
+   *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
+   *   * maxDepthPerTile (optional) - the factor with which we control the desired depth range (defaults to 1.0)
+   *   * pointSize (optional) - point size (pixels) for rendered point cloud
+   *   * width (optional) - width of the video stream
+   *   * height (optional) - height of the video stream
+   *   * whiteness (optional) - blends rgb values to white (0..100)
+   *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
+   */
+  constructor(options) {
+    super();
     options = options || {};
 
     this.url = options.url;
@@ -370,22 +388,20 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
       '  ',
       '}'
       ].join('\n');
-  }
+  };
 
-  if ( superclass ) DepthCloud.__proto__ = superclass;
-  DepthCloud.prototype = Object.create( superclass && superclass.prototype );
-  DepthCloud.prototype.constructor = DepthCloud;
   /**
    * Callback called when video metadata is ready
    */
-  DepthCloud.prototype.metaLoaded = function metaLoaded () {
+  metaLoaded() {
     this.metaLoaded = true;
     this.initStreamer();
   };
+
   /**
    * Callback called when video metadata is ready
    */
-  DepthCloud.prototype.initStreamer = function initStreamer () {
+  initStreamer() {
 
     if (this.metaLoaded) {
       this.texture = new THREE$1.Texture(this.video);
@@ -461,32 +477,47 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
       }, 1000 / 30);
     }
   };
+
   /**
    * Start video playback
    */
-  DepthCloud.prototype.startStream = function startStream () {
+  startStream() {
     if (!this.isMjpeg) {
       this.video.play();
     }
   };
+
   /**
    * Stop video playback
    */
-  DepthCloud.prototype.stopStream = function stopStream () {
+  stopStream() {
     if (!this.isMjpeg) {
       this.video.pause();
     }
   };
-
-  return DepthCloud;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var Arrow = /*@__PURE__*/(function (superclass) {
-  function Arrow(options) {
+class Arrow extends THREE$1.Mesh {
+
+  /**
+   * A Arrow is a THREE object that can be used to display an arrow model.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * origin (optional) - the origin of the arrow
+   *   * direction (optional) - the direction vector of the arrow
+   *   * length (optional) - the length of the arrow
+   *   * headLength (optional) - the head length of the arrow
+   *   * shaftDiameter (optional) - the shaft diameter of the arrow
+   *   * headDiameter (optional) - the head diameter of the arrow
+   *   * material (optional) - the material to use for this arrow
+   */
+  constructor(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
     var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
@@ -513,46 +544,46 @@ var Arrow = /*@__PURE__*/(function (superclass) {
     // put the arrow together
     geometry.merge(coneGeometry);
 
-    superclass.call(this, geometry, material);
+    super(geometry, material);
 
     this.position.copy(origin);
     this.setDirection(direction);
-  }
+  };
 
-  if ( superclass ) Arrow.__proto__ = superclass;
-  Arrow.prototype = Object.create( superclass && superclass.prototype );
-  Arrow.prototype.constructor = Arrow;
   /**
    * Set the direction of this arrow to that of the given vector.
    *
    * @param direction - the direction to set this arrow
    */
-  Arrow.prototype.setDirection = function setDirection (direction) {
+  setDirection(direction) {
     var axis = new THREE$1.Vector3(0, 1, 0).cross(direction);
     var radians = Math.acos(new THREE$1.Vector3(0, 1, 0).dot(direction.clone().normalize()));
     this.matrix = new THREE$1.Matrix4().makeRotationAxis(axis.normalize(), radians);
     this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
   };
+
   /**
    * Set this arrow to be the given length.
    *
    * @param length - the new length of the arrow
    */
-  Arrow.prototype.setLength = function setLength (length) {
+  setLength(length) {
     this.scale.set(length, length, length);
   };
+
   /**
    * Set the color of this arrow to the given hex value.
    *
    * @param hex - the hex value of the color to use
    */
-  Arrow.prototype.setColor = function setColor (hex) {
+  setColor(hex) {
     this.material.color.setHex(hex);
   };
+
   /*
    * Free memory of elements in this marker.
    */
-  Arrow.prototype.dispose = function dispose () {
+  dispose() {
     if (this.geometry !== undefined) {
         this.geometry.dispose();
     }
@@ -560,9 +591,7 @@ var Arrow = /*@__PURE__*/(function (superclass) {
         this.material.dispose();
     }
   };
-
-  return Arrow;
-}(THREE$1.Mesh));
+}
 
 /**
  * @author aleeper / http://adamleeper.com/
@@ -648,7 +677,7 @@ THREE$1.STLLoader.prototype = {
         // If solid[ i ] does not match the i-th byte, then it is not an
         // ASCII STL; hence, it is binary and return true.
 
-        if (solid[i] != reader.getUint8(i, false)) { return true; }
+        if (solid[i] != reader.getUint8(i, false)) return true;
 
       }
 
@@ -969,7 +998,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseStrings(text) {
 
-      if (text.length === 0) { return []; }
+      if (text.length === 0) return [];
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -986,7 +1015,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseFloats(text) {
 
-      if (text.length === 0) { return []; }
+      if (text.length === 0) return [];
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -1003,7 +1032,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function parseInts(text) {
 
-      if (text.length === 0) { return []; }
+      if (text.length === 0) return [];
 
       var parts = text.trim().split(/\s+/);
       var array = new Array(parts.length);
@@ -1094,7 +1123,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function getBuild(data, builder) {
 
-      if (data.build !== undefined) { return data.build; }
+      if (data.build !== undefined) return data.build;
 
       data.build = builder(data);
 
@@ -1116,7 +1145,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         var id;
 
@@ -1158,7 +1187,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1295,7 +1324,7 @@ THREE$1.ColladaLoader.prototype = {
             time = inputSource.array[i];
             stride = i * outputSource.stride;
 
-            if (data[time] === undefined) { data[time] = {}; }
+            if (data[time] === undefined) data[time] = {};
 
             if (channel.arraySyntax === true) {
 
@@ -1410,9 +1439,9 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (positionData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData)); }
-      if (quaternionData.length > 0) { tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
-      if (scaleData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
+      if (positionData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData));
+      if (quaternionData.length > 0) tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData));
+      if (scaleData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData));
 
       return tracks;
 
@@ -1506,7 +1535,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var keyframe = keyframes[i];
 
-        if (keyframe.value[property] !== null) { return keyframe; }
+        if (keyframe.value[property] !== null) return keyframe;
 
         i--;
 
@@ -1522,7 +1551,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var keyframe = keyframes[i];
 
-        if (keyframe.value[property] !== null) { return keyframe; }
+        if (keyframe.value[property] !== null) return keyframe;
 
         i++;
 
@@ -1560,7 +1589,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1616,7 +1645,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1649,7 +1678,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1688,7 +1717,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1716,7 +1745,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1892,7 +1921,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildImage(data) {
 
-      if (data.build !== undefined) { return data.build; }
+      if (data.build !== undefined) return data.build;
 
       return data.init_from;
 
@@ -1914,7 +1943,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1941,7 +1970,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1969,7 +1998,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -1995,7 +2024,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2019,7 +2048,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2043,7 +2072,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2071,7 +2100,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2100,7 +2129,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2134,7 +2163,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2156,7 +2185,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2176,7 +2205,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2238,7 +2267,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2328,27 +2357,27 @@ THREE$1.ColladaLoader.prototype = {
         switch (key) {
 
           case 'diffuse':
-            if (parameter.color) { material.color.fromArray(parameter.color); }
-            if (parameter.texture) { material.map = getTexture(parameter.texture); }
+            if (parameter.color) material.color.fromArray(parameter.color);
+            if (parameter.texture) material.map = getTexture(parameter.texture);
             break;
           case 'specular':
-            if (parameter.color && material.specular) { material.specular.fromArray(parameter.color); }
-            if (parameter.texture) { material.specularMap = getTexture(parameter.texture); }
+            if (parameter.color && material.specular) material.specular.fromArray(parameter.color);
+            if (parameter.texture) material.specularMap = getTexture(parameter.texture);
             break;
           case 'shininess':
             if (parameter.float && material.shininess)
-              { material.shininess = parameter.float; }
+              material.shininess = parameter.float;
             break;
           case 'emission':
             if (parameter.color && material.emissive)
-              { material.emissive.fromArray(parameter.color); }
+              material.emissive.fromArray(parameter.color);
             break;
           case 'transparent':
             // if ( parameter.texture ) material.alphaMap = getTexture( parameter.texture );
             material.transparent = true;
             break;
           case 'transparency':
-            if (parameter.float !== undefined) { material.opacity = parameter.float; }
+            if (parameter.float !== undefined) material.opacity = parameter.float;
             material.transparent = true;
             break;
 
@@ -2378,7 +2407,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2530,7 +2559,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2554,7 +2583,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2582,7 +2611,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2632,8 +2661,8 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (data.parameters.color) { light.color.copy(data.parameters.color); }
-      if (data.parameters.distance) { light.distance = data.parameters.distance; }
+      if (data.parameters.color) light.color.copy(data.parameters.color);
+      if (data.parameters.distance) light.distance = data.parameters.distance;
 
       return light;
 
@@ -2656,7 +2685,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = mesh.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         var id = child.getAttribute('id');
 
@@ -2704,7 +2733,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2742,7 +2771,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         data[child.getAttribute('semantic')] = parseId(child.getAttribute('source'));
 
@@ -2766,7 +2795,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -2802,7 +2831,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var primitive = primitives[i];
 
-        if (build[primitive.type] === undefined) { build[primitive.type] = []; }
+        if (build[primitive.type] === undefined) build[primitive.type] = [];
 
         build[primitive.type].push(primitive);
 
@@ -2820,7 +2849,7 @@ THREE$1.ColladaLoader.prototype = {
       var vertices = data.vertices;
       var primitives = data.primitives;
 
-      if (primitives.length === 0) { return {}; }
+      if (primitives.length === 0) return {};
 
       // our goal is to create one buffer geoemtry for a single type of primitives
       // first, we group all primitives by their type
@@ -2965,13 +2994,13 @@ THREE$1.ColladaLoader.prototype = {
 
       // build geometry
 
-      if (position.array.length > 0) { geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride)); }
-      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride)); }
-      if (color.array.length > 0) { geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride)); }
-      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride)); }
+      if (position.array.length > 0) geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride));
+      if (normal.array.length > 0) geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride));
+      if (color.array.length > 0) geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride));
+      if (uv.array.length > 0) geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride));
 
-      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
-      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
+      if (skinIndex.array.length > 0) geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride));
+      if (skinWeight.array.length > 0) geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride));
 
       build.data = geometry;
       build.type = primitives[0].type;
@@ -3079,7 +3108,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3097,7 +3126,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildKinematicsModel(data) {
 
-      if (data.build !== undefined) { return data.build; }
+      if (data.build !== undefined) return data.build;
 
       return data;
 
@@ -3115,7 +3144,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3141,7 +3170,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3178,7 +3207,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3227,7 +3256,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3261,7 +3290,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3325,7 +3354,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3351,7 +3380,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3372,7 +3401,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildKinematicsScene(data) {
 
-      if (data.build !== undefined) { return data.build; }
+      if (data.build !== undefined) return data.build;
 
       return data;
 
@@ -3390,7 +3419,7 @@ THREE$1.ColladaLoader.prototype = {
       var kinematicsSceneId = Object.keys(library.kinematicsScenes)[0];
       var visualSceneId = Object.keys(library.visualScenes)[0];
 
-      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) { return; }
+      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) return;
 
       var kinematicsModel = getKinematicsModel(kinematicsModelId);
       var kinematicsScene = getKinematicsScene(kinematicsSceneId);
@@ -3570,7 +3599,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -3661,7 +3690,7 @@ THREE$1.ColladaLoader.prototype = {
 
         var child = xml.childNodes[i];
 
-        if (child.nodeType !== 1) { continue; }
+        if (child.nodeType !== 1) continue;
 
         switch (child.nodeName) {
 
@@ -4356,9 +4385,22 @@ THREE$1.ColladaLoader.prototype = {
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var MeshResource = /*@__PURE__*/(function (superclass) {
-  function MeshResource(options) {
-    superclass.call(this);
+class MeshResource extends THREE$1.Object3D {
+
+  /**
+   * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
+   * Collada files.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * path (optional) - the base path to the associated models that will be loaded
+   *  * resource - the resource file name to load
+   *  * material (optional) - the material to use for the object
+   *  * warnings (optional) - if warnings should be printed
+   */
+  constructor(options) {
+    super();
     var that = this;
     options = options || {};
     var path = options.path || '/';
@@ -4426,27 +4468,32 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
                     });
       }
     }
-  }
-
-  if ( superclass ) MeshResource.__proto__ = superclass;
-  MeshResource.prototype = Object.create( superclass && superclass.prototype );
-  MeshResource.prototype.constructor = MeshResource;
-
-  return MeshResource;
-}(THREE$1.Object3D));
+  };
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var TriangleList = /*@__PURE__*/(function (superclass) {
-  function TriangleList(options) {
+class TriangleList extends THREE$1.Object3D {
+
+  /**
+   * A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * material (optional) - the material to use for the object
+   *   * vertices - the array of vertices to use
+   *   * colors - the associated array of colors to use
+   */
+  constructor(options) {
     options = options || {};
     var material = options.material || new THREE$1.MeshBasicMaterial();
     var vertices = options.vertices;
     var colors = options.colors;
 
-    superclass.call(this);
+    super();
 
     // set the material to be double sided
     material.side = THREE$1.DoubleSide;
@@ -4492,31 +4539,36 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
     geometry.computeFaceNormals();
 
     this.add(new THREE$1.Mesh(geometry, material));
-  }
+  };
 
-  if ( superclass ) TriangleList.__proto__ = superclass;
-  TriangleList.prototype = Object.create( superclass && superclass.prototype );
-  TriangleList.prototype.constructor = TriangleList;
   /**
    * Set the color of this object to the given hex value.
    *
    * @param hex - the hex value of the color to set
    */
-  TriangleList.prototype.setColor = function setColor (hex) {
+  setColor(hex) {
     this.mesh.material.color.setHex(hex);
   };
-
-  return TriangleList;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Marker = /*@__PURE__*/(function (superclass) {
-  function Marker(options) {
-    superclass.call(this);
+class Marker extends THREE$1.Object3D {
+
+  /**
+   * A Marker can convert a ROS marker message into a THREE object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * path - the base path or URL for any mesh files that will be loaded for this marker
+   *   * message - the marker message
+   */
+  constructor(options) {
+    super();
 
     options = options || {};
     var path = options.path || '/';
@@ -4830,17 +4882,14 @@ var Marker = /*@__PURE__*/(function (superclass) {
         console.error('Currently unsupported marker type: ' + message.type);
         break;
     }
-  }
+  };
 
-  if ( superclass ) Marker.__proto__ = superclass;
-  Marker.prototype = Object.create( superclass && superclass.prototype );
-  Marker.prototype.constructor = Marker;
   /**
    * Set the pose of this marker to the given values.
    *
    * @param pose - the pose to set for this marker
    */
-  Marker.prototype.setPose = function setPose (pose) {
+  setPose(pose) {
     // set position information
     this.position.x = pose.position.x;
     this.position.y = pose.position.y;
@@ -4854,13 +4903,14 @@ var Marker = /*@__PURE__*/(function (superclass) {
     // update the world
     this.updateMatrixWorld();
   };
+
   /**
    * Update this marker.
    *
    * @param message - the marker message
    * @return true on success otherwhise false is returned
    */
-  Marker.prototype.update = function update (message) {
+  update(message) {
     // set the pose and get the color
     this.setPose(message.pose);
 
@@ -4958,10 +5008,11 @@ var Marker = /*@__PURE__*/(function (superclass) {
 
     return true;
   };
+
   /*
    * Free memory of elements in this marker.
    */
-  Marker.prototype.dispose = function dispose () {
+  dispose() {
     this.children.forEach(function(element) {
       if (element instanceof MeshResource) {
         element.children.forEach(function(scene) {
@@ -4990,17 +5041,28 @@ var Marker = /*@__PURE__*/(function (superclass) {
       element.parent.remove(element);
     });
   };
-
-  return Marker;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
-  function InteractiveMarkerControl(options) {
-    superclass.call(this);
+class InteractiveMarkerControl extends THREE$1.Object3D {
+
+  /**
+   * The main marker control object for an interactive marker.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * parent - the parent of this control
+   *  * message - the interactive marker control message
+   *  * camera - the main camera associated with the viewer for this marker client
+   *  * path (optional) - the base path to any meshes that will be loaded
+   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
+   */
+  constructor(options) {
+    super();
     var that = this;
 
     options = options || {};
@@ -5201,17 +5263,14 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         addMarker(null);
       }
     });
-  }
+  };
 
-  if ( superclass ) InteractiveMarkerControl.__proto__ = superclass;
-  InteractiveMarkerControl.prototype = Object.create( superclass && superclass.prototype );
-  InteractiveMarkerControl.prototype.constructor = InteractiveMarkerControl;
-  InteractiveMarkerControl.prototype.updateMatrixWorld = function updateMatrixWorld (force) {
+  updateMatrixWorld (force) {
     var that = this;
     var message = this.message;
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
-        superclass.prototype.updateMatrixWorld.call(this, force);
+        super.updateMatrixWorld(force);
         that.currentControlOri.copy(that.quaternion);
         that.currentControlOri.normalize();
         break;
@@ -5219,7 +5278,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         that.quaternion.copy(that.parent.quaternion.clone().inverse());
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
-        superclass.prototype.updateMatrixWorld.call(this, force);
+        super.updateMatrixWorld(force);
         that.currentControlOri.copy(that.quaternion);
         break;
       case INTERACTIVE_MARKER_VIEW_FACING:
@@ -5245,24 +5304,35 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
           that.updateMatrix();
           that.matrixWorldNeedsUpdate = true;
         }
-        superclass.prototype.updateMatrixWorld.call(this, force);
+        super.updateMatrixWorld(force);
         break;
       default:
         console.error('Unkown orientation mode: ' + message.orientation_mode);
         break;
     }
   };
-
-  return InteractiveMarkerControl;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
-  function InteractiveMarkerMenu(options) {
-    superclass.call(this);
+class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
+
+  /**
+   * A menu for an interactive marker. This will be overlayed on the canvas.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * menuEntries - the menu entries to add
+   *  * className (optional) - a custom CSS class for the menu div
+   *  * entryClassName (optional) - a custom CSS class for the menu entry
+   *  * overlayClassName (optional) - a custom CSS class for the menu overlay
+   *  * menuFontSize (optional) - the menu font size
+   */
+  constructor(options) {
+    super();
     var that = this;
     options = options || {};
     var menuEntries = options.menuEntries;
@@ -5382,18 +5452,15 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
 
     // construct DOM element
     makeUl(this.menuDomElem, allMenus[0]);
-  }
+  };
 
-  if ( superclass ) InteractiveMarkerMenu.__proto__ = superclass;
-  InteractiveMarkerMenu.prototype = Object.create( superclass && superclass.prototype );
-  InteractiveMarkerMenu.prototype.constructor = InteractiveMarkerMenu;
   /**
    * Shoe the menu DOM element.
    *
    * @param control - the control for the menu
    * @param event - the event that caused this
    */
-  InteractiveMarkerMenu.prototype.show = function show (control, event) {
+  show(control, event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -5413,12 +5480,13 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
     document.body.appendChild(this.overlayDomElem);
     document.body.appendChild(this.menuDomElem);
   };
+
   /**
    * Hide the menu DOM element.
    *
    * @param event (optional) - the event that caused this
    */
-  InteractiveMarkerMenu.prototype.hide = function hide (event) {
+  hide(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -5426,17 +5494,27 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
     document.body.removeChild(this.overlayDomElem);
     document.body.removeChild(this.menuDomElem);
   };
-
-  return InteractiveMarkerMenu;
-}(THREE$1.EventDispatcher));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarker = /*@__PURE__*/(function (superclass) {
-  function InteractiveMarker(options) {
-    superclass.call(this);
+class InteractiveMarker extends THREE$1.Object3D {
+
+  /**
+   * The main interactive marker object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * handle - the ROS3D.InteractiveMarkerHandle for this marker
+   *  * camera - the main camera associated with the viewer for this marker
+   *  * path (optional) - the base path to any meshes that will be loaded
+   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
+   */
+  constructor(options) {
+    super();
 
     var that = this;
     options = options || {};
@@ -5485,22 +5563,20 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
         that.dispatchEvent(event);
       });
     }
-  }
+  };
 
-  if ( superclass ) InteractiveMarker.__proto__ = superclass;
-  InteractiveMarker.prototype = Object.create( superclass && superclass.prototype );
-  InteractiveMarker.prototype.constructor = InteractiveMarker;
   /**
    * Show the interactive marker menu associated with this marker.
    *
    * @param control - the control to use
    * @param event - the event that caused this
    */
-  InteractiveMarker.prototype.showMenu = function showMenu (control, event) {
+  showMenu(control, event) {
     if (this.menu) {
       this.menu.show(control, event);
     }
   };
+
   /**
    * Move the axis based on the given event information.
    *
@@ -5508,7 +5584,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
    * @param origAxis - the origin of the axis
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.moveAxis = function moveAxis (control, origAxis, event3d) {
+  moveAxis(control, origAxis, event3d) {
     if (this.dragging) {
       var currentControlOri = control.currentControlOri;
       var axis = origAxis.clone().applyQuaternion(currentControlOri);
@@ -5532,6 +5608,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
     }
   };
 
+
   /**
    * Move with respect to the plane based on the contorl and event.
    *
@@ -5539,7 +5616,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
    * @param origNormal - the normal of the origin
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.move3d = function move3d (control, origNormal, event3d) {
+  move3d(control, origNormal, event3d) {
     // by default, move in a plane
     if (this.dragging) {
 
@@ -5578,6 +5655,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       }
     }
   };
+
   /**
    * Move with respect to the plane based on the contorl and event.
    *
@@ -5585,7 +5663,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
    * @param origNormal - the normal of the origin
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.movePlane = function movePlane (control, origNormal, event3d) {
+  movePlane(control, origNormal, event3d) {
     if (this.dragging) {
       var currentControlOri = control.currentControlOri;
       var normal = origNormal.clone().applyQuaternion(currentControlOri);
@@ -5604,6 +5682,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       event3d.stopPropagation();
     }
   };
+
   /**
    * Rotate based on the control and event given.
    *
@@ -5611,7 +5690,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
    * @param origOrientation - the orientation of the origin
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.rotateAxis = function rotateAxis (control, origOrientation, event3d) {
+  rotateAxis(control, origOrientation, event3d) {
     if (this.dragging) {
       control.updateMatrixWorld();
 
@@ -5658,13 +5737,14 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       event3d.stopPropagation();
     }
   };
+
   /**
    * Dispatch the given event type.
    *
    * @param type - the type of event
    * @param control - the control to use
    */
-  InteractiveMarker.prototype.feedbackEvent = function feedbackEvent (type, control) {
+  feedbackEvent(type, control) {
     this.dispatchEvent({
       type : type,
       position : this.position.clone(),
@@ -5672,13 +5752,14 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       controlName : control.name
     });
   };
+
   /**
    * Start a drag action.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.startDrag = function startDrag (control, event3d) {
+  startDrag(control, event3d) {
     if (event3d.domEvent.button === 0) {
       event3d.stopPropagation();
       this.dragging = true;
@@ -5693,13 +5774,14 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       this.feedbackEvent('user-mousedown', control);
     }
   };
+
   /**
    * Stop a drag action.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.stopDrag = function stopDrag (control, event3d) {
+  stopDrag(control, event3d) {
     if (event3d.domEvent.button === 0) {
       event3d.stopPropagation();
       this.dragging = false;
@@ -5710,43 +5792,47 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       this.feedbackEvent('user-mouseup', control);
     }
   };
+
   /**
    * Handle a button click.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.buttonClick = function buttonClick (control, event3d) {
+  buttonClick(control, event3d) {
     event3d.stopPropagation();
     this.feedbackEvent('user-button-click', control);
   };
+
   /**
    * Handle a user pose change for the position.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.setPosition = function setPosition (control, position) {
+  setPosition(control, position) {
     this.position.copy(position);
     this.feedbackEvent('user-pose-change', control);
   };
+
   /**
    * Handle a user pose change for the orientation.
    *
    * @param control - the control to use
    * @param event3d - the event that caused this
    */
-  InteractiveMarker.prototype.setOrientation = function setOrientation (control, orientation) {
+  setOrientation(control, orientation) {
     orientation.normalize();
     this.quaternion.copy(orientation);
     this.feedbackEvent('user-pose-change', control);
   };
+
   /**
    * Update the marker based when the pose is set from the server.
    *
    * @param event - the event that caused this
    */
-  InteractiveMarker.prototype.onServerSetPose = function onServerSetPose (event) {
+  onServerSetPose(event) {
     if (event !== undefined) {
       // don't update while dragging
       if (this.dragging) {
@@ -5759,10 +5845,11 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       }
     }
   };
+
   /**
    * Free memory of elements in this marker.
    */
-  InteractiveMarker.prototype.dispose = function dispose () {
+  dispose() {
     var that = this;
     this.children.forEach(function(intMarkerControl) {
       intMarkerControl.children.forEach(function(marker) {
@@ -5772,793 +5859,31 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       that.remove(intMarkerControl);
     });
   };
-
-  return InteractiveMarker;
-}(THREE$1.Object3D));
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
-
-var eventemitter2 = createCommonjsModule(function (module, exports) {
-!function(undefined) {
-
-  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
-    return Object.prototype.toString.call(obj) === "[object Array]";
-  };
-  var defaultMaxListeners = 10;
-
-  function init() {
-    this._events = {};
-    if (this._conf) {
-      configure.call(this, this._conf);
-    }
-  }
-
-  function configure(conf) {
-    if (conf) {
-      this._conf = conf;
-
-      conf.delimiter && (this.delimiter = conf.delimiter);
-      this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
-
-      conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
-      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
-
-      if (this.wildcard) {
-        this.listenerTree = {};
-      }
-    } else {
-      this._maxListeners = defaultMaxListeners;
-    }
-  }
-
-  function logPossibleMemoryLeak(count, eventName) {
-    var errorMsg = '(node) warning: possible EventEmitter memory ' +
-        'leak detected. ' + count + ' listeners added. ' +
-        'Use emitter.setMaxListeners() to increase limit.';
-
-    if(this.verboseMemoryLeak){
-      errorMsg += ' Event name: ' + eventName + '.';
-    }
-
-    if(typeof process !== 'undefined' && process.emitWarning){
-      var e = new Error(errorMsg);
-      e.name = 'MaxListenersExceededWarning';
-      e.emitter = this;
-      e.count = count;
-      process.emitWarning(e);
-    } else {
-      console.error(errorMsg);
-
-      if (console.trace){
-        console.trace();
-      }
-    }
-  }
-
-  function EventEmitter(conf) {
-    this._events = {};
-    this.newListener = false;
-    this.verboseMemoryLeak = false;
-    configure.call(this, conf);
-  }
-  EventEmitter.EventEmitter2 = EventEmitter; // backwards compatibility for exporting EventEmitter property
-
-  //
-  // Attention, function return type now is array, always !
-  // It has zero elements if no any matches found and one or more
-  // elements (leafs) if there are matches
-  //
-  function searchListenerTree(handlers, type, tree, i) {
-    if (!tree) {
-      return [];
-    }
-    var listeners=[], leaf, len, branch, xTree, xxTree, isolatedBranch, endReached,
-        typeLength = type.length, currentType = type[i], nextType = type[i+1];
-    if (i === typeLength && tree._listeners) {
-      //
-      // If at the end of the event(s) list and the tree has listeners
-      // invoke those listeners.
-      //
-      if (typeof tree._listeners === 'function') {
-        handlers && handlers.push(tree._listeners);
-        return [tree];
-      } else {
-        for (leaf = 0, len = tree._listeners.length; leaf < len; leaf++) {
-          handlers && handlers.push(tree._listeners[leaf]);
-        }
-        return [tree];
-      }
-    }
-
-    if ((currentType === '*' || currentType === '**') || tree[currentType]) {
-      //
-      // If the event emitted is '*' at this part
-      // or there is a concrete match at this patch
-      //
-      if (currentType === '*') {
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+1));
-          }
-        }
-        return listeners;
-      } else if(currentType === '**') {
-        endReached = (i+1 === typeLength || (i+2 === typeLength && nextType === '*'));
-        if(endReached && tree._listeners) {
-          // The next element has a _listeners, add it to the handlers.
-          listeners = listeners.concat(searchListenerTree(handlers, type, tree, typeLength));
-        }
-
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            if(branch === '*' || branch === '**') {
-              if(tree[branch]._listeners && !endReached) {
-                listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], typeLength));
-              }
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            } else if(branch === nextType) {
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+2));
-            } else {
-              // No match on this one, shift into the tree but not in the type array.
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            }
-          }
-        }
-        return listeners;
-      }
-
-      listeners = listeners.concat(searchListenerTree(handlers, type, tree[currentType], i+1));
-    }
-
-    xTree = tree['*'];
-    if (xTree) {
-      //
-      // If the listener tree will allow any match for this part,
-      // then recursively explore all branches of the tree
-      //
-      searchListenerTree(handlers, type, xTree, i+1);
-    }
-
-    xxTree = tree['**'];
-    if(xxTree) {
-      if(i < typeLength) {
-        if(xxTree._listeners) {
-          // If we have a listener on a '**', it will catch all, so add its handler.
-          searchListenerTree(handlers, type, xxTree, typeLength);
-        }
-
-        // Build arrays of matching next branches and others.
-        for(branch in xxTree) {
-          if(branch !== '_listeners' && xxTree.hasOwnProperty(branch)) {
-            if(branch === nextType) {
-              // We know the next element will match, so jump twice.
-              searchListenerTree(handlers, type, xxTree[branch], i+2);
-            } else if(branch === currentType) {
-              // Current node matches, move into the tree.
-              searchListenerTree(handlers, type, xxTree[branch], i+1);
-            } else {
-              isolatedBranch = {};
-              isolatedBranch[branch] = xxTree[branch];
-              searchListenerTree(handlers, type, { '**': isolatedBranch }, i+1);
-            }
-          }
-        }
-      } else if(xxTree._listeners) {
-        // We have reached the end and still on a '**'
-        searchListenerTree(handlers, type, xxTree, typeLength);
-      } else if(xxTree['*'] && xxTree['*']._listeners) {
-        searchListenerTree(handlers, type, xxTree['*'], typeLength);
-      }
-    }
-
-    return listeners;
-  }
-
-  function growListenerTree(type, listener) {
-
-    type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-
-    //
-    // Looks for two consecutive '**', if so, don't add the event at all.
-    //
-    for(var i = 0, len = type.length; i+1 < len; i++) {
-      if(type[i] === '**' && type[i+1] === '**') {
-        return;
-      }
-    }
-
-    var tree = this.listenerTree;
-    var name = type.shift();
-
-    while (name !== undefined) {
-
-      if (!tree[name]) {
-        tree[name] = {};
-      }
-
-      tree = tree[name];
-
-      if (type.length === 0) {
-
-        if (!tree._listeners) {
-          tree._listeners = listener;
-        }
-        else {
-          if (typeof tree._listeners === 'function') {
-            tree._listeners = [tree._listeners];
-          }
-
-          tree._listeners.push(listener);
-
-          if (
-            !tree._listeners.warned &&
-            this._maxListeners > 0 &&
-            tree._listeners.length > this._maxListeners
-          ) {
-            tree._listeners.warned = true;
-            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
-          }
-        }
-        return true;
-      }
-      name = type.shift();
-    }
-    return true;
-  }
-
-  // By default EventEmitters will print a warning if more than
-  // 10 listeners are added to it. This is a useful default which
-  // helps finding memory leaks.
-  //
-  // Obviously not all Emitters should be limited to 10. This function allows
-  // that to be increased. Set to zero for unlimited.
-
-  EventEmitter.prototype.delimiter = '.';
-
-  EventEmitter.prototype.setMaxListeners = function(n) {
-    if (n !== undefined) {
-      this._maxListeners = n;
-      if (!this._conf) { this._conf = {}; }
-      this._conf.maxListeners = n;
-    }
-  };
-
-  EventEmitter.prototype.event = '';
-
-
-  EventEmitter.prototype.once = function(event, fn) {
-    return this._once(event, fn, false);
-  };
-
-  EventEmitter.prototype.prependOnceListener = function(event, fn) {
-    return this._once(event, fn, true);
-  };
-
-  EventEmitter.prototype._once = function(event, fn, prepend) {
-    this._many(event, 1, fn, prepend);
-    return this;
-  };
-
-  EventEmitter.prototype.many = function(event, ttl, fn) {
-    return this._many(event, ttl, fn, false);
-  };
-
-  EventEmitter.prototype.prependMany = function(event, ttl, fn) {
-    return this._many(event, ttl, fn, true);
-  };
-
-  EventEmitter.prototype._many = function(event, ttl, fn, prepend) {
-    var self = this;
-
-    if (typeof fn !== 'function') {
-      throw new Error('many only accepts instances of Function');
-    }
-
-    function listener() {
-      if (--ttl === 0) {
-        self.off(event, listener);
-      }
-      return fn.apply(this, arguments);
-    }
-
-    listener._origin = fn;
-
-    this._on(event, listener, prepend);
-
-    return self;
-  };
-
-  EventEmitter.prototype.emit = function() {
-    var arguments$1 = arguments;
-
-
-    this._events || init.call(this);
-
-    var type = arguments[0];
-
-    if (type === 'newListener' && !this.newListener) {
-      if (!this._events.newListener) {
-        return false;
-      }
-    }
-
-    var al = arguments.length;
-    var args,l,i,j;
-    var handler;
-
-    if (this._all && this._all.length) {
-      handler = this._all.slice();
-      if (al > 3) {
-        args = new Array(al);
-        for (j = 0; j < al; j++) { args[j] = arguments$1[j]; }
-      }
-
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler[i].call(this, type);
-          break;
-        case 2:
-          handler[i].call(this, type, arguments$1[1]);
-          break;
-        case 3:
-          handler[i].call(this, type, arguments$1[1], arguments$1[2]);
-          break;
-        default:
-          handler[i].apply(this, args);
-        }
-      }
-    }
-
-    if (this.wildcard) {
-      handler = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
-    } else {
-      handler = this._events[type];
-      if (typeof handler === 'function') {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler.call(this);
-          break;
-        case 2:
-          handler.call(this, arguments[1]);
-          break;
-        case 3:
-          handler.call(this, arguments[1], arguments[2]);
-          break;
-        default:
-          args = new Array(al - 1);
-          for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-          handler.apply(this, args);
-        }
-        return true;
-      } else if (handler) {
-        // need to make copy of handlers because list can change in the middle
-        // of emit call
-        handler = handler.slice();
-      }
-    }
-
-    if (handler && handler.length) {
-      if (al > 3) {
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-      }
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler[i].call(this);
-          break;
-        case 2:
-          handler[i].call(this, arguments$1[1]);
-          break;
-        case 3:
-          handler[i].call(this, arguments$1[1], arguments$1[2]);
-          break;
-        default:
-          handler[i].apply(this, args);
-        }
-      }
-      return true;
-    } else if (!this._all && type === 'error') {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-
-    return !!this._all;
-  };
-
-  EventEmitter.prototype.emitAsync = function() {
-    var arguments$1 = arguments;
-
-
-    this._events || init.call(this);
-
-    var type = arguments[0];
-
-    if (type === 'newListener' && !this.newListener) {
-        if (!this._events.newListener) { return Promise.resolve([false]); }
-    }
-
-    var promises= [];
-
-    var al = arguments.length;
-    var args,l,i,j;
-    var handler;
-
-    if (this._all) {
-      if (al > 3) {
-        args = new Array(al);
-        for (j = 1; j < al; j++) { args[j] = arguments$1[j]; }
-      }
-      for (i = 0, l = this._all.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          promises.push(this._all[i].call(this, type));
-          break;
-        case 2:
-          promises.push(this._all[i].call(this, type, arguments$1[1]));
-          break;
-        case 3:
-          promises.push(this._all[i].call(this, type, arguments$1[1], arguments$1[2]));
-          break;
-        default:
-          promises.push(this._all[i].apply(this, args));
-        }
-      }
-    }
-
-    if (this.wildcard) {
-      handler = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
-    } else {
-      handler = this._events[type];
-    }
-
-    if (typeof handler === 'function') {
-      this.event = type;
-      switch (al) {
-      case 1:
-        promises.push(handler.call(this));
-        break;
-      case 2:
-        promises.push(handler.call(this, arguments[1]));
-        break;
-      case 3:
-        promises.push(handler.call(this, arguments[1], arguments[2]));
-        break;
-      default:
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-        promises.push(handler.apply(this, args));
-      }
-    } else if (handler && handler.length) {
-      handler = handler.slice();
-      if (al > 3) {
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-      }
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          promises.push(handler[i].call(this));
-          break;
-        case 2:
-          promises.push(handler[i].call(this, arguments$1[1]));
-          break;
-        case 3:
-          promises.push(handler[i].call(this, arguments$1[1], arguments$1[2]));
-          break;
-        default:
-          promises.push(handler[i].apply(this, args));
-        }
-      }
-    } else if (!this._all && type === 'error') {
-      if (arguments[1] instanceof Error) {
-        return Promise.reject(arguments[1]); // Unhandled 'error' event
-      } else {
-        return Promise.reject("Uncaught, unspecified 'error' event.");
-      }
-    }
-
-    return Promise.all(promises);
-  };
-
-  EventEmitter.prototype.on = function(type, listener) {
-    return this._on(type, listener, false);
-  };
-
-  EventEmitter.prototype.prependListener = function(type, listener) {
-    return this._on(type, listener, true);
-  };
-
-  EventEmitter.prototype.onAny = function(fn) {
-    return this._onAny(fn, false);
-  };
-
-  EventEmitter.prototype.prependAny = function(fn) {
-    return this._onAny(fn, true);
-  };
-
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-  EventEmitter.prototype._onAny = function(fn, prepend){
-    if (typeof fn !== 'function') {
-      throw new Error('onAny only accepts instances of Function');
-    }
-
-    if (!this._all) {
-      this._all = [];
-    }
-
-    // Add the function to the event listener collection.
-    if(prepend){
-      this._all.unshift(fn);
-    }else{
-      this._all.push(fn);
-    }
-
-    return this;
-  };
-
-  EventEmitter.prototype._on = function(type, listener, prepend) {
-    if (typeof type === 'function') {
-      this._onAny(type, listener);
-      return this;
-    }
-
-    if (typeof listener !== 'function') {
-      throw new Error('on only accepts instances of Function');
-    }
-    this._events || init.call(this);
-
-    // To avoid recursion in the case that type == "newListeners"! Before
-    // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
-
-    if (this.wildcard) {
-      growListenerTree.call(this, type, listener);
-      return this;
-    }
-
-    if (!this._events[type]) {
-      // Optimize the case of one listener. Don't need the extra array object.
-      this._events[type] = listener;
-    }
-    else {
-      if (typeof this._events[type] === 'function') {
-        // Change to array.
-        this._events[type] = [this._events[type]];
-      }
-
-      // If we've already got an array, just add
-      if(prepend){
-        this._events[type].unshift(listener);
-      }else{
-        this._events[type].push(listener);
-      }
-
-      // Check for listener leak
-      if (
-        !this._events[type].warned &&
-        this._maxListeners > 0 &&
-        this._events[type].length > this._maxListeners
-      ) {
-        this._events[type].warned = true;
-        logPossibleMemoryLeak.call(this, this._events[type].length, type);
-      }
-    }
-
-    return this;
-  };
-
-  EventEmitter.prototype.off = function(type, listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('removeListener only takes instances of Function');
-    }
-
-    var handlers,leafs=[];
-
-    if(this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-    }
-    else {
-      // does not use listeners(), so no side effect of creating _events[type]
-      if (!this._events[type]) { return this; }
-      handlers = this._events[type];
-      leafs.push({_listeners:handlers});
-    }
-
-    for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-      var leaf = leafs[iLeaf];
-      handlers = leaf._listeners;
-      if (isArray(handlers)) {
-
-        var position = -1;
-
-        for (var i = 0, length = handlers.length; i < length; i++) {
-          if (handlers[i] === listener ||
-            (handlers[i].listener && handlers[i].listener === listener) ||
-            (handlers[i]._origin && handlers[i]._origin === listener)) {
-            position = i;
-            break;
-          }
-        }
-
-        if (position < 0) {
-          continue;
-        }
-
-        if(this.wildcard) {
-          leaf._listeners.splice(position, 1);
-        }
-        else {
-          this._events[type].splice(position, 1);
-        }
-
-        if (handlers.length === 0) {
-          if(this.wildcard) {
-            delete leaf._listeners;
-          }
-          else {
-            delete this._events[type];
-          }
-        }
-
-        this.emit("removeListener", type, listener);
-
-        return this;
-      }
-      else if (handlers === listener ||
-        (handlers.listener && handlers.listener === listener) ||
-        (handlers._origin && handlers._origin === listener)) {
-        if(this.wildcard) {
-          delete leaf._listeners;
-        }
-        else {
-          delete this._events[type];
-        }
-
-        this.emit("removeListener", type, listener);
-      }
-    }
-
-    function recursivelyGarbageCollect(root) {
-      if (root === undefined) {
-        return;
-      }
-      var keys = Object.keys(root);
-      for (var i in keys) {
-        var key = keys[i];
-        var obj = root[key];
-        if ((obj instanceof Function) || (typeof obj !== "object") || (obj === null))
-          { continue; }
-        if (Object.keys(obj).length > 0) {
-          recursivelyGarbageCollect(root[key]);
-        }
-        if (Object.keys(obj).length === 0) {
-          delete root[key];
-        }
-      }
-    }
-    recursivelyGarbageCollect(this.listenerTree);
-
-    return this;
-  };
-
-  EventEmitter.prototype.offAny = function(fn) {
-    var i = 0, l = 0, fns;
-    if (fn && this._all && this._all.length > 0) {
-      fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++) {
-        if(fn === fns[i]) {
-          fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
-          return this;
-        }
-      }
-    } else {
-      fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++)
-        { this.emit("removeListenerAny", fns[i]); }
-      this._all = [];
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
-
-  EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
-      !this._events || init.call(this);
-      return this;
-    }
-
-    if (this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      var leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-
-      for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-        var leaf = leafs[iLeaf];
-        leaf._listeners = null;
-      }
-    }
-    else if (this._events) {
-      this._events[type] = null;
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.listeners = function(type) {
-    if (this.wildcard) {
-      var handlers = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
-      return handlers;
-    }
-
-    this._events || init.call(this);
-
-    if (!this._events[type]) { this._events[type] = []; }
-    if (!isArray(this._events[type])) {
-      this._events[type] = [this._events[type]];
-    }
-    return this._events[type];
-  };
-
-  EventEmitter.prototype.eventNames = function(){
-    return Object.keys(this._events);
-  };
-
-  EventEmitter.prototype.listenerCount = function(type) {
-    return this.listeners(type).length;
-  };
-
-  EventEmitter.prototype.listenersAny = function() {
-
-    if(this._all) {
-      return this._all;
-    }
-    else {
-      return [];
-    }
-
-  };
-
-  if (typeof undefined === 'function' && undefined.amd) {
-     // AMD. Register as an anonymous module.
-    undefined(function() {
-      return EventEmitter;
-    });
-  } else {
-    // CommonJS
-    module.exports = EventEmitter;
-  }
-}();
-});
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
-  function InteractiveMarkerHandle(options) {
-    EventEmitter2.call(this);
+class InteractiveMarkerHandle extends EventEmitter2 {
+
+  /**
+   * Handle with signals for a single interactive marker.
+   *
+   * Emits the following events:
+   *
+   *  * 'pose' - emitted when a new pose comes from the server
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * message - the interactive marker message
+   *  * feedbackTopic - the ROSLIB.Topic associated with the feedback
+   *  * tfClient - a handle to the TF client to use
+   *  * menuFontSize (optional) - the menu font size
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.message = options.message;
     this.feedbackTopic = options.feedbackTopic;
@@ -6582,55 +5907,57 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
     // start by setting the pose
     this.setPoseFromServer(this.message.pose);
     this.tfUpdateBound = this.tfUpdate.bind(this);
-  }
+  };
 
-  if ( EventEmitter2 ) InteractiveMarkerHandle.__proto__ = EventEmitter2;
-  InteractiveMarkerHandle.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
-  InteractiveMarkerHandle.prototype.constructor = InteractiveMarkerHandle;
   /**
    * Subscribe to the TF associated with this interactive marker.
    */
-  InteractiveMarkerHandle.prototype.subscribeTf = function subscribeTf () {
+  subscribeTf() {
     // subscribe to tf updates if frame-fixed
     if (this.message.header.stamp.secs === 0.0 && this.message.header.stamp.nsecs === 0.0) {
       this.tfClient.subscribe(this.message.header.frame_id, this.tfUpdateBound);
     }
   };
-  InteractiveMarkerHandle.prototype.unsubscribeTf = function unsubscribeTf () {
+
+  unsubscribeTf() {
     this.tfClient.unsubscribe(this.message.header.frame_id, this.tfUpdateBound);
   };
+
   /**
    * Emit the new pose that has come from the server.
    */
-  InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function emitServerPoseUpdate () {
+  emitServerPoseUpdate() {
     var poseTransformed = new Pose(this.pose);
     poseTransformed.applyTransform(this.tfTransform);
     this.emit('pose', poseTransformed);
   };
+
   /**
    * Update the pose based on the pose given by the server.
    *
    * @param poseMsg - the pose given by the server
    */
-  InteractiveMarkerHandle.prototype.setPoseFromServer = function setPoseFromServer (poseMsg) {
+  setPoseFromServer(poseMsg) {
     this.pose = new Pose(poseMsg);
     this.emitServerPoseUpdate();
   };
+
   /**
    * Update the pose based on the TF given by the server.
    *
    * @param transformMsg - the TF given by the server
    */
-  InteractiveMarkerHandle.prototype.tfUpdate = function tfUpdate (transformMsg) {
+  tfUpdate(transformMsg) {
     this.tfTransform = new Transform(transformMsg);
     this.emitServerPoseUpdate();
   };
+
   /**
    * Set the pose from the client based on the given event.
    *
    * @param event - the event to base the change off of
    */
-  InteractiveMarkerHandle.prototype.setPoseFromClient = function setPoseFromClient (event) {
+  setPoseFromClient(event) {
     // apply the transform
     this.pose = new Pose(event);
     var inv = this.tfTransform.clone();
@@ -6652,44 +5979,49 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
       this.timeoutHandle = setTimeout(this.setPoseFromClient.bind(this, event), 250);
     }
   };
+
   /**
    * Send the button click feedback to the server.
    *
    * @param event - the event associated with the button click
    */
-  InteractiveMarkerHandle.prototype.onButtonClick = function onButtonClick (event) {
+  onButtonClick(event) {
     this.sendFeedback(INTERACTIVE_MARKER_BUTTON_CLICK, event.clickPosition, 0,
         event.controlName);
   };
+
   /**
    * Send the mousedown feedback to the server.
    *
    * @param event - the event associated with the mousedown
    */
-  InteractiveMarkerHandle.prototype.onMouseDown = function onMouseDown (event) {
+  onMouseDown(event) {
     this.sendFeedback(INTERACTIVE_MARKER_MOUSE_DOWN, event.clickPosition, 0, event.controlName);
     this.dragging = true;
   };
+
   /**
    * Send the mouseup feedback to the server.
    *
    * @param event - the event associated with the mouseup
    */
-  InteractiveMarkerHandle.prototype.onMouseUp = function onMouseUp (event) {
+  onMouseUp(event) {
     this.sendFeedback(INTERACTIVE_MARKER_MOUSE_UP, event.clickPosition, 0, event.controlName);
     this.dragging = false;
     if (this.timeoutHandle) {
       clearTimeout(this.timeoutHandle);
     }
   };
+
   /**
    * Send the menu select feedback to the server.
    *
    * @param event - the event associated with the menu select
    */
-  InteractiveMarkerHandle.prototype.onMenuSelect = function onMenuSelect (event) {
+  onMenuSelect(event) {
     this.sendFeedback(INTERACTIVE_MARKER_MENU_SELECT, undefined, event.id, event.controlName);
   };
+
   /**
    * Send feedback to the interactive marker server.
    *
@@ -6698,7 +6030,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * @param menuEntryID (optional) - the menu entry ID that is associated
    * @param controlName - the name of the control
    */
-  InteractiveMarkerHandle.prototype.sendFeedback = function sendFeedback (eventType, clickPosition,
+  sendFeedback(eventType, clickPosition,
       menuEntryID, controlName) {
 
     // check for the click position
@@ -6722,204 +6054,237 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
     };
     this.feedbackTopic.publish(feedback);
   };
-
-  return InteractiveMarkerHandle;
-}(eventemitter2));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var InteractiveMarkerClient = function InteractiveMarkerClient(options) {
-  options = options || {};
-  this.ros = options.ros;
-  this.tfClient = options.tfClient;
-  this.topicName = options.topic;
-  this.path = options.path || '/';
-  this.camera = options.camera;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
-  this.loader = options.loader;
-  this.menuFontSize = options.menuFontSize || '0.8em';
+class InteractiveMarkerClient {
 
-  this.interactiveMarkers = {};
-  this.updateTopic = null;
-  this.feedbackTopic = null;
+  /**
+   * A client for an interactive marker topic.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - a handle to the ROS connection
+   *  * tfClient - a handle to the TF client
+   *  * topic (optional) - the topic to subscribe to, like '/basic_controls', if not provided use subscribe() to start message receiving
+   *  * path (optional) - the base path to any meshes that will be loaded
+   *  * camera - the main camera associated with the viewer for this marker client
+   *  * rootObject (optional) - the root THREE 3D object to render to
+   *  * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
+   *  * menuFontSize (optional) - the menu font size
+   */
+  constructor(options) {
+    options = options || {};
+    this.ros = options.ros;
+    this.tfClient = options.tfClient;
+    this.topicName = options.topic;
+    this.path = options.path || '/';
+    this.camera = options.camera;
+    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.loader = options.loader;
+    this.menuFontSize = options.menuFontSize || '0.8em';
 
-  // check for an initial topic
-  if (this.topicName) {
-    this.subscribe(this.topicName);
-  }
-};
-/**
- * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
- *
- * @param topic - the topic to subscribe to, like '/basic_controls'
- */
-InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
-  // unsubscribe to the other topics
-  this.unsubscribe();
+    this.interactiveMarkers = {};
+    this.updateTopic = null;
+    this.feedbackTopic = null;
 
-  this.updateTopic = new Topic({
-    ros : this.ros,
-    name : topic + '/tunneled/update',
-    messageType : 'visualization_msgs/InteractiveMarkerUpdate',
-    compression : 'png'
-  });
-  this.updateTopic.subscribe(this.processUpdate.bind(this));
-
-  this.feedbackTopic = new Topic({
-    ros : this.ros,
-    name : topic + '/feedback',
-    messageType : 'visualization_msgs/InteractiveMarkerFeedback',
-    compression : 'png'
-  });
-  this.feedbackTopic.advertise();
-
-  this.initService = new Service({
-    ros : this.ros,
-    name : topic + '/tunneled/get_init',
-    serviceType : 'demo_interactive_markers/GetInit'
-  });
-  var request = new ServiceRequest({});
-  this.initService.callService(request, this.processInit.bind(this));
-};
-/**
- * Unsubscribe from the current interactive marker topic.
- */
-InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
-  if (this.updateTopic) {
-    this.updateTopic.unsubscribe();
-  }
-  if (this.feedbackTopic) {
-    this.feedbackTopic.unadvertise();
-  }
-  // erase all markers
-  for (var intMarkerName in this.interactiveMarkers) {
-    this.eraseIntMarker(intMarkerName);
-  }
-  this.interactiveMarkers = {};
-};
-/**
- * Process the given interactive marker initialization message.
- *
- * @param initMessage - the interactive marker initialization message to process
- */
-InteractiveMarkerClient.prototype.processInit = function processInit (initMessage) {
-  var message = initMessage.msg;
-
-  // erase any old markers
-  message.erases = [];
-  for (var intMarkerName in this.interactiveMarkers) {
-    message.erases.push(intMarkerName);
-  }
-  message.poses = [];
-
-  // treat it as an update
-  this.processUpdate(message);
-};
-/**
- * Process the given interactive marker update message.
- *
- * @param initMessage - the interactive marker update message to process
- */
-InteractiveMarkerClient.prototype.processUpdate = function processUpdate (message) {
-  var that = this;
-
-  // erase any markers
-  message.erases.forEach(function(name) {
-    that.eraseIntMarker(name);
-  });
-
-  // updates marker poses
-  message.poses.forEach(function(poseMessage) {
-    var marker = that.interactiveMarkers[poseMessage.name];
-    if (marker) {
-      marker.setPoseFromServer(poseMessage.pose);
+    // check for an initial topic
+    if (this.topicName) {
+      this.subscribe(this.topicName);
     }
-  });
+  };
 
-  // add new markers
-  message.markers.forEach(function(msg) {
-    // get rid of anything with the same name
-    var oldhandle = that.interactiveMarkers[msg.name];
-    if (oldhandle) {
-      that.eraseIntMarker(oldhandle.name);
+  /**
+   * Subscribe to the given interactive marker topic. This will unsubscribe from any current topics.
+   *
+   * @param topic - the topic to subscribe to, like '/basic_controls'
+   */
+  subscribe(topic) {
+    // unsubscribe to the other topics
+    this.unsubscribe();
+
+    this.updateTopic = new Topic({
+      ros : this.ros,
+      name : topic + '/tunneled/update',
+      messageType : 'visualization_msgs/InteractiveMarkerUpdate',
+      compression : 'png'
+    });
+    this.updateTopic.subscribe(this.processUpdate.bind(this));
+
+    this.feedbackTopic = new Topic({
+      ros : this.ros,
+      name : topic + '/feedback',
+      messageType : 'visualization_msgs/InteractiveMarkerFeedback',
+      compression : 'png'
+    });
+    this.feedbackTopic.advertise();
+
+    this.initService = new Service({
+      ros : this.ros,
+      name : topic + '/tunneled/get_init',
+      serviceType : 'demo_interactive_markers/GetInit'
+    });
+    var request = new ServiceRequest({});
+    this.initService.callService(request, this.processInit.bind(this));
+  };
+
+  /**
+   * Unsubscribe from the current interactive marker topic.
+   */
+  unsubscribe() {
+    if (this.updateTopic) {
+      this.updateTopic.unsubscribe();
     }
+    if (this.feedbackTopic) {
+      this.feedbackTopic.unadvertise();
+    }
+    // erase all markers
+    for (var intMarkerName in this.interactiveMarkers) {
+      this.eraseIntMarker(intMarkerName);
+    }
+    this.interactiveMarkers = {};
+  };
 
-    // create the handle
-    var handle = new InteractiveMarkerHandle({
-      message : msg,
-      feedbackTopic : that.feedbackTopic,
-      tfClient : that.tfClient,
-      menuFontSize : that.menuFontSize
+  /**
+   * Process the given interactive marker initialization message.
+   *
+   * @param initMessage - the interactive marker initialization message to process
+   */
+  processInit(initMessage) {
+    var message = initMessage.msg;
+
+    // erase any old markers
+    message.erases = [];
+    for (var intMarkerName in this.interactiveMarkers) {
+      message.erases.push(intMarkerName);
+    }
+    message.poses = [];
+
+    // treat it as an update
+    this.processUpdate(message);
+  };
+
+  /**
+   * Process the given interactive marker update message.
+   *
+   * @param initMessage - the interactive marker update message to process
+   */
+  processUpdate(message) {
+    var that = this;
+
+    // erase any markers
+    message.erases.forEach(function(name) {
+      that.eraseIntMarker(name);
     });
-    that.interactiveMarkers[msg.name] = handle;
 
-    // create the actual marker
-    var intMarker = new InteractiveMarker({
-      handle : handle,
-      camera : that.camera,
-      path : that.path,
-      loader : that.loader
+    // updates marker poses
+    message.poses.forEach(function(poseMessage) {
+      var marker = that.interactiveMarkers[poseMessage.name];
+      if (marker) {
+        marker.setPoseFromServer(poseMessage.pose);
+      }
     });
-    // add it to the scene
-    intMarker.name = msg.name;
-    that.rootObject.add(intMarker);
 
-    // listen for any pose updates from the server
-    handle.on('pose', function(pose) {
-      intMarker.onServerSetPose({
-        pose : pose
+    // add new markers
+    message.markers.forEach(function(msg) {
+      // get rid of anything with the same name
+      var oldhandle = that.interactiveMarkers[msg.name];
+      if (oldhandle) {
+        that.eraseIntMarker(oldhandle.name);
+      }
+
+      // create the handle
+      var handle = new InteractiveMarkerHandle({
+        message : msg,
+        feedbackTopic : that.feedbackTopic,
+        tfClient : that.tfClient,
+        menuFontSize : that.menuFontSize
       });
+      that.interactiveMarkers[msg.name] = handle;
+
+      // create the actual marker
+      var intMarker = new InteractiveMarker({
+        handle : handle,
+        camera : that.camera,
+        path : that.path,
+        loader : that.loader
+      });
+      // add it to the scene
+      intMarker.name = msg.name;
+      that.rootObject.add(intMarker);
+
+      // listen for any pose updates from the server
+      handle.on('pose', function(pose) {
+        intMarker.onServerSetPose({
+          pose : pose
+        });
+      });
+
+      // add bound versions of UI handlers
+      intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
+      intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
+      intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
+      intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
+      intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
+
+      // now listen for any TF changes
+      handle.subscribeTf();
     });
+  };
 
-    // add bound versions of UI handlers
-    intMarker.addEventListener('user-pose-change', handle.setPoseFromClientBound);
-    intMarker.addEventListener('user-mousedown', handle.onMouseDownBound);
-    intMarker.addEventListener('user-mouseup', handle.onMouseUpBound);
-    intMarker.addEventListener('user-button-click', handle.onButtonClickBound);
-    intMarker.addEventListener('menu-select', handle.onMenuSelectBound);
+  /**
+   * Erase the interactive marker with the given name.
+   *
+   * @param intMarkerName - the interactive marker name to delete
+   */
+  eraseIntMarker(intMarkerName) {
+    if (this.interactiveMarkers[intMarkerName]) {
+      // remove the object
+      var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
+      this.rootObject.remove(targetIntMarker);
+      // unsubscribe from TF topic!
+      var handle = this.interactiveMarkers[intMarkerName];
+      handle.unsubscribeTf();
 
-    // now listen for any TF changes
-    handle.subscribeTf();
-  });
-};
-/**
- * Erase the interactive marker with the given name.
- *
- * @param intMarkerName - the interactive marker name to delete
- */
-InteractiveMarkerClient.prototype.eraseIntMarker = function eraseIntMarker (intMarkerName) {
-  if (this.interactiveMarkers[intMarkerName]) {
-    // remove the object
-    var targetIntMarker = this.rootObject.getObjectByName(intMarkerName);
-    this.rootObject.remove(targetIntMarker);
-    // unsubscribe from TF topic!
-    var handle = this.interactiveMarkers[intMarkerName];
-    handle.unsubscribeTf();
+      // remove all other listeners
 
-    // remove all other listeners
+      targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
+      targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
+      targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
+      targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
+      targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
 
-    targetIntMarker.removeEventListener('user-pose-change', handle.setPoseFromClientBound);
-    targetIntMarker.removeEventListener('user-mousedown', handle.onMouseDownBound);
-    targetIntMarker.removeEventListener('user-mouseup', handle.onMouseUpBound);
-    targetIntMarker.removeEventListener('user-button-click', handle.onButtonClickBound);
-    targetIntMarker.removeEventListener('menu-select', handle.onMenuSelectBound);
-
-    // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
-    delete this.interactiveMarkers[intMarkerName];
-    targetIntMarker.dispose();
-  }
-};
+      // remove the handle from the map - after leaving this function's scope, there should be no references to the handle
+      delete this.interactiveMarkers[intMarkerName];
+      targetIntMarker.dispose();
+    }
+  };
+}
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var SceneNode = /*@__PURE__*/(function (superclass) {
-  function SceneNode(options) {
-    superclass.call(this);
+class SceneNode extends THREE$1.Object3D {
+
+  /**
+   * A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * tfClient - a handle to the TF client
+   *  * frameID - the frame ID this object belongs to
+   *  * pose (optional) - the pose associated with this object
+   *  * object - the THREE 3D object to be rendered
+   */
+  constructor(options) {
+    super();
     options = options || {};
     var that = this;
     this.tfClient = options.tfClient;
@@ -6947,30 +6312,29 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     if (this.tfClient) {
       this.tfClient.subscribe(this.frameID, this.tfUpdate);
     }
-  }
+  };
 
-  if ( superclass ) SceneNode.__proto__ = superclass;
-  SceneNode.prototype = Object.create( superclass && superclass.prototype );
-  SceneNode.prototype.constructor = SceneNode;
   /**
    * Set the pose of the associated model.
    *
    * @param pose - the pose to update with
    */
-  SceneNode.prototype.updatePose = function updatePose (pose) {
+  updatePose(pose) {
     this.position.set( pose.position.x, pose.position.y, pose.position.z );
     this.quaternion.set(pose.orientation.x, pose.orientation.y,
         pose.orientation.z, pose.orientation.w);
     this.updateMatrixWorld(true);
   };
-  SceneNode.prototype.unsubscribeTf = function unsubscribeTf () {
+
+  unsubscribeTf() {
     this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
   };
+
   /**
    * Transform the pose of the associated model.
    * @param transform - A ROS Transform like object which has a translation and orientation property.
    */
-  SceneNode.prototype.transformPose = function transformPose (transform) {
+  transformPose(transform) {
     // apply the transform
     var tf = new Transform( transform );
     var poseTransformed = new Pose(this.pose);
@@ -6980,18 +6344,33 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.updatePose(poseTransformed);
     this.visible = true;
   };
-
-  return SceneNode;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
  */
 
-var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
-  function MarkerArrayClient(options) {
-    EventEmitter2.call(this);
+class MarkerArrayClient extends EventEmitter2 {
+
+  /**
+   * A MarkerArray client that listens to a given topic.
+   *
+   * Emits the following events:
+   *
+   *  * 'change' - there was an update or change in the MarkerArray
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * ros - the ROSLIB.Ros connection handle
+   *   * topic - the marker topic to listen to
+   *   * tfClient - the TF client handle to use
+   *   * rootObject (optional) - the root object to add the markers to
+   *   * path (optional) - the base path to any meshes that will be loaded
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic;
@@ -7004,12 +6383,9 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.rosTopic = undefined;
 
     this.subscribe();
-  }
+  };
 
-  if ( EventEmitter2 ) MarkerArrayClient.__proto__ = EventEmitter2;
-  MarkerArrayClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
-  MarkerArrayClient.prototype.constructor = MarkerArrayClient;
-  MarkerArrayClient.prototype.subscribe = function subscribe (){
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to MarkerArray topic
@@ -7021,7 +6397,8 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
+
+  processMessage(arrayMessage){
     arrayMessage.markers.forEach(function(message) {
       if(message.action === 0) {
         var updated = false;
@@ -7069,12 +6446,14 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
 
     this.emit('change');
   };
-  MarkerArrayClient.prototype.unsubscribe = function unsubscribe (){
+
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  MarkerArrayClient.prototype.removeArray = function removeArray () {
+
+  removeArray() {
     this.rosTopic.unsubscribe();
     for (var key in this.markers) {
       if (this.markers.hasOwnProperty(key)) {
@@ -7084,17 +6463,33 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     }
     this.markers = {};
   };
-
-  return MarkerArrayClient;
-}(eventemitter2));
+}
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
-  function MarkerClient(options) {
-    EventEmitter2.call(this);
+class MarkerClient extends EventEmitter2 {
+
+  /**
+   * A marker client that listens to a given marker topic.
+   *
+   * Emits the following events:
+   *
+   *  * 'change' - there was an update or change in the marker
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * ros - the ROSLIB.Ros connection handle
+   *   * topic - the marker topic to listen to
+   *   * tfClient - the TF client handle to use
+   *   * rootObject (optional) - the root object to add this marker to
+   *   * path (optional) - the base path to any meshes that will be loaded
+   *   * lifetime - the lifetime of marker
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic;
@@ -7109,17 +6504,15 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.updatedTime = {};
 
     this.subscribe();
-  }
+  };
 
-  if ( EventEmitter2 ) MarkerClient.__proto__ = EventEmitter2;
-  MarkerClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
-  MarkerClient.prototype.constructor = MarkerClient;
-  MarkerClient.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  MarkerClient.prototype.checkTime = function checkTime (name){
+
+  checkTime(name){
       var curTime = new Date().getTime();
       if (curTime - this.updatedTime[name] > this.lifetime) {
           var oldNode = this.markers[name];
@@ -7132,7 +6525,8 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
                      100);
       }
   };
-  MarkerClient.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7144,7 +6538,8 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  MarkerClient.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     var newMarker = new Marker({
       message : message,
       path : this.path,
@@ -7169,16 +6564,29 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
 
     this.emit('change');
   };
-
-  return MarkerClient;
-}(eventemitter2));
+}
 
 /**
  * @author Jihoon Lee - lee@magazino.eu
  */
 
-var Arrow2 = /*@__PURE__*/(function (superclass) {
-  function Arrow2(options) {
+class Arrow2 extends THREE$1.ArrowHelper {
+
+  /**
+   * A Arrow is a THREE object that can be used to display an arrow model using ArrowHelper
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * origin (optional) - the origin of the arrow
+   *   * direction (optional) - the direction vector of the arrow
+   *   * length (optional) - the length of the arrow
+   *   * headLength (optional) - the head length of the arrow
+   *   * shaftDiameter (optional) - the shaft diameter of the arrow
+   *   * headDiameter (optional) - the head diameter of the arrow
+   *   * material (optional) - the material to use for this arrow
+   */
+  constructor(options) {
     options = options || {};
     var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
     var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
@@ -7188,18 +6596,15 @@ var Arrow2 = /*@__PURE__*/(function (superclass) {
     var headDiameter = options.headDiameter || 0.1;
     var material = options.material || new THREE$1.MeshBasicMaterial();
 
-    superclass.call(this, direction, origin, length, 0xff0000);
+    super(direction, origin, length, 0xff0000);
 
-  }
+  };
 
-  if ( superclass ) Arrow2.__proto__ = superclass;
-  Arrow2.prototype = Object.create( superclass && superclass.prototype );
-  Arrow2.prototype.constructor = Arrow2;
 
   /*
    * Free memory of elements in this object.
    */
-  Arrow2.prototype.dispose = function dispose () {
+  dispose() {
     if (this.line !== undefined) {
         this.line.material.dispose();
         this.line.geometry.dispose();
@@ -7210,16 +6615,51 @@ var Arrow2 = /*@__PURE__*/(function (superclass) {
     }
   };
 
-  return Arrow2;
-}(THREE$1.ArrowHelper));
+  /*
+  setLength ( length, headLength, headWidth ) {
+  	if ( headLength === undefined ) {
+      headLength = 0.2 * length;
+    }
+  	if ( headWidth === undefined ) {
+      headWidth = 0.2 * headLength;
+    }
+
+  	this.line.scale.set( 1, Math.max( 0, length), 1 );
+  	this.line.updateMatrix();
+
+  	this.cone.scale.set( headWidth, headLength, headWidth );
+  	this.cone.position.y = length;
+  	this.cone.updateMatrix();
+
+  };
+  */
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var Axes = /*@__PURE__*/(function (superclass) {
-  function Axes(options) {
-    superclass.call(this);
+class Axes extends THREE$1.Object3D {
+
+  /**
+   * An Axes object can be used to display the axis of a particular coordinate frame.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * shaftRadius (optional) - the radius of the shaft to render
+   *   * headRadius (optional) - the radius of the head to render
+   *   * headLength (optional) - the length of the head to render
+   *   * scale (optional) - the scale of the frame (defaults to 1.0)
+   *   * lineType (optional) - the line type for the axes. Supported line types:
+   *                           'dashed' and 'full'.
+   *   * lineDashLength (optional) - the length of the dashes, relative to the length of the axis.
+   *                                 Maximum value is 1, which means the dash length is
+   *                                 equal to the length of the axis. Parameter only applies when
+   *                                 lineType is set to dashed.
+   */
+  constructor(options) {
+    super();
     var that = this;
     options = options || {};
     var shaftRadius = options.shaftRadius || 0.008;
@@ -7293,28 +6733,34 @@ var Axes = /*@__PURE__*/(function (superclass) {
     addAxis(new THREE$1.Vector3(1, 0, 0));
     addAxis(new THREE$1.Vector3(0, 1, 0));
     addAxis(new THREE$1.Vector3(0, 0, 1));
-  }
-
-  if ( superclass ) Axes.__proto__ = superclass;
-  Axes.prototype = Object.create( superclass && superclass.prototype );
-  Axes.prototype.constructor = Axes;
-
-  return Axes;
-}(THREE$1.Object3D));
+  };
+}
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Grid = /*@__PURE__*/(function (superclass) {
-  function Grid(options) {
+class Grid extends THREE$1.Object3D {
+
+  /**
+   * Create a grid object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * num_cells (optional) - The number of cells of the grid
+   *  * color (optional) - the line color of the grid, like '#cccccc'
+   *  * lineWidth (optional) - the width of the lines in the grid
+   *  * cellSize (optional) - The length, in meters, of the side of each cell
+   */
+  constructor(options) {
     options = options || {};
     var num_cells = options.num_cells || 10;
     var color = options.color || '#cccccc';
     var lineWidth = options.lineWidth || 1;
     var cellSize = options.cellSize || 1;
 
-    superclass.call(this);
+    super();
 
     var material = new THREE$1.LineBasicMaterial({
       color: color,
@@ -7337,21 +6783,26 @@ var Grid = /*@__PURE__*/(function (superclass) {
       this.add(new THREE$1.Line(geometryH, material));
       this.add(new THREE$1.Line(geometryV, material));
     }
-  }
-
-  if ( superclass ) Grid.__proto__ = superclass;
-  Grid.prototype = Object.create( superclass && superclass.prototype );
-  Grid.prototype.constructor = Grid;
-
-  return Grid;
-}(THREE$1.Object3D));
+  };
+}
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var OccupancyGrid = /*@__PURE__*/(function (superclass) {
-  function OccupancyGrid(options) {
+class OccupancyGrid extends THREE$1.Mesh {
+
+  /**
+   * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * message - the occupancy grid message
+   *   * color (optional) - color of the visualized grid
+   *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
+   */
+  constructor(options) {
     options = options || {};
     var message = options.message;
     var color = options.color || {r:255,g:255,b:255};
@@ -7404,7 +6855,7 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
     material.side = THREE$1.DoubleSide;
 
     // create the mesh
-    superclass.call(this, geom, material);
+    super(geom, material);
     // move the map so the corner is at X, Y and correct orientation (informations from message.info)
     this.quaternion.copy(new THREE$1.Quaternion(
         message.info.origin.orientation.x,
@@ -7417,22 +6868,37 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
     this.position.z = message.info.origin.position.z;
     this.scale.x = message.info.resolution;
     this.scale.y = message.info.resolution;
-  }
-
-  if ( superclass ) OccupancyGrid.__proto__ = superclass;
-  OccupancyGrid.prototype = Object.create( superclass && superclass.prototype );
-  OccupancyGrid.prototype.constructor = OccupancyGrid;
-
-  return OccupancyGrid;
-}(THREE$1.Mesh));
+  };
+}
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
-  function OccupancyGridClient(options) {
-    EventEmitter2.call(this);
+class OccupancyGridClient extends EventEmitter2 {
+
+  /**
+   * An occupancy grid client that listens to a given map topic.
+   *
+   * Emits the following events:
+   *
+   *  * 'change' - there was an update or change in the marker
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * ros - the ROSLIB.Ros connection handle
+   *   * topic (optional) - the map topic to listen to
+   *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
+   *   * tfClient (optional) - the TF client handle to use for a scene node
+   *   * compression (optional) - message compression (default: 'cbor')
+   *   * rootObject (optional) - the root object to add this marker to
+   *   * offsetPose (optional) - offset pose of the grid visualization, e.g. for z-offset (ROSLIB.Pose type)
+   *   * color (optional) - color of the visualized grid
+   *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/map';
@@ -7450,17 +6916,15 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     // subscribe to the topic
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( EventEmitter2 ) OccupancyGridClient.__proto__ = EventEmitter2;
-  OccupancyGridClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
-  OccupancyGridClient.prototype.constructor = OccupancyGridClient;
-  OccupancyGridClient.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  OccupancyGridClient.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7473,7 +6937,8 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  OccupancyGridClient.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     // check for an old map
     if (this.currentGrid) {
       // check if it there is a tf client
@@ -7512,17 +6977,33 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
       this.rosTopic.unsubscribe();
     }
   };
-
-  return OccupancyGridClient;
-}(eventemitter2));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Odometry = /*@__PURE__*/(function (superclass) {
-  function Odometry(options) {
-    superclass.call(this);
+class Odometry extends THREE$1.Object3D {
+
+  /**
+   * An Odometry client
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * keep (optional) - number of markers to keep around (default: 1)
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   *  * length (optional) - the length of the arrow (default: 1.0)
+   *  * headLength (optional) - the head length of the arrow (default: 0.2)
+   *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
+   *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
+   */
+  constructor(options) {
+    super();
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/particlecloud';
@@ -7536,18 +7017,16 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) Odometry.__proto__ = superclass;
-  Odometry.prototype = Object.create( superclass && superclass.prototype );
-  Odometry.prototype.constructor = Odometry;
 
-  Odometry.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  Odometry.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7559,7 +7038,8 @@ var Odometry = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Odometry.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sns.length >= this.keep) {
         this.sns[0].unsubscribeTf();
         this.rootObject.remove(this.sns[0]);
@@ -7584,17 +7064,28 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sns[ this.sns.length - 1]);
   };
-
-  return Odometry;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Path = /*@__PURE__*/(function (superclass) {
-  function Path(options) {
-    superclass.call(this);
+class Path extends THREE$1.Object3D {
+
+  /**
+   * A Path client that listens to a given topic and displays a line connecting the poses.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/path';
@@ -7607,18 +7098,16 @@ var Path = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) Path.__proto__ = superclass;
-  Path.prototype = Object.create( superclass && superclass.prototype );
-  Path.prototype.constructor = Path;
 
-  Path.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  Path.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7630,7 +7119,8 @@ var Path = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Path.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -7655,17 +7145,29 @@ var Path = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return Path;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Point = /*@__PURE__*/(function (superclass) {
-  function Point(options) {
-    superclass.call(this);
+class Point extends THREE$1.Object3D {
+
+  /**
+   * A PointStamped client
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   *  * radius (optional) - radius of the point (default: 0.2)
+   */
+  constructor(options) {
+    super();
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/point';
@@ -7678,18 +7180,16 @@ var Point = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) Point.__proto__ = superclass;
-  Point.prototype = Object.create( superclass && superclass.prototype );
-  Point.prototype.constructor = Point;
 
-  Point.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  Point.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7701,7 +7201,8 @@ var Point = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Point.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -7720,17 +7221,28 @@ var Point = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return Point;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Polygon = /*@__PURE__*/(function (superclass) {
-  function Polygon(options) {
-    superclass.call(this);
+class Polygon extends THREE$1.Object3D {
+
+  /**
+   * A PolygonStamped client that listens to a given topic and displays the polygon
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/path';
@@ -7743,18 +7255,16 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) Polygon.__proto__ = superclass;
-  Polygon.prototype = Object.create( superclass && superclass.prototype );
-  Polygon.prototype.constructor = Polygon;
 
-  Polygon.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  Polygon.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7766,7 +7276,8 @@ var Polygon = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Polygon.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -7794,17 +7305,32 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return Polygon;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Pose$1 = /*@__PURE__*/(function (superclass) {
-  function Pose$$1(options) {
-    superclass.call(this);
+let Pose$1 = class Pose extends THREE$1.Object3D {
+
+  /**
+   * A PoseStamped client
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   *  * length (optional) - the length of the arrow (default: 1.0)
+   *  * headLength (optional) - the head length of the arrow (default: 0.2)
+   *  * shaftDiameter (optional) - the shaft diameter of the arrow (default: 0.05)
+   *  * headDiameter (optional) - the head diameter of the arrow (default: 0.1)
+   */
+  constructor(options) {
+    super();
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/pose';
@@ -7816,18 +7342,16 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) Pose$$1.__proto__ = superclass;
-  Pose$$1.prototype = Object.create( superclass && superclass.prototype );
-  Pose$$1.prototype.constructor = Pose$$1;
 
-  Pose$$1.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  Pose$$1.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7839,7 +7363,8 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Pose$$1.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -7863,17 +7388,29 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return Pose$$1;
-}(THREE$1.Object3D));
+};
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var PoseArray = /*@__PURE__*/(function (superclass) {
-  function PoseArray(options) {
-    superclass.call(this);
+class PoseArray extends THREE$1.Object3D {
+
+  /**
+   * A PoseArray client
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   *  * length (optional) - the length of the arrow (default: 1.0)
+   */
+  constructor(options) {
+    super();
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/particlecloud';
@@ -7886,18 +7423,16 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) PoseArray.__proto__ = superclass;
-  PoseArray.prototype = Object.create( superclass && superclass.prototype );
-  PoseArray.prototype.constructor = PoseArray;
 
-  PoseArray.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  PoseArray.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -7909,7 +7444,8 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
    });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  PoseArray.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -7955,17 +7491,28 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return PoseArray;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
-  function PoseWithCovariance(options) {
-    superclass.call(this);
+class PoseWithCovariance extends THREE$1.Object3D {
+
+  /**
+   * A PoseWithCovarianceStamped client
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to
+   *  * color (optional) - color for line (default: 0xcc00ff)
+   */
+  constructor(options) {
+    super();
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/PoseWithCovariance';
@@ -7977,18 +7524,16 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 
     this.rosTopic = undefined;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) PoseWithCovariance.__proto__ = superclass;
-  PoseWithCovariance.prototype = Object.create( superclass && superclass.prototype );
-  PoseWithCovariance.prototype.constructor = PoseWithCovariance;
 
-  PoseWithCovariance.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  PoseWithCovariance.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -8000,7 +7545,8 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  PoseWithCovariance.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
@@ -8024,18 +7570,32 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
   };
-
-  return PoseWithCovariance;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-var Points = /*@__PURE__*/(function (superclass) {
-  function Points(options) {
-    superclass.call(this);
+class Points extends THREE$1.Object3D {
+
+  /**
+   * A set of points. Used by PointCloud2 and LaserScan.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * tfClient - the TF client handle to use
+   *  * rootObject (optional) - the root object to add this marker to use for the points.
+   *  * max_pts (optional) - number of points to draw (default: 10000)
+   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
+   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
+   *  * material (optional) - a material object or an option to construct a PointsMaterial.
+   *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
+   *  * colormap (optional) - function that turns the colorsrc field value to a color
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.tfClient = options.tfClient;
     this.rootObject = options.rootObject || new THREE$1.Object3D();
@@ -8056,13 +7616,10 @@ var Points = /*@__PURE__*/(function (superclass) {
     }
 
     this.sn = null;
-  }
+  };
 
-  if ( superclass ) Points.__proto__ = superclass;
-  Points.prototype = Object.create( superclass && superclass.prototype );
-  Points.prototype.constructor = Points;
 
-  Points.prototype.setup = function setup (frame, point_step, fields)
+  setup(frame, point_step, fields)
   {
       if(this.sn===null){
           // turn fields to a map
@@ -8120,7 +7677,8 @@ var Points = /*@__PURE__*/(function (superclass) {
       }
       return (this.messageCount++ % this.messageRatio) === 0;
   };
-  Points.prototype.update = function update (n)
+
+  update(n)
   {
     this.geom.setDrawRange(0,n);
 
@@ -8132,17 +7690,32 @@ var Points = /*@__PURE__*/(function (superclass) {
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
   };
-
-  return Points;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var LaserScan = /*@__PURE__*/(function (superclass) {
-  function LaserScan(options) {
-    superclass.call(this);
+class LaserScan extends THREE$1.Object3D {
+
+  /**
+   * A LaserScan client that listens to a given topic and displays the points.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to (default '/scan')
+   *  * tfClient - the TF client handle to use
+   *  * compression (optional) - message compression (default: 'cbor')
+   *  * rootObject (optional) - the root object to add this marker to use for the points.
+   *  * max_pts (optional) - number of points to draw (default: 10000)
+   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
+   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
+   *  * material (optional) - a material object or an option to construct a PointsMaterial.
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/scan';
@@ -8151,18 +7724,16 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     this.rosTopic = undefined;
     this.subscribe();
 
-  }
+  };
 
-  if ( superclass ) LaserScan.__proto__ = superclass;
-  LaserScan.prototype = Object.create( superclass && superclass.prototype );
-  LaserScan.prototype.constructor = LaserScan;
 
-  LaserScan.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  LaserScan.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -8175,7 +7746,8 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  LaserScan.prototype.processMessage = function processMessage (message){
+
+  processMessage(message){
     if(!this.points.setup(message.header.frame_id)) {
         return;
     }
@@ -8192,9 +7764,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     }
     this.points.update(j/3);
   };
-
-  return LaserScan;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -8237,9 +7807,28 @@ decode64.e={};
 for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
 
 
-var PointCloud2 = /*@__PURE__*/(function (superclass) {
-  function PointCloud2(options) {
-    superclass.call(this);
+class PointCloud2 extends THREE$1.Object3D {
+
+  /**
+   * A PointCloud2 client that listens to a given topic and displays the points.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * ros - the ROSLIB.Ros connection handle
+   *  * topic - the marker topic to listen to (default: '/points')
+   *  * tfClient - the TF client handle to use
+   *  * compression (optional) - message compression (default: 'cbor')
+   *  * rootObject (optional) - the root object to add this marker to use for the points.
+   *  * max_pts (optional) - number of points to draw (default: 10000)
+   *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
+   *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
+   *  * material (optional) - a material object or an option to construct a PointsMaterial.
+   *  * colorsrc (optional) - the field to be used for coloring (default: 'rgb')
+   *  * colormap (optional) - function that turns the colorsrc field value to a color
+   */
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/points';
@@ -8249,18 +7838,16 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.rosTopic = undefined;
     this.buffer = null;
     this.subscribe();
-  }
+  };
 
-  if ( superclass ) PointCloud2.__proto__ = superclass;
-  PointCloud2.prototype = Object.create( superclass && superclass.prototype );
-  PointCloud2.prototype.constructor = PointCloud2;
 
-  PointCloud2.prototype.unsubscribe = function unsubscribe (){
+  unsubscribe(){
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
   };
-  PointCloud2.prototype.subscribe = function subscribe (){
+
+  subscribe(){
     this.unsubscribe();
 
     // subscribe to the topic
@@ -8273,7 +7860,8 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  PointCloud2.prototype.processMessage = function processMessage (msg){
+
+  processMessage(msg){
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }
@@ -8313,16 +7901,34 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     }
     this.points.update(n);
   };
-
-  return PointCloud2;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author Jihoon Lee - jihoon.lee@kakaobrain.com
  */
-var TFAxes = /*@__PURE__*/(function (superclass) {
-  function TFAxes(options) {
-    superclass.call(this);
+class TFAxes extends THREE$1.Object3D {
+
+  /**
+   * An Axes node can be used to display the axis of a particular coordinate frame.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * frame_id - the frame id to visualize axes
+   *   * tfClient - the TF client handle to use
+   *   * shaftRadius (optional) - the radius of the shaft to render
+   *   * headRadius (optional) - the radius of the head to render
+   *   * headLength (optional) - the length of the head to render
+   *   * scale (optional) - the scale of the frame (defaults to 1.0)
+   *   * lineType (optional) - the line type for the axes. Supported line types:
+   *                           'dashed' and 'full'.
+   *   * lineDashLength (optional) - the length of the dashes, relative to the length of the axis.
+   *                                 Maximum value is 1, which means the dash length is
+   *                                 equal to the length of the axis. Parameter only applies when
+   *                                 lineType is set to dashed.
+   */
+  constructor(options) {
+    super();
     options = options || {};
 
     this.frame_id = options.frame_id;
@@ -8346,22 +7952,29 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
 
     this.rootObject.add(this.sn);
 
-  }
-
-  if ( superclass ) TFAxes.__proto__ = superclass;
-  TFAxes.prototype = Object.create( superclass && superclass.prototype );
-  TFAxes.prototype.constructor = TFAxes;
-
-  return TFAxes;
-}(THREE$1.Object3D));
+  };
+}
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var Urdf = /*@__PURE__*/(function (superclass) {
-  function Urdf(options) {
+class Urdf extends THREE$1.Object3D {
+
+  /**
+   * A URDF can be used to load a ROSLIB.UrdfModel and its associated models into a 3D object.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * urdfModel - the ROSLIB.UrdfModel to load
+   *   * tfClient - the TF client handle to use
+   *   * path (optional) - the base path to the associated Collada models that will be loaded
+   *   * tfPrefix (optional) - the TF prefix to used for multi-robots
+   *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
+   */
+  constructor(options) {
     options = options || {};
     var urdfModel = options.urdfModel;
     var path = options.path || '/';
@@ -8369,7 +7982,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
     var tfPrefix = options.tfPrefix || '';
     var loader = options.loader;
 
-    superclass.call(this);
+    super();
 
     // load all models
     var links = urdfModel.links;
@@ -8457,191 +8070,237 @@ var Urdf = /*@__PURE__*/(function (superclass) {
         }
       }
     }
-  }
+  };
 
-  if ( superclass ) Urdf.__proto__ = superclass;
-  Urdf.prototype = Object.create( superclass && superclass.prototype );
-  Urdf.prototype.constructor = Urdf;
-  Urdf.prototype.unsubscribeTf = function unsubscribeTf () {
+  unsubscribeTf () {
     this.children.forEach(function(n) {
       if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
     });
   };
-
-  return Urdf;
-}(THREE$1.Object3D));
+}
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
 
-var UrdfClient = function UrdfClient(options) {
-  var that = this;
-  options = options || {};
-  var ros = options.ros;
-  this.param = options.param || 'robot_description';
-  this.path = options.path || '/';
-  this.tfClient = options.tfClient;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
-  this.tfPrefix = options.tfPrefix || '';
-  this.loader = options.loader;
+class UrdfClient {
 
-  // get the URDF value from ROS
-  var getParam = new Param({
-    ros : ros,
-    name : this.param
-  });
-  getParam.get(function(string) {
-    // hand off the XML string to the URDF model
-    var urdfModel = new UrdfModel({
-      string : string
-    });
+  /**
+   * A URDF client can be used to load a URDF and its associated models into a 3D object from the ROS
+   * parameter server.
+   *
+   * Emits the following events:
+   *
+   * * 'change' - emited after the URDF and its meshes have been loaded into the root object
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * ros - the ROSLIB.Ros connection handle
+   *   * param (optional) - the paramter to load the URDF from, like 'robot_description'
+   *   * tfClient - the TF client handle to use
+   *   * path (optional) - the base path to the associated Collada models that will be loaded
+   *   * rootObject (optional) - the root object to add this marker to
+   *   * tfPrefix (optional) - the TF prefix to used for multi-robots
+   *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
+   */
+  constructor(options) {
+    var that = this;
+    options = options || {};
+    var ros = options.ros;
+    this.param = options.param || 'robot_description';
+    this.path = options.path || '/';
+    this.tfClient = options.tfClient;
+    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.tfPrefix = options.tfPrefix || '';
+    this.loader = options.loader;
 
-    // load all models
-    that.urdf = new Urdf({
-      urdfModel : urdfModel,
-      path : that.path,
-      tfClient : that.tfClient,
-      tfPrefix : that.tfPrefix,
-      loader : that.loader
+    // get the URDF value from ROS
+    var getParam = new Param({
+      ros : ros,
+      name : this.param
     });
-    that.rootObject.add(that.urdf);
-  });
-};
+    getParam.get(function(string) {
+      // hand off the XML string to the URDF model
+      var urdfModel = new UrdfModel({
+        string : string
+      });
+
+      // load all models
+      that.urdf = new Urdf({
+        urdfModel : urdfModel,
+        path : that.path,
+        tfClient : that.tfClient,
+        tfPrefix : that.tfPrefix,
+        loader : that.loader
+      });
+      that.rootObject.add(that.urdf);
+    });
+  };
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var Highlighter = function Highlighter(options) {
-  options = options || {};
-  this.mouseHandler = options.mouseHandler;
-  this.hoverObjs = {};
+class Highlighter {
 
-  // bind the mouse events
-  this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
-  this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
-};
-/**
- * Add the current target of the mouseover to the hover list.
- *
- * @param event - the event that contains the target of the mouseover
- */
-Highlighter.prototype.onMouseOver = function onMouseOver (event) {
-  this.hoverObjs[event.currentTarget.uuid] = event.currentTarget;
-};
-/**
- * Remove the current target of the mouseover from the hover list.
- *
- * @param event - the event that contains the target of the mouseout
- */
-Highlighter.prototype.onMouseOut = function onMouseOut (event) {
-  var uuid = event.currentTarget.uuid;
-  if (uuid in this.hoverObjs)
-  {
-    delete this.hoverObjs[uuid];
-  }
-};
+  /**
+   * A mouseover highlighter for 3D objects in the scene.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * mouseHandler - the handler for the mouseover and mouseout events
+   */
+  constructor(options) {
+    options = options || {};
+    this.mouseHandler = options.mouseHandler;
+    this.hoverObjs = {};
 
-/**
- * Render the highlights for all objects that are currently highlighted.
- *
- * This method should be executed after clearing the renderer and
- * rendering the regular scene.
- *
- * @param scene - the current scene, which should contain the highlighted objects (among others)
- * @param renderer - the renderer used to render the scene.
- * @param camera - the scene's camera
- */
-Highlighter.prototype.renderHighlights = function renderHighlights (scene, renderer, camera) {
-
-  // Render highlights by making everything but the highlighted
-  // objects invisible...
-  this.makeEverythingInvisible(scene);
-  this.makeHighlightedVisible(scene);
-
-  // Providing a transparent overrideMaterial...
-  var originalOverrideMaterial = scene.overrideMaterial;
-  scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
-      fog : false,
-      opacity : 0.5,
-      transparent : true,
-      depthTest : true,
-      depthWrite : false,
-      polygonOffset : true,
-      polygonOffsetUnits : -1,
-      side : THREE$1.DoubleSide
-  });
-
-  // And then rendering over the regular scene
-  renderer.render(scene, camera);
-
-  // Finally, restore the original overrideMaterial (if any) and
-  // object visibility.
-  scene.overrideMaterial = originalOverrideMaterial;
-  this.restoreVisibility(scene);
-};
-
-/**
- * Traverses the given object and makes every object that's a Mesh,
- * Line or Sprite invisible. Also saves the previous visibility state
- * so we can restore it later.
- *
- * @param scene - the object to traverse
- */
-Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible (scene) {
-  scene.traverse(function(currentObject) {
-    if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-         || currentObject instanceof THREE$1.Sprite ) {
-      currentObject.previousVisibility = currentObject.visible;
-      currentObject.visible = false;
-    }
-  });
-};
-
-/**
- * Make the objects in the scene that are currently highlighted (and
- * all of their children!) visible.
- *
- * @param scene - the object to traverse
- */
-Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (scene) {
-  var makeVisible = function(currentObject) {
-      if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-           || currentObject instanceof THREE$1.Sprite ) {
-        currentObject.visible = true;
-      }
+    // bind the mouse events
+    this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
+    this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
   };
 
-  for (var uuid in this.hoverObjs) {
-    var selectedObject = this.hoverObjs[uuid];
-    // Make each selected object and all of its children visible
-    selectedObject.visible = true;
-    selectedObject.traverse(makeVisible);
-  }
-};
-/**
- * Restore the old visibility state that was saved by
- * makeEverythinginvisible.
- *
- * @param scene - the object to traverse
- */
-Highlighter.prototype.restoreVisibility = function restoreVisibility (scene) {
-  scene.traverse(function(currentObject) {
-    if (currentObject.hasOwnProperty('previousVisibility')) {
-      currentObject.visible = currentObject.previousVisibility;
+  /**
+   * Add the current target of the mouseover to the hover list.
+   *
+   * @param event - the event that contains the target of the mouseover
+   */
+  onMouseOver(event) {
+    this.hoverObjs[event.currentTarget.uuid] = event.currentTarget;
+  };
+
+  /**
+   * Remove the current target of the mouseover from the hover list.
+   *
+   * @param event - the event that contains the target of the mouseout
+   */
+  onMouseOut(event) {
+    var uuid = event.currentTarget.uuid;
+    if (uuid in this.hoverObjs)
+    {
+      delete this.hoverObjs[uuid];
     }
-  }.bind(this));
-};
+  };
+
+
+  /**
+   * Render the highlights for all objects that are currently highlighted.
+   *
+   * This method should be executed after clearing the renderer and
+   * rendering the regular scene.
+   *
+   * @param scene - the current scene, which should contain the highlighted objects (among others)
+   * @param renderer - the renderer used to render the scene.
+   * @param camera - the scene's camera
+   */
+  renderHighlights(scene, renderer, camera) {
+
+    // Render highlights by making everything but the highlighted
+    // objects invisible...
+    this.makeEverythingInvisible(scene);
+    this.makeHighlightedVisible(scene);
+
+    // Providing a transparent overrideMaterial...
+    var originalOverrideMaterial = scene.overrideMaterial;
+    scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
+        fog : false,
+        opacity : 0.5,
+        transparent : true,
+        depthTest : true,
+        depthWrite : false,
+        polygonOffset : true,
+        polygonOffsetUnits : -1,
+        side : THREE$1.DoubleSide
+    });
+
+    // And then rendering over the regular scene
+    renderer.render(scene, camera);
+
+    // Finally, restore the original overrideMaterial (if any) and
+    // object visibility.
+    scene.overrideMaterial = originalOverrideMaterial;
+    this.restoreVisibility(scene);
+  };
+
+
+  /**
+   * Traverses the given object and makes every object that's a Mesh,
+   * Line or Sprite invisible. Also saves the previous visibility state
+   * so we can restore it later.
+   *
+   * @param scene - the object to traverse
+   */
+  makeEverythingInvisible (scene) {
+    scene.traverse(function(currentObject) {
+      if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
+           || currentObject instanceof THREE$1.Sprite ) {
+        currentObject.previousVisibility = currentObject.visible;
+        currentObject.visible = false;
+      }
+    });
+  };
+
+
+  /**
+   * Make the objects in the scene that are currently highlighted (and
+   * all of their children!) visible.
+   *
+   * @param scene - the object to traverse
+   */
+  makeHighlightedVisible (scene) {
+    var makeVisible = function(currentObject) {
+        if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
+             || currentObject instanceof THREE$1.Sprite ) {
+          currentObject.visible = true;
+        }
+    };
+
+    for (var uuid in this.hoverObjs) {
+      var selectedObject = this.hoverObjs[uuid];
+      // Make each selected object and all of its children visible
+      selectedObject.visible = true;
+      selectedObject.traverse(makeVisible);
+    }
+  };
+
+  /**
+   * Restore the old visibility state that was saved by
+   * makeEverythinginvisible.
+   *
+   * @param scene - the object to traverse
+   */
+  restoreVisibility (scene) {
+    scene.traverse(function(currentObject) {
+      if (currentObject.hasOwnProperty('previousVisibility')) {
+        currentObject.visible = currentObject.previousVisibility;
+      }
+    }.bind(this));
+  };
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var MouseHandler = /*@__PURE__*/(function (superclass) {
-  function MouseHandler(options) {
-    superclass.call(this);
+class MouseHandler extends THREE$1.EventDispatcher {
+
+  /**
+   * A handler for mouse events within a 3D viewer.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *   * renderer - the main renderer
+   *   * camera - the main camera in the scene
+   *   * rootObject - the root object to check for mouse events
+   *   * fallbackTarget - the fallback target, e.g., the camera controls
+   */
+  constructor(options) {
+    super();
     this.renderer = options.renderer;
     this.camera = options.camera;
     this.rootObject = options.rootObject;
@@ -8660,17 +8319,14 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
       this.listeners[eventName] = this.processDomEvent.bind(this);
       this.renderer.domElement.addEventListener(eventName, this.listeners[eventName], false);
     }, this);
-  }
+  };
 
-  if ( superclass ) MouseHandler.__proto__ = superclass;
-  MouseHandler.prototype = Object.create( superclass && superclass.prototype );
-  MouseHandler.prototype.constructor = MouseHandler;
   /**
    * Process the particular DOM even that has occurred based on the mouse's position in the scene.
    *
    * @param domEvent - the DOM event to process
    */
-  MouseHandler.prototype.processDomEvent = function processDomEvent (domEvent) {
+  processDomEvent(domEvent) {
     // don't deal with the default handler
     domEvent.preventDefault();
 
@@ -8801,6 +8457,7 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
     }
     this.lastTarget = target;
   };
+
   /**
    * Notify the listener of the type of event that occurred.
    *
@@ -8809,7 +8466,7 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
    * @param event3D - the 3D mouse even information
    * @returns if an event was canceled
    */
-  MouseHandler.prototype.notify = function notify (target, type, event3D) {
+  notify(target, type, event3D) {
     // ensure the type is set
     //
     event3D.type = type;
@@ -8848,9 +8505,7 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
 
     return 1; // Event Failed
   };
-
-  return MouseHandler;
-}(THREE$1.EventDispatcher));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -8859,9 +8514,26 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
  * @author AlteredQualia - http://alteredqualia.com
  */
 
-var OrbitControls = /*@__PURE__*/(function (superclass) {
-  function OrbitControls(options) {
-    superclass.call(this);
+class OrbitControls extends THREE$1.EventDispatcher {
+
+  /**
+   * Behaves like THREE.OrbitControls, but uses right-handed coordinates and z as up vector.
+   *
+   * @constructor
+   * @param scene - the global scene to use
+   * @param camera - the camera to use
+   * @param userZoomSpeed (optional) - the speed for zooming
+   * @param userRotateSpeed (optional) - the speed for rotating
+   * @param autoRotate (optional) - if the orbit should auto rotate
+   * @param autoRotateSpeed (optional) - the speed for auto rotating
+   * @param displayPanAndZoomFrame - whether to display a frame when panning/zooming
+   *                                 (defaults to true)
+   * @param lineTypePanAndZoomFrame - line type for the frame that is displayed when
+   *                                  panning/zooming. Only has effect when
+   *                                  displayPanAndZoomFrame is set to true.
+   */
+  constructor(options) {
+    super();
     var that = this;
     options = options || {};
     var scene = options.scene;
@@ -9204,15 +8876,12 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     // Chrome/Firefox have different events here
     this.addEventListener('mousewheel', onMouseWheel);
     this.addEventListener('DOMMouseScroll', onMouseWheel);
-  }
+  };
 
-  if ( superclass ) OrbitControls.__proto__ = superclass;
-  OrbitControls.prototype = Object.create( superclass && superclass.prototype );
-  OrbitControls.prototype.constructor = OrbitControls;
   /**
    * Display the main axes for 1 second.
    */
-  OrbitControls.prototype.showAxes = function showAxes () {
+  showAxes() {
     var that = this;
 
     this.axes.traverse(function(obj) {
@@ -9228,76 +8897,83 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
       that.hideTimeout = false;
     }, 1000);
   };
+
   /**
    * Rotate the camera to the left by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  OrbitControls.prototype.rotateLeft = function rotateLeft (angle) {
+  rotateLeft(angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.thetaDelta -= angle;
   };
+
   /**
    * Rotate the camera to the right by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  OrbitControls.prototype.rotateRight = function rotateRight (angle) {
+  rotateRight(angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.thetaDelta += angle;
   };
+
   /**
    * Rotate the camera up by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  OrbitControls.prototype.rotateUp = function rotateUp (angle) {
+  rotateUp(angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.phiDelta -= angle;
   };
+
   /**
    * Rotate the camera down by the given angle.
    *
    * @param angle (optional) - the angle to rotate by
    */
-  OrbitControls.prototype.rotateDown = function rotateDown (angle) {
+  rotateDown(angle) {
     if (angle === undefined) {
       angle = 2 * Math.PI / 60 / 60 * this.autoRotateSpeed;
     }
     this.phiDelta += angle;
   };
+
   /**
    * Zoom in by the given scale.
    *
    * @param zoomScale (optional) - the scale to zoom in by
    */
-  OrbitControls.prototype.zoomIn = function zoomIn (zoomScale) {
+  zoomIn(zoomScale) {
     if (zoomScale === undefined) {
       zoomScale = Math.pow(0.95, this.userZoomSpeed);
     }
     this.scale /= zoomScale;
   };
+
   /**
    * Zoom out by the given scale.
    *
    * @param zoomScale (optional) - the scale to zoom in by
    */
-  OrbitControls.prototype.zoomOut = function zoomOut (zoomScale) {
+  zoomOut(zoomScale) {
     if (zoomScale === undefined) {
       zoomScale = Math.pow(0.95, this.userZoomSpeed);
     }
     this.scale *= zoomScale;
   };
+
   /**
    * Update the camera to the current settings.
    */
-  OrbitControls.prototype.update = function update () {
+  update() {
     // x->y, y->z, z->x
     var position = this.camera.position;
     var offset = position.clone().sub(this.center);
@@ -9347,9 +9023,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
       this.lastPosition.copy(this.camera.position);
     }
   };
-
-  return OrbitControls;
-}(THREE$1.EventDispatcher));
+}
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -9357,156 +9031,186 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  */
 
-var Viewer = function Viewer(options) {
-  options = options || {};
-  var divID = options.divID;
-  var canvas = (!!options.canvas &&
-                options.canvas.nodeName.toLowerCase() === 'canvas')
-                  ? options.canvas
-                  : undefined;
-  var width = options.width;
-  var height = options.height;
-  var background = options.background || '#111111';
-  var antialias = options.antialias;
-  var intensity = options.intensity || 0.66;
-  var near = options.near || 0.01;
-  var far = options.far || 1000;
-  var alpha = options.alpha || 1.0;
-  var cameraPosition = options.cameraPose || {
-    x : 3,
-    y : 3,
-    z : 3
+class Viewer {
+
+  /**
+   * A Viewer can be used to render an interactive 3D scene to a HTML5 canvas.
+   *
+   * @constructor
+   * @param options - object with following keys:
+   *
+   *  * divID - the ID of the div to place the viewer in [optional (if canvas omitted)].
+   *  * canvas - the canvas which will be used for rendering [optional (if divID omitted)].
+   *  * width - the initial width, in pixels, of the canvas
+   *  * height - the initial height, in pixels, of the canvas
+   *  * background (optional) - the color to render the background, like '#efefef'
+   *  * alpha (optional) - the alpha of the background
+   *  * antialias (optional) - if antialiasing should be used
+   *  * intensity (optional) - the lighting intensity setting to use
+   *  * cameraPosition (optional) - the starting position of the camera
+   *  * displayPanAndZoomFrame (optional) - whether to display a frame when
+   *  *                                     panning/zooming. Defaults to true.
+   *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
+   *  *                           panning/zooming. Only has effect when
+   *  *                           displayPanAndZoomFrame is set to true.
+   *  * cameraZoomSpeed - Camera zoom speed [optional].
+   */
+  constructor(options) {
+    options = options || {};
+    var divID = options.divID;
+    var canvas = (!!options.canvas &&
+                  options.canvas.nodeName.toLowerCase() === 'canvas')
+                    ? options.canvas
+                    : undefined;
+    var width = options.width;
+    var height = options.height;
+    var background = options.background || '#111111';
+    var antialias = options.antialias;
+    var intensity = options.intensity || 0.66;
+    var near = options.near || 0.01;
+    var far = options.far || 1000;
+    var alpha = options.alpha || 1.0;
+    var cameraPosition = options.cameraPose || {
+      x : 3,
+      y : 3,
+      z : 3
+    };
+    var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+    var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
+    var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
+
+    // create the canvas to render to
+    this.renderer = new THREE$1.WebGLRenderer({
+      canvas: canvas,
+      antialias : antialias,
+      alpha: true
+    });
+    this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
+    this.renderer.sortObjects = false;
+    this.renderer.setSize(width, height);
+    this.renderer.shadowMap.enabled = false;
+    this.renderer.autoClear = false;
+
+    // create the global scene
+    this.scene = new THREE$1.Scene();
+
+    // create the global camera
+    this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
+    this.camera.position.set( cameraPosition.x, cameraPosition.y, cameraPosition.z );
+    // add controls to the camera
+    this.cameraControls = new OrbitControls({
+      scene : this.scene,
+      camera : this.camera,
+      displayPanAndZoomFrame : displayPanAndZoomFrame,
+      lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
+    });
+    this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+
+    // lights
+    this.scene.add(new THREE$1.AmbientLight(0x555555));
+    this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
+    this.scene.add(this.directionalLight);
+
+    // propagates mouse events to three.js objects
+    this.selectableObjects = new THREE$1.Object3D();
+    this.scene.add(this.selectableObjects);
+    var mouseHandler = new MouseHandler({
+      renderer : this.renderer,
+      camera : this.camera,
+      rootObject : this.selectableObjects,
+      fallbackTarget : this.cameraControls
+    });
+
+    // highlights the receiver of mouse events
+    this.highlighter = new Highlighter({
+      mouseHandler : mouseHandler
+    });
+
+    this.stopped = true;
+    this.animationRequestId = undefined;
+
+    // add the renderer to the page
+    if (divID && !canvas) {
+      document.getElementById(divID).appendChild(this.renderer.domElement);
+    } else if (!canvas) {
+      throw new Error('No canvas nor HTML container provided for rendering.');
+    }
+
+    // begin the render loop
+    this.start();
   };
-  var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
-  var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
-  var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
-  // create the canvas to render to
-  this.renderer = new THREE$1.WebGLRenderer({
-    canvas: canvas,
-    antialias : antialias,
-    alpha: true
-  });
-  this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
-  this.renderer.sortObjects = false;
-  this.renderer.setSize(width, height);
-  this.renderer.shadowMap.enabled = false;
-  this.renderer.autoClear = false;
+  /**
+   *  Start the render loop
+   */
+  start(){
+    this.stopped = false;
+    this.draw();
+  };
 
-  // create the global scene
-  this.scene = new THREE$1.Scene();
+  /**
+   * Renders the associated scene to the viewer.
+   */
+  draw(){
+    if(this.stopped){
+      // Do nothing if stopped
+      return;
+    }
 
-  // create the global camera
-  this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
-  this.camera.position.set( cameraPosition.x, cameraPosition.y, cameraPosition.z );
-  // add controls to the camera
-  this.cameraControls = new OrbitControls({
-    scene : this.scene,
-    camera : this.camera,
-    displayPanAndZoomFrame : displayPanAndZoomFrame,
-    lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
-  });
-  this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+    // update the controls
+    this.cameraControls.update();
 
-  // lights
-  this.scene.add(new THREE$1.AmbientLight(0x555555));
-  this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
-  this.scene.add(this.directionalLight);
+    // put light to the top-left of the camera
+    // BUG: position is a read-only property of DirectionalLight,
+    // attempting to assign to it either does nothing or throws an error.
+    //this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+    this.directionalLight.position.normalize();
 
-  // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE$1.Object3D();
-  this.scene.add(this.selectableObjects);
-  var mouseHandler = new MouseHandler({
-    renderer : this.renderer,
-    camera : this.camera,
-    rootObject : this.selectableObjects,
-    fallbackTarget : this.cameraControls
-  });
+    // set the scene
+    this.renderer.clear(true, true, true);
+    this.renderer.render(this.scene, this.camera);
+    this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
 
-  // highlights the receiver of mouse events
-  this.highlighter = new Highlighter({
-    mouseHandler : mouseHandler
-  });
+    // draw the frame
+    this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
+  };
 
-  this.stopped = true;
-  this.animationRequestId = undefined;
+  /**
+   *  Stop the render loop
+   */
+  stop(){
+    if(!this.stopped){
+      // Stop animation render loop
+      cancelAnimationFrame(this.animationRequestId);
+    }
+    this.stopped = true;
+  };
 
-  // add the renderer to the page
-  if (divID && !canvas) {
-    document.getElementById(divID).appendChild(this.renderer.domElement);
-  } else if (!canvas) {
-    throw new Error('No canvas nor HTML container provided for rendering.');
-  }
+  /**
+   * Add the given THREE Object3D to the global scene in the viewer.
+   *
+   * @param object - the THREE Object3D to add
+   * @param selectable (optional) - if the object should be added to the selectable list
+   */
+  addObject(object, selectable) {
+    if (selectable) {
+      this.selectableObjects.add(object);
+    } else {
+      this.scene.add(object);
+    }
+  };
 
-  // begin the render loop
-  this.start();
-};
-/**
- *Start the render loop
- */
-Viewer.prototype.start = function start (){
-  this.stopped = false;
-  this.draw();
-};
-/**
- * Renders the associated scene to the viewer.
- */
-Viewer.prototype.draw = function draw (){
-  if(this.stopped){
-    // Do nothing if stopped
-    return;
-  }
-
-  // update the controls
-  this.cameraControls.update();
-
-  // put light to the top-left of the camera
-  // BUG: position is a read-only property of DirectionalLight,
-  // attempting to assign to it either does nothing or throws an error.
-  //this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-  this.directionalLight.position.normalize();
-
-  // set the scene
-  this.renderer.clear(true, true, true);
-  this.renderer.render(this.scene, this.camera);
-  this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
-
-  // draw the frame
-  this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
-};
-/**
- *Stop the render loop
- */
-Viewer.prototype.stop = function stop (){
-  if(!this.stopped){
-    // Stop animation render loop
-    cancelAnimationFrame(this.animationRequestId);
-  }
-  this.stopped = true;
-};
-/**
- * Add the given THREE Object3D to the global scene in the viewer.
- *
- * @param object - the THREE Object3D to add
- * @param selectable (optional) - if the object should be added to the selectable list
- */
-Viewer.prototype.addObject = function addObject (object, selectable) {
-  if (selectable) {
-    this.selectableObjects.add(object);
-  } else {
-    this.scene.add(object);
-  }
-};
-/**
- * Resize 3D viewer
- *
- * @param width - new width value
- * @param height - new height value
- */
-Viewer.prototype.resize = function resize (width, height) {
-  this.camera.aspect = width / height;
-  this.camera.updateProjectionMatrix();
-  this.renderer.setSize(width, height);
-};
+  /**
+   * Resize 3D viewer
+   *
+   * @param width - new width value
+   * @param height - new height value
+   */
+  resize(width, height) {
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+  };
+}
 
 export { MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Points, PointCloud2, TFAxes, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };

@@ -6,7 +6,7 @@
   "license": "BSD-3-Clause",
   "main": "./build/ros3d.cjs.js",
   "module": "./build/ros3d.esm.js",
-  "dependencies": {
+  "peerDependencies": {
     "eventemitter2": "^4.1.0",
     "roslib": "^1.0.0",
     "three": "^0.89.0"
