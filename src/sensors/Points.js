@@ -46,7 +46,7 @@ ROS3D.Points.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Points.prototype.setup = function(frame, point_step, fields)
 {
-    if(this.sn===null){
+    if(this.sn===null && !this.destroyed){
         // turn fields to a map
         fields = fields || [];
         this.fields = {};
@@ -114,4 +114,14 @@ ROS3D.Points.prototype.update = function(n)
     this.colors.needsUpdate = true;
     this.colors.updateRange.count = n * this.colors.itemSize;
   }
+};
+
+ROS3D.Points.prototype.dispose = function(n)
+{
+  this.destroyed = true;
+  if (this.positions) {this.positions.array = null}
+  this.positions = null;
+  if (this.colors) {this.colors.array = null}
+  this.colors = null;
+  this.rootObject.remove(this.sn);
 };

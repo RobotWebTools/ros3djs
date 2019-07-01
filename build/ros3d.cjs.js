@@ -7645,7 +7645,7 @@ var Points = /*@__PURE__*/(function (superclass) {
 
   Points.prototype.setup = function setup (frame, point_step, fields)
   {
-      if(this.sn===null){
+      if(this.sn===null && !this.destroyed){
           // turn fields to a map
           fields = fields || [];
           this.fields = {};
@@ -7712,6 +7712,13 @@ var Points = /*@__PURE__*/(function (superclass) {
       this.colors.needsUpdate = true;
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
+  };
+  Points.prototype.dispose = function dispose (n)
+  {
+    this.destroyed = true;
+    if (this.positions) {this.positions.array = null;}
+    if (this.colors) {this.colors.array = null;}
+    this.rootObject.remove(this.sn);
   };
 
   return Points;
@@ -7840,6 +7847,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
+    this.points.dispose();
   };
   PointCloud2.prototype.subscribe = function subscribe (){
     this.unsubscribe();
@@ -7855,6 +7863,8 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   PointCloud2.prototype.processMessage = function processMessage (msg){
+    if (this.points.destroyed) {return}
+
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }

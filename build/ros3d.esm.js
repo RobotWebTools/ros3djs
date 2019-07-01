@@ -7988,7 +7988,7 @@ class Points extends THREE$1.Object3D {
 
   setup(frame, point_step, fields)
   {
-      if(this.sn===null){
+      if(this.sn===null && !this.destroyed){
           // turn fields to a map
           fields = fields || [];
           this.fields = {};
@@ -8056,6 +8056,14 @@ class Points extends THREE$1.Object3D {
       this.colors.needsUpdate = true;
       this.colors.updateRange.count = n * this.colors.itemSize;
     }
+  };
+
+  dispose(n)
+  {
+    this.destroyed = true;
+    if (this.positions) {this.positions.array = null;}
+    if (this.colors) {this.colors.array = null;}
+    this.rootObject.remove(this.sn);
   };
 }
 
@@ -8212,6 +8220,7 @@ class PointCloud2 extends THREE$1.Object3D {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
+    this.points.dispose();
   };
 
   subscribe(){
@@ -8229,6 +8238,8 @@ class PointCloud2 extends THREE$1.Object3D {
   };
 
   processMessage(msg){
+    if (this.points.destroyed) {return}
+
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }
