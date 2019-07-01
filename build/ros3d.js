@@ -7036,6 +7036,7 @@ class Axes extends THREE$1.Object3D {
     var scaleArg = options.scale || 1.0;
     var lineType = options.lineType || 'full';
     var lineDashLength = options.lineDashLength || 0.1;
+    that.disposables = [];
 
 
     this.scale.set(scaleArg, scaleArg, scaleArg);
@@ -7043,6 +7044,9 @@ class Axes extends THREE$1.Object3D {
     // create the cylinders for the objects
     this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
     this.headGeom = new THREE$1.CylinderGeometry(0, headRadius, headLength);
+
+    that.disposables.push(this.lineGeom);
+    that.disposables.push(this.headGeom);
 
     /**
      * Adds an axis marker to this axes object.
@@ -7056,6 +7060,7 @@ class Axes extends THREE$1.Object3D {
       var material = new THREE$1.MeshBasicMaterial({
         color : color.getHex()
       });
+      that.disposables.push(material);
 
       // setup the rotation information
       var rotAxis = new THREE$1.Vector3();
@@ -7077,6 +7082,8 @@ class Axes extends THREE$1.Object3D {
         var l = lineDashLength;
         for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
           var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
+          that.disposables.push(geom);
+
           line = new THREE$1.Mesh(geom, material);
           line.position.copy(axis);
           // Make spacing between dashes equal to 1.5 times the dash length.
@@ -7101,6 +7108,14 @@ class Axes extends THREE$1.Object3D {
     addAxis(new THREE$1.Vector3(1, 0, 0));
     addAxis(new THREE$1.Vector3(0, 1, 0));
     addAxis(new THREE$1.Vector3(0, 0, 1));
+  };
+
+
+  dispose(n)
+  {
+    this.disposables.map(x => {
+      x.dispose && x.dispose();
+    });
   };
 }
 
@@ -8063,7 +8078,9 @@ class Points extends THREE$1.Object3D {
   {
     this.destroyed = true;
     if (this.positions) {this.positions.array = null;}
+    this.positions = null;
     if (this.colors) {this.colors.array = null;}
+    this.colors = null;
     this.rootObject.remove(this.sn);
   };
 }
@@ -8221,7 +8238,6 @@ class PointCloud2 extends THREE$1.Object3D {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
-    this.points.dispose();
   };
 
   subscribe(){
@@ -8239,8 +8255,6 @@ class PointCloud2 extends THREE$1.Object3D {
   };
 
   processMessage(msg){
-    if (this.points.destroyed) {return}
-
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }

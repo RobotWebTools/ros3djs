@@ -6809,6 +6809,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
     var scaleArg = options.scale || 1.0;
     var lineType = options.lineType || 'full';
     var lineDashLength = options.lineDashLength || 0.1;
+    that.disposables = [];
 
 
     this.scale.set(scaleArg, scaleArg, scaleArg);
@@ -6816,6 +6817,9 @@ var Axes = /*@__PURE__*/(function (superclass) {
     // create the cylinders for the objects
     this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
     this.headGeom = new THREE$1.CylinderGeometry(0, headRadius, headLength);
+
+    that.disposables.push(this.lineGeom);
+    that.disposables.push(this.headGeom);
 
     /**
      * Adds an axis marker to this axes object.
@@ -6829,6 +6833,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
       var material = new THREE$1.MeshBasicMaterial({
         color : color.getHex()
       });
+      that.disposables.push(material);
 
       // setup the rotation information
       var rotAxis = new THREE$1.Vector3();
@@ -6850,6 +6855,8 @@ var Axes = /*@__PURE__*/(function (superclass) {
         var l = lineDashLength;
         for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
           var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
+          that.disposables.push(geom);
+
           line = new THREE$1.Mesh(geom, material);
           line.position.copy(axis);
           // Make spacing between dashes equal to 1.5 times the dash length.
@@ -6879,6 +6886,13 @@ var Axes = /*@__PURE__*/(function (superclass) {
   if ( superclass ) Axes.__proto__ = superclass;
   Axes.prototype = Object.create( superclass && superclass.prototype );
   Axes.prototype.constructor = Axes;
+
+  Axes.prototype.dispose = function dispose (n)
+  {
+    this.disposables.map(function (x) {
+      x.dispose && x.dispose();
+    });
+  };
 
   return Axes;
 }(THREE$1.Object3D));
@@ -7717,7 +7731,9 @@ var Points = /*@__PURE__*/(function (superclass) {
   {
     this.destroyed = true;
     if (this.positions) {this.positions.array = null;}
+    this.positions = null;
     if (this.colors) {this.colors.array = null;}
+    this.colors = null;
     this.rootObject.remove(this.sn);
   };
 
@@ -7847,7 +7863,6 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
-    this.points.dispose();
   };
   PointCloud2.prototype.subscribe = function subscribe (){
     this.unsubscribe();
@@ -7863,8 +7878,6 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   PointCloud2.prototype.processMessage = function processMessage (msg){
-    if (this.points.destroyed) {return}
-
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
         return;
     }

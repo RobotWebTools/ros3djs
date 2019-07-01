@@ -29,6 +29,7 @@ ROS3D.Axes = function(options) {
   var scaleArg = options.scale || 1.0;
   var lineType = options.lineType || 'full';
   var lineDashLength = options.lineDashLength || 0.1;
+  that.disposables = [];
 
 
   this.scale.set(scaleArg, scaleArg, scaleArg);
@@ -36,6 +37,9 @@ ROS3D.Axes = function(options) {
   // create the cylinders for the objects
   this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
   this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
+
+  that.disposables.push(this.lineGeom)
+  that.disposables.push(this.headGeom)
 
   /**
    * Adds an axis marker to this axes object.
@@ -49,6 +53,7 @@ ROS3D.Axes = function(options) {
     var material = new THREE.MeshBasicMaterial({
       color : color.getHex()
     });
+    that.disposables.push(material)
 
     // setup the rotation information
     var rotAxis = new THREE.Vector3();
@@ -70,6 +75,8 @@ ROS3D.Axes = function(options) {
       var l = lineDashLength;
       for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
         var geom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, l);
+        that.disposables.push(geom)
+
         line = new THREE.Mesh(geom, material);
         line.position.copy(axis);
         // Make spacing between dashes equal to 1.5 times the dash length.
@@ -96,3 +103,11 @@ ROS3D.Axes = function(options) {
   addAxis(new THREE.Vector3(0, 0, 1));
 };
 ROS3D.Axes.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.Axes.prototype.dispose = function(n)
+{
+  this.disposables.map(x => {
+    x.dispose && x.dispose()
+  })
+};
