@@ -494,9 +494,7 @@ class DepthCloud extends THREE$1.Object3D {
     if (!this.isMjpeg) {
       this.video.pause();
     }
-  };
 
-  dispose() {
     this.video.src = ''; // forcefully silence the video streaming url.
     clearInterval(this.interval);
     this.remove(this.mesh);

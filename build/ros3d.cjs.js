@@ -483,8 +483,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
     if (!this.isMjpeg) {
       this.video.pause();
     }
-  };
-  DepthCloud.prototype.dispose = function dispose () {
+
     this.video.src = ''; // forcefully silence the video streaming url.
     clearInterval(this.interval);
     this.remove(this.mesh);

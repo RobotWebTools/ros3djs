@@ -325,9 +325,7 @@ ROS3D.DepthCloud.prototype.stopStream = function() {
   if (!this.isMjpeg) {
     this.video.pause();
   }
-};
 
-ROS3D.DepthCloud.prototype.dispose = function() {
   this.video.src = ''; // forcefully silence the video streaming url.
   clearInterval(this.interval);
   this.remove(this.mesh);
