@@ -2,6 +2,7 @@
 export * from './Ros3D'
 
 export * from './depthcloud/DepthCloud'
+export * from './depthcloud/CloseCloud'
 
 export * from './interactivemarkers/InteractiveMarker'
 export * from './interactivemarkers/InteractiveMarkerClient'

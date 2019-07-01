@@ -3,7 +3,8 @@
  */
 
 /**
- * The DepthCloud object.
+ * The CloseCloud object. An alternative DepthCloud implementation which
+ * has higher resolution when the depth range is less than 2m.
  *
  * @constructor
  * @param options - object with following keys:
@@ -13,15 +14,16 @@
  *   * f (optional) - the camera's focal length (defaults to standard Kinect calibration)
  *   * maxDepthPerTile (optional) - the factor with which we control the desired depth range (defaults to 1.0)
  *   * pointSize (optional) - point size (pixels) for rendered point cloud
- *   * width (optional) - width of the video stream
- *   * height (optional) - height of the video stream
+ *   * width (optional) - width of the depthcloud encoded video stream
+ *   * height (optional) - height of the depthcloud encoded video stream
  *   * whiteness (optional) - blends rgb values to white (0..100)
  *   * varianceThreshold (optional) - threshold for variance filter, used for compression artifact removal
  */
-ROS3D.DepthCloud = function(options) {
+ROS3D.CloseCloud = function(options) {
   THREE.Object3D.call(this);
-  options = options || {};
+  this.type = 'CloseCloud';
 
+  this.options = options || {};
   this.url = options.url;
   this.streamType = options.streamType || 'vp8';
   this.f = options.f || 526;
@@ -33,10 +35,18 @@ ROS3D.DepthCloud = function(options) {
   this.whiteness = options.whiteness || 0;
   this.varianceThreshold = options.varianceThreshold || 0.000016667;
 
+  var metaLoaded = false;
+
   this.isMjpeg = this.streamType.toLowerCase() === 'mjpeg';
 
   this.video = document.createElement(this.isMjpeg ? 'img' : 'video');
-  this.video.addEventListener(this.isMjpeg ? 'load' : 'loadedmetadata', this.metaLoaded.bind(this), false);
+  this.video.width = this.width;
+  this.video.height = this.height;
+  this.video.addEventListener(
+    this.isMjpeg ? 'load' : 'loadedmetadata',
+    this.metaLoaded.bind(this),
+    false
+  );
 
   if (!this.isMjpeg) {
     this.video.loop = true;
@@ -52,7 +62,6 @@ ROS3D.DepthCloud = function(options) {
     '',
     'uniform float width;',
     'uniform float height;',
-    'uniform float nearClipping, farClipping;',
     '',
     'uniform float pointSize;',
     'uniform float zOffset;',
@@ -76,13 +85,13 @@ ROS3D.DepthCloud = function(options) {
     '    ',
     '    vec4 depthColor = texture2D( map, vUv );',
     '    ',
-    '    depth = ( depthColor.r + depthColor.g + depthColor.b ) / 3.0 ;',
+    '    depth = ( depthColor.r + depthColor.g + depthColor.b ) / 3.0;',
     '    ',
-    '    if (depth>0.99)',
+    '    if (depth > (1.0 - 3.0/255.0) )', // If we're closer than 3 values from saturation, check the next depth image
     '    {',
     '      vec4 depthColor2 = texture2D( map, vUv2 );',
     '      float depth2 = ( depthColor2.r + depthColor2.g + depthColor2.b ) / 3.0 ;',
-    '      depth = 0.99+depth2;',
+    '      depth += depth2;',
     '    }',
     '    ',
     '    return depth;',
@@ -177,7 +186,7 @@ ROS3D.DepthCloud = function(options) {
     '  gl_Position = projectionMatrix * modelViewMatrix * pos;',
     '  ',
     '}'
-    ].join('\n');
+  ].join('\n');
 
   this.fragment_shader = [
     'uniform sampler2D map;',
@@ -217,14 +226,24 @@ ROS3D.DepthCloud = function(options) {
     '  gl_FragColor = vec4( color.r, color.g, color.b, color.a );',
     '  ',
     '}'
-    ].join('\n');
+  ].join('\n');
 };
-ROS3D.DepthCloud.prototype.__proto__ = THREE.Object3D.prototype;
+ROS3D.CloseCloud.prototype.__proto__ = THREE.Object3D.prototype;
+
+ROS3D.CloseCloud.prototype.clone = function(object, recursive) {
+  if (object === undefined) {
+    object = new ROS3D.CloseCloud(this.options);
+  }
+
+  THREE.Object3D.prototype.clone.call(this, object, recursive);
+
+  return object;
+};
 
 /**
  * Callback called when video metadata is ready
  */
-ROS3D.DepthCloud.prototype.metaLoaded = function() {
+ROS3D.CloseCloud.prototype.metaLoaded = function() {
   this.metaLoaded = true;
   this.initStreamer();
 };
@@ -232,78 +251,82 @@ ROS3D.DepthCloud.prototype.metaLoaded = function() {
 /**
  * Callback called when video metadata is ready
  */
-ROS3D.DepthCloud.prototype.initStreamer = function() {
-
+ROS3D.CloseCloud.prototype.initStreamer = function() {
   if (this.metaLoaded) {
-    this.texture = new THREE.Texture(this.video);
-    this.geometry = new THREE.Geometry();
+    this.dctexture = new THREE.Texture(this.video);
+    this.dcgeometry = new THREE.Geometry();
 
-    for (var i = 0, l = this.width * this.height; i < l; i++) {
-
+    var qwidth = this.width / 2;
+    var qheight = this.height / 2;
+    // the number of points is a forth of the total image size
+    for (var i = 0, l = qwidth * qheight; i < l; i++) {
       var vertex = new THREE.Vector3();
-      vertex.x = (i % this.width);
-      vertex.y = Math.floor(i / this.width);
+      vertex.x = i % qwidth;
+      vertex.y = Math.floor(i / qwidth);
 
-      this.geometry.vertices.push(vertex);
+      this.dcgeometry.vertices.push(vertex);
     }
 
-    this.material = new THREE.ShaderMaterial({
-      uniforms : {
-        'map' : {
-          type : 't',
-          value : this.texture
+    this.dcmaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        map: {
+          type: 't',
+          value: this.dctexture
         },
-        'width' : {
-          type : 'f',
-          value : this.width
+        width: {
+          type: 'f',
+          value: qwidth
         },
-        'height' : {
-          type : 'f',
-          value : this.height
+        height: {
+          type: 'f',
+          value: qheight
         },
-        'focallength' : {
-          type : 'f',
-          value : this.f
+        focallength: {
+          type: 'f',
+          value: this.f
         },
-        'pointSize' : {
-          type : 'f',
-          value : this.pointSize
+        pointSize: {
+          type: 'f',
+          value: this.pointSize
         },
-        'zOffset' : {
-          type : 'f',
-          value : 0
+        zOffset: {
+          type: 'f',
+          value: 0
         },
-        'whiteness' : {
-          type : 'f',
-          value : this.whiteness
+        whiteness: {
+          type: 'f',
+          value: this.whiteness
         },
-        'varianceThreshold' : {
-          type : 'f',
-          value : this.varianceThreshold
+        varianceThreshold: {
+          type: 'f',
+          value: this.varianceThreshold
         },
-        'maxDepthPerTile': {
-          type : 'f',
-          value : this.maxDepthPerTile
+        maxDepthPerTile: {
+          type: 'f',
+          value: this.maxDepthPerTile
         },
-        'resolutionFactor': {
-          type : 'f',
-          value : this.resolutionFactor
-        },
+        resolutionFactor: {
+          type: 'f',
+          value: this.resolutionFactor
+        }
       },
-      vertexShader : this.vertex_shader,
-      fragmentShader : this.fragment_shader
+      vertexShader: this.vertex_shader,
+      fragmentShader: this.fragment_shader
     });
+    this.dcmaterial.color = new THREE.Color(0xffffff);
+    this.mesh = new THREE.PointCloud(this.dcgeometry, this.dcmaterial);
+    this.mesh.frustumCulled = false;
+    this.mesh.position.set(0, 0, 0);
 
-    this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
-    this.mesh.position.x = 0;
-    this.mesh.position.y = 0;
     this.add(this.mesh);
 
     var that = this;
-
     this.interval = setInterval(function() {
-      if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
-        that.texture.needsUpdate = true;
+      if (
+        that.isMjpeg ||
+        that.video.readyState === that.video.HAVE_ENOUGH_DATA
+      ) {
+        that.dctexture.needsUpdate = true;
       }
     }, 1000 / 30);
   }
@@ -312,7 +335,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
 /**
  * Start video playback
  */
-ROS3D.DepthCloud.prototype.startStream = function() {
+ROS3D.CloseCloud.prototype.startStream = function() {
   if (!this.isMjpeg) {
     this.video.play();
   }
@@ -321,18 +344,15 @@ ROS3D.DepthCloud.prototype.startStream = function() {
 /**
  * Stop video playback
  */
-ROS3D.DepthCloud.prototype.stopStream = function() {
+ROS3D.CloseCloud.prototype.stopStream = function() {
   if (!this.isMjpeg) {
     this.video.pause();
   }
-};
-
-ROS3D.DepthCloud.prototype.dispose = function() {
   this.video.src = ''; // forcefully silence the video streaming url.
   clearInterval(this.interval);
   this.remove(this.mesh);
 
-  this.texture && this.texture.dispose();
-  this.geometry && this.geometry.dispose();
-  this.material && this.material.dispose();
+  this.dctexture && this.dctexture.dispose();
+  this.dcgeometry && this.dcgeometry.dispose();
+  this.dcmaterial && this.dcmaterial.dispose();
 };
