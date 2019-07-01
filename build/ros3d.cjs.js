@@ -461,7 +461,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
 
       var that = this;
 
-      setInterval(function() {
+      this.interval = setInterval(function() {
         if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
           that.texture.needsUpdate = true;
         }
@@ -483,6 +483,10 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
     if (!this.isMjpeg) {
       this.video.pause();
     }
+  };
+  DepthCloud.prototype.dispose = function dispose () {
+    this.video.src = ''; // forcefully silence the video streaming url.
+    clearInterval(this.interval);
   };
 
   return DepthCloud;

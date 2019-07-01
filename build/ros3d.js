@@ -471,7 +471,7 @@ class DepthCloud extends THREE$1.Object3D {
 
       var that = this;
 
-      setInterval(function() {
+      this.interval = setInterval(function() {
         if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
           that.texture.needsUpdate = true;
         }
@@ -495,6 +495,11 @@ class DepthCloud extends THREE$1.Object3D {
     if (!this.isMjpeg) {
       this.video.pause();
     }
+  };
+
+  dispose() {
+    this.video.src = ''; // forcefully silence the video streaming url.
+    clearInterval(this.interval);
   };
 }
 
