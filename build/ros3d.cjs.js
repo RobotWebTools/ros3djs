@@ -4959,7 +4959,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_LINE_STRIP:
         var lineStripGeom = new THREE$1.Geometry();
         var lineStripMaterial = new THREE$1.LineBasicMaterial({
-          size : message.scale.x
+          linewidth : message.scale.x
         });
 
         // add the points
@@ -4990,7 +4990,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_LINE_LIST:
         var lineListGeom = new THREE$1.Geometry();
         var lineListMaterial = new THREE$1.LineBasicMaterial({
-          size : message.scale.x
+          linewidth : message.scale.x
         });
 
         // add the points
@@ -5016,7 +5016,8 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LinePieces));
+        console.log('adding line!');
+        this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LineSegments));
         break;
       case MARKER_CUBE_LIST:
         // holds the main object

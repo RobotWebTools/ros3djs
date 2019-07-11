@@ -99,7 +99,7 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_LINE_STRIP:
       var lineStripGeom = new THREE.Geometry();
       var lineStripMaterial = new THREE.LineBasicMaterial({
-        size : message.scale.x
+        linewidth : message.scale.x
       });
 
       // add the points
@@ -130,7 +130,7 @@ ROS3D.Marker = function(options) {
     case ROS3D.MARKER_LINE_LIST:
       var lineListGeom = new THREE.Geometry();
       var lineListMaterial = new THREE.LineBasicMaterial({
-        size : message.scale.x
+        linewidth : message.scale.x
       });
 
       // add the points
@@ -156,7 +156,8 @@ ROS3D.Marker = function(options) {
       }
 
       // add the line
-      this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
+      console.log('adding line!')
+      this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LineSegments));
       break;
     case ROS3D.MARKER_CUBE_LIST:
       // holds the main object
