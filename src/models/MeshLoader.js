@@ -61,7 +61,9 @@ ROS3D.MeshLoader = {
          }
        };
 
-       //reload the mesh again after materials have been loaded
+       //Reload the mesh again after materials have been loaded
+       // @todo: this should be improved so that the file doesn't need to be
+       // reloaded however that would involve more changes within the OBJLoader.       
        function onMaterialsLoaded(loader, materials) {
          loader.
          setMaterials(materials).
