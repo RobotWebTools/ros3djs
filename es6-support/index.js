@@ -17,6 +17,7 @@ export * from './models/Arrow'
 export * from './models/Arrow2'
 export * from './models/Axes'
 export * from './models/Grid'
+export * from './models/MeshLoader'
 export * from './models/MeshResource'
 export * from './models/TriangleList'
 
