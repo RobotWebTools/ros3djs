@@ -48,11 +48,7 @@ ROS3D.MeshLoader = {
          });
          return loader;
      },
-
-     'obj': function() {
-
-     },
-
+     
      'stl': function(meshRes, uri, options) {
        const material = options.material;
        const loader = new THREE.STLLoader();
