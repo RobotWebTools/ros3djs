@@ -75,7 +75,7 @@ ROS3D.MeshLoader = {
            },
            null,
            ROS3D.MeshLoader.onError);
-       };
+       }
 
        loader.load(
          uri,
@@ -85,7 +85,7 @@ ROS3D.MeshLoader = {
 
            if (obj.materialLibraries.length) {
              // load the material libraries
-             const materialUri = obj.materialLibraries[0]
+             const materialUri = obj.materialLibraries[0];
              new THREE.MTLLoader().setPath(baseUri).load(
                materialUri,
                function(materials) {
