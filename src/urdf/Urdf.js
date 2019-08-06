@@ -76,29 +76,7 @@ ROS3D.Urdf = function(options) {
             console.warn('Could not load geometry mesh: '+uri);
           }
         } else {
-          if (!colorMaterial) {
-            colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
-          }
-          var shapeMesh;
-          // Create a shape
-          switch (visual.geometry.type) {
-            case ROSLIB.URDF_BOX:
-              var dimension = visual.geometry.dimension;
-              var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
-              shapeMesh = new THREE.Mesh(cube, colorMaterial);
-              break;
-            case ROSLIB.URDF_CYLINDER:
-              var radius = visual.geometry.radius;
-              var length = visual.geometry.length;
-              var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
-              shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
-              shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
-              break;
-            case ROSLIB.URDF_SPHERE:
-              var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
-              shapeMesh = new THREE.Mesh(sphere, colorMaterial);
-              break;
-          }
+          var shapeMesh = this.createShapeMesh(visual);
           // Create a scene node with the shape
           var scene = new ROS3D.SceneNode({
             frameID: frameID,
@@ -112,6 +90,36 @@ ROS3D.Urdf = function(options) {
     }
   }
 };
+
+ROS3D.Urdf.prototype.createShapeMesh = function(visual) {
+  var colorMaterial = null;
+  if (!colorMaterial) {
+    colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
+  }
+  var shapeMesh;
+  // Create a shape
+  switch (visual.geometry.type) {
+    case ROSLIB.URDF_BOX:
+      var dimension = visual.geometry.dimension;
+      var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
+      shapeMesh = new THREE.Mesh(cube, colorMaterial);
+      break;
+    case ROSLIB.URDF_CYLINDER:
+      var radius = visual.geometry.radius;
+      var length = visual.geometry.length;
+      var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+      shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
+      shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+      break;
+    case ROSLIB.URDF_SPHERE:
+      var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
+      shapeMesh = new THREE.Mesh(sphere, colorMaterial);
+      break;
+  }
+
+  return shapeMesh;
+};
+
 ROS3D.Urdf.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Urdf.prototype.unsubscribeTf = function () {
