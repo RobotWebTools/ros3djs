@@ -4941,6 +4941,7 @@ class Marker extends THREE$1.Object3D {
     options = options || {};
     var path = options.path || '/';
     var message = options.message;
+    var eps = 0.000001;
 
     // check for a trailing '/'
     if (path.substr(path.length - 1) !== '/') {
@@ -4998,8 +4999,8 @@ class Marker extends THREE$1.Object3D {
         }));
         break;
       case MARKER_CUBE:
-        // set the cube dimensions
-        var cubeGeom = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+        // set the cube dimensions, use epsilon value for 0, otherwise the current version of threejs uses 1, which is worse
+        var cubeGeom = new THREE$1.BoxGeometry(message.scale.x || eps, message.scale.y || eps, message.scale.z || eps);
         this.add(new THREE$1.Mesh(cubeGeom, colorMaterial));
         break;
       case MARKER_SPHERE:
@@ -5079,7 +5080,6 @@ class Marker extends THREE$1.Object3D {
         }
 
         // add the line
-        console.log('adding line!');
         this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LineSegments));
         break;
       case MARKER_CUBE_LIST:

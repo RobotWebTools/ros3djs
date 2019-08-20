@@ -18,6 +18,7 @@ ROS3D.Marker = function(options) {
   options = options || {};
   var path = options.path || '/';
   var message = options.message;
+  var eps = 0.000001;
 
   // check for a trailing '/'
   if (path.substr(path.length - 1) !== '/') {
@@ -75,8 +76,8 @@ ROS3D.Marker = function(options) {
       }));
       break;
     case ROS3D.MARKER_CUBE:
-      // set the cube dimensions
-      var cubeGeom = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+      // set the cube dimensions, use epsilon value for 0, otherwise the current version of threejs uses 1, which is worse
+      var cubeGeom = new THREE.BoxGeometry(message.scale.x || eps, message.scale.y || eps, message.scale.z || eps);
       this.add(new THREE.Mesh(cubeGeom, colorMaterial));
       break;
     case ROS3D.MARKER_SPHERE:
@@ -156,7 +157,6 @@ ROS3D.Marker = function(options) {
       }
 
       // add the line
-      console.log('adding line!')
       this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LineSegments));
       break;
     case ROS3D.MARKER_CUBE_LIST:
