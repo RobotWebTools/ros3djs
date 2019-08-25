@@ -16,11 +16,9 @@
   *  @returns loader object
   */
 ROS3D.MeshLoader = {
-
    onError: function(error) {
      console.error(error);
    },
-
    loaders: {
      'dae': function(meshRes, uri, options) {
        const material = options.material;
