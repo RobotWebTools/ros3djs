@@ -16,6 +16,9 @@
   *  @returns loader object
   */
 ROS3D.MeshLoader = {
+   onError: function(error) {
+     console.error(error);
+   },
    loaders: {
      'dae': function(meshRes, uri, options) {
        const material = options.material;
@@ -43,12 +46,65 @@ ROS3D.MeshLoader = {
            meshRes.add(collada.scene);
          },
          /*onProgress=*/null,
-         function onLoadError(error) {
-           console.error(error);
-         });
+         ROS3D.MeshLoader.onError);
          return loader;
      },
-     
+
+     'obj': function(meshRes, uri, options) {
+       const material = options.material;
+       const loader = new THREE.OBJLoader();
+       loader.log = function(message) {
+         if (meshRes.warnings) {
+           console.warn(message);
+         }
+       };
+
+       //Reload the mesh again after materials have been loaded
+       // @todo: this should be improved so that the file doesn't need to be
+       // reloaded however that would involve more changes within the OBJLoader.       
+       function onMaterialsLoaded(loader, materials) {
+         loader.
+         setMaterials(materials).
+         load(
+           uri,
+           function OBJMaterialsReady(obj) {
+             // add the container group
+             meshRes.add(obj);
+           },
+           null,
+           ROS3D.MeshLoader.onError);
+       }
+
+       loader.load(
+         uri,
+         function OBJFileReady(obj) {
+
+           const baseUri = THREE.LoaderUtils.extractUrlBase( uri );
+
+           if (obj.materialLibraries.length) {
+             // load the material libraries
+             const materialUri = obj.materialLibraries[0];
+             new THREE.MTLLoader().setPath(baseUri).load(
+               materialUri,
+               function(materials) {
+                  materials.preload();
+                  onMaterialsLoaded(loader, materials);
+               },
+               null,
+               ROS3D.MeshLoader.onError
+             );
+           } else {
+             // add the container group
+             meshRes.add(obj);
+           }
+
+         },
+         /*onProgress=*/null,
+         ROS3D.MeshLoader.onError
+         );
+         return loader;
+     },
+
      'stl': function(meshRes, uri, options) {
        const material = options.material;
        const loader = new THREE.STLLoader();
@@ -66,12 +122,10 @@ ROS3D.MeshLoader = {
                        meshRes.add(mesh);
                      },
                      /*onProgress=*/null,
-                     function onLoadError(error) {
-                       console.error(error);
-                     });
+                     ROS3D.MeshLoader.onError);
        }
        return loader;
      }
 
    }
- }
+ };
