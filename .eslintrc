@@ -33,6 +33,8 @@
     "no-cond-assign": "off",
     "no-eq-null": "off",
     "no-proto": "off",
+    "no-console": "off",
+    "no-unused-vars": "off",
     "strict": "off",
     "quotes": ["error", "single"],
     "linebreak-style": "error"
