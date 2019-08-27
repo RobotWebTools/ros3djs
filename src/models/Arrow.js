@@ -56,7 +56,12 @@ ROS3D.Arrow.prototype.__proto__ = THREE.Mesh.prototype;
  * @param direction - the direction to set this arrow
  */
 ROS3D.Arrow.prototype.setDirection = function(direction) {
-  var axis = new THREE.Vector3(0, 1, 0).cross(direction);
+  var axis = new THREE.Vector3();
+  if(direction.x === 0 && direction.z === 0){
+    axis.set(1, 0, 0);
+  } else {
+    axis.set(0, 1, 0).cross(direction);
+  }
   var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
   this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
   this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);

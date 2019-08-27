@@ -31,58 +31,14 @@ ROS3D.MeshResource = function(options) {
   }
 
   var uri = path + resource;
-  var fileType = uri.substr(-4).toLowerCase();
+  var fileType = uri.substr(-3).toLowerCase();
 
   // check the type
-  var loader;
-  if (fileType === '.dae') {
-    loader = new THREE.ColladaLoader();
-    loader.log = function(message) {
-      if (that.warnings) {
-        console.warn(message);
-      }
-    };
-    loader.load(
-      uri,
-      function colladaReady(collada) {
-        // check for a scale factor in ColladaLoader2
-        // add a texture to anything that is missing one
-        if(material !== null) {
-          collada.scene.traverse(function(child) {
-            if(child instanceof THREE.Mesh) {
-              if(child.material === undefined) {
-                child.material = material;
-              }
-            }
-          });
-        }
-
-        that.add(collada.scene);
-      },
-      /*onProgress=*/null,
-      function onLoadError(error) {
-        console.error(error);
-      });
-  } else if (fileType === '.stl') {
-    loader = new THREE.STLLoader();
-    {
-      loader.load(uri,
-                  function ( geometry ) {
-                    geometry.computeFaceNormals();
-                    var mesh;
-                    if(material !== null) {
-                      mesh = new THREE.Mesh( geometry, material );
-                    } else {
-                      mesh = new THREE.Mesh( geometry,
-                                             new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
-                    }
-                    that.add(mesh);
-                  },
-                  /*onProgress=*/null,
-                  function onLoadError(error) {
-                    console.error(error);
-                  });
-    }
+  var loaderFunc = ROS3D.MeshLoader.loaders[fileType];
+  if (loaderFunc) {
+    loaderFunc(this, uri, options);
+  } else {
+    console.warn('Unsupported loader for file type: \'' + fileType + '\'');
   }
 };
 ROS3D.MeshResource.prototype.__proto__ = THREE.Object3D.prototype;

@@ -52,7 +52,7 @@ ROS3D.MarkerClient.prototype.checkTime = function(name){
         this.emit('change');
     } else {
         var that = this;
-        setTimeout(function() {that.checkTime(name)},
+        setTimeout(function() {that.checkTime(name);},
                    100);
     }
 };
