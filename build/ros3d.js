@@ -53264,6 +53264,11 @@ class MarkerClient extends eventemitter2 {
   };
 
   processMessage(message){
+    var newMarker = new Marker({
+      message : message,
+      path : this.path,
+    });
+
     // remove old marker from Three.Object3D children buffer
     var oldNode = this.markers[message.ns + message.id];
     this.updatedTime[message.ns + message.id] = new Date().getTime();
@@ -53274,19 +53279,12 @@ class MarkerClient extends eventemitter2 {
       this.checkTime(message.ns + message.id);
     }
 
-    if (message.action==0) { // add marker only when message.action is ADD
-      var newMarker = new Marker({
-        message : message,
-        path : this.path,
-      });
-
-      this.markers[message.ns + message.id] = new SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : this.tfClient,
-        object : newMarker
-      });
-      this.rootObject.add(this.markers[message.ns + message.id]);
-    }
+    this.markers[message.ns + message.id] = new SceneNode({
+      frameID : message.header.frame_id,
+      tfClient : this.tfClient,
+      object : newMarker
+    });
+    this.rootObject.add(this.markers[message.ns + message.id]);
 
     this.emit('change');
   };
