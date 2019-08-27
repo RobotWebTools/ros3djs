@@ -47,10 +47,9 @@ ROS3D.Urdf = function(options) {
           if (tmpIndex !== -1) {
             uri = uri.substr(tmpIndex + ('package://').length);
           }
-          var fileType = uri.substr(-4).toLowerCase();
+          var fileType = uri.substr(-3).toLowerCase();
 
-          // ignore mesh files which are not in Collada or STL format
-          if (fileType === '.dae' || fileType === '.stl') {
+          if (ROS3D.MeshLoader.loaders[fileType]) {
             // create the model
             var mesh = new ROS3D.MeshResource({
               path : path,
