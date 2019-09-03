@@ -46182,6 +46182,7 @@ class DepthCloud extends THREE$1.Object3D {
     this.isMjpeg = this.streamType.toLowerCase() === 'mjpeg';
 
     this.video = document.createElement(this.isMjpeg ? 'img' : 'video');
+    this.video.crossOrigin = 'Anonymous';
     this.video.addEventListener(this.isMjpeg ? 'load' : 'loadedmetadata', this.metaLoaded.bind(this), false);
 
     if (!this.isMjpeg) {
@@ -46189,7 +46190,6 @@ class DepthCloud extends THREE$1.Object3D {
     }
 
     this.video.src = this.url;
-    this.video.crossOrigin = 'Anonymous';
     this.video.setAttribute('crossorigin', 'Anonymous');
 
     // define custom shaders
@@ -54736,11 +54736,6 @@ class MarkerClient extends eventemitter2 {
   };
 
   processMessage(message){
-    var newMarker = new Marker({
-      message : message,
-      path : this.path,
-    });
-
     // remove old marker from Three.Object3D children buffer
     var oldNode = this.markers[message.ns + message.id];
     this.updatedTime[message.ns + message.id] = new Date().getTime();
@@ -54751,12 +54746,19 @@ class MarkerClient extends eventemitter2 {
       this.checkTime(message.ns + message.id);
     }
 
-    this.markers[message.ns + message.id] = new SceneNode({
-      frameID : message.header.frame_id,
-      tfClient : this.tfClient,
-      object : newMarker
-    });
-    this.rootObject.add(this.markers[message.ns + message.id]);
+    if (message.action === 0) {  // "ADD" or "MODIFY"
+      var newMarker = new Marker({
+        message : message,
+        path : this.path,
+      });
+
+      this.markers[message.ns + message.id] = new SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : this.tfClient,
+        object : newMarker
+      });
+      this.rootObject.add(this.markers[message.ns + message.id]);
+    }
 
     this.emit('change');
   };
