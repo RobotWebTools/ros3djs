@@ -17,12 +17,14 @@
  *  * alpha (optional) - the alpha of the background
  *  * antialias (optional) - if antialiasing should be used
  *  * intensity (optional) - the lighting intensity setting to use
- *  * cameraPosition (optional) - the starting position of the camera
+ *  * cameraPose (optional) - the starting position of the camera
  *  * displayPanAndZoomFrame (optional) - whether to display a frame when
  *  *                                     panning/zooming. Defaults to true.
+ *  * axesDisplay (optional) - option to always display the axes. Default to false.
  *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
  *  *                           panning/zooming. Only has effect when
- *  *                           displayPanAndZoomFrame is set to true.
+ *  *                           displayPanAndZoomFrame or axesDisplay is set to true.
+ *  *
  */
 ROS3D.Viewer = function(options) {
   options = options || {};
@@ -43,6 +45,7 @@ ROS3D.Viewer = function(options) {
   var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
   var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
+  var axesDisplay = (options.axesDisplay === undefined) ? false : !!options.axesDisplay;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -68,7 +71,8 @@ ROS3D.Viewer = function(options) {
     scene : this.scene,
     camera : this.camera,
     displayPanAndZoomFrame : displayPanAndZoomFrame,
-    lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
+    lineTypePanAndZoomFrame : lineTypePanAndZoomFrame,
+    axesDisplay : axesDisplay
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
