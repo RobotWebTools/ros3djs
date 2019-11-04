@@ -36,6 +36,7 @@ ROS3D.DepthCloud = function(options) {
   this.isMjpeg = this.streamType.toLowerCase() === 'mjpeg';
 
   this.video = document.createElement(this.isMjpeg ? 'img' : 'video');
+  this.video.crossOrigin = 'Anonymous';
   this.video.addEventListener(this.isMjpeg ? 'load' : 'loadedmetadata', this.metaLoaded.bind(this), false);
 
   if (!this.isMjpeg) {
@@ -43,7 +44,6 @@ ROS3D.DepthCloud = function(options) {
   }
 
   this.video.src = this.url;
-  this.video.crossOrigin = 'Anonymous';
   this.video.setAttribute('crossorigin', 'Anonymous');
 
   // define custom shaders
