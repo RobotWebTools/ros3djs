@@ -49,6 +49,10 @@ ROS3D.MarkerClient.prototype.checkTime = function(name){
         var oldNode = this.markers[name];
         oldNode.unsubscribeTf();
         this.rootObject.remove(oldNode);
+        oldNode.children.forEach(child => {
+          child.dispose();
+        });
+        delete(this.markers[name]);
         this.emit('change');
     } else {
         var that = this;
@@ -77,6 +81,10 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
   if (oldNode) {
     oldNode.unsubscribeTf();
     this.rootObject.remove(oldNode);
+    oldNode.children.forEach(child => {
+      child.dispose();
+    });
+    delete(this.markers[message.ns + message.id]);
   } else if (this.lifetime) {
     this.checkTime(message.ns + message.id);
   }
