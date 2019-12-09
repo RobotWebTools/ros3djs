@@ -46,7 +46,7 @@ ROS3D.MarkerClient.prototype.unsubscribe = function(){
 ROS3D.MarkerClient.prototype.checkTime = function(name){
     var curTime = new Date().getTime();
     if (curTime - this.updatedTime[name] > this.lifetime) {
-        this.removeMarker(name)
+        this.removeMarker(name);
         this.emit('change');
     } else {
         var that = this;
@@ -73,7 +73,7 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
   var oldNode = this.markers[message.ns + message.id];
   this.updatedTime[message.ns + message.id] = new Date().getTime();
   if (oldNode) {
-    this.removeMarker(message.ns + message.id)
+    this.removeMarker(message.ns + message.id);
 
   } else if (this.lifetime) {
     this.checkTime(message.ns + message.id);
@@ -97,11 +97,11 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
 };
 
 ROS3D.MarkerClient.prototype.removeMarker = function(key) {
-  var oldNode = this.markers[key]
+  var oldNode = this.markers[key];
   oldNode.unsubscribeTf();
   this.rootObject.remove(oldNode);
   oldNode.children.forEach(child => {
     child.dispose();
   });
-  delete(this.markers[message.ns + message.id]);
-}
+  delete(this.markers[key]);
+};
