@@ -67,17 +67,16 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var top = pos_y - rect.top - target.clientTop + target.scrollTop;
   var deviceX = left / target.clientWidth * 2 - 1;
   var deviceY = -top / target.clientHeight * 2 + 1;
-  var vector = new THREE.Vector3(deviceX, deviceY, 0.5);
-  vector.unproject(this.camera);
-  // use the THREE raycaster
-  var mouseRaycaster = new THREE.Raycaster(this.camera.position.clone(), vector.sub(
-      this.camera.position).normalize());
+  var mousePos = new THREE.Vector2(deviceX, deviceY);
+
+  var mouseRaycaster = new THREE.Raycaster();
   mouseRaycaster.linePrecision = 0.001;
+  mouseRaycaster.setFromCamera(mousePos, this.camera);
   var mouseRay = mouseRaycaster.ray;
 
   // make our 3d mouse event
   var event3D = {
-    mousePos : new THREE.Vector2(deviceX, deviceY),
+    mousePos : mousePos,
     mouseRay : mouseRay,
     domEvent : domEvent,
     camera : this.camera,
