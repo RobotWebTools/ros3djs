@@ -97,7 +97,7 @@ ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
   }
 };
 
-ROS3D.MarkerClient.prototype.removeMarker = function(key) {
+ROS3D.MarkerArrayClient.prototype.removeMarker = function(key) {
   var oldNode = this.markers[key];
   if(!oldNode) {
     return;
