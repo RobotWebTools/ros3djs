@@ -29,6 +29,7 @@ ROS3D.Viewer = function(options) {
   options = options || {};
   var divID = options.divID;
   var elem = options.elem;
+  var context = options.context;
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
@@ -47,10 +48,17 @@ ROS3D.Viewer = function(options) {
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
-  this.renderer = new THREE.WebGLRenderer({
+  var renderOptions = {
     antialias : antialias,
-    alpha: true
-  });
+    alpha: true    
+  };
+
+  if (elem && elem.nodeName.toLowerCase() === 'canvas') {
+    renderOptions.canvas = elem
+    renderOptions.context = context || elem.getContext('webgl', { alpha: true })
+  }
+
+  this.renderer = new THREE.WebGLRenderer(renderOptions);
   this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
@@ -98,8 +106,10 @@ ROS3D.Viewer = function(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  var node = elem || document.getElementById(divID);  
-  node.appendChild(this.renderer.domElement);
+  var node = elem || document.getElementById(divID);
+  if (node.nodeName.toLowerCase() !== 'canvas') {  
+    node.appendChild(this.renderer.domElement);
+  }
 
   // begin the render loop
   this.start();
