@@ -82,10 +82,10 @@ ROS3D.PoseArray.prototype.processMessage = function(message){
       lineGeometry.vertices.push(side1.add(v3));
       lineGeometry.vertices.push(side2.add(v3));
       lineGeometry.vertices.push(tip);
-
-      lineGeometry.computeLineDistances();
+      
       var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
       line = new THREE.Line( lineGeometry, lineMaterial );
+      line.computeLineDistances();
 
       group.add(line);
   }
