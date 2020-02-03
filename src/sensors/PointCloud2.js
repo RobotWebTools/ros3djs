@@ -61,6 +61,7 @@ ROS3D.PointCloud2 = function(options) {
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/points';
+  this.throttle_rate = options.throttle_rate || null;
   this.compression = options.compression || 'cbor';
   this.max_pts = options.max_pts || 10000;
   this.points = new ROS3D.Points(options);
@@ -85,6 +86,7 @@ ROS3D.PointCloud2.prototype.subscribe = function(){
     ros : this.ros,
     name : this.topicName,
     messageType : 'sensor_msgs/PointCloud2',
+    throttle_rate : this.throttle_rate,
     queue_length : 1,
     compression: this.compression
   });
