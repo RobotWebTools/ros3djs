@@ -7,22 +7,20 @@
  * TODO: TBD
  */
 
-let ROS3D = {};
-
 let InStream = function (data) {
   // Quick and dirty helper class
   this.data = data;
   this.cursor = 0;
 };
 
-InStream.prototype.readBytes = function (length) {
-  if (this.cursor + length > this.data.length) { throw new Error('Cannot read, overflow'); }
+InStream.prototype.readBytes = function (bytesToRead) {
+  console.assert(this.cursor + bytesToRead <= this.data.length, 'Cannot read stream, overflow');
   const returningData = Array.prototype.slice.call(
     this.data,
     this.cursor,
-    this.cursor + length
+    this.cursor + bytesToRead
   );
-  this.cursor += length;
+  this.cursor += bytesToRead;
   return returningData;
 };
 
@@ -52,6 +50,7 @@ ROS3D.OcTreeBase = function (params) {
 };
 
 ROS3D.OcTreeBase.prototype.readBinary = function (data) {
+  console.assert(Array.isArray(data), 'Invalid data format');
   if (this.rootNode !== null) {
     delete this.rootNode;
   }
@@ -60,7 +59,7 @@ ROS3D.OcTreeBase.prototype.readBinary = function (data) {
   this._readBinaryNode(new InStream(data), this.rootNode);
 };
 
-ROS3D.OcTreeBase.prototype._newNode = function(){ return new ROS3D.OcTreeBaseNode(); };
+ROS3D.OcTreeBase.prototype._newNode = function () { return new ROS3D.OcTreeBaseNode(); };
 
 ROS3D.OcTreeBase.prototype._BINARY_UNKNOWN = 0b00;
 ROS3D.OcTreeBase.prototype._BINARY_LEAF_FREE = 0b10;
@@ -68,7 +67,7 @@ ROS3D.OcTreeBase.prototype._BINARY_LEAF_OCCUPIED = 0b01;
 ROS3D.OcTreeBase.prototype._BINARY_HAS_CHILDREN = 0b11;
 
 ROS3D.OcTreeBase.prototype._readBinaryNode = function (dataStream, node) {
-  if (node === null) { throw new Error('Nullptr'); }
+  console.assert(node === null, 'Node is null');
 
   // 2 bits per children, 16 bit total
   const childrenDataSegment = dataStream.readBytes(2).map(x => (x >>> 0) & 255);
@@ -80,11 +79,13 @@ ROS3D.OcTreeBase.prototype._readBinaryNode = function (dataStream, node) {
     if (nodeValue !== this._BINARY_UNKNOWN) { this._binaryNodeFactoryTable[nodeValue].bind(this)(node, i); }
   }
 
-  // Proceed to children
+  // Proceed to children If Occupancy not set
   for (let i = 0; i < 8; ++i) {
     if (node.hasChildAt(i)) {
       let child = node.getChildAt(i);
-      this._readBinaryNode(dataStream, child);
+      if (child.data !== null) {
+        this._readBinaryNode(dataStream, child);
+      }
     }
   }
 };
@@ -116,5 +117,3 @@ ROS3D.OcTreeBase.prototype._binaryNodeFactoryTable[
 };
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-export default { ROS3D };
