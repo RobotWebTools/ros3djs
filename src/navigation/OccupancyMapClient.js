@@ -7,13 +7,14 @@
  * TODO: TBD
  */
 
+
 // ...
 
-ROS3D.OccupancyMapClient = function(options) {
+ROS3D.OccupancyMapClient = function (options) {
   EventEmitter2.call(this);
   options = options || {};
   this.ros = options.ros;
-  this.topicName = options.topic || '/map';
+  this.topicName = options.topic || '/octomap';
   this.compression = options.compression || 'cbor';
   this.continuous = options.continuous;
   this.tfClient = options.tfClient;
@@ -21,20 +22,20 @@ ROS3D.OccupancyMapClient = function(options) {
   this.offsetPose = options.offsetPose || new ROSLIB.Pose();
 
   // current grid that is displayed
-  this.currentGrid = null;
+  this.currentMap = null;
 
   // subscribe to the topic
   this.rosTopic = undefined;
   this.subscribe();
 };
 
-ROS3D.OccupancyMapClient.prototype.unsubscribe = function() {
+ROS3D.OccupancyMapClient.prototype.unsubscribe = function () {
   if (this.rosTopic) {
     this.rosTopic.unsubscribe();
   }
 };
 
-ROS3D.OccupancyMapClient.prototype.subscribe = function() {
+ROS3D.OccupancyMapClient.prototype.subscribe = function () {
   this.unsubscribe();
 
   // subscribe to the topic
@@ -48,44 +49,86 @@ ROS3D.OccupancyMapClient.prototype.subscribe = function() {
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
 
-ROS3D.OccupancyMapClient.prototype.processMessage = function(message) {
+ROS3D.OccupancyMapClient.prototype.processMessage = function (message) {
   // check for an old map
-  if (this.currentGrid) {
+  if (this.currentMap) {
     // check if it there is a tf client
-    if (this.currentGrid.tfClient) {
+    if (this.currentMap.tfClient) {
       // grid is of type ROS3D.SceneNode
-      this.currentGrid.unsubscribeTf();
+      this.currentMap.unsubscribeTf();
     }
-    this.rootObject.remove(this.currentGrid);
+    // this.rootObject.remove(this.currentMap);
   }
 
-  var newGrid = new ROS3D.Octomap({
-    message: message
-    //   color : this.color,
-    //   opacity : this.opacity
-  });
+  console.log(message);
 
-  // console.log("Message: ", { message });
+  new Promise(
+    // 1. Create the corresponding octree object from message
+    function (resolve, reject) {
+      let newOcTree = null;
+      if (message.binary) {
+        newOcTree = new ROS3D.OcTreeBase({
+          resolution: message.resolution
+        });
+        newOcTree.readBinary(message.data);
+      } else {
 
-  // // check if we care about the scene
-  // if (this.tfClient) {
-  //   this.currentGrid = newGrid;
-  //   this.sceneNode = new ROS3D.SceneNode({
-  //     frameID : message.header.frame_id,
-  //     tfClient : this.tfClient,
-  //     object : newGrid,
-  //     pose : this.offsetPose
-  //   });
-  // } else {
-  //   this.sceneNode = this.currentGrid = newGrid;
-  // }
+        const ctorTable = {
+          'OcTree': ROS3D.OcTree,
+          'ColorOcTree': ROS3D.ColorOcTree,
+        };
 
-  this.rootObject.add(this.sceneNode);
+        if (message.id in ctorTable) {
+          console.log(message.id);
 
-  this.emit('change');
+          newOcTree = new ctorTable[message.id]({
+            resolution: message.resolution
+          });
 
-  // check if we should unsubscribe
-  if (!this.continuous) {
-    this.rosTopic.unsubscribe();
-  }
+          newOcTree.read(message.data);
+        }
+
+      }
+
+      resolve(newOcTree);
+    }
+  ).then(
+    // 2. Build geometry from octree
+    function (newOcTree) {
+      newOcTree.buildGeometry();
+      return newOcTree;
+    }
+  ).then(
+    // 3. Replace geometry
+    function (newOcTree) {
+      // check if we care about the scene
+      const oldNode = this.sceneNode;
+      if (this.tfClient) {
+        this.currentMap = newOcTree;
+        this.sceneNode = new ROS3D.SceneNode({
+          frameID: message.header.frame_id,
+          tfClient: this.tfClient,
+          object: newOcTree.object,
+          pose: this.offsetPose
+        });
+      } else {
+        this.sceneNode = newOcTree.object;
+        this.currentMap = newOcTree;
+      }
+      this.rootObject.remove(oldNode);
+      this.rootObject.add(this.sceneNode);
+
+      // console.log({ oldNode, sceneNode: this.sceneNode });
+
+      // this.emit('change');
+    }.bind(this)
+  ).then(function () {
+    // check if we should unsubscribe
+    if (!this.continuous) {
+      this.rosTopic.unsubscribe();
+    }
+
+  }.bind(this)
+  );
+
 };
