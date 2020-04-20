@@ -37,18 +37,19 @@
 </head>
 
 <body onload="init()">
-  <h1>Simple Map Example</h1>
+  <h1>Simple Octomap Example</h1>
+
   <p>
-    Run the following commands in the terminal then refresh this page. This will load a map from the
-    <tt>ros-groovy-rail-maps</tt>
-    package.
+    To run this example you'll require <a href="https://github.com/psaripp/octomap_server">octomap_server</a> ROS node.
+    Run the following commands in the terminal from your ros workspace, then refresh this page. 
   </p>
+  
   <ol>
     <li><tt>roscore</tt></li>
-    <li><tt>rosrun map_server map_server /opt/ros/groovy/share/rail_maps/maps/ilab.pgm
-        0.05</tt></li>
+    <li><tt>rosrun octomap_server map_server ./src/octomap_server/tests/teapot.32.bt</tt></li>
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
   </ol>
+  
   <div id="map"></div>
 </body>
 </html>
