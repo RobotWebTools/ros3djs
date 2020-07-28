@@ -565,9 +565,9 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
-		var texture;
-		var loader = THREE.Loader.Handlers.get( url );
+		var texture;		
 		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
+		var loader = manager.getHandler( url );
 
 		if ( loader === null ) {
 

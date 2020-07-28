@@ -70,7 +70,7 @@ ROS3D.MouseHandler.prototype.processDomEvent = function(domEvent) {
   var mousePos = new THREE.Vector2(deviceX, deviceY);
 
   var mouseRaycaster = new THREE.Raycaster();
-  mouseRaycaster.linePrecision = 0.001;
+  mouseRaycaster.params.Line.threshold = 0.001;
   mouseRaycaster.setFromCamera(mousePos, this.camera);
   var mouseRay = mouseRaycaster.ray;
 

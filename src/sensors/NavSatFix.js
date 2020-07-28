@@ -36,7 +36,7 @@ ROS3D.NavSatFix = function(options) {
 
   this.geom = new THREE.BufferGeometry();
   this.vertices = new THREE.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
-  this.geom.addAttribute( 'position',  this.vertices);
+  this.geom.setAttribute( 'position',  this.vertices);
   this.material = material.isMaterial ? material : new THREE.LineBasicMaterial( material );
   this.line = new THREE.Line( this.geom, this.material );
   this.rootObject.add(this.object3d);

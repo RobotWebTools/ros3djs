@@ -33,12 +33,12 @@ ROS3D.Arrow = function(options) {
       12, 1);
   var m = new THREE.Matrix4();
   m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
-  geometry.applyMatrix(m);
+  geometry.applyMatrix4(m);
 
   // create the head
   var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
   m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
-  coneGeometry.applyMatrix(m);
+  coneGeometry.applyMatrix4(m);
 
   // put the arrow together
   geometry.merge(coneGeometry);
