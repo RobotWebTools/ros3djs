@@ -98,6 +98,9 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
 
 ROS3D.MarkerClient.prototype.removeMarker = function(key) {
   var oldNode = this.markers[key];
+  if(!oldNode) {
+    return;
+  }
   oldNode.unsubscribeTf();
   this.rootObject.remove(oldNode);
   oldNode.children.forEach(child => {
