@@ -31,15 +31,8 @@ ROS3D.OccupancyGrid = function(options) {
       var mapI = col + ((height - row - 1) * width);
       // determine the value
       var data = message.data[mapI];
-      var val;
-      if (data === 100) {
-        val = 0;
-      } else if (data === 0) {
-        val = 255;
-      } else {
-        val = 127;
-      }
-
+      var val = data * 255 / 100;
+      
       // determine the index into the image data array
       var i = (col + (row * width)) * 3;
       // r
@@ -53,8 +46,8 @@ ROS3D.OccupancyGrid = function(options) {
 
   var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBFormat);
   texture.flipY = true;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = THREE.NearestFilter;
+  texture.magFilter = THREE.NearestFilter;
   texture.needsUpdate = true;
 
   var material = new THREE.MeshBasicMaterial({
