@@ -630,7 +630,7 @@ THREE.OBJLoader.prototype = {
 
 		state.finalize();
 
-		var container = new THREE.Group();
+		var container = new THREE.Object3D();
 		container.materialLibraries = [].concat( state.materialLibraries );
 
 		for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
