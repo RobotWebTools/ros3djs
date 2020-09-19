@@ -3136,7 +3136,7 @@ THREE.ColladaLoader.prototype = {
 
       } else {
 
-        object = (type === 'JOINT') ? new THREE.Bone() : new THREE.Group();
+        object = (type === 'JOINT') ? new THREE.Bone() : new THREE.Object3D();
 
         for (var i = 0; i < objects.length; i++) {
 
@@ -3281,7 +3281,7 @@ THREE.ColladaLoader.prototype = {
 
     function buildVisualScene(data) {
 
-      var group = new THREE.Group();
+      var group = new THREE.Object3D();
       group.name = data.name;
 
       var children = data.children;
