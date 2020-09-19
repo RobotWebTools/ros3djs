@@ -80,7 +80,7 @@ ROS3D.Viewer = function(options) {
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE.Object3D();
+  this.selectableObjects = new THREE.Group();
   this.scene.add(this.selectableObjects);
   var mouseHandler = new ROS3D.MouseHandler({
     renderer : this.renderer,
