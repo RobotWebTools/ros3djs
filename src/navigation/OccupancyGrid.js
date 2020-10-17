@@ -106,7 +106,7 @@ ROS3D.OccupancyGrid.prototype.getValue = function(index, row, col, data) {
  * @param {int} row the row of the cell
  * @param {int} col the column of the cell
  * @param {float} value the value of the cell
- * @returns r,g,b array of values from 0 to 255 representing the color values for each channel
+ * @returns r,g,b,a array of values from 0 to 255 representing the color values for each channel
  */
 ROS3D.OccupancyGrid.prototype.getColor = function(index, row, col, value) {
   return [
