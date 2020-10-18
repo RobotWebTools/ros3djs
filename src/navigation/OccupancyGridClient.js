@@ -61,6 +61,7 @@ ROS3D.OccupancyGridClient.prototype.subscribe = function(){
     queue_length : 1,
     compression : this.compression
   });
+  this.sceneNode = null;
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
 
@@ -72,7 +73,7 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
       // grid is of type ROS3D.SceneNode
       this.currentGrid.unsubscribeTf();
     }
-    this.rootObject.remove(this.currentGrid);
+    this.sceneNode.remove(this.currentGrid);
   }
 
   var newGrid = new ROS3D.OccupancyGrid({
@@ -84,17 +85,21 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
   // check if we care about the scene
   if (this.tfClient) {
     this.currentGrid = newGrid;
-    this.sceneNode = new ROS3D.SceneNode({
-      frameID : message.header.frame_id,
-      tfClient : this.tfClient,
-      object : newGrid,
-      pose : this.offsetPose
-    });
+    if (this.sceneNode === null) {
+      this.sceneNode = new ROS3D.SceneNode({
+        frameID : message.header.frame_id,
+        tfClient : this.tfClient,
+        object : newGrid,
+        pose : this.offsetPose
+      });
+      this.rootObject.add(this.sceneNode);
+    } else {
+      this.sceneNode.add(this.currentGrid);
+    }
   } else {
     this.sceneNode = this.currentGrid = newGrid;
+    this.rootObject.add(this.currentGrid);
   }
-
-  this.rootObject.add(this.sceneNode);
 
   this.emit('change');
 

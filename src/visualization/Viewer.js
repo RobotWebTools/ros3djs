@@ -11,6 +11,7 @@
  * @param options - object with following keys:
  *
  *  * divID - the ID of the div to place the viewer in
+ *  * elem - the elem to place the viewer in (overrides divID if provided)
  *  * width - the initial width, in pixels, of the canvas
  *  * height - the initial height, in pixels, of the canvas
  *  * background (optional) - the color to render the background, like '#efefef'
@@ -29,6 +30,7 @@
 ROS3D.Viewer = function(options) {
   options = options || {};
   var divID = options.divID;
+  var elem = options.elem;
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
@@ -82,7 +84,7 @@ ROS3D.Viewer = function(options) {
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE.Object3D();
+  this.selectableObjects = new THREE.Group();
   this.scene.add(this.selectableObjects);
   var mouseHandler = new ROS3D.MouseHandler({
     renderer : this.renderer,
@@ -100,7 +102,8 @@ ROS3D.Viewer = function(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  document.getElementById(divID).appendChild(this.renderer.domElement);
+  var node = elem || document.getElementById(divID);  
+  node.appendChild(this.renderer.domElement);
 
   // begin the render loop
   this.start();

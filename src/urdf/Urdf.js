@@ -70,12 +70,13 @@ ROS3D.Urdf = function(options) {
                 tfClient : tfClient,
                 object : mesh
             });
-            this.add(sceneNode);
+            sceneNode.name = visual.name
+            this.add(sceneNode);            
           } else {
             console.warn('Could not load geometry mesh: '+uri);
           }
         } else {
-          var shapeMesh = this.createShapeMesh(visual);
+          var shapeMesh = this.createShapeMesh(visual, options);
           // Create a scene node with the shape
           var scene = new ROS3D.SceneNode({
             frameID: frameID,
@@ -83,6 +84,7 @@ ROS3D.Urdf = function(options) {
               tfClient: tfClient,
               object: shapeMesh
           });
+          scene.name = visual.name
           this.add(scene);
         }
       }
@@ -90,7 +92,7 @@ ROS3D.Urdf = function(options) {
   }
 };
 
-ROS3D.Urdf.prototype.createShapeMesh = function(visual) {
+ROS3D.Urdf.prototype.createShapeMesh = function(visual, options) {
   var colorMaterial = null;
   if (!colorMaterial) {
     colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
