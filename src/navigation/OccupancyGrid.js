@@ -62,6 +62,8 @@ ROS3D.OccupancyGrid = function(options) {
   var data = message.data;
   // update the texture (after the the super call and this are accessible)
   this.color = color;
+  this.material = material;
+  this.texture = texture;
 
   for ( var row = 0; row < height; row++) {
     for ( var col = 0; col < width; col++) {
@@ -85,6 +87,11 @@ ROS3D.OccupancyGrid = function(options) {
 
   texture.needsUpdate = true;
 
+};
+
+ROS3D.OccupancyGrid.prototype.dispose = function() {
+  this.material.dispose();
+  this.texture.dispose();
 };
 
 /**
