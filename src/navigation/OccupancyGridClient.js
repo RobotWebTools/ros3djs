@@ -73,7 +73,9 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
       // grid is of type ROS3D.SceneNode
       this.currentGrid.unsubscribeTf();
     }
-    this.sceneNode.remove(this.currentGrid);
+    if(this.sceneNode){
+      this.sceneNode.remove(this.currentGrid);
+    }
     this.currentGrid.dispose();
   }
 
