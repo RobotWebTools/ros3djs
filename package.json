@@ -9,7 +9,7 @@
   "dependencies": {
     "eventemitter2": "^4.1.0",
     "roslib": "^1.0.0",
-    "three": "^0.89.0"
+    "three": "^0.119.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
