@@ -56725,12 +56725,9 @@ class OrbitControls extends THREE$1.EventDispatcher {
    * @param autoRotateSpeed (optional) - the speed for auto rotating
    * @param displayPanAndZoomFrame - whether to display a frame when panning/zooming
    *                                 (defaults to true)
-   * @param axesDisplay (optional) - option to always display the axes.
-   *                                 (defaults to false)
-   * @param lineTypePanAndZoomFrame - line type for the frame that is displayed.
-   *                                  Only has effect when displayPanAndZoomFrame
-   *                                  and/or axesDisplay is set to true.
-   *
+   * @param lineTypePanAndZoomFrame - line type for the frame that is displayed when
+   *                                  panning/zooming. Only has effect when
+   *                                  displayPanAndZoomFrame is set to true.
    */
   constructor(options) {
     super();
@@ -56748,10 +56745,7 @@ class OrbitControls extends THREE$1.EventDispatcher {
     this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ?
         true :
         !!options.displayPanAndZoomFrame;
-    this.lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
-    this.axesDisplay =(options.axesDisplay === undefined) ?
-        false :
-        !!options.axesDisplay;
+    this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
     // In ROS, z is pointing upwards
     this.camera.up = new THREE$1.Vector3(0, 0, 1);
 
@@ -56789,18 +56783,14 @@ class OrbitControls extends THREE$1.EventDispatcher {
       headLength : 0.2,
       lineType: this.lineTypePanAndZoomFrame
     });
-    if(this.axesDisplay){
+    if (this.displayPanAndZoomFrame) {
+      // initially not visible
       scene.add(this.axes);
       this.axes.traverse(function(obj) {
-        obj.visible = true;
+        obj.visible = false;
       });
-    }else if (this.displayPanAndZoomFrame) {
-          // initially not visible
-          scene.add(this.axes);
-          this.axes.traverse(function(obj) {
-            obj.visible = false;
-          });
     }
+
     /**
      * Handle the mousedown 3D event.
      *
@@ -57094,18 +57084,16 @@ class OrbitControls extends THREE$1.EventDispatcher {
     this.axes.traverse(function(obj) {
       obj.visible = true;
     });
-
-    if(!this.axesDisplay){
-      if (this.hideTimeout) {
-        clearTimeout(this.hideTimeout);
-      }
-      this.hideTimeout = setTimeout(function() {
-        that.axes.traverse(function(obj) {
-          obj.visible = false;
-        });
-        that.hideTimeout = false;
-      }, 1000);
-    }  };
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
+    this.hideTimeout = setTimeout(function() {
+      that.axes.traverse(function(obj) {
+        obj.visible = false;
+      });
+      that.hideTimeout = false;
+    }, 1000);
+  };
 
   /**
    * Rotate the camera to the left by the given angle.
@@ -57255,14 +57243,12 @@ class Viewer {
    *  * alpha (optional) - the alpha of the background
    *  * antialias (optional) - if antialiasing should be used
    *  * intensity (optional) - the lighting intensity setting to use
-   *  * cameraPose (optional) - the starting position of the camera
+   *  * cameraPosition (optional) - the starting position of the camera
    *  * displayPanAndZoomFrame (optional) - whether to display a frame when
    *  *                                     panning/zooming. Defaults to true.
-   *  * axesDisplay (optional) - option to always display the axes. Default to false.
    *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
    *  *                           panning/zooming. Only has effect when
-   *  *                           displayPanAndZoomFrame or axesDisplay is set to true.
-   *  *
+   *  *                           displayPanAndZoomFrame is set to true.
    */
   constructor(options) {
     options = options || {};
@@ -57283,7 +57269,6 @@ class Viewer {
     var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
     var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
     var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
-    var axesDisplay = (options.axesDisplay === undefined) ? false : !!options.axesDisplay;
 
     // create the canvas to render to
     this.renderer = new THREE$1.WebGLRenderer({
@@ -57309,8 +57294,7 @@ class Viewer {
       scene : this.scene,
       camera : this.camera,
       displayPanAndZoomFrame : displayPanAndZoomFrame,
-      lineTypePanAndZoomFrame : lineTypePanAndZoomFrame,
-      axesDisplay : axesDisplay
+      lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
     });
     this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
