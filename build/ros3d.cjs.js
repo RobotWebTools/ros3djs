@@ -47515,7 +47515,7 @@ THREE$1.OBJLoader.prototype = {
 
 		state.finalize();
 
-		var container = new THREE$1.Group();
+		var container = new THREE$1.Object3D();
 		container.materialLibraries = [].concat( state.materialLibraries );
 
 		for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
@@ -51388,7 +51388,7 @@ THREE$1.ColladaLoader.prototype = {
 
       } else {
 
-        object = (type === 'JOINT') ? new THREE$1.Bone() : new THREE$1.Group();
+        object = (type === 'JOINT') ? new THREE$1.Bone() : new THREE$1.Object3D();
 
         for (var i = 0; i < objects.length; i++) {
 
@@ -51533,7 +51533,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildVisualScene(data) {
 
-      var group = new THREE$1.Group();
+      var group = new THREE$1.Object3D();
       group.name = data.name;
 
       var children = data.children;
@@ -51752,7 +51752,7 @@ var MeshLoader = {
    loaders: {
      'dae': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.ColladaLoader();
+       var loader = new THREE$1.ColladaLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51782,7 +51782,7 @@ var MeshLoader = {
 
      'obj': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.OBJLoader();
+       var loader = new THREE$1.OBJLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51814,7 +51814,7 @@ var MeshLoader = {
            if (obj.materialLibraries.length) {
              // load the material libraries
              var materialUri = obj.materialLibraries[0];
-             new THREE$1.MTLLoader().setPath(baseUri).load(
+             new THREE$1.MTLLoader(options.loader).setPath(baseUri).load(
                materialUri,
                function(materials) {
                   materials.preload();
@@ -51837,7 +51837,7 @@ var MeshLoader = {
 
      'stl': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.STLLoader();
+       var loader = new THREE$1.STLLoader(options.loader);
        {
          loader.load(uri,
                      function ( geometry ) {
@@ -54483,8 +54483,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
         if(message.ns + message.id in this.markers) { // "MODIFY"
           updated = this.markers[message.ns + message.id].children[0].update(message);
           if(!updated) { // "REMOVE"
-            this.markers[message.ns + message.id].unsubscribeTf();
-            this.rootObject.remove(this.markers[message.ns + message.id]);
+            this.removeMarker(message.ns + message.id);
           }
         }
         if(!updated) { // "ADD"
@@ -54504,14 +54503,11 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
         console.warn('Received marker message with deprecated action identifier "1"');
       }
       else if(message.action === 2) { // "DELETE"
-        this.markers[message.ns + message.id].unsubscribeTf();
-        this.rootObject.remove(this.markers[message.ns + message.id]);
-        delete this.markers[message.ns + message.id];
+        this.removeMarker(message.ns + message.id);
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in this.markers){
-          this.markers[m].unsubscribeTf();
-          this.rootObject.remove(this.markers[m]);
+          this.removeMarker(m);
         }
         this.markers = {};
       }
@@ -54526,6 +54522,18 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     if(this.rosTopic){
       this.rosTopic.unsubscribe();
     }
+  };
+  MarkerArrayClient.prototype.removeMarker = function removeMarker (key) {
+    var oldNode = this.markers[key];
+    if(!oldNode) {
+      return;
+    }
+    oldNode.unsubscribeTf();
+    this.rootObject.remove(oldNode);
+    oldNode.children.forEach(function (child) {
+      child.dispose();
+    });
+    delete(this.markers[key]);
   };
 
   return MarkerArrayClient;
@@ -54565,9 +54573,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   MarkerClient.prototype.checkTime = function checkTime (name){
       var curTime = new Date().getTime();
       if (curTime - this.updatedTime[name] > this.lifetime) {
-          var oldNode = this.markers[name];
-          oldNode.unsubscribeTf();
-          this.rootObject.remove(oldNode);
+          this.removeMarker(name);
           this.emit('change');
       } else {
           var that = this;
@@ -54592,8 +54598,8 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     var oldNode = this.markers[message.ns + message.id];
     this.updatedTime[message.ns + message.id] = new Date().getTime();
     if (oldNode) {
-      oldNode.unsubscribeTf();
-      this.rootObject.remove(oldNode);
+      this.removeMarker(message.ns + message.id);
+
     } else if (this.lifetime) {
       this.checkTime(message.ns + message.id);
     }
@@ -54613,6 +54619,18 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     }
 
     this.emit('change');
+  };
+  MarkerClient.prototype.removeMarker = function removeMarker (key) {
+    var oldNode = this.markers[key];
+    if(!oldNode) {
+      return;
+    }
+    oldNode.unsubscribeTf();
+    this.rootObject.remove(oldNode);
+    oldNode.children.forEach(function (child) {
+      child.dispose();
+    });
+    delete(this.markers[key]);
   };
 
   return MarkerClient;
@@ -55688,6 +55706,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/points';
+    this.throttle_rate = options.throttle_rate || null;
     this.compression = options.compression || 'cbor';
     this.max_pts = options.max_pts || 10000;
     this.points = new Points$1(options);
@@ -55713,6 +55732,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/PointCloud2',
+      throttle_rate : this.throttle_rate,
       queue_length : 1,
       compression: this.compression
     });
@@ -55861,34 +55881,13 @@ var Urdf = /*@__PURE__*/(function (superclass) {
                   tfClient : tfClient,
                   object : mesh
               });
-              this.add(sceneNode);
+              sceneNode.name = visual.name;
+              this.add(sceneNode);            
             } else {
               console.warn('Could not load geometry mesh: '+uri);
             }
           } else {
-            if (!colorMaterial) {
-              colorMaterial = makeColorMaterial(0, 0, 0, 1);
-            }
-            var shapeMesh;
-            // Create a shape
-            switch (visual.geometry.type) {
-              case ROSLIB.URDF_BOX:
-                var dimension = visual.geometry.dimension;
-                var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
-                shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
-                break;
-              case ROSLIB.URDF_CYLINDER:
-                var radius = visual.geometry.radius;
-                var length = visual.geometry.length;
-                var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
-                shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
-                shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
-                break;
-              case ROSLIB.URDF_SPHERE:
-                var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
-                shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
-                break;
-            }
+            var shapeMesh = this.createShapeMesh(visual, options);
             // Create a scene node with the shape
             var scene = new SceneNode({
               frameID: frameID,
@@ -55896,6 +55895,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
                 tfClient: tfClient,
                 object: shapeMesh
             });
+            scene.name = visual.name;
             this.add(scene);
           }
         }
@@ -55906,6 +55906,35 @@ var Urdf = /*@__PURE__*/(function (superclass) {
   if ( superclass ) Urdf.__proto__ = superclass;
   Urdf.prototype = Object.create( superclass && superclass.prototype );
   Urdf.prototype.constructor = Urdf;
+  Urdf.prototype.createShapeMesh = function createShapeMesh (visual, options) {
+    var colorMaterial = null;
+    if (!colorMaterial) {
+      colorMaterial = makeColorMaterial(0, 0, 0, 1);
+    }
+    var shapeMesh;
+    // Create a shape
+    switch (visual.geometry.type) {
+      case ROSLIB.URDF_BOX:
+        var dimension = visual.geometry.dimension;
+        var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
+        shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
+        break;
+      case ROSLIB.URDF_CYLINDER:
+        var radius = visual.geometry.radius;
+        var length = visual.geometry.length;
+        var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
+        shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
+        shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
+        break;
+      case ROSLIB.URDF_SPHERE:
+        var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
+        shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
+        break;
+    }
+
+    return shapeMesh;
+  };
+
   Urdf.prototype.unsubscribeTf = function unsubscribeTf () {
     this.children.forEach(function(n) {
       if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
@@ -56804,6 +56833,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
 var Viewer = function Viewer(options) {
   options = options || {};
   var divID = options.divID;
+  var elem = options.elem;
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
@@ -56873,7 +56903,8 @@ var Viewer = function Viewer(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  document.getElementById(divID).appendChild(this.renderer.domElement);
+  var node = elem || document.getElementById(divID);  
+  node.appendChild(this.renderer.domElement);
 
   // begin the render loop
   this.start();
