@@ -23,6 +23,8 @@ export * from './models/TriangleList'
 
 export * from './navigation/OccupancyGrid'
 export * from './navigation/OccupancyGridClient'
+export * from './navigation/OccupancyMap'
+export * from './navigation/OccupancyMapClient'
 export * from './navigation/Odometry'
 export * from './navigation/Path'
 export * from './navigation/Point'
