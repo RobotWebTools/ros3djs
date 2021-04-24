@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       build: {
         configFile: './test/karma.conf.js',
         singleRun: true,
-        browsers: process.env.CI ? ['FirefoxHeadless'] : ['Firefox']
+        browsers: process.env.CI ? ['FirefoxHeadless'] : ['Firefox'] // eslint-disable-line
       }
     },
     watch: {
