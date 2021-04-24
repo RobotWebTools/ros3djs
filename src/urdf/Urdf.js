@@ -70,7 +70,7 @@ ROS3D.Urdf = function(options) {
                 tfClient : tfClient,
                 object : mesh
             });
-            sceneNode.name = visual.name
+            sceneNode.name = visual.name;
             this.add(sceneNode);
           } else {
             console.warn('Could not load geometry mesh: '+uri);
@@ -84,7 +84,7 @@ ROS3D.Urdf = function(options) {
               tfClient: tfClient,
               object: shapeMesh
           });
-          scene.name = visual.name
+          scene.name = visual.name;
           this.add(scene);
         }
       }
