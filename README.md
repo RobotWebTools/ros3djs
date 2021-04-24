@@ -1,5 +1,7 @@
-ros3djs [![Build Status](https://api.travis-ci.org/RobotWebTools/ros3djs.png)](https://travis-ci.org/RobotWebTools/ros3djs)
-=======
+# ros3djs
+
+[![CI](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml/badge.svg)](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml)
+
 
 #### 3D Visualization Library for use with the ROS JavaScript Libraries
 For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](http://robotwebtools.org/demos.html).
