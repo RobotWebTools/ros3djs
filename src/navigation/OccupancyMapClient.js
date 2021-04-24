@@ -8,10 +8,10 @@
  * Emits the following events:
  *
  * 'change' - there was an update or change in the marker
- * 
+ *
  * @constructor
  * @param options - object with following keys:
- * 
+ *
  *    * ros - the ROSLIB.Ros connection handle
  *    * topic (optional) - the map topic to listen to
  *    * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
@@ -25,7 +25,7 @@
  *    * palette (optional) - list of RGB colors to be used as palette (THREE.Color)
  *    * paletteScale (optional) - scale favtor of palette to cover wider range of values. (default: 1)
  *    * voxelRenderMode (optional)- toggle between rendering modes @see ROS3D.OcTreeVoxelRenderMode. (default `occupid`)
- * 
+ *
  */
 
 ROS3D.OccupancyMapClient = function (options) {

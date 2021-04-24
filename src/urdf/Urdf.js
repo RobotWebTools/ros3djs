@@ -71,7 +71,7 @@ ROS3D.Urdf = function(options) {
                 object : mesh
             });
             sceneNode.name = visual.name
-            this.add(sceneNode);            
+            this.add(sceneNode);
           } else {
             console.warn('Could not load geometry mesh: '+uri);
           }
