@@ -23,9 +23,11 @@
     "grunt-pipe": "git+https://github.com/gruntjs-updater/grunt-pipe.git#peerDep",
     "grunt-shell": "^2.1.0",
     "gruntify-eslint": "^4.0.0",
-    "karma": "^1.7.1",
+    "karma": "^6.3.2",
     "karma-chai": "^0.1.0",
-    "mocha": "^3.2.0",
+    "karma-firefox-launcher": "^2.1.0",
+    "karma-mocha": "^2.0.1",
+    "mocha": "^8.3.2",
     "rollup": "^0.56.4",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^8.3.0",
@@ -41,7 +43,8 @@
     "build": "grunt build",
     "lint": "grunt lint",
     "lint-fix": "grunt lint-fix",
-    "transpile": "DEBUG=* grunt transpile"
+    "transpile": "DEBUG=* grunt transpile",
+    "test" : "grunt test"
   },
   "keywords": [
     "ROS",
