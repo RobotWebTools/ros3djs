@@ -44,16 +44,6 @@ module.exports = function(grunt) {
       }
     },
     watch: {
-      dev: {
-        options: {
-          interrupt: true
-        },
-        files: [
-          './src/*.js',
-          './src/**/*.js'
-        ],
-        tasks: ['concat']
-      },
       build_and_watch: {
         options: {
           interrupt: true
@@ -148,7 +138,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-jsdoc');
@@ -158,7 +147,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('dev', ['concat', 'watch']);
   grunt.registerTask('transpile', ['pipe', 'execute']);
   grunt.registerTask('build', ['eslint:lint', 'pipe', 'shell']);
   grunt.registerTask('build_and_watch', ['watch']);
