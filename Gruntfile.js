@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       build: {
         configFile: './test/karma.conf.js',
         singleRun: true,
-        browsers: ['Firefox']
+        browsers: process.env.CI ? ['FirefoxHeadless'] : ['Firefox']
       }
     },
     watch: {
