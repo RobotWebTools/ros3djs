@@ -12,7 +12,7 @@
     "three": "^0.89.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.3.4",
     "debug": "^4.3.1",
     "grunt": "^1.0.2",
     "grunt-contrib-clean": "^1.0.0",
