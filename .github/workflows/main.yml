@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches-ignore:
+      - develop
+
+jobs:
+  ci:
+    name: ${{ matrix.node_version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version: [14, 16]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node_version }}
+    - name: Install grunt-cli
+      run: npm install -g grunt-cli
+    - name: Install
+      run: npm install
+    - name: Build
+      run: npm run build
+    - name: Test
+      run: npm test
+    - name: Build Check
+      run: |
+        echo -e "\e[1m\e[35mChecking build folder is up-to-date with library\e[0m"
+        changed_build_files=$(git -C "$(git rev-parse --show-toplevel)" diff --name-only HEAD -- build)
+        if [ -n "$changed_build_files" ]
+        then
+            echo -e "\e[1m\e[31mBuild folder is out-of-sync with library. Build library, npm run build, and (ammend) commit\e[0m"
+            exit 1
+        else
+            echo -e "\e[1m\e[32mBuild folder is up-to-date with library\e[0m"
+        fi

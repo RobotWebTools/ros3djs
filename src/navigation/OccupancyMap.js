@@ -2,7 +2,7 @@
  * @author Peter Sari - sari@photoneo.com
  */
 
-/** 
+/**
  Quick and dirty helper class
  to read ArrayBuffer in a streamed data-like fashion with mixed types in it
 */
@@ -85,8 +85,8 @@ ROS3D.OcTreeBaseNode.prototype.hasChildren = function () {
 
 /**
  * Toggles voxel visibility
- * 
- *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown 
+ *
+ *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
  *    * `free` - only voxels that are below the occupation threshold are shown
  *    * `all` - all allocated voxels are shown
  */
@@ -98,10 +98,10 @@ ROS3D.OcTreeVoxelRenderMode = {
 
 /**
  * Coloring modes for each voxel
- * 
+ *
  *     * 'solid' - voxels will have a single solid color set by the tree globally
- *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available. 
- *     * 'color' - voxels will colorized by their 
+ *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
+ *     * 'color' - voxels will colorized by their
  */
 ROS3D.OcTreeColorMode = {
   SOLID: 'solid',
@@ -111,12 +111,12 @@ ROS3D.OcTreeColorMode = {
 
 /**
  * Represensta a BaseTree that can be build from ros message and create a THREE node from it.
- * Due a tree can be represented different ways in a message, this class is also a base class to 
+ * Due a tree can be represented different ways in a message, this class is also a base class to
  * represent specialized versions fo the ree.
- * 
+ *
  * @constructor
  * @param options - object with following keys:
- * 
+ *
  *    * resolution - the size of leaf nodes in meter
  *    * color - color of the visualized map (if solid coloring option was set)
  *    * voxelRenderMode - toggle between rendering modes @see ROS3D.OcTreeVoxelRenderMode
@@ -149,7 +149,7 @@ ROS3D.OcTreeBase = function (options) {
 
 
 /*
- * Finds a key in a given depth. Search is performed on the lowest level by default. 
+ * Finds a key in a given depth. Search is performed on the lowest level by default.
  * @return the node at given position, null if not found
  */
 ROS3D.OcTreeBase.prototype.searchAtDepth = function (key, depth) {
@@ -180,7 +180,7 @@ ROS3D.OcTreeBase.prototype.searchAtDepth = function (key, depth) {
 };
 
 /**
- * 
+ *
  */
 ROS3D.OcTreeBase.prototype._computeCoordFromKey = function (key) {
   return key.map(keyVal => this.resolution * (keyVal - this._treeMaxKeyVal));
@@ -215,7 +215,7 @@ ROS3D.OcTreeBase.prototype._adjustKeyAtDepth = function (key, depth) {
 };
 
 /**
- * 
+ *
  */
 ROS3D.OcTreeBase.prototype._BINARY_UNALLOCATED = 0b00;
 ROS3D.OcTreeBase.prototype._BINARY_LEAF_FREE = 0b01;
@@ -230,7 +230,7 @@ ROS3D.OcTreeBase.prototype._newNode = function () { return new ROS3D.OcTreeBaseN
  * Binary form only contains the tree structure to be allocated, all the data of voxels are stripped,
  * occupation is represented as a binary value.
  * Each node is represented as a 2-bit value which makes up the 8 child nodes of the parent (16 bits in total)
- * starting with the root node. 
+ * starting with the root node.
  */
 
 ROS3D.OcTreeBase.prototype.readBinary = function (data) {
@@ -286,8 +286,8 @@ ROS3D.OcTreeBase.prototype._BINARY_CHILD_BUILD_TABLE[ROS3D.OcTreeBase.prototype.
 
 
 /**
- * Reads a full tree (with node data) from a message. 
- * A pacjet starts with the node data, followed by the allocation map of their children. 
+ * Reads a full tree (with node data) from a message.
+ * A pacjet starts with the node data, followed by the allocation map of their children.
  * Each type of tree has different data structure @see ROS3DJS.OcTreeBase._readNodeData
  */
 
@@ -323,12 +323,12 @@ ROS3D.OcTreeBase.prototype.read = function (data) {
         stack.push(child);
       }
     }
-  } 
+  }
 
 };
 
 /**
- * Abstract function; Reads and sets data of a node 
+ * Abstract function; Reads and sets data of a node
  */
 ROS3D.OcTreeBase.prototype._readNodeData = function (dataStream, node) {
   // This needs to be implemented by specialized tree
@@ -336,7 +336,7 @@ ROS3D.OcTreeBase.prototype._readNodeData = function (dataStream, node) {
 };
 
 /**
-* Builds up THREE.js geometry from tree data. 
+* Builds up THREE.js geometry from tree data.
 */
 ROS3D.OcTreeBase.prototype.buildGeometry = function () {
   console.assert(this._rootNode !== null, 'No tree data');
@@ -438,7 +438,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
             if (node.hasChildAt(childIndex)) {
               const child = node.getChildAt(childIndex);
 
-              // filter occupancy 
+              // filter occupancy
               const isOccupied = this._checkOccupied(node);
               const isNeedsToRender = (isOccupied && voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.OCCUPIED) || (!isOccupied && voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.FREE);
 
@@ -462,7 +462,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
 
     const isOccupied = this._checkOccupied(node);
 
-    // By default it will show ALL 
+    // By default it will show ALL
     // Hide free voxels if set
     if (!isOccupied && this.voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.OCCUPIED) { return; }
 
@@ -483,8 +483,8 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
         // 1. Simply add geometry where there is no neighbors
         geometry._insertFace(face, pos, size, this._obtainColor(node));
       } else if (depth < this._treeDepth) {
-        // 2. Special case, when a node (voxel) is not on the lowest level 
-        // of the tree, but also need to add a geometry, because might 
+        // 2. Special case, when a node (voxel) is not on the lowest level
+        // of the tree, but also need to add a geometry, because might
         // not be "fully covered" by neighboring voxels on the lowest level
 
         if (geometry._checkNeighborsTouchingFace(face, neighborNode, this.voxelRenderMode)) {
@@ -606,14 +606,14 @@ ROS3D.OcTreeBase.prototype.FACES = [
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 /**
  * Specilaization of BaseOcTree
- * 
- * @constructor 
+ *
+ * @constructor
  * @param options - object with following keys:
  *    * inherited from BaseOctree
  *    * occupancyThreshold (optional) - threshold value that separates occupied and free voxels from each other. (Default: 0)
- *    * colorMode (optional) - Coloring mode @see ROS3D.OcTreeColorMode. 
+ *    * colorMode (optional) - Coloring mode @see ROS3D.OcTreeColorMode.
  *    * palette (optional) - Palette used for false-coloring (default: predefined palette)
- *    * paletteSclae (optional) - Scale of palette to represent a wider range of values (default: 1.)  
+ *    * paletteSclae (optional) - Scale of palette to represent a wider range of values (default: 1.)
  */
 
 ROS3D.OcTree = function (options) {
@@ -679,11 +679,11 @@ ROS3D.ColorOcTree = function (options) {
 ROS3D.ColorOcTree.prototype = Object.create(ROS3D.OcTree.prototype);
 
 ROS3D.ColorOcTree.prototype._readNodeData = function (dataStream, node) {
-  node.value = dataStream.readFloat32(); // occupancy 
+  node.value = dataStream.readFloat32(); // occupancy
   node.color = {
     r: dataStream.readUint8(), // red
     g: dataStream.readUint8(), // green
-    b: dataStream.readUint8(), // blue  
+    b: dataStream.readUint8(), // blue
   };
 
 };
