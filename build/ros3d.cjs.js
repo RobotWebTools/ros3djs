@@ -4,6 +4,28 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var ROSLIB = require('roslib');
 
+function _interopNamespace(e) {
+	if (e && e.__esModule) return e;
+	var n = Object.create(null);
+	if (e) {
+		Object.keys(e).forEach(function (k) {
+			if (k !== 'default') {
+				var d = Object.getOwnPropertyDescriptor(e, k);
+				Object.defineProperty(n, k, d.get ? d : {
+					enumerable: true,
+					get: function () {
+						return e[k];
+					}
+				});
+			}
+		});
+	}
+	n['default'] = e;
+	return Object.freeze(n);
+}
+
+var ROSLIB__namespace = /*#__PURE__*/_interopNamespace(ROSLIB);
+
 // Polyfills
 
 if ( Number.EPSILON === undefined ) {
@@ -24950,7 +24972,7 @@ PointsMaterial.prototype.copy = function ( source ) {
  * @author alteredq / http://alteredqualia.com/
  */
 
-function Points( geometry, material ) {
+function Points$1( geometry, material ) {
 
 	Object3D.call( this );
 
@@ -24961,9 +24983,9 @@ function Points( geometry, material ) {
 
 }
 
-Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
+Points$1.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
-	constructor: Points,
+	constructor: Points$1,
 
 	isPoints: true,
 
@@ -33101,7 +33123,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
  * Creates free form 2d path using series of points, lines or curves.
  **/
 
-function Path( points ) {
+function Path$1( points ) {
 
 	CurvePath.call( this );
 
@@ -33117,9 +33139,9 @@ function Path( points ) {
 
 }
 
-Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
+Path$1.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 
-	constructor: Path,
+	constructor: Path$1,
 
 	setFromPoints: function ( points ) {
 
@@ -33282,7 +33304,7 @@ Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 
 function Shape( points ) {
 
-	Path.call( this, points );
+	Path$1.call( this, points );
 
 	this.uuid = _Math.generateUUID();
 
@@ -33292,7 +33314,7 @@ function Shape( points ) {
 
 }
 
-Shape.prototype = Object.assign( Object.create( Path.prototype ), {
+Shape.prototype = Object.assign( Object.create( Path$1.prototype ), {
 
 	constructor: Shape,
 
@@ -33325,7 +33347,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	copy: function ( source ) {
 
-		Path.prototype.copy.call( this, source );
+		Path$1.prototype.copy.call( this, source );
 
 		this.holes = [];
 
@@ -33343,7 +33365,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	toJSON: function () {
 
-		var data = Path.prototype.toJSON.call( this );
+		var data = Path$1.prototype.toJSON.call( this );
 
 		data.uuid = this.uuid;
 		data.holes = [];
@@ -33361,7 +33383,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	fromJSON: function ( json ) {
 
-		Path.prototype.fromJSON.call( this, json );
+		Path$1.prototype.fromJSON.call( this, json );
 
 		this.uuid = json.uuid;
 		this.holes = [];
@@ -33369,7 +33391,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 		for ( var i = 0, l = json.holes.length; i < l; i ++ ) {
 
 			var hole = json.holes[ i ];
-			this.holes.push( new Path().fromJSON( hole ) );
+			this.holes.push( new Path$1().fromJSON( hole ) );
 
 		}
 
@@ -37455,7 +37477,7 @@ Object.assign( ObjectLoader.prototype, {
 				case 'PointCloud':
 				case 'Points':
 
-					object = new Points( getGeometry( data.geometry ), getMaterial( data.material ) );
+					object = new Points$1( getGeometry( data.geometry ), getMaterial( data.material ) );
 
 					break;
 
@@ -37695,7 +37717,7 @@ Object.assign( ShapePath.prototype, {
 
 	moveTo: function ( x, y ) {
 
-		this.currentPath = new Path();
+		this.currentPath = new Path$1();
 		this.subPaths.push( this.currentPath );
 		this.currentPath.moveTo( x, y );
 
@@ -38015,7 +38037,7 @@ Object.assign( Font.prototype, {
 			var path = new ShapePath();
 
 			var pts = [];
-			var x, y, cpx, cpy, cpx0, cpy0, cpx1, cpy1, cpx2, cpy2, laste;
+			var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2, laste;
 
 			if ( glyph.o ) {
 
@@ -38058,8 +38080,8 @@ Object.assign( Font.prototype, {
 
 							if ( laste ) {
 
-								cpx0 = laste.x;
-								cpy0 = laste.y;
+								laste.x;
+								laste.y;
 
 								
 
@@ -38082,8 +38104,8 @@ Object.assign( Font.prototype, {
 
 							if ( laste ) {
 
-								cpx0 = laste.x;
-								cpy0 = laste.y;
+								laste.x;
+								laste.y;
 
 								
 
@@ -38104,7 +38126,6 @@ Object.assign( Font.prototype, {
 		//
 
 		if ( size === undefined ) { size = 100; }
-		if ( divisions === undefined ) { divisions = 4; }
 
 		var data = this.data;
 
@@ -43995,7 +44016,7 @@ function MultiMaterial( materials ) {
 function PointCloud( geometry, material ) {
 
 	console.warn( 'THREE.PointCloud has been renamed to THREE.Points.' );
-	return new Points( geometry, material );
+	return new Points$1( geometry, material );
 
 }
 
@@ -44009,7 +44030,7 @@ function Particle( material ) {
 function ParticleSystem( geometry, material ) {
 
 	console.warn( 'THREE.ParticleSystem has been renamed to THREE.Points.' );
-	return new Points( geometry, material );
+	return new Points$1( geometry, material );
 
 }
 
@@ -44174,7 +44195,7 @@ Object.assign( CurvePath.prototype, {
 
 //
 
-Object.assign( Path.prototype, {
+Object.assign( Path$1.prototype, {
 
 	fromPoints: function ( points ) {
 
@@ -45605,8 +45626,8 @@ function CanvasRenderer() {
 
 }
 
-
-var THREE = Object.freeze({
+var THREE$1 = /*#__PURE__*/Object.freeze({
+	__proto__: null,
 	WebGLRenderTargetCube: WebGLRenderTargetCube,
 	WebGLRenderTarget: WebGLRenderTarget,
 	WebGLRenderer: WebGLRenderer,
@@ -45627,7 +45648,7 @@ var THREE = Object.freeze({
 	LineSegments: LineSegments,
 	LineLoop: LineLoop,
 	Line: Line,
-	Points: Points,
+	Points: Points$1,
 	Group: Group,
 	VideoTexture: VideoTexture,
 	DataTexture: DataTexture,
@@ -45744,7 +45765,7 @@ var THREE = Object.freeze({
 	ArrowHelper: ArrowHelper,
 	AxesHelper: AxesHelper,
 	Shape: Shape,
-	Path: Path,
+	Path: Path$1,
 	ShapePath: ShapePath,
 	Font: Font,
 	CurvePath: CurvePath,
@@ -45994,7 +46015,7 @@ var THREE = Object.freeze({
 	CanvasRenderer: CanvasRenderer
 });
 
-var THREE$1 = Object.assign({}, THREE)
+var THREE = Object.assign({}, THREE$1);
 
 // Marker types
 var MARKER_ARROW = 0;
@@ -46045,24 +46066,24 @@ var INTERACTIVE_MARKER_VIEW_FACING = 2;
  * @returns the THREE material
  */
 var makeColorMaterial = function(r, g, b, a) {
-  var color = new THREE$1.Color();
+  var color = new THREE.Color();
   color.setRGB(r, g, b);
   if (a <= 0.99) {
-    return new THREE$1.MeshBasicMaterial({
+    return new THREE.MeshBasicMaterial({
       color : color.getHex(),
       opacity : a + 0.1,
       transparent : true,
       depthWrite : true,
-      blendSrc : THREE$1.SrcAlphaFactor,
-      blendDst : THREE$1.OneMinusSrcAlphaFactor,
-      blendEquation : THREE$1.ReverseSubtractEquation,
-      blending : THREE$1.NormalBlending
+      blendSrc : THREE.SrcAlphaFactor,
+      blendDst : THREE.OneMinusSrcAlphaFactor,
+      blendEquation : THREE.ReverseSubtractEquation,
+      blending : THREE.NormalBlending
     });
   } else {
-    return new THREE$1.MeshPhongMaterial({
+    return new THREE.MeshPhongMaterial({
       color : color.getHex(),
       opacity : a,
-      blending : THREE$1.NormalBlending
+      blending : THREE.NormalBlending
     });
   }
 };
@@ -46076,8 +46097,8 @@ var makeColorMaterial = function(r, g, b, a) {
  * @returns the intersection point
  */
 var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
-  var vector = new THREE$1.Vector3();
-  var intersectPoint = new THREE$1.Vector3();
+  var vector = new THREE.Vector3();
+  var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
   var dot = mouseRay.direction.dot(planeNormal);
 
@@ -46102,7 +46123,7 @@ var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
  * @param the closest point between the two rays
  */
 var findClosestPoint = function(targetRay, mouseRay) {
-  var v13 = new THREE$1.Vector3();
+  var v13 = new THREE.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
   var v21 = targetRay.direction.clone();
@@ -46142,18 +46163,18 @@ var closestAxisPoint = function(axisRay, camera, mousePos) {
   var d = o2.clone().sub(o);
 
   // t is the 2d ray param of perpendicular projection of mousePos onto o
-  var tmp = new THREE$1.Vector2();
+  var tmp = new THREE.Vector2();
   // (t = (mousePos - o) * d / (d*d))
   var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
 
   // mp is the final 2d-projected mouse pos (mp = o + d*t)
-  var mp = new THREE$1.Vector2();
+  var mp = new THREE.Vector2();
   mp.addVectors(o, d.clone().multiplyScalar(t));
 
   // go back to 3d by shooting a ray
-  var vector = new THREE$1.Vector3(mp.x, mp.y, 0.5);
+  var vector = new THREE.Vector3(mp.x, mp.y, 0.5);
   vector.unproject(camera);
-  var mpRay = new THREE$1.Ray(camera.position, vector.sub(camera.position).normalize());
+  var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
 
   return findClosestPoint(axisRay, mpRay);
 };
@@ -46381,19 +46402,19 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
   DepthCloud.prototype.initStreamer = function initStreamer () {
 
     if (this.metaLoaded) {
-      this.texture = new THREE$1.Texture(this.video);
-      this.geometry = new THREE$1.Geometry();
+      this.texture = new THREE.Texture(this.video);
+      this.geometry = new THREE.Geometry();
 
       for (var i = 0, l = this.width * this.height; i < l; i++) {
 
-        var vertex = new THREE$1.Vector3();
+        var vertex = new THREE.Vector3();
         vertex.x = (i % this.width);
         vertex.y = Math.floor(i / this.width);
 
         this.geometry.vertices.push(vertex);
       }
 
-      this.material = new THREE$1.ShaderMaterial({
+      this.material = new THREE.ShaderMaterial({
         uniforms : {
           'map' : {
             type : 't',
@@ -46440,7 +46461,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
         fragmentShader : this.fragment_shader
       });
 
-      this.mesh = new THREE$1.ParticleSystem(this.geometry, this.material);
+      this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
       this.mesh.position.x = 0;
       this.mesh.position.y = 0;
       this.add(this.mesh);
@@ -46472,7 +46493,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
   };
 
   return DepthCloud;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -46481,26 +46502,26 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
 var Arrow = /*@__PURE__*/(function (superclass) {
   function Arrow(options) {
     options = options || {};
-    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
-    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
+    var origin = options.origin || new THREE.Vector3(0, 0, 0);
+    var direction = options.direction || new THREE.Vector3(1, 0, 0);
     var length = options.length || 1;
     var headLength = options.headLength || 0.2;
     var shaftDiameter = options.shaftDiameter || 0.05;
     var headDiameter = options.headDiameter || 0.1;
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    var material = options.material || new THREE.MeshBasicMaterial();
 
     var shaftLength = length - headLength;
 
     // create and merge geometry
-    var geometry = new THREE$1.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
+    var geometry = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
         12, 1);
-    var m = new THREE$1.Matrix4();
-    m.setPosition(new THREE$1.Vector3(0, shaftLength * 0.5, 0));
+    var m = new THREE.Matrix4();
+    m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
     geometry.applyMatrix(m);
 
     // create the head
-    var coneGeometry = new THREE$1.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
-    m.setPosition(new THREE$1.Vector3(0, shaftLength + (headLength * 0.5), 0));
+    var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
+    m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
     coneGeometry.applyMatrix(m);
 
     // put the arrow together
@@ -46521,14 +46542,14 @@ var Arrow = /*@__PURE__*/(function (superclass) {
    * @param direction - the direction to set this arrow
    */
   Arrow.prototype.setDirection = function setDirection (direction) {
-    var axis = new THREE$1.Vector3();
+    var axis = new THREE.Vector3();
     if(direction.x === 0 && direction.z === 0){
       axis.set(1, 0, 0);
     } else {
       axis.set(0, 1, 0).cross(direction);
     }
-    var radians = Math.acos(new THREE$1.Vector3(0, 1, 0).dot(direction.clone().normalize()));
-    this.matrix = new THREE$1.Matrix4().makeRotationAxis(axis.normalize(), radians);
+    var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
+    this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
     this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
   };
   /**
@@ -46560,7 +46581,7 @@ var Arrow = /*@__PURE__*/(function (superclass) {
   };
 
   return Arrow;
-}(THREE$1.Mesh));
+}(THREE.Mesh));
 
 /**
  * @author aleeper / http://adamleeper.com/
@@ -46593,21 +46614,21 @@ var Arrow = /*@__PURE__*/(function (superclass) {
  *  var mesh = new THREE.Mesh( geometry, material );
  */
 
-THREE$1.STLLoader = function (manager) {
+THREE.STLLoader = function (manager) {
 
-  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.STLLoader.prototype = {
+THREE.STLLoader.prototype = {
 
-  constructor: THREE$1.STLLoader,
+  constructor: THREE.STLLoader,
 
   load: function (url, onLoad, onProgress, onError) {
 
     var scope = this;
 
-    var loader = new THREE$1.FileLoader(scope.manager);
+    var loader = new THREE.FileLoader(scope.manager);
     loader.setResponseType('arraybuffer');
     loader.load(url, function (text) {
 
@@ -46688,7 +46709,7 @@ THREE$1.STLLoader.prototype = {
       var dataOffset = 84;
       var faceLength = 12 * 4 + 2;
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
 
       var vertices = [];
       var normals = [];
@@ -46742,12 +46763,12 @@ THREE$1.STLLoader.prototype = {
 
       }
 
-      geometry.addAttribute('position', new THREE$1.BufferAttribute(new Float32Array(vertices), 3));
-      geometry.addAttribute('normal', new THREE$1.BufferAttribute(new Float32Array(normals), 3));
+      geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+      geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
 
       if (hasColors) {
 
-        geometry.addAttribute('color', new THREE$1.BufferAttribute(new Float32Array(colors), 3));
+        geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
         geometry.hasColors = true;
         geometry.alpha = alpha;
 
@@ -46759,7 +46780,7 @@ THREE$1.STLLoader.prototype = {
 
     function parseASCII(data) {
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
       var patternFace = /facet([\s\S]*?)endfacet/g;
       var faceCounter = 0;
 
@@ -46770,7 +46791,7 @@ THREE$1.STLLoader.prototype = {
       var vertices = [];
       var normals = [];
 
-      var normal = new THREE$1.Vector3();
+      var normal = new THREE.Vector3();
 
       var result;
 
@@ -46818,8 +46839,8 @@ THREE$1.STLLoader.prototype = {
 
       }
 
-      geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(vertices, 3));
-      geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normals, 3));
+      geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 
       return geometry;
 
@@ -47248,23 +47269,23 @@ function ParserState() {
 
 }
 
-THREE$1.OBJLoader = function( manager ) {
+THREE.OBJLoader = function( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 	this.materials = null;
 
 };
 
-THREE$1.OBJLoader.prototype = {
+THREE.OBJLoader.prototype = {
 
-	constructor: THREE$1.OBJLoader,
+	constructor: THREE.OBJLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
 		var scope = this;
 
-		var loader = new THREE$1.FileLoader( scope.manager );
+		var loader = new THREE.FileLoader( scope.manager );
 		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
@@ -47515,7 +47536,7 @@ THREE$1.OBJLoader.prototype = {
 
 		state.finalize();
 
-		var container = new THREE$1.Object3D();
+		var container = new THREE.Object3D();
 		container.materialLibraries = [].concat( state.materialLibraries );
 
 		for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
@@ -47530,13 +47551,13 @@ THREE$1.OBJLoader.prototype = {
 			// Skip o/g line declarations that did not follow with any faces
 			if ( geometry.vertices.length === 0 ) { continue; }
 
-			var buffergeometry = new THREE$1.BufferGeometry();
+			var buffergeometry = new THREE.BufferGeometry();
 
-			buffergeometry.addAttribute( 'position', new THREE$1.Float32BufferAttribute( geometry.vertices, 3 ) );
+			buffergeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( geometry.vertices, 3 ) );
 
 			if ( geometry.normals.length > 0 ) {
 
-				buffergeometry.addAttribute( 'normal', new THREE$1.Float32BufferAttribute( geometry.normals, 3 ) );
+				buffergeometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( geometry.normals, 3 ) );
 
 			} else {
 
@@ -47547,13 +47568,13 @@ THREE$1.OBJLoader.prototype = {
 			if ( geometry.colors.length > 0 ) {
 
 				hasVertexColors = true;
-				buffergeometry.addAttribute( 'color', new THREE$1.Float32BufferAttribute( geometry.colors, 3 ) );
+				buffergeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( geometry.colors, 3 ) );
 
 			}
 
 			if ( geometry.uvs.length > 0 ) {
 
-				buffergeometry.addAttribute( 'uv', new THREE$1.Float32BufferAttribute( geometry.uvs, 2 ) );
+				buffergeometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( geometry.uvs, 2 ) );
 
 			}
 
@@ -47571,18 +47592,18 @@ THREE$1.OBJLoader.prototype = {
 					material = this.materials.create( sourceMaterial.name );
 
 					// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
-					if ( isLine && material && ! ( material instanceof THREE$1.LineBasicMaterial ) ) {
+					if ( isLine && material && ! ( material instanceof THREE.LineBasicMaterial ) ) {
 
-						var materialLine = new THREE$1.LineBasicMaterial();
-						THREE$1.Material.prototype.copy.call( materialLine, material );
+						var materialLine = new THREE.LineBasicMaterial();
+						THREE.Material.prototype.copy.call( materialLine, material );
 						materialLine.color.copy( material.color );
 						materialLine.lights = false;
 						material = materialLine;
 
-					} else if ( isPoints && material && ! ( material instanceof THREE$1.PointsMaterial ) ) {
+					} else if ( isPoints && material && ! ( material instanceof THREE.PointsMaterial ) ) {
 
-						var materialPoints = new THREE$1.PointsMaterial( { size: 10, sizeAttenuation: false } );
-						THREE$1.Material.prototype.copy.call( materialPoints, material );
+						var materialPoints = new THREE.PointsMaterial( { size: 10, sizeAttenuation: false } );
+						THREE.Material.prototype.copy.call( materialPoints, material );
 						materialPoints.color.copy( material.color );
 						materialPoints.map = material.map;
 						materialPoints.lights = false;
@@ -47596,15 +47617,15 @@ THREE$1.OBJLoader.prototype = {
 
 					if ( isLine ) {
 
-						material = new THREE$1.LineBasicMaterial();
+						material = new THREE.LineBasicMaterial();
 
 					} else if ( isPoints ) {
 
-						material = new THREE$1.PointsMaterial( { size: 1, sizeAttenuation: false } );
+						material = new THREE.PointsMaterial( { size: 1, sizeAttenuation: false } );
 
 					} else {
 
-						material = new THREE$1.MeshPhongMaterial();
+						material = new THREE.MeshPhongMaterial();
 
 					}
 
@@ -47613,7 +47634,7 @@ THREE$1.OBJLoader.prototype = {
 				}
 
 				material.flatShading = sourceMaterial.smooth ? false : true;
-				material.vertexColors = hasVertexColors ? THREE$1.VertexColors : THREE$1.NoColors;
+				material.vertexColors = hasVertexColors ? THREE.VertexColors : THREE.NoColors;
 
 				createdMaterials.push( material );
 
@@ -47634,15 +47655,15 @@ THREE$1.OBJLoader.prototype = {
 
 				if ( isLine ) {
 
-					mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials );
+					mesh = new THREE.LineSegments( buffergeometry, createdMaterials );
 
 				} else if ( isPoints ) {
 
-					mesh = new THREE$1.Points( buffergeometry, createdMaterials );
+					mesh = new THREE.Points( buffergeometry, createdMaterials );
 
 				} else {
 
-					mesh = new THREE$1.Mesh( buffergeometry, createdMaterials );
+					mesh = new THREE.Mesh( buffergeometry, createdMaterials );
 
 				}
 
@@ -47650,15 +47671,15 @@ THREE$1.OBJLoader.prototype = {
 
 				if ( isLine ) {
 
-					mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.LineSegments( buffergeometry, createdMaterials[ 0 ] );
 
 				} else if ( isPoints ) {
 
-					mesh = new THREE$1.Points( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.Points( buffergeometry, createdMaterials[ 0 ] );
 
 				} else {
 
-					mesh = new THREE$1.Mesh( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.Mesh( buffergeometry, createdMaterials[ 0 ] );
 
 				}
 
@@ -47684,15 +47705,15 @@ THREE$1.OBJLoader.prototype = {
  * @author angelxuanchang
  */
 
-THREE$1.MTLLoader = function ( manager ) {
+THREE.MTLLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.MTLLoader.prototype = {
+THREE.MTLLoader.prototype = {
 
-	constructor: THREE$1.MTLLoader,
+	constructor: THREE.MTLLoader,
 
 	crossOrigin: 'anonymous',
 
@@ -47713,9 +47734,9 @@ THREE$1.MTLLoader.prototype = {
 
 		var scope = this;
 
-		var path = ( this.path === undefined ) ? THREE$1.LoaderUtils.extractUrlBase( url ) : this.path;
+		var path = ( this.path === undefined ) ? THREE.LoaderUtils.extractUrlBase( url ) : this.path;
 
-		var loader = new THREE$1.FileLoader( this.manager );
+		var loader = new THREE.FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
@@ -47846,7 +47867,7 @@ THREE$1.MTLLoader.prototype = {
 
 		}
 
-		var materialCreator = new THREE$1.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
+		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
 		materialCreator.setCrossOrigin( this.crossOrigin );
 		materialCreator.setManager( this.manager );
 		materialCreator.setMaterials( materialsInfo );
@@ -47871,7 +47892,7 @@ THREE$1.MTLLoader.prototype = {
  * @constructor
  */
 
-THREE$1.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
+THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
 
 	this.baseUrl = baseUrl || '';
 	this.options = options;
@@ -47880,14 +47901,14 @@ THREE$1.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
 	this.materialsArray = [];
 	this.nameLookup = {};
 
-	this.side = ( this.options && this.options.side ) ? this.options.side : THREE$1.FrontSide;
-	this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE$1.RepeatWrapping;
+	this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
+	this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
 
 };
 
-THREE$1.MTLLoader.MaterialCreator.prototype = {
+THREE.MTLLoader.MaterialCreator.prototype = {
 
-	constructor: THREE$1.MTLLoader.MaterialCreator,
+	constructor: THREE.MTLLoader.MaterialCreator,
 
 	crossOrigin: 'anonymous',
 
@@ -47960,10 +47981,6 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 							}
 
 						}
-
-						break;
-
-					default:
 
 						break;
 
@@ -48084,21 +48101,21 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 					// Diffuse color (color under white light) using RGB values
 
-					params.color = new THREE$1.Color().fromArray( value );
+					params.color = new THREE.Color().fromArray( value );
 
 					break;
 
 				case 'ks':
 
 					// Specular color (color when light is reflected from shiny surface) using RGB values
-					params.specular = new THREE$1.Color().fromArray( value );
+					params.specular = new THREE.Color().fromArray( value );
 
 					break;
 
 				case 'ke':
 
 					// Emissive using RGB values
-					params.emissive = new THREE$1.Color().fromArray( value );
+					params.emissive = new THREE.Color().fromArray( value );
 
 					break;
 
@@ -48185,14 +48202,11 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 					break;
 
-				default:
-					break;
-
 			}
 
 		}
 
-		this.materials[ materialName ] = new THREE$1.MeshPhongMaterial( params );
+		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
 		return this.materials[ materialName ];
 
 	},
@@ -48201,8 +48215,8 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 		var texParams = {
 
-			scale: new THREE$1.Vector2( 1, 1 ),
-			offset: new THREE$1.Vector2( 0, 0 )
+			scale: new THREE.Vector2( 1, 1 ),
+			offset: new THREE.Vector2( 0, 0 )
 
 		 };
 
@@ -48244,12 +48258,12 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
 		var texture;
-		var loader = THREE$1.Loader.Handlers.get( url );
-		var manager = ( this.manager !== undefined ) ? this.manager : THREE$1.DefaultLoadingManager;
+		var loader = THREE.Loader.Handlers.get( url );
+		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
 
 		if ( loader === null ) {
 
-			loader = new THREE$1.TextureLoader( manager );
+			loader = new THREE.TextureLoader( manager );
 
 		}
 
@@ -48276,15 +48290,15 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
  * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
  */
 
-THREE$1.ColladaLoader = function (manager) {
+THREE.ColladaLoader = function (manager) {
 
-  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.ColladaLoader.prototype = {
+THREE.ColladaLoader.prototype = {
 
-  constructor: THREE$1.ColladaLoader,
+  constructor: THREE.ColladaLoader,
 
   crossOrigin: 'Anonymous',
 
@@ -48292,9 +48306,9 @@ THREE$1.ColladaLoader.prototype = {
 
     var scope = this;
 
-    var path = THREE$1.Loader.prototype.extractUrlBase(url);
+    var path = THREE.Loader.prototype.extractUrlBase(url);
 
-    var loader = new THREE$1.FileLoader(scope.manager);
+    var loader = new THREE.FileLoader(scope.manager);
     loader.load(url, function (text) {
 
       onLoad(scope.parse(text, path));
@@ -48756,9 +48770,9 @@ THREE$1.ColladaLoader.prototype = {
 
     }
 
-    var position = new THREE$1.Vector3();
-    var scale = new THREE$1.Vector3();
-    var quaternion = new THREE$1.Quaternion();
+    var position = new THREE.Vector3();
+    var scale = new THREE.Vector3();
+    var quaternion = new THREE.Quaternion();
 
     function createKeyframeTracks(animation, tracks) {
 
@@ -48787,9 +48801,9 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (positionData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData)); }
-      if (quaternionData.length > 0) { tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
-      if (scaleData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
+      if (positionData.length > 0) { tracks.push(new THREE.VectorKeyframeTrack(name + '.position', times, positionData)); }
+      if (quaternionData.length > 0) { tracks.push(new THREE.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
+      if (scaleData.length > 0) { tracks.push(new THREE.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
 
       return tracks;
 
@@ -48973,7 +48987,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      return new THREE$1.AnimationClip(name, duration, tracks);
+      return new THREE.AnimationClip(name, duration, tracks);
 
     }
 
@@ -49224,14 +49238,14 @@ THREE$1.ColladaLoader.prototype = {
 
       // setup bind matrix
 
-      build.bindMatrix = new THREE$1.Matrix4().fromArray(data.bindShapeMatrix).transpose();
+      build.bindMatrix = new THREE.Matrix4().fromArray(data.bindShapeMatrix).transpose();
 
       // process bones and inverse bind matrix data
 
       for (i = 0, l = jointSource.array.length; i < l; i++) {
 
         var name = jointSource.array[i];
-        var boneInverse = new THREE$1.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
+        var boneInverse = new THREE.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
 
         build.joints.push({ name: name, boneInverse: boneInverse });
 
@@ -49642,15 +49656,15 @@ THREE$1.ColladaLoader.prototype = {
 
         case 'phong':
         case 'blinn':
-          material = new THREE$1.MeshPhongMaterial();
+          material = new THREE.MeshPhongMaterial();
           break;
 
         case 'lambert':
-          material = new THREE$1.MeshLambertMaterial();
+          material = new THREE.MeshLambertMaterial();
           break;
 
         default:
-          material = new THREE$1.MeshBasicMaterial();
+          material = new THREE.MeshBasicMaterial();
           break;
 
       }
@@ -49673,16 +49687,16 @@ THREE$1.ColladaLoader.prototype = {
 
             var technique = extra.technique;
 
-            texture.wrapS = technique.wrapU ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
-            texture.wrapT = technique.wrapV ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
+            texture.wrapS = technique.wrapU ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+            texture.wrapT = technique.wrapV ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
 
             texture.offset.set(technique.offsetU || 0, technique.offsetV || 0);
             texture.repeat.set(technique.repeatU || 1, technique.repeatV || 1);
 
           } else {
 
-            texture.wrapS = THREE$1.RepeatWrapping;
-            texture.wrapT = THREE$1.RepeatWrapping;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
 
           }
 
@@ -49851,7 +49865,7 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.optics.technique) {
 
         case 'perspective':
-          camera = new THREE$1.PerspectiveCamera(
+          camera = new THREE.PerspectiveCamera(
             data.optics.parameters.yfov,
             data.optics.parameters.aspect_ratio,
             data.optics.parameters.znear,
@@ -49870,7 +49884,7 @@ THREE$1.ColladaLoader.prototype = {
           xmag *= 0.5;
           ymag *= 0.5;
 
-          camera = new THREE$1.OrthographicCamera(
+          camera = new THREE.OrthographicCamera(
             - xmag, xmag, ymag, - ymag, // left, right, top, bottom
             data.optics.parameters.znear,
             data.optics.parameters.zfar
@@ -49878,7 +49892,7 @@ THREE$1.ColladaLoader.prototype = {
           break;
 
         default:
-          camera = new THREE$1.PerspectiveCamera();
+          camera = new THREE.PerspectiveCamera();
           break;
 
       }
@@ -49965,7 +49979,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'color':
             var array = parseFloats(child.textContent);
-            data.color = new THREE$1.Color().fromArray(array);
+            data.color = new THREE.Color().fromArray(array);
             break;
 
           case 'falloff_angle':
@@ -49992,19 +50006,19 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.technique) {
 
         case 'directional':
-          light = new THREE$1.DirectionalLight();
+          light = new THREE.DirectionalLight();
           break;
 
         case 'point':
-          light = new THREE$1.PointLight();
+          light = new THREE.PointLight();
           break;
 
         case 'spot':
-          light = new THREE$1.SpotLight();
+          light = new THREE.SpotLight();
           break;
 
         case 'ambient':
-          light = new THREE$1.AmbientLight();
+          light = new THREE.AmbientLight();
           break;
 
       }
@@ -50228,7 +50242,7 @@ THREE$1.ColladaLoader.prototype = {
       var skinIndex = { array: [], stride: 4 };
       var skinWeight = { array: [], stride: 4 };
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
 
       var materialKeys = [];
 
@@ -50342,13 +50356,13 @@ THREE$1.ColladaLoader.prototype = {
 
       // build geometry
 
-      if (position.array.length > 0) { geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride)); }
-      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride)); }
-      if (color.array.length > 0) { geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride)); }
-      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride)); }
+      if (position.array.length > 0) { geometry.addAttribute('position', new THREE.Float32BufferAttribute(position.array, position.stride)); }
+      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normal.array, normal.stride)); }
+      if (color.array.length > 0) { geometry.addAttribute('color', new THREE.Float32BufferAttribute(color.array, color.stride)); }
+      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE.Float32BufferAttribute(uv.array, uv.stride)); }
 
-      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
-      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
+      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
+      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
 
       build.data = geometry;
       build.type = primitives[0].type;
@@ -50540,7 +50554,7 @@ THREE$1.ColladaLoader.prototype = {
       var data = {
         sid: xml.getAttribute('sid'),
         name: xml.getAttribute('name') || '',
-        axis: new THREE$1.Vector3(),
+        axis: new THREE.Vector3(),
         limits: {
           min: 0,
           max: 0
@@ -50671,19 +50685,19 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.type) {
 
         case 'matrix':
-          data.obj = new THREE$1.Matrix4();
+          data.obj = new THREE.Matrix4();
           data.obj.fromArray(array).transpose();
           break;
 
         case 'translate':
-          data.obj = new THREE$1.Vector3();
+          data.obj = new THREE.Vector3();
           data.obj.fromArray(array);
           break;
 
         case 'rotate':
-          data.obj = new THREE$1.Vector3();
+          data.obj = new THREE.Vector3();
           data.obj.fromArray(array);
-          data.angle = THREE$1.Math.degToRad(array[3]);
+          data.angle = THREE.Math.degToRad(array[3]);
           break;
 
       }
@@ -50820,7 +50834,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      var m0 = new THREE$1.Matrix4();
+      var m0 = new THREE.Matrix4();
 
       kinematics = {
 
@@ -50879,7 +50893,7 @@ THREE$1.ColladaLoader.prototype = {
                   switch (joint.type) {
 
                     case 'revolute':
-                      matrix.multiply(m0.makeRotationAxis(axis, THREE$1.Math.degToRad(value)));
+                      matrix.multiply(m0.makeRotationAxis(axis, THREE.Math.degToRad(value)));
                       break;
 
                     case 'prismatic':
@@ -50953,7 +50967,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'matrix':
             var array = parseFloats(child.textContent);
-            var matrix = new THREE$1.Matrix4().fromArray(array).transpose();
+            var matrix = new THREE.Matrix4().fromArray(array).transpose();
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -50964,7 +50978,7 @@ THREE$1.ColladaLoader.prototype = {
           case 'translate':
           case 'scale':
             var array = parseFloats(child.textContent);
-            var vector = new THREE$1.Vector3().fromArray(array);
+            var vector = new THREE.Vector3().fromArray(array);
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -50974,8 +50988,8 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'rotate':
             var array = parseFloats(child.textContent);
-            var vector = new THREE$1.Vector3().fromArray(array);
-            var angle = THREE$1.Math.degToRad(array[3]);
+            var vector = new THREE.Vector3().fromArray(array);
+            var angle = THREE.Math.degToRad(array[3]);
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -51014,8 +51028,8 @@ THREE$1.ColladaLoader.prototype = {
 
     }
 
-    var matrix = new THREE$1.Matrix4();
-    var vector = new THREE$1.Vector3();
+    var matrix = new THREE.Matrix4();
+    var vector = new THREE.Vector3();
 
     function parseNode(xml) {
 
@@ -51024,7 +51038,7 @@ THREE$1.ColladaLoader.prototype = {
         type: xml.getAttribute('type'),
         id: xml.getAttribute('id'),
         sid: xml.getAttribute('sid'),
-        matrix: new THREE$1.Matrix4(),
+        matrix: new THREE.Matrix4(),
         nodes: [],
         instanceCameras: [],
         instanceControllers: [],
@@ -51082,7 +51096,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'rotate':
             var array = parseFloats(child.textContent);
-            var angle = THREE$1.Math.degToRad(array[3]);
+            var angle = THREE.Math.degToRad(array[3]);
             data.matrix.multiply(matrix.makeRotationAxis(vector.fromArray(array), angle));
             data.transforms[child.getAttribute('sid')] = child.nodeName;
             break;
@@ -51140,9 +51154,6 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'skeleton':
             data.skeletons.push(parseId(child.textContent));
-            break;
-
-          default:
             break;
 
         }
@@ -51223,7 +51234,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      return new THREE$1.Skeleton(bones, boneInverses);
+      return new THREE.Skeleton(bones, boneInverses);
 
     }
 
@@ -51260,7 +51271,7 @@ THREE$1.ColladaLoader.prototype = {
             // and weights defined for it. But we still have to add the bone to the sorted bone list in order to
             // ensure a correct animation of the model.
 
-            boneInverse = new THREE$1.Matrix4();
+            boneInverse = new THREE.Matrix4();
 
           }
 
@@ -51388,7 +51399,7 @@ THREE$1.ColladaLoader.prototype = {
 
       } else {
 
-        object = (type === 'JOINT') ? new THREE$1.Bone() : new THREE$1.Object3D();
+        object = (type === 'JOINT') ? new THREE.Bone() : new THREE.Object3D();
 
         for (var i = 0; i < objects.length; i++) {
 
@@ -51437,11 +51448,11 @@ THREE$1.ColladaLoader.prototype = {
 
           if (type === 'lines' || type === 'linestrips') {
 
-            materials.push(new THREE$1.LineBasicMaterial());
+            materials.push(new THREE.LineBasicMaterial());
 
           } else {
 
-            materials.push(new THREE$1.MeshPhongMaterial());
+            materials.push(new THREE.MeshPhongMaterial());
 
           }
 
@@ -51472,22 +51483,22 @@ THREE$1.ColladaLoader.prototype = {
         switch (type) {
 
           case 'lines':
-            object = new THREE$1.LineSegments(geometry.data, material);
+            object = new THREE.LineSegments(geometry.data, material);
             break;
 
           case 'linestrips':
-            object = new THREE$1.Line(geometry.data, material);
+            object = new THREE.Line(geometry.data, material);
             break;
 
           case 'triangles':
           case 'polylist':
             if (skinning) {
 
-              object = new THREE$1.SkinnedMesh(geometry.data, material);
+              object = new THREE.SkinnedMesh(geometry.data, material);
 
             } else {
 
-              object = new THREE$1.Mesh(geometry.data, material);
+              object = new THREE.Mesh(geometry.data, material);
 
             }
             break;
@@ -51533,7 +51544,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildVisualScene(data) {
 
-      var group = new THREE$1.Object3D();
+      var group = new THREE.Object3D();
       group.name = data.name;
 
       var children = data.children;
@@ -51599,7 +51610,7 @@ THREE$1.ColladaLoader.prototype = {
 
           }
 
-          animations.push(new THREE$1.AnimationClip('default', - 1, tracks));
+          animations.push(new THREE.AnimationClip('default', - 1, tracks));
 
         }
 
@@ -51619,7 +51630,7 @@ THREE$1.ColladaLoader.prototype = {
 
     if (text.length === 0) {
 
-      return { scene: new THREE$1.Scene() };
+      return { scene: new THREE.Scene() };
 
     }
 
@@ -51637,7 +51648,7 @@ THREE$1.ColladaLoader.prototype = {
     console.log('THREE.ColladaLoader: File version', version);
 
     var asset = parseAsset(getElementsByTagName(collada, 'asset')[0]);
-    var textureLoader = new THREE$1.TextureLoader(this.manager);
+    var textureLoader = new THREE.TextureLoader(this.manager);
     textureLoader.setPath(path).setCrossOrigin(this.crossOrigin);
 
     //
@@ -51752,7 +51763,7 @@ var MeshLoader = {
    loaders: {
      'dae': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.ColladaLoader(options.loader);
+       var loader = new THREE.ColladaLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51765,7 +51776,7 @@ var MeshLoader = {
            // add a texture to anything that is missing one
            if(material !== null) {
              collada.scene.traverse(function(child) {
-               if(child instanceof THREE$1.Mesh) {
+               if(child instanceof THREE.Mesh) {
                  if(child.material === undefined) {
                    child.material = material;
                  }
@@ -51781,8 +51792,8 @@ var MeshLoader = {
      },
 
      'obj': function(meshRes, uri, options) {
-       var material = options.material;
-       var loader = new THREE$1.OBJLoader(options.loader);
+       options.material;
+       var loader = new THREE.OBJLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51809,12 +51820,12 @@ var MeshLoader = {
          uri,
          function OBJFileReady(obj) {
 
-           var baseUri = THREE$1.LoaderUtils.extractUrlBase( uri );
+           var baseUri = THREE.LoaderUtils.extractUrlBase( uri );
 
            if (obj.materialLibraries.length) {
              // load the material libraries
              var materialUri = obj.materialLibraries[0];
-             new THREE$1.MTLLoader(options.loader).setPath(baseUri).load(
+             new THREE.MTLLoader(options.loader).setPath(baseUri).load(
                materialUri,
                function(materials) {
                   materials.preload();
@@ -51837,17 +51848,17 @@ var MeshLoader = {
 
      'stl': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.STLLoader(options.loader);
+       var loader = new THREE.STLLoader(options.loader);
        {
          loader.load(uri,
                      function ( geometry ) {
                        geometry.computeFaceNormals();
                        var mesh;
                        if(material !== null) {
-                         mesh = new THREE$1.Mesh( geometry, material );
+                         mesh = new THREE.Mesh( geometry, material );
                        } else {
-                         mesh = new THREE$1.Mesh( geometry,
-                                                new THREE$1.MeshBasicMaterial( { color: 0x999999 } ) );
+                         mesh = new THREE.Mesh( geometry,
+                                                new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
                        }
                        meshRes.add(mesh);
                      },
@@ -51871,7 +51882,7 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var path = options.path || '/';
     var resource = options.resource;
-    var material = options.material || null;
+    options.material || null;
     this.warnings = options.warnings;
 
 
@@ -51897,7 +51908,7 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
   MeshResource.prototype.constructor = MeshResource;
 
   return MeshResource;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -51906,19 +51917,19 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
 var TriangleList = /*@__PURE__*/(function (superclass) {
   function TriangleList(options) {
     options = options || {};
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    var material = options.material || new THREE.MeshBasicMaterial();
     var vertices = options.vertices;
     var colors = options.colors;
 
     superclass.call(this);
 
     // set the material to be double sided
-    material.side = THREE$1.DoubleSide;
+    material.side = THREE.DoubleSide;
 
     // construct the geometry
-    var geometry = new THREE$1.Geometry();
+    var geometry = new THREE.Geometry();
     for (i = 0; i < vertices.length; i++) {
-      geometry.vertices.push(new THREE$1.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
+      geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
     }
 
     // set the colors
@@ -51926,27 +51937,27 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
     if (colors.length === vertices.length) {
       // use per-vertex color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceVert = new THREE$1.Face3(i, i + 1, i + 2);
+        var faceVert = new THREE.Face3(i, i + 1, i + 2);
         for (j = i * 3; j < i * 3 + 3; i++) {
-          var color = new THREE$1.Color();
+          var color = new THREE.Color();
           color.setRGB(colors[i].r, colors[i].g, colors[i].b);
           faceVert.vertexColors.push(color);
         }
         geometry.faces.push(faceVert);
       }
-      material.vertexColors = THREE$1.VertexColors;
+      material.vertexColors = THREE.VertexColors;
     } else if (colors.length === vertices.length / 3) {
       // use per-triangle color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceTri = new THREE$1.Face3(i, i + 1, i + 2);
+        var faceTri = new THREE.Face3(i, i + 1, i + 2);
         faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
         geometry.faces.push(faceTri);
       }
-      material.vertexColors = THREE$1.FaceColors;
+      material.vertexColors = THREE.FaceColors;
     } else {
       // use marker color
       for (i = 0; i < vertices.length; i += 3) {
-        var face = new THREE$1.Face3(i, i + 1, i + 2);
+        var face = new THREE.Face3(i, i + 1, i + 2);
         geometry.faces.push(face);
       }
     }
@@ -51955,7 +51966,7 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
     geometry.computeBoundingSphere();
     geometry.computeFaceNormals();
 
-    this.add(new THREE$1.Mesh(geometry, material));
+    this.add(new THREE.Mesh(geometry, material));
   }
 
   if ( superclass ) TriangleList.__proto__ = superclass;
@@ -51971,7 +51982,7 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
   };
 
   return TriangleList;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -52017,8 +52028,8 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // determine the points
         var direction, p1 = null;
         if (message.points.length === 2) {
-          p1 = new THREE$1.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
-          var p2 = new THREE$1.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
+          p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
+          var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
           direction = p1.clone().negate().add(p2);
           // direction = p2 - p1;
           len = direction.length();
@@ -52043,13 +52054,13 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_CUBE:
         // set the cube dimensions
-        var cubeGeom = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
-        this.add(new THREE$1.Mesh(cubeGeom, colorMaterial));
+        var cubeGeom = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+        this.add(new THREE.Mesh(cubeGeom, colorMaterial));
         break;
       case MARKER_SPHERE:
         // set the sphere dimensions
-        var sphereGeom = new THREE$1.SphereGeometry(0.5);
-        var sphereMesh = new THREE$1.Mesh(sphereGeom, colorMaterial);
+        var sphereGeom = new THREE.SphereGeometry(0.5);
+        var sphereMesh = new THREE.Mesh(sphereGeom, colorMaterial);
         sphereMesh.scale.x = message.scale.x;
         sphereMesh.scale.y = message.scale.y;
         sphereMesh.scale.z = message.scale.z;
@@ -52057,22 +52068,22 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_CYLINDER:
         // set the cylinder dimensions
-        var cylinderGeom = new THREE$1.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
-        var cylinderMesh = new THREE$1.Mesh(cylinderGeom, colorMaterial);
-        cylinderMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
+        var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
+        var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
+        cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
         cylinderMesh.scale.set(message.scale.x, message.scale.z, message.scale.y);
         this.add(cylinderMesh);
         break;
       case MARKER_LINE_STRIP:
-        var lineStripGeom = new THREE$1.Geometry();
-        var lineStripMaterial = new THREE$1.LineBasicMaterial({
+        var lineStripGeom = new THREE.Geometry();
+        var lineStripMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var j;
         for ( j = 0; j < message.points.length; j++) {
-          var pt = new THREE$1.Vector3();
+          var pt = new THREE.Vector3();
           pt.x = message.points[j].x;
           pt.y = message.points[j].y;
           pt.z = message.points[j].z;
@@ -52083,7 +52094,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           lineStripMaterial.vertexColors = true;
           for ( j = 0; j < message.points.length; j++) {
-            var clr = new THREE$1.Color();
+            var clr = new THREE.Color();
             clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
             lineStripGeom.colors.push(clr);
           }
@@ -52092,18 +52103,18 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE$1.Line(lineStripGeom, lineStripMaterial));
+        this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
         break;
       case MARKER_LINE_LIST:
-        var lineListGeom = new THREE$1.Geometry();
-        var lineListMaterial = new THREE$1.LineBasicMaterial({
+        var lineListGeom = new THREE.Geometry();
+        var lineListMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var k;
         for ( k = 0; k < message.points.length; k++) {
-          var v = new THREE$1.Vector3();
+          var v = new THREE.Vector3();
           v.x = message.points[k].x;
           v.y = message.points[k].y;
           v.z = message.points[k].z;
@@ -52114,7 +52125,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           lineListMaterial.vertexColors = true;
           for ( k = 0; k < message.points.length; k++) {
-            var c = new THREE$1.Color();
+            var c = new THREE.Color();
             c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
             lineListGeom.colors.push(c);
           }
@@ -52123,11 +52134,11 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LinePieces));
+        this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
         break;
       case MARKER_CUBE_LIST:
         // holds the main object
-        var object = new THREE$1.Object3D();
+        var object = new THREE.Object3D();
 
         // check if custom colors should be used
         var numPoints = message.points.length;
@@ -52138,7 +52149,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // add the points
         var p, cube, curColor, newMesh;
         for (p = 0; p < numPoints; p+=stepSize) {
-          cube = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+          cube = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
 
           // check the color
           if(createColors) {
@@ -52147,7 +52158,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
             curColor = colorMaterial;
           }
 
-          newMesh = new THREE$1.Mesh(cube, curColor);
+          newMesh = new THREE.Mesh(cube, curColor);
           newMesh.position.x = message.points[p].x;
           newMesh.position.y = message.points[p].y;
           newMesh.position.z = message.points[p].z;
@@ -52158,7 +52169,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_SPHERE_LIST:
         // holds the main object
-        var sphereObject = new THREE$1.Object3D();
+        var sphereObject = new THREE.Object3D();
 
         // check if custom colors should be used
         var numSpherePoints = message.points.length;
@@ -52169,7 +52180,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // add the points
         var q, sphere, curSphereColor, newSphereMesh;
         for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
-          sphere = new THREE$1.SphereGeometry(0.5, 8, 8);
+          sphere = new THREE.SphereGeometry(0.5, 8, 8);
 
           // check the color
           if(createSphereColors) {
@@ -52178,7 +52189,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
             curSphereColor = colorMaterial;
           }
 
-          newSphereMesh = new THREE$1.Mesh(sphere, curSphereColor);
+          newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
           newSphereMesh.scale.x = message.scale.x;
           newSphereMesh.scale.y = message.scale.y;
           newSphereMesh.scale.z = message.scale.z;
@@ -52191,15 +52202,15 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_POINTS:
         // for now, use a particle system for the lists
-        var geometry = new THREE$1.Geometry();
-        var material = new THREE$1.ParticleBasicMaterial({
+        var geometry = new THREE.Geometry();
+        var material = new THREE.ParticleBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var i;
         for ( i = 0; i < message.points.length; i++) {
-          var vertex = new THREE$1.Vector3();
+          var vertex = new THREE.Vector3();
           vertex.x = message.points[i].x;
           vertex.y = message.points[i].y;
           vertex.z = message.points[i].z;
@@ -52210,7 +52221,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           material.vertexColors = true;
           for ( i = 0; i < message.points.length; i++) {
-            var color = new THREE$1.Color();
+            var color = new THREE.Color();
             color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
             geometry.colors.push(color);
           }
@@ -52219,7 +52230,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the particle system
-        this.add(new THREE$1.ParticleSystem(geometry, material));
+        this.add(new THREE.ParticleSystem(geometry, material));
         break;
       case MARKER_TEXT_VIEW_FACING:
         // only work on non-empty text
@@ -52252,14 +52263,14 @@ var Marker = /*@__PURE__*/(function (superclass) {
           context.textBaseline = 'middle';
           context.fillText( message.text, 0, canvas.height/2);
 
-          var texture = new THREE$1.Texture(canvas);
+          var texture = new THREE.Texture(canvas);
           texture.needsUpdate = true;
 
-          var spriteMaterial = new THREE$1.SpriteMaterial({
+          var spriteMaterial = new THREE.SpriteMaterial({
             map: texture,
             // NOTE: This is needed for THREE.js r61, unused in r70
             useScreenCoordinates: false });
-          var sprite = new THREE$1.Sprite( spriteMaterial );
+          var sprite = new THREE.Sprite( spriteMaterial );
           var textSize = message.scale.x;
           sprite.scale.set(textWidth / canvas.height * textSize, textSize, 1);
 
@@ -52350,7 +52361,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         case MARKER_TRIANGLE_LIST:
         case MARKER_TEXT_VIEW_FACING:
             this.traverse (function (child){
-                if (child instanceof THREE$1.Mesh) {
+                if (child instanceof THREE.Mesh) {
                     child.material = colorMaterial;
                 }
             });
@@ -52362,7 +52373,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
                 meshColorMaterial = this.colorMaterial;
             }
             this.traverse (function (child){
-                if (child instanceof THREE$1.Mesh) {
+                if (child instanceof THREE.Mesh) {
                     child.material = meshColorMaterial;
                 }
             });
@@ -52416,8 +52427,6 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_TRIANGLE_LIST:
           // TODO: Check if geometry changed
           return false;
-      default:
-          break;
     }
 
     return true;
@@ -52456,7 +52465,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
   };
 
   return Marker;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -52477,20 +52486,20 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
     this.path = options.path || '/';
     this.loader = options.loader;
     this.dragging = false;
-    this.startMousePos = new THREE$1.Vector2();
+    this.startMousePos = new THREE.Vector2();
     this.isShift = false;
 
 
     // orientation for the control
-    var controlOri = new THREE$1.Quaternion(message.orientation.x, message.orientation.y,
+    var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
         message.orientation.z, message.orientation.w);
     controlOri.normalize();
 
     // transform x axis into local frame
-    var controlAxis = new THREE$1.Vector3(1, 0, 0);
+    var controlAxis = new THREE.Vector3(1, 0, 0);
     controlAxis.applyQuaternion(controlOri);
 
-    this.currentControlOri = new THREE$1.Quaternion();
+    this.currentControlOri = new THREE.Quaternion();
 
     // determine mouse interaction
     switch (message.interaction_mode) {
@@ -52512,8 +52521,6 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         break;
       case INTERACTIVE_MARKER_BUTTON:
         this.addEventListener('click', this.parent.buttonClick.bind(this.parent, this));
-        break;
-      default:
         break;
     }
 
@@ -52582,7 +52589,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
     }
 
     // rotation behavior
-    var rotInv = new THREE$1.Quaternion();
+    var rotInv = new THREE.Quaternion();
     var posInv = this.parent.position.clone().multiplyScalar(-1);
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
@@ -52599,7 +52606,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
 
     // temporary TFClient to get transformations from InteractiveMarker
     // frame to potential child Marker frames
-    var localTfClient = new ROSLIB.TFClient({
+    var localTfClient = new ROSLIB__namespace.TFClient({
       ros : handle.tfClient.ros,
       fixedFrame : handle.message.header.frame_id,
       serverName : handle.tfClient.serverName
@@ -52617,12 +52624,12 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         // if transformMsg isn't null, this was called by TFClient
         if (transformMsg !== null) {
           // get the current pose as a ROSLIB.Pose...
-          var newPose = new ROSLIB.Pose({
+          var newPose = new ROSLIB__namespace.Pose({
             position : markerHelper.position,
             orientation : markerHelper.quaternion
           });
           // so we can apply the transform provided by the TFClient
-          newPose.applyTransform(new ROSLIB.Transform(transformMsg));
+          newPose.applyTransform(new ROSLIB__namespace.Transform(transformMsg));
 
           // get transform between parent marker's location and its frame
           // apply it to sub-marker position to get sub-marker position
@@ -52635,8 +52642,8 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
           transformMarker.position.add(posInv);
           transformMarker.position.applyQuaternion(rotInv);
           transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
-          var translation = new THREE$1.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
-          var transform = new ROSLIB.Transform({
+          var translation = new THREE.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
+          var transform = new ROSLIB__namespace.Transform({
             translation : translation,
             orientation : transformMarker.quaternion
           });
@@ -52689,14 +52696,14 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         break;
       case INTERACTIVE_MARKER_VIEW_FACING:
         that.camera.updateMatrixWorld();
-        var cameraRot = new THREE$1.Matrix4().extractRotation(that.camera.matrixWorld);
+        var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
 
-        var ros2Gl = new THREE$1.Matrix4();
+        var ros2Gl = new THREE.Matrix4();
         var r90 = Math.PI * 0.5;
-        var rv = new THREE$1.Euler(-r90, 0, r90);
+        var rv = new THREE.Euler(-r90, 0, r90);
         ros2Gl.makeRotationFromEuler(rv);
 
-        var worldToLocal = new THREE$1.Matrix4();
+        var worldToLocal = new THREE.Matrix4();
         worldToLocal.getInverse(that.parent.matrixWorld);
 
         cameraRot.multiplyMatrices(cameraRot, ros2Gl);
@@ -52719,7 +52726,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarkerControl;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -52732,7 +52739,7 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var menuEntries = options.menuEntries;
     var className = options.className || 'default-interactive-marker-menu';
-    var entryClassName = options.entryClassName || 'default-interactive-marker-menu-entry';
+    options.entryClassName || 'default-interactive-marker-menu-entry';
     var overlayClassName = options.overlayClassName || 'default-interactive-marker-overlay';
     var menuFontSize = options.menuFontSize || '0.8em';
 
@@ -52893,7 +52900,7 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarkerMenu;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -52919,10 +52926,10 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
 
     // information on where the drag started
     this.dragStart = {
-      position : new THREE$1.Vector3(),
-      orientation : new THREE$1.Quaternion(),
-      positionWorld : new THREE$1.Vector3(),
-      orientationWorld : new THREE$1.Quaternion(),
+      position : new THREE.Vector3(),
+      orientation : new THREE.Quaternion(),
+      positionWorld : new THREE.Vector3(),
+      orientationWorld : new THREE.Quaternion(),
       event3d : {}
     };
 
@@ -52981,13 +52988,13 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var originWorld = this.dragStart.event3d.intersection.point;
       var axisWorld = axis.clone().applyQuaternion(this.dragStart.orientationWorld.clone());
 
-      var axisRay = new THREE$1.Ray(originWorld, axisWorld);
+      var axisRay = new THREE.Ray(originWorld, axisWorld);
 
       // find closest point to mouse on axis
       var t = closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
 
       // offset from drag start position
-      var p = new THREE$1.Vector3();
+      var p = new THREE.Vector3();
       p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
           .multiplyScalar(t));
       this.setPosition(control, p);
@@ -53008,36 +53015,24 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
     // by default, move in a plane
     if (this.dragging) {
 
-      if(control.isShift){
-        // this doesn't work
-        // // use the camera position and the marker position to determine the axis
-        // var newAxis = control.camera.position.clone();
-        // newAxis.sub(this.position);
-        // // now mimic same steps constructor uses to create origAxis
-        // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
-        //     newAxis.z, 1);
-        // controlOri.normalize();
-        // var controlAxis = new THREE.Vector3(1, 0, 0);
-        // controlAxis.applyQuaternion(controlOri);
-        // origAxis = controlAxis;
-      }else{
+      if(control.isShift);else {
         // we want to use the origin plane that is closest to the camera
         var cameraVector = control.camera.getWorldDirection();
         var x = Math.abs(cameraVector.x);
         var y = Math.abs(cameraVector.y);
         var z = Math.abs(cameraVector.z);
-        var controlOri = new THREE$1.Quaternion(1, 0, 0, 1);
+        var controlOri = new THREE.Quaternion(1, 0, 0, 1);
         if(y > x && y > z){
           // orientation for the control
-          controlOri = new THREE$1.Quaternion(0, 0, 1, 1);
+          controlOri = new THREE.Quaternion(0, 0, 1, 1);
         }else if(z > x && z > y){
           // orientation for the control
-          controlOri = new THREE$1.Quaternion(0, 1, 0, 1);
+          controlOri = new THREE.Quaternion(0, 1, 0, 1);
         }
         controlOri.normalize();
 
         // transform x axis into local frame
-        origNormal = new THREE$1.Vector3(1, 0, 0);
+        origNormal = new THREE.Vector3(1, 0, 0);
         origNormal.applyQuaternion(controlOri);
         this.movePlane(control, origNormal, event3d);
       }
@@ -53062,7 +53057,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
       // offset from drag start position
-      var p = new THREE$1.Vector3();
+      var p = new THREE.Vector3();
       p.subVectors(intersection, originWorld);
       p.add(this.dragStart.positionWorld);
       this.setPosition(control, p);
@@ -53083,7 +53078,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var currentControlOri = control.currentControlOri;
       var orientation = currentControlOri.clone().multiply(origOrientation.clone());
 
-      var normal = (new THREE$1.Vector3(1, 0, 0)).applyQuaternion(orientation);
+      var normal = (new THREE.Vector3(1, 0, 0)).applyQuaternion(orientation);
 
       // get plane params in world coords
       var originWorld = this.dragStart.event3d.intersection.point;
@@ -53093,7 +53088,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
       // offset local origin to lie on intersection plane
-      var normalRay = new THREE$1.Ray(this.dragStart.positionWorld, normalWorld);
+      var normalRay = new THREE.Ray(this.dragStart.positionWorld, normalWorld);
       var rotOrigin = intersectPlane(normalRay, originWorld, normalWorld);
 
       // rotates from world to plane coords
@@ -53113,7 +53108,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var a2 = Math.atan2(origIntersection.y, origIntersection.z);
       var a = a2 - a1;
 
-      var rot = new THREE$1.Quaternion();
+      var rot = new THREE.Quaternion();
       rot.setFromAxisAngle(normal, a);
 
       // rotate
@@ -53148,7 +53143,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       event3d.stopPropagation();
       this.dragging = true;
       this.updateMatrixWorld(true);
-      var scale = new THREE$1.Vector3();
+      var scale = new THREE.Vector3();
       this.matrixWorld
           .decompose(this.dragStart.positionWorld, this.dragStart.orientationWorld, scale);
       this.dragStart.position = this.position.clone();
@@ -53239,14 +53234,14 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarker;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
 var eventemitter2 = createCommonjsModule(function (module, exports) {
-!function(undefined) {
+!function(undefined$1) {
   var hasOwnProperty= Object.hasOwnProperty;
   var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
     return Object.prototype.toString.call(obj) === "[object Array]";
@@ -53276,7 +53271,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
       conf.delimiter && (this.delimiter = conf.delimiter);
 
-      if(conf.maxListeners!==undefined){
+      if(conf.maxListeners!==undefined$1){
           this._maxListeners= conf.maxListeners;
       }
 
@@ -53345,7 +53340,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     var valuesCount = values ? value.length : 0;
     for (var i = 0; i < len; i++) {
       key = keys[i];
-      obj[key] = i < valuesCount ? values[i] : undefined;
+      obj[key] = i < valuesCount ? values[i] : undefined$1;
     }
     return obj;
   }
@@ -53392,7 +53387,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     var _observers= emitter._observers;
     if(_observers){
       _observers.push(this);
-    }else{
+    }else {
       emitter._observers= [this];
     }
   }
@@ -53448,7 +53443,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         listeners[event]= null;
 
         emitter.on('removeListener', this._onRemoveListener);
-      }else{
+      }else {
         listeners[event]= handler;
         observer._on.call(target, event, handler);
       }
@@ -53487,7 +53482,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         if(!--this._listenersCount){
           clearRefs();
         }
-      }else{
+      }else {
         events= ownKeys(listeners);
         i= events.length;
         while(i-->0){
@@ -53525,7 +53520,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         throw Error('Unknown "' + option + '" option');
       }
       value = options[option];
-      if (value !== undefined) {
+      if (value !== undefined$1) {
         reducer = reducers[option];
         computedOptions[option] = reducer ? reducer(value, reject) : value;
       }
@@ -53744,7 +53739,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           if(_listeners){
             if(listeners){
               listeners.push.apply(listeners, _listeners);
-            }else{
+            }else {
               listeners = _listeners;
             }
           }
@@ -53769,7 +53764,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
               if(_listeners){
                 if(listeners){
                   listeners.push.apply(listeners, _listeners);
-                }else{
+                }else {
                   listeners = _listeners;
                 }
               }
@@ -53784,7 +53779,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           if(_listeners){
             if(listeners){
               listeners.push.apply(listeners, _listeners);
-            }else{
+            }else {
               listeners = _listeners;
             }
           }
@@ -53854,11 +53849,11 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
         } while ((i = type.indexOf(delimiter, j)) !== -1);
 
         ns[len++] = type.slice(j);
-      }else{
+      }else {
         ns= [type];
         len= 1;
       }
-    }else{
+    }else {
       ns= type;
       len= type.length;
     }
@@ -53996,7 +53991,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
           throw Error('process.nextTick is not supported');
         }
 
-        if (promisify === undefined) {
+        if (promisify === undefined$1) {
           promisify = listener.constructor.name === 'AsyncFunction';
         }
 
@@ -54041,9 +54036,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     var emitter= this;
 
     options = resolveOptions(options, {
-      on: undefined,
-      off: undefined,
-      reducers: undefined
+      on: undefined$1,
+      off: undefined$1,
+      reducers: undefined$1
     }, {
       on: functionReducer,
       off: functionReducer,
@@ -54061,7 +54056,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
       if(index===-1){
         observer= new TargetObserver(emitter, target, options);
-      }else{
+      }else {
         observer= emitter._observers[index];
       }
 
@@ -54123,7 +54118,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   EventEmitter.prototype.delimiter = '.';
 
   EventEmitter.prototype.setMaxListeners = function(n) {
-    if (n !== undefined) {
+    if (n !== undefined$1) {
       this._maxListeners = n;
       if (!this._conf) { this._conf = {}; }
       this._conf.maxListeners = n;
@@ -54447,7 +54442,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     // Add the function to the event listener collection.
     if(prepend){
       this._all.unshift(fn);
-    }else{
+    }else {
       this._all.push(fn);
     }
 
@@ -54467,7 +54462,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
     var returnValue= this, temp;
 
-    if (options !== undefined) {
+    if (options !== undefined$1) {
       temp = setupListener.call(this, type, listener, options);
       listener = temp[0];
       returnValue = temp[1];
@@ -54496,7 +54491,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       // If we've already got an array, just add
       if(prepend){
         this._events[type].unshift(listener);
-      }else{
+      }else {
         this._events[type].push(listener);
       }
 
@@ -54617,7 +54612,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
   EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
 
   EventEmitter.prototype.removeAllListeners = function (type) {
-    if (type === undefined) {
+    if (type === undefined$1) {
       !this._events || init.call(this);
       return this;
     }
@@ -54642,7 +54637,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     var i;
     var listenerTree;
 
-    if (type === undefined) {
+    if (type === undefined$1) {
       if (this.wildcard) {
         throw Error('event name required for wildcard emitter');
       }
@@ -54706,7 +54701,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     var _events = this._events;
     var _all = this._all;
 
-    return !!(_all && _all.length || _events && (type === undefined ? ownKeys(_events).length : _events[type]));
+    return !!(_all && _all.length || _events && (type === undefined$1 ? ownKeys(_events).length : _events[type]));
   };
 
   EventEmitter.prototype.listenersAny = function() {
@@ -54731,7 +54726,7 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
 
     options= resolveOptions(options, {
       timeout: 0,
-      filter: undefined,
+      filter: undefined$1,
       handleError: false,
       Promise: Promise,
       overload: false
@@ -54855,9 +54850,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
       _observers: {value: null, writable: true, configurable: true}
   });
 
-  if (typeof undefined === 'function' && undefined.amd) {
+  if (typeof undefined$1 === 'function' && undefined$1.amd) {
      // AMD. Register as an anonymous module.
-    undefined(function() {
+    undefined$1(function() {
       return EventEmitter;
     });
   } else {
@@ -54885,8 +54880,8 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
     this.menuEntries = this.message.menu_entries;
     this.dragging = false;
     this.timeoutHandle = null;
-    this.tfTransform = new ROSLIB.Transform();
-    this.pose = new ROSLIB.Pose();
+    this.tfTransform = new ROSLIB__namespace.Transform();
+    this.pose = new ROSLIB__namespace.Pose();
 
     this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
     this.onMouseDownBound = this.onMouseDown.bind(this);
@@ -54918,7 +54913,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * Emit the new pose that has come from the server.
    */
   InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function emitServerPoseUpdate () {
-    var poseTransformed = new ROSLIB.Pose(this.pose);
+    var poseTransformed = new ROSLIB__namespace.Pose(this.pose);
     poseTransformed.applyTransform(this.tfTransform);
     this.emit('pose', poseTransformed);
   };
@@ -54928,7 +54923,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * @param poseMsg - the pose given by the server
    */
   InteractiveMarkerHandle.prototype.setPoseFromServer = function setPoseFromServer (poseMsg) {
-    this.pose = new ROSLIB.Pose(poseMsg);
+    this.pose = new ROSLIB__namespace.Pose(poseMsg);
     this.emitServerPoseUpdate();
   };
   /**
@@ -54937,7 +54932,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * @param transformMsg - the TF given by the server
    */
   InteractiveMarkerHandle.prototype.tfUpdate = function tfUpdate (transformMsg) {
-    this.tfTransform = new ROSLIB.Transform(transformMsg);
+    this.tfTransform = new ROSLIB__namespace.Transform(transformMsg);
     this.emitServerPoseUpdate();
   };
   /**
@@ -54947,7 +54942,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    */
   InteractiveMarkerHandle.prototype.setPoseFromClient = function setPoseFromClient (event) {
     // apply the transform
-    this.pose = new ROSLIB.Pose(event);
+    this.pose = new ROSLIB__namespace.Pose(event);
     var inv = this.tfTransform.clone();
     inv.rotation.invert();
     inv.translation.multiplyQuaternion(inv.rotation);
@@ -55052,7 +55047,7 @@ var InteractiveMarkerClient = function InteractiveMarkerClient(options) {
   this.topicName = options.topic;
   this.path = options.path || '/';
   this.camera = options.camera;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.rootObject = options.rootObject || new THREE.Object3D();
   this.loader = options.loader;
   this.menuFontSize = options.menuFontSize || '0.8em';
 
@@ -55074,7 +55069,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   // unsubscribe to the other topics
   this.unsubscribe();
 
-  this.updateTopic = new ROSLIB.Topic({
+  this.updateTopic = new ROSLIB__namespace.Topic({
     ros : this.ros,
     name : topic + '/tunneled/update',
     messageType : 'visualization_msgs/InteractiveMarkerUpdate',
@@ -55082,7 +55077,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   });
   this.updateTopic.subscribe(this.processUpdate.bind(this));
 
-  this.feedbackTopic = new ROSLIB.Topic({
+  this.feedbackTopic = new ROSLIB__namespace.Topic({
     ros : this.ros,
     name : topic + '/feedback',
     messageType : 'visualization_msgs/InteractiveMarkerFeedback',
@@ -55090,12 +55085,12 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   });
   this.feedbackTopic.advertise();
 
-  this.initService = new ROSLIB.Service({
+  this.initService = new ROSLIB__namespace.Service({
     ros : this.ros,
     name : topic + '/tunneled/get_init',
     serviceType : 'demo_interactive_markers/GetInit'
   });
-  var request = new ROSLIB.ServiceRequest({});
+  var request = new ROSLIB__namespace.ServiceRequest({});
   this.initService.callService(request, this.processInit.bind(this));
 };
 /**
@@ -55240,7 +55235,7 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.frameID = options.frameID;
     var object = options.object;
-    this.pose = options.pose || new ROSLIB.Pose();
+    this.pose = options.pose || new ROSLIB__namespace.Pose();
 
     // Do not render this object until we receive a TF update
     this.visible = false;
@@ -55255,8 +55250,8 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.tfUpdate = function(msg) {
 
       // apply the transform
-      var tf = new ROSLIB.Transform(msg);
-      var poseTransformed = new ROSLIB.Pose(that.pose);
+      var tf = new ROSLIB__namespace.Transform(msg);
+      var poseTransformed = new ROSLIB__namespace.Pose(that.pose);
       poseTransformed.applyTransform(tf);
 
       // update the world
@@ -55287,7 +55282,7 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
   };
 
   return SceneNode;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
@@ -55301,7 +55296,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.ros = options.ros;
     this.topicName = options.topic;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.path = options.path || '/';
 
     // Markers that are displayed (Map ns+id--Marker)
@@ -55318,7 +55313,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.unsubscribe();
 
     // subscribe to MarkerArray topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/MarkerArray',
@@ -55400,7 +55395,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.ros = options.ros;
     this.topicName = options.topic;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.path = options.path || '/';
     this.lifetime = options.lifetime || 0;
 
@@ -55435,7 +55430,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/Marker',
@@ -55493,13 +55488,13 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
 var Arrow2 = /*@__PURE__*/(function (superclass) {
   function Arrow2(options) {
     options = options || {};
-    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
-    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
+    var origin = options.origin || new THREE.Vector3(0, 0, 0);
+    var direction = options.direction || new THREE.Vector3(1, 0, 0);
     var length = options.length || 1;
-    var headLength = options.headLength || 0.2;
-    var shaftDiameter = options.shaftDiameter || 0.05;
-    var headDiameter = options.headDiameter || 0.1;
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    options.headLength || 0.2;
+    options.shaftDiameter || 0.05;
+    options.headDiameter || 0.1;
+    options.material || new THREE.MeshBasicMaterial();
 
     superclass.call(this, direction, origin, length, 0xff0000);
 
@@ -55524,7 +55519,7 @@ var Arrow2 = /*@__PURE__*/(function (superclass) {
   };
 
   return Arrow2;
-}(THREE$1.ArrowHelper));
+}(THREE.ArrowHelper));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -55546,8 +55541,8 @@ var Axes = /*@__PURE__*/(function (superclass) {
     this.scale.set(scaleArg, scaleArg, scaleArg);
 
     // create the cylinders for the objects
-    this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-    this.headGeom = new THREE$1.CylinderGeometry(0, headRadius, headLength);
+    this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+    this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
     /**
      * Adds an axis marker to this axes object.
@@ -55556,20 +55551,20 @@ var Axes = /*@__PURE__*/(function (superclass) {
      */
     function addAxis(axis) {
       // set the color of the axis
-      var color = new THREE$1.Color();
+      var color = new THREE.Color();
       color.setRGB(axis.x, axis.y, axis.z);
-      var material = new THREE$1.MeshBasicMaterial({
+      var material = new THREE.MeshBasicMaterial({
         color : color.getHex()
       });
 
       // setup the rotation information
-      var rotAxis = new THREE$1.Vector3();
-      rotAxis.crossVectors(axis, new THREE$1.Vector3(0, -1, 0));
-      var rot = new THREE$1.Quaternion();
+      var rotAxis = new THREE.Vector3();
+      rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
+      var rot = new THREE.Quaternion();
       rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
 
       // create the arrow
-      var arrow = new THREE$1.Mesh(that.headGeom, material);
+      var arrow = new THREE.Mesh(that.headGeom, material);
       arrow.position.copy(axis);
       arrow.position.multiplyScalar(0.95);
       arrow.quaternion.copy(rot);
@@ -55581,8 +55576,8 @@ var Axes = /*@__PURE__*/(function (superclass) {
       if (lineType === 'dashed') {
         var l = lineDashLength;
         for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
-          var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
-          line = new THREE$1.Mesh(geom, material);
+          var geom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, l);
+          line = new THREE.Mesh(geom, material);
           line.position.copy(axis);
           // Make spacing between dashes equal to 1.5 times the dash length.
           line.position.multiplyScalar(l / 2 + 3 * l * i);
@@ -55591,7 +55586,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
           that.add(line);
         }
       } else if (lineType === 'full') {
-        line = new THREE$1.Mesh(that.lineGeom, material);
+        line = new THREE.Mesh(that.lineGeom, material);
         line.position.copy(axis);
         line.position.multiplyScalar(0.45);
         line.quaternion.copy(rot);
@@ -55603,9 +55598,9 @@ var Axes = /*@__PURE__*/(function (superclass) {
     }
 
     // add the three markers to the axes
-    addAxis(new THREE$1.Vector3(1, 0, 0));
-    addAxis(new THREE$1.Vector3(0, 1, 0));
-    addAxis(new THREE$1.Vector3(0, 0, 1));
+    addAxis(new THREE.Vector3(1, 0, 0));
+    addAxis(new THREE.Vector3(0, 1, 0));
+    addAxis(new THREE.Vector3(0, 0, 1));
   }
 
   if ( superclass ) Axes.__proto__ = superclass;
@@ -55613,7 +55608,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
   Axes.prototype.constructor = Axes;
 
   return Axes;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
@@ -55629,7 +55624,7 @@ var Grid = /*@__PURE__*/(function (superclass) {
 
     superclass.call(this);
 
-    var material = new THREE$1.LineBasicMaterial({
+    var material = new THREE.LineBasicMaterial({
       color: color,
       linewidth: lineWidth
     });
@@ -55637,18 +55632,18 @@ var Grid = /*@__PURE__*/(function (superclass) {
     for (var i = 0; i <= num_cells; ++i) {
       var edge = cellSize * num_cells / 2;
       var position = edge - (i * cellSize);
-      var geometryH = new THREE$1.Geometry();
+      var geometryH = new THREE.Geometry();
       geometryH.vertices.push(
-        new THREE$1.Vector3( -edge, position, 0 ),
-        new THREE$1.Vector3( edge, position, 0 )
+        new THREE.Vector3( -edge, position, 0 ),
+        new THREE.Vector3( edge, position, 0 )
       );
-      var geometryV = new THREE$1.Geometry();
+      var geometryV = new THREE.Geometry();
       geometryV.vertices.push(
-        new THREE$1.Vector3( position, -edge, 0 ),
-        new THREE$1.Vector3( position, edge, 0 )
+        new THREE.Vector3( position, -edge, 0 ),
+        new THREE.Vector3( position, edge, 0 )
       );
-      this.add(new THREE$1.Line(geometryH, material));
-      this.add(new THREE$1.Line(geometryV, material));
+      this.add(new THREE.Line(geometryH, material));
+      this.add(new THREE.Line(geometryV, material));
     }
   }
 
@@ -55657,7 +55652,7 @@ var Grid = /*@__PURE__*/(function (superclass) {
   Grid.prototype.constructor = Grid;
 
   return Grid;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
@@ -55675,22 +55670,22 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
     var origin = info.origin;
     var width = info.width;
     var height = info.height;
-    var geom = new THREE$1.PlaneBufferGeometry(width, height);
+    var geom = new THREE.PlaneBufferGeometry(width, height);
 
     // create the color material
     var imageData = new Uint8Array(width * height * 4);
-    var texture = new THREE$1.DataTexture(imageData, width, height, THREE$1.RGBAFormat);
+    var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBAFormat);
     texture.flipY = true;
-    texture.minFilter = THREE$1.NearestFilter;
-    texture.magFilter = THREE$1.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.NearestFilter;
     texture.needsUpdate = true;
 
-    var material = new THREE$1.MeshBasicMaterial({
+    var material = new THREE.MeshBasicMaterial({
       map : texture,
       transparent : opacity < 1.0,
       opacity : opacity
     });
-    material.side = THREE$1.DoubleSide;
+    material.side = THREE.DoubleSide;
 
     // create the mesh
     superclass.call(this, geom, material);
@@ -55699,7 +55694,7 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
     // assign options to this for subclasses
     Object.assign(this, options);
 
-    this.quaternion.copy(new THREE$1.Quaternion(
+    this.quaternion.copy(new THREE.Quaternion(
         origin.orientation.x,
         origin.orientation.y,
         origin.orientation.z,
@@ -55778,7 +55773,7 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
   };
 
   return OccupancyGrid;
-}(THREE$1.Mesh));
+}(THREE.Mesh));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
@@ -55793,8 +55788,8 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     this.compression = options.compression || 'cbor';
     this.continuous = options.continuous;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
-    this.offsetPose = options.offsetPose || new ROSLIB.Pose();
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.offsetPose = options.offsetPose || new ROSLIB__namespace.Pose();
     this.color = options.color || {r:255,g:255,b:255};
     this.opacity = options.opacity || 1.0;
 
@@ -55818,7 +55813,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
@@ -55889,7 +55884,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
     this.length = options.length || 1.0;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.keep = options.keep || 1;
 
     this.sns = [];
@@ -55911,7 +55906,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       queue_length : 1,
@@ -55926,14 +55921,14 @@ var Odometry = /*@__PURE__*/(function (superclass) {
         this.sns.shift();
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
                                              message.pose.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
                                    message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sns.push(new SceneNode({
@@ -55946,13 +55941,13 @@ var Odometry = /*@__PURE__*/(function (superclass) {
   };
 
   return Odometry;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Path$1 = /*@__PURE__*/(function (superclass) {
+var Path = /*@__PURE__*/(function (superclass) {
   function Path(options) {
     superclass.call(this);
     options = options || {};
@@ -55960,7 +55955,7 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/path';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
     this.line = null;
@@ -55982,7 +55977,7 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55996,16 +55991,16 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var lineGeometry = new THREE$1.Geometry();
+    var lineGeometry = new THREE.Geometry();
     for(var i=0; i<message.poses.length;i++){
-        var v3 = new THREE$1.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
+        var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
                                     message.poses[i].pose.position.z);
         lineGeometry.vertices.push(v3);
     }
 
     lineGeometry.computeLineDistances();
-    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-    var line = new THREE$1.Line( lineGeometry, lineMaterial );
+    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+    var line = new THREE.Line( lineGeometry, lineMaterial );
 
     this.sn = new SceneNode({
         frameID : message.header.frame_id,
@@ -56017,7 +56012,7 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
   };
 
   return Path;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56031,7 +56026,7 @@ var Point = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/point';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.radius = options.radius || 0.2;
 
     this.sn = null;
@@ -56053,7 +56048,7 @@ var Point = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -56067,9 +56062,9 @@ var Point = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var sphereGeometry = new THREE$1.SphereGeometry( this.radius );
-    var sphereMaterial = new THREE$1.MeshBasicMaterial( {color: this.color} );
-    var sphere = new THREE$1.Mesh(sphereGeometry, sphereMaterial);
+    var sphereGeometry = new THREE.SphereGeometry( this.radius );
+    var sphereMaterial = new THREE.MeshBasicMaterial( {color: this.color} );
+    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.position.set(message.point.x, message.point.y, message.point.z);
 
     this.sn = new SceneNode({
@@ -56082,7 +56077,7 @@ var Point = /*@__PURE__*/(function (superclass) {
   };
 
   return Point;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56096,7 +56091,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/path';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
     this.line = null;
@@ -56118,7 +56113,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -56132,19 +56127,19 @@ var Polygon = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var lineGeometry = new THREE$1.Geometry();
+    var lineGeometry = new THREE.Geometry();
     var v3;
     for(var i=0; i<message.polygon.points.length;i++){
-        v3 = new THREE$1.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
+        v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
                                 message.polygon.points[i].z);
         lineGeometry.vertices.push(v3);
     }
-    v3 = new THREE$1.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
+    v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
                             message.polygon.points[0].z);
     lineGeometry.vertices.push(v3);
     lineGeometry.computeLineDistances();
-    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-    var line = new THREE$1.Line( lineGeometry, lineMaterial );
+    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+    var line = new THREE.Line( lineGeometry, lineMaterial );
 
     this.sn = new SceneNode({
         frameID : message.header.frame_id,
@@ -56156,7 +56151,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
   };
 
   return Polygon;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56170,7 +56165,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/pose';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -56191,7 +56186,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -56205,14 +56200,14 @@ var Pose = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.position.x, message.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
                                              message.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
                                    message.pose.orientation.z, message.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sn = new SceneNode({
@@ -56225,7 +56220,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
   };
 
   return Pose;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56240,7 +56235,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
     this.length = options.length || 1.0;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -56261,7 +56256,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
        ros : this.ros,
        name : this.topicName,
        queue_length : 1,
@@ -56275,22 +56270,22 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var group = new THREE$1.Object3D();
+    var group = new THREE.Object3D();
     var line;
 
     for(var i=0;i<message.poses.length;i++){
-        var lineGeometry = new THREE$1.Geometry();
+        var lineGeometry = new THREE.Geometry();
 
-        var v3 = new THREE$1.Vector3( message.poses[i].position.x, message.poses[i].position.y,
+        var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
                                     message.poses[i].position.z);
         lineGeometry.vertices.push(v3);
 
-        var rot = new THREE$1.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
+        var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
                                        message.poses[i].orientation.z, message.poses[i].orientation.w);
 
-        var tip = new THREE$1.Vector3(this.length,0,0);
-        var side1 = new THREE$1.Vector3(this.length*0.8, this.length*0.2, 0);
-        var side2 = new THREE$1.Vector3(this.length*0.8, -this.length*0.2, 0);
+        var tip = new THREE.Vector3(this.length,0,0);
+        var side1 = new THREE.Vector3(this.length*0.8, this.length*0.2, 0);
+        var side2 = new THREE.Vector3(this.length*0.8, -this.length*0.2, 0);
         tip.applyQuaternion(rot);
         side1.applyQuaternion(rot);
         side2.applyQuaternion(rot);
@@ -56301,8 +56296,8 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
         lineGeometry.vertices.push(tip);
 
         lineGeometry.computeLineDistances();
-        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-        line = new THREE$1.Line( lineGeometry, lineMaterial );
+        var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+        line = new THREE.Line( lineGeometry, lineMaterial );
 
         group.add(line);
     }
@@ -56317,7 +56312,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
   };
 
   return PoseArray;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56331,7 +56326,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/PoseWithCovariance';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -56352,7 +56347,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -56366,14 +56361,14 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
                                              message.pose.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
                                    message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sn = new SceneNode({
@@ -56386,19 +56381,19 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
   };
 
   return PoseWithCovariance;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-var Points$1 = /*@__PURE__*/(function (superclass) {
+var Points = /*@__PURE__*/(function (superclass) {
   function Points(options) {
     superclass.call(this);
     options = options || {};
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.max_pts = options.max_pts || 10000;
     this.pointRatio = options.pointRatio || 1;
     this.messageRatio = options.messageRatio || 1;
@@ -56431,9 +56426,9 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
           for(var i=0; i<fields.length; i++) {
               this.fields[fields[i].name] = fields[i];
           }
-          this.geom = new THREE$1.BufferGeometry();
+          this.geom = new THREE.BufferGeometry();
 
-          this.positions = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+          this.positions = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
           this.geom.addAttribute( 'position', this.positions.setDynamic(true) );
 
           if(!this.colorsrc && this.fields.rgb) {
@@ -56442,7 +56437,7 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
           if(this.colorsrc) {
               var field = this.fields[this.colorsrc];
               if (field) {
-                  this.colors = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+                  this.colors = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
                   this.geom.addAttribute( 'color', this.colors.setDynamic(true) );
                   var offset = field.offset;
                   this.getColor = [
@@ -56455,7 +56450,7 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
                       function(dv,base,le){return dv.getFloat32(base+offset,le);},
                       function(dv,base,le){return dv.getFloat64(base+offset,le);}
                   ][field.datatype-1];
-                  this.colormap = this.colormap || function(x){return new THREE$1.Color(x);};
+                  this.colormap = this.colormap || function(x){return new THREE.Color(x);};
               } else {
                   console.warn('unavailable field "' + this.colorsrc + '" for coloring.');
               }
@@ -56463,12 +56458,12 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
 
           if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
               if(this.colors && this.material.vertexColors === undefined) {
-                  this.material.vertexColors = THREE$1.VertexColors;
+                  this.material.vertexColors = THREE.VertexColors;
               }
-              this.material = new THREE$1.PointsMaterial(this.material);
+              this.material = new THREE.PointsMaterial(this.material);
           }
 
-          this.object = new THREE$1.Points( this.geom, this.material );
+          this.object = new THREE.Points( this.geom, this.material );
 
           this.sn = new SceneNode({
               frameID : frame,
@@ -56494,7 +56489,7 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
   };
 
   return Points;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56507,7 +56502,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     this.ros = options.ros;
     this.topicName = options.topic || '/scan';
     this.compression = options.compression || 'cbor';
-    this.points = new Points$1(options);
+    this.points = new Points(options);
     this.rosTopic = undefined;
     this.subscribe();
 
@@ -56526,7 +56521,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       compression : this.compression,
@@ -56554,7 +56549,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
   };
 
   return LaserScan;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com
@@ -56606,7 +56601,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.throttle_rate = options.throttle_rate || null;
     this.compression = options.compression || 'cbor';
     this.max_pts = options.max_pts || 10000;
-    this.points = new Points$1(options);
+    this.points = new Points(options);
     this.rosTopic = undefined;
     this.buffer = null;
     this.subscribe();
@@ -56625,7 +56620,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new ROSLIB.Topic({
+    this.rosTopic = new ROSLIB__namespace.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/PointCloud2',
@@ -56677,7 +56672,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
   };
 
   return PointCloud2;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Jihoon Lee - jihoon.lee@kakaobrain.com
@@ -56689,7 +56684,7 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
 
     this.frame_id = options.frame_id;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.axes = new Axes(
       {
         shaftRadius: options.shaftRadius || 0.025,
@@ -56715,7 +56710,7 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
   TFAxes.prototype.constructor = TFAxes;
 
   return TFAxes;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -56748,7 +56743,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
             var color = visual.material && visual.material.color;
             colorMaterial = makeColorMaterial(color.r, color.g, color.b, color.a);
           }
-          if (visual.geometry.type === ROSLIB.URDF_MESH) {
+          if (visual.geometry.type === ROSLIB__namespace.URDF_MESH) {
             var uri = visual.geometry.filename;
             // strips package://
             var tmpIndex = uri.indexOf('package://');
@@ -56811,21 +56806,21 @@ var Urdf = /*@__PURE__*/(function (superclass) {
     var shapeMesh;
     // Create a shape
     switch (visual.geometry.type) {
-      case ROSLIB.URDF_BOX:
+      case ROSLIB__namespace.URDF_BOX:
         var dimension = visual.geometry.dimension;
-        var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
-        shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
+        var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
+        shapeMesh = new THREE.Mesh(cube, colorMaterial);
         break;
-      case ROSLIB.URDF_CYLINDER:
+      case ROSLIB__namespace.URDF_CYLINDER:
         var radius = visual.geometry.radius;
         var length = visual.geometry.length;
-        var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
-        shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
-        shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
+        var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+        shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
+        shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
         break;
-      case ROSLIB.URDF_SPHERE:
-        var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
-        shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
+      case ROSLIB__namespace.URDF_SPHERE:
+        var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
+        shapeMesh = new THREE.Mesh(sphere, colorMaterial);
         break;
     }
 
@@ -56839,7 +56834,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
   };
 
   return Urdf;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -56853,18 +56848,18 @@ var UrdfClient = function UrdfClient(options) {
   this.param = options.param || 'robot_description';
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.rootObject = options.rootObject || new THREE.Object3D();
   this.tfPrefix = options.tfPrefix || '';
   this.loader = options.loader;
 
   // get the URDF value from ROS
-  var getParam = new ROSLIB.Param({
+  var getParam = new ROSLIB__namespace.Param({
     ros : ros,
     name : this.param
   });
   getParam.get(function(string) {
     // hand off the XML string to the URDF model
-    var urdfModel = new ROSLIB.UrdfModel({
+    var urdfModel = new ROSLIB__namespace.UrdfModel({
       string : string
     });
 
@@ -56933,7 +56928,7 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
 
   // Providing a transparent overrideMaterial...
   var originalOverrideMaterial = scene.overrideMaterial;
-  scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
+  scene.overrideMaterial = new THREE.MeshBasicMaterial({
       fog : false,
       opacity : 0.5,
       transparent : true,
@@ -56941,7 +56936,7 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
       depthWrite : false,
       polygonOffset : true,
       polygonOffsetUnits : -1,
-      side : THREE$1.DoubleSide
+      side : THREE.DoubleSide
   });
 
   // And then rendering over the regular scene
@@ -56962,8 +56957,8 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
  */
 Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible (scene) {
   scene.traverse(function(currentObject) {
-    if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-         || currentObject instanceof THREE$1.Sprite ) {
+    if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+         || currentObject instanceof THREE.Sprite ) {
       currentObject.previousVisibility = currentObject.visible;
       currentObject.visible = false;
     }
@@ -56978,8 +56973,8 @@ Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible
  */
 Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (scene) {
   var makeVisible = function(currentObject) {
-      if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-           || currentObject instanceof THREE$1.Sprite ) {
+      if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+           || currentObject instanceof THREE.Sprite ) {
         currentObject.visible = true;
       }
   };
@@ -57067,9 +57062,9 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
     var top = pos_y - rect.top - target.clientTop + target.scrollTop;
     var deviceX = left / target.clientWidth * 2 - 1;
     var deviceY = -top / target.clientHeight * 2 + 1;
-    var mousePos = new THREE$1.Vector2(deviceX, deviceY);
+    var mousePos = new THREE.Vector2(deviceX, deviceY);
 
-    var mouseRaycaster = new THREE$1.Raycaster();
+    var mouseRaycaster = new THREE.Raycaster();
     mouseRaycaster.linePrecision = 0.001;
     mouseRaycaster.setFromCamera(mousePos, this.camera);
     var mouseRay = mouseRaycaster.ray;
@@ -57219,7 +57214,7 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
   };
 
   return MouseHandler;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -57235,7 +57230,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var scene = options.scene;
     this.camera = options.camera;
-    this.center = new THREE$1.Vector3();
+    this.center = new THREE.Vector3();
     this.userZoom = true;
     this.userZoomSpeed = options.userZoomSpeed || 1.0;
     this.userRotate = true;
@@ -57247,27 +57242,27 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         !!options.displayPanAndZoomFrame;
     this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
     // In ROS, z is pointing upwards
-    this.camera.up = new THREE$1.Vector3(0, 0, 1);
+    this.camera.up = new THREE.Vector3(0, 0, 1);
 
     // internals
     var pixelsPerRound = 1800;
     var touchMoveThreshold = 10;
-    var rotateStart = new THREE$1.Vector2();
-    var rotateEnd = new THREE$1.Vector2();
-    var rotateDelta = new THREE$1.Vector2();
-    var zoomStart = new THREE$1.Vector2();
-    var zoomEnd = new THREE$1.Vector2();
-    var zoomDelta = new THREE$1.Vector2();
-    var moveStartCenter = new THREE$1.Vector3();
-    var moveStartNormal = new THREE$1.Vector3();
-    var moveStartPosition = new THREE$1.Vector3();
-    var moveStartIntersection = new THREE$1.Vector3();
+    var rotateStart = new THREE.Vector2();
+    var rotateEnd = new THREE.Vector2();
+    var rotateDelta = new THREE.Vector2();
+    var zoomStart = new THREE.Vector2();
+    var zoomEnd = new THREE.Vector2();
+    var zoomDelta = new THREE.Vector2();
+    var moveStartCenter = new THREE.Vector3();
+    var moveStartNormal = new THREE.Vector3();
+    var moveStartPosition = new THREE.Vector3();
+    var moveStartIntersection = new THREE.Vector3();
     var touchStartPosition = new Array(2);
     var touchMoveVector = new Array(2);
     this.phiDelta = 0;
     this.thetaDelta = 0;
     this.scale = 1;
-    this.lastPosition = new THREE$1.Vector3();
+    this.lastPosition = new THREE.Vector3();
     // internal states
     var STATE = {
       NONE : -1,
@@ -57308,8 +57303,8 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         case 1:
           state = STATE.MOVE;
 
-          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
-          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
+          moveStartNormal = new THREE.Vector3(0, 0, 1);
+          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
           moveStartNormal.applyMatrix4(rMat);
 
           moveStartCenter = that.center.clone();
@@ -57364,7 +57359,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
           return;
         }
 
-        var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(), intersection
+        var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
             .clone());
 
         that.center.addVectors(moveStartCenter.clone(), delta.clone());
@@ -57385,8 +57380,8 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
      */
     function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
 
-      var vector = new THREE$1.Vector3();
-      var intersection = new THREE$1.Vector3();
+      var vector = new THREE.Vector3();
+      var intersection = new THREE.Vector3();
 
       vector.subVectors(planeOrigin, mouseRay.origin);
       var dot = mouseRay.direction.dot(planeNormal);
@@ -57459,20 +57454,20 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         case 2:
           state = STATE.NONE;
           /* ready for move */
-          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
-          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
+          moveStartNormal = new THREE.Vector3(0, 0, 1);
+          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
           moveStartNormal.applyMatrix4(rMat);
           moveStartCenter = that.center.clone();
           moveStartPosition = that.camera.position.clone();
           moveStartIntersection = intersectViewPlane(event3D.mouseRay,
                                                      moveStartCenter,
                                                      moveStartNormal);
-          touchStartPosition[0] = new THREE$1.Vector2(event.touches[0].pageX,
+          touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
                                                     event.touches[0].pageY);
-          touchStartPosition[1] = new THREE$1.Vector2(event.touches[1].pageX,
+          touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
                                                     event.touches[1].pageY);
-          touchMoveVector[0] = new THREE$1.Vector2(0, 0);
-          touchMoveVector[1] = new THREE$1.Vector2(0, 0);
+          touchMoveVector[0] = new THREE.Vector2(0, 0);
+          touchMoveVector[1] = new THREE.Vector2(0, 0);
           break;
       }
 
@@ -57517,7 +57512,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
             state = STATE.ZOOM;
           }
           if (state === STATE.ZOOM) {
-            var tmpVector = new THREE$1.Vector2();
+            var tmpVector = new THREE.Vector2();
             tmpVector.subVectors(touchStartPosition[0],
                                  touchStartPosition[1]);
             if (touchMoveVector[0].dot(tmpVector) < 0 &&
@@ -57536,7 +57531,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
           if (!intersection) {
             return;
           }
-          var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(),
+          var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(),
                                                      intersection.clone());
           that.center.addVectors(moveStartCenter.clone(), delta.clone());
           that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
@@ -57718,7 +57713,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
   };
 
   return OrbitControls;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -57748,7 +57743,7 @@ var Viewer = function Viewer(options) {
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
-  this.renderer = new THREE$1.WebGLRenderer({
+  this.renderer = new THREE.WebGLRenderer({
     antialias : antialias,
     alpha: true
   });
@@ -57759,10 +57754,10 @@ var Viewer = function Viewer(options) {
   this.renderer.autoClear = false;
 
   // create the global scene
-  this.scene = new THREE$1.Scene();
+  this.scene = new THREE.Scene();
 
   // create the global camera
-  this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
+  this.camera = new THREE.PerspectiveCamera(40, width / height, near, far);
   this.camera.position.x = cameraPosition.x;
   this.camera.position.y = cameraPosition.y;
   this.camera.position.z = cameraPosition.z;
@@ -57776,12 +57771,12 @@ var Viewer = function Viewer(options) {
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
   // lights
-  this.scene.add(new THREE$1.AmbientLight(0x555555));
-  this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
+  this.scene.add(new THREE.AmbientLight(0x555555));
+  this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE$1.Group();
+  this.selectableObjects = new THREE.Group();
   this.scene.add(this.selectableObjects);
   var mouseHandler = new MouseHandler({
     renderer : this.renderer,
@@ -57873,74 +57868,74 @@ Viewer.prototype.resize = function resize (width, height) {
   this.renderer.setSize(width, height);
 };
 
-exports.MARKER_ARROW = MARKER_ARROW;
-exports.MARKER_CUBE = MARKER_CUBE;
-exports.MARKER_SPHERE = MARKER_SPHERE;
-exports.MARKER_CYLINDER = MARKER_CYLINDER;
-exports.MARKER_LINE_STRIP = MARKER_LINE_STRIP;
-exports.MARKER_LINE_LIST = MARKER_LINE_LIST;
-exports.MARKER_CUBE_LIST = MARKER_CUBE_LIST;
-exports.MARKER_SPHERE_LIST = MARKER_SPHERE_LIST;
-exports.MARKER_POINTS = MARKER_POINTS;
-exports.MARKER_TEXT_VIEW_FACING = MARKER_TEXT_VIEW_FACING;
-exports.MARKER_MESH_RESOURCE = MARKER_MESH_RESOURCE;
-exports.MARKER_TRIANGLE_LIST = MARKER_TRIANGLE_LIST;
-exports.INTERACTIVE_MARKER_KEEP_ALIVE = INTERACTIVE_MARKER_KEEP_ALIVE;
-exports.INTERACTIVE_MARKER_POSE_UPDATE = INTERACTIVE_MARKER_POSE_UPDATE;
-exports.INTERACTIVE_MARKER_MENU_SELECT = INTERACTIVE_MARKER_MENU_SELECT;
+exports.Arrow = Arrow;
+exports.Arrow2 = Arrow2;
+exports.Axes = Axes;
+exports.DepthCloud = DepthCloud;
+exports.Grid = Grid;
+exports.Highlighter = Highlighter;
+exports.INTERACTIVE_MARKER_BUTTON = INTERACTIVE_MARKER_BUTTON;
 exports.INTERACTIVE_MARKER_BUTTON_CLICK = INTERACTIVE_MARKER_BUTTON_CLICK;
+exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED;
+exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT;
+exports.INTERACTIVE_MARKER_KEEP_ALIVE = INTERACTIVE_MARKER_KEEP_ALIVE;
+exports.INTERACTIVE_MARKER_MENU = INTERACTIVE_MARKER_MENU;
+exports.INTERACTIVE_MARKER_MENU_SELECT = INTERACTIVE_MARKER_MENU_SELECT;
 exports.INTERACTIVE_MARKER_MOUSE_DOWN = INTERACTIVE_MARKER_MOUSE_DOWN;
 exports.INTERACTIVE_MARKER_MOUSE_UP = INTERACTIVE_MARKER_MOUSE_UP;
-exports.INTERACTIVE_MARKER_NONE = INTERACTIVE_MARKER_NONE;
-exports.INTERACTIVE_MARKER_MENU = INTERACTIVE_MARKER_MENU;
-exports.INTERACTIVE_MARKER_BUTTON = INTERACTIVE_MARKER_BUTTON;
+exports.INTERACTIVE_MARKER_MOVE_3D = INTERACTIVE_MARKER_MOVE_3D;
 exports.INTERACTIVE_MARKER_MOVE_AXIS = INTERACTIVE_MARKER_MOVE_AXIS;
 exports.INTERACTIVE_MARKER_MOVE_PLANE = INTERACTIVE_MARKER_MOVE_PLANE;
-exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS;
 exports.INTERACTIVE_MARKER_MOVE_ROTATE = INTERACTIVE_MARKER_MOVE_ROTATE;
-exports.INTERACTIVE_MARKER_MOVE_3D = INTERACTIVE_MARKER_MOVE_3D;
-exports.INTERACTIVE_MARKER_ROTATE_3D = INTERACTIVE_MARKER_ROTATE_3D;
 exports.INTERACTIVE_MARKER_MOVE_ROTATE_3D = INTERACTIVE_MARKER_MOVE_ROTATE_3D;
-exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT;
-exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED;
+exports.INTERACTIVE_MARKER_NONE = INTERACTIVE_MARKER_NONE;
+exports.INTERACTIVE_MARKER_POSE_UPDATE = INTERACTIVE_MARKER_POSE_UPDATE;
+exports.INTERACTIVE_MARKER_ROTATE_3D = INTERACTIVE_MARKER_ROTATE_3D;
+exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS;
 exports.INTERACTIVE_MARKER_VIEW_FACING = INTERACTIVE_MARKER_VIEW_FACING;
-exports.makeColorMaterial = makeColorMaterial;
-exports.intersectPlane = intersectPlane;
-exports.findClosestPoint = findClosestPoint;
-exports.closestAxisPoint = closestAxisPoint;
-exports.DepthCloud = DepthCloud;
 exports.InteractiveMarker = InteractiveMarker;
 exports.InteractiveMarkerClient = InteractiveMarkerClient;
 exports.InteractiveMarkerControl = InteractiveMarkerControl;
 exports.InteractiveMarkerHandle = InteractiveMarkerHandle;
 exports.InteractiveMarkerMenu = InteractiveMarkerMenu;
+exports.LaserScan = LaserScan;
+exports.MARKER_ARROW = MARKER_ARROW;
+exports.MARKER_CUBE = MARKER_CUBE;
+exports.MARKER_CUBE_LIST = MARKER_CUBE_LIST;
+exports.MARKER_CYLINDER = MARKER_CYLINDER;
+exports.MARKER_LINE_LIST = MARKER_LINE_LIST;
+exports.MARKER_LINE_STRIP = MARKER_LINE_STRIP;
+exports.MARKER_MESH_RESOURCE = MARKER_MESH_RESOURCE;
+exports.MARKER_POINTS = MARKER_POINTS;
+exports.MARKER_SPHERE = MARKER_SPHERE;
+exports.MARKER_SPHERE_LIST = MARKER_SPHERE_LIST;
+exports.MARKER_TEXT_VIEW_FACING = MARKER_TEXT_VIEW_FACING;
+exports.MARKER_TRIANGLE_LIST = MARKER_TRIANGLE_LIST;
 exports.Marker = Marker;
 exports.MarkerArrayClient = MarkerArrayClient;
 exports.MarkerClient = MarkerClient;
-exports.Arrow = Arrow;
-exports.Arrow2 = Arrow2;
-exports.Axes = Axes;
-exports.Grid = Grid;
 exports.MeshLoader = MeshLoader;
 exports.MeshResource = MeshResource;
-exports.TriangleList = TriangleList;
+exports.MouseHandler = MouseHandler;
 exports.OccupancyGrid = OccupancyGrid;
 exports.OccupancyGridClient = OccupancyGridClient;
 exports.Odometry = Odometry;
-exports.Path = Path$1;
+exports.OrbitControls = OrbitControls;
+exports.Path = Path;
 exports.Point = Point;
+exports.PointCloud2 = PointCloud2;
+exports.Points = Points;
 exports.Polygon = Polygon;
 exports.Pose = Pose;
 exports.PoseArray = PoseArray;
 exports.PoseWithCovariance = PoseWithCovariance;
-exports.LaserScan = LaserScan;
-exports.Points = Points$1;
-exports.PointCloud2 = PointCloud2;
+exports.SceneNode = SceneNode;
 exports.TFAxes = TFAxes;
+exports.TriangleList = TriangleList;
 exports.Urdf = Urdf;
 exports.UrdfClient = UrdfClient;
-exports.Highlighter = Highlighter;
-exports.MouseHandler = MouseHandler;
-exports.OrbitControls = OrbitControls;
-exports.SceneNode = SceneNode;
 exports.Viewer = Viewer;
+exports.closestAxisPoint = closestAxisPoint;
+exports.findClosestPoint = findClosestPoint;
+exports.intersectPlane = intersectPlane;
+exports.makeColorMaterial = makeColorMaterial;
