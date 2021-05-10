@@ -9,7 +9,7 @@ const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
 const resolve = require('rollup-plugin-node-resolve');
 // plugin that minifies and obfuscates code
-const uglify = require('rollup-plugin-uglify');
+const { terser } = require('rollup-plugin-terser');
 
 const pkg = require('./package.json');
 const input = 'src-esm/index.js';
@@ -114,7 +114,7 @@ export default [
       resolve({ browser: true }),
       commonjs(),
       filesize(),
-      uglify(),
+      terser(),
     ],
   },
 ];
