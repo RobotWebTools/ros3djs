@@ -15,7 +15,7 @@
     "chai": "^4.3.4",
     "debug": "^4.3.1",
     "grunt": "^1.0.2",
-    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-execute": "git+https://github.com/gruntjs-updater/grunt-execute.git#peerDep",
     "grunt-jsdoc": "^2.1.0",
