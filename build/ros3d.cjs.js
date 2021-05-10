@@ -53236,11 +53236,17 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   return InteractiveMarker;
 }(THREE.Object3D));
 
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
+var eventemitter2 = {exports: {}};
 
-var eventemitter2 = createCommonjsModule(function (module, exports) {
+/*!
+ * EventEmitter2
+ * https://github.com/hij1nx/EventEmitter2
+ *
+ * Copyright (c) 2013 hij1nx
+ * Licensed under the MIT license.
+ */
+
+(function (module, exports) {
 !function(undefined$1) {
   var hasOwnProperty= Object.hasOwnProperty;
   var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
@@ -54860,7 +54866,9 @@ var eventemitter2 = createCommonjsModule(function (module, exports) {
     module.exports = EventEmitter;
   }
 }();
-});
+}(eventemitter2));
+
+var EventEmitter2 = eventemitter2.exports;
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -55034,7 +55042,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
   };
 
   return InteractiveMarkerHandle;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -55382,7 +55390,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
 
   return MarkerArrayClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
@@ -55479,7 +55487,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   };
 
   return MarkerClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
  * @author Jihoon Lee - lee@magazino.eu
@@ -55869,7 +55877,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
   };
 
   return OccupancyGridClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com

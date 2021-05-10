@@ -13,6 +13,8 @@
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.0",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "chai": "^4.3.0",
     "debug": "^4.3.0",
     "grunt": "^1.0.0",
@@ -30,9 +32,7 @@
     "karma-mocha": "^2.0.0",
     "mocha": "^8.3.0",
     "rollup": "^2.47.0",
-    "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-filesize": "^9.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-terser": "^7.0.0"
   },
   "repository": {
