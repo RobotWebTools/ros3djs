@@ -102,8 +102,7 @@ There are a variety of [examples](examples) of the different things that can be 
 There are also some examples of how ros3djs can be used in different environments:
 
 - [Classic html script tag inclusion](examples)
-- [Modular html script tag inclusion](examples/html-import)
-- [Modular import for a Single Page Application](examples/single-page-application)
+- [Modular html script tag inclusion](examples/html-import)s
 
 ### License
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.
