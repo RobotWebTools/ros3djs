@@ -3,7 +3,7 @@ const rollup = require('rollup');
 // plugin that transpiles output into commonjs format
 const commonjs = require('rollup-plugin-commonjs');
 // plugin that transpiles es6 to es5 for legacy platforms
-const buble = require('rollup-plugin-buble');
+const buble = require('@rollup/plugin-buble');
 // plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
