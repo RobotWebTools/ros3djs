@@ -33,7 +33,7 @@
     "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-filesize": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^3.0.0"
+    "rollup-plugin-uglify": "^6.0.4"
   },
   "repository": {
     "type": "git",
