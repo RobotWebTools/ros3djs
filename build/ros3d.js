@@ -53304,11 +53304,17 @@ var ROS3D = (function (exports, ROSLIB) {
 	  };
 	}
 
-	function createCommonjsModule(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
-	}
+	var eventemitter2 = {exports: {}};
 
-	var eventemitter2 = createCommonjsModule(function (module, exports) {
+	/*!
+	 * EventEmitter2
+	 * https://github.com/hij1nx/EventEmitter2
+	 *
+	 * Copyright (c) 2013 hij1nx
+	 * Licensed under the MIT license.
+	 */
+
+	(function (module, exports) {
 	!function(undefined$1) {
 	  var hasOwnProperty= Object.hasOwnProperty;
 	  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
@@ -54922,13 +54928,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	    module.exports = EventEmitter;
 	  }
 	}();
-	});
+	}(eventemitter2));
+
+	var EventEmitter2 = eventemitter2.exports;
 
 	/**
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class InteractiveMarkerHandle extends eventemitter2 {
+	class InteractiveMarkerHandle extends EventEmitter2 {
 
 	  /**
 	   * Handle with signals for a single interactive marker.
@@ -55403,7 +55411,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Nils Berg - berg.nils@gmail.com
 	 */
 
-	class MarkerArrayClient extends eventemitter2 {
+	class MarkerArrayClient extends EventEmitter2 {
 
 	  /**
 	   * A MarkerArray client that listens to a given topic.
@@ -55517,7 +55525,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class MarkerClient extends eventemitter2 {
+	class MarkerClient extends EventEmitter2 {
 
 	  /**
 	   * A marker client that listens to a given marker topic.
@@ -55980,7 +55988,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class OccupancyGridClient extends eventemitter2 {
+	class OccupancyGridClient extends EventEmitter2 {
 
 	  /**
 	   * An occupancy grid client that listens to a given map topic.

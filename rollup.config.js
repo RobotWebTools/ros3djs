@@ -1,15 +1,15 @@
 const rollup = require('rollup');
 
 // plugin that transpiles output into commonjs format
-const commonjs = require('rollup-plugin-commonjs');
+const commonjs = require('@rollup/plugin-commonjs');
 // plugin that transpiles es6 to es5 for legacy platforms
-const buble = require('rollup-plugin-buble');
+const buble = require('@rollup/plugin-buble');
 // plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
-const resolve = require('rollup-plugin-node-resolve');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
 // plugin that minifies and obfuscates code
-const uglify = require('rollup-plugin-uglify');
+const { terser } = require('rollup-plugin-terser');
 
 const pkg = require('./package.json');
 const input = 'src-esm/index.js';
@@ -45,7 +45,7 @@ export default [
       ...Object.keys(moduleGlobals)
     ],
     plugins: [
-      resolve({ browser: true }),
+      nodeResolve({ browser: true }),
       commonjs(),
       buble(),
       filesize(),
@@ -66,7 +66,7 @@ export default [
       ...Object.keys(moduleGlobals)
     ],
     plugins: [
-      resolve({ browser: true }),
+      nodeResolve({ browser: true }),
       commonjs(),
       buble(),
       filesize(),
@@ -89,7 +89,7 @@ export default [
       ...Object.keys(browserGlobals),
     ],
     plugins: [
-      resolve({ browser: true }),
+      nodeResolve({ browser: true }),
       commonjs(),
       filesize(),
     ],
@@ -111,10 +111,10 @@ export default [
       ...Object.keys(browserGlobals),
     ],
     plugins: [
-      resolve({ browser: true }),
+      nodeResolve({ browser: true }),
       commonjs(),
       filesize(),
-      uglify(),
+      terser(),
     ],
   },
 ];
