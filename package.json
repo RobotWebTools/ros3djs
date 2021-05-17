@@ -25,7 +25,7 @@
     "grunt-karma": "^4.0.0",
     "grunt-pipe": "git+https://github.com/gruntjs-updater/grunt-pipe.git#peerDep",
     "grunt-shell": "^3.0.0",
-    "gruntify-eslint": "^4.0.0",
+    "gruntify-eslint": "^5.0.0",
     "karma": "^6.3.0",
     "karma-chai": "^0.1.0",
     "karma-firefox-launcher": "^2.1.0",
