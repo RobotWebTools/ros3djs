@@ -14,9 +14,6 @@
     "cancelAnimationFrame": true
   },
   "parserOptions": {
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    },
     "ecmaVersion": 5,
     "sourceType": "module"
   },
