@@ -17,8 +17,10 @@ jobs:
         node_version: [14, 16]
     steps:
     - uses: actions/checkout@v2
+      env:
+        TOKEN: "${{ github.event_name == 'push' && endsWith(github.ref, 'develop') && matrix.node_version == 16 && secrets.RWT_BOT_PAT || github.token }}"
       with:
-        token: ${{ secrets.RWT_BOT_PAT }}
+        token: ${{ env.TOKEN }}
     - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node_version }}
