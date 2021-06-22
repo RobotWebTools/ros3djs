@@ -32,6 +32,7 @@ export * from './navigation/PoseArray'
 export * from './navigation/PoseWithCovariance'
 
 export * from './sensors/LaserScan'
+export * from './sensors/NavSatFix'
 export * from './sensors/Points'
 export * from './sensors/PointCloud2'
 export * from './sensors/TFAxes'
