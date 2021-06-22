@@ -56510,6 +56510,88 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @author Mathieu Bredif - mathieu.bredif@ign.fr
+ */
+
+var NavSatFix = /*@__PURE__*/(function (superclass) {
+  function NavSatFix(options) {
+  
+    superclass.call(this);
+    options = options || {};
+    this.ros = options.ros;
+    this.topicName = options.topic || '/gps/fix';
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.object3d = options.object3d || new THREE.Object3D();
+    var material = options.material || {};
+    this.altitudeNaN = options.altitudeNaN || 0;
+    this.keep = options.keep || 100;
+    this.convert = options.convert || function(lon,lat,alt) { return new THREE.Vector3(lon,lat,alt); };
+    this.count = 0;
+    this.next1 = 0;
+    this.next2 = this.keep;
+
+    this.geom = new THREE.BufferGeometry();
+    this.vertices = new THREE.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
+    this.geom.addAttribute( 'position',  this.vertices);
+    this.material = material.isMaterial ? material : new THREE.LineBasicMaterial( material );
+    this.line = new THREE.Line( this.geom, this.material );
+    this.rootObject.add(this.object3d);
+    this.rootObject.add(this.line);
+
+    this.rosTopic = undefined;
+    this.subscribe();
+  }
+
+  if ( superclass ) NavSatFix.__proto__ = superclass;
+  NavSatFix.prototype = Object.create( superclass && superclass.prototype );
+  NavSatFix.prototype.constructor = NavSatFix;
+
+  NavSatFix.prototype.unsubscribe = function unsubscribe (){
+    if(this.rosTopic){
+      this.rosTopic.unsubscribe();
+    }
+  };
+  NavSatFix.prototype.subscribe = function subscribe (){
+    this.unsubscribe();
+
+    // subscribe to the topic
+    this.rosTopic = new ROSLIB.Topic({
+        ros : this.ros,
+        name : this.topicName,
+        queue_length : 1,
+        messageType : 'sensor_msgs/NavSatFix'
+    });
+
+    this.rosTopic.subscribe(this.processMessage.bind(this));
+  };
+  NavSatFix.prototype.processMessage = function processMessage (message){
+    var altitude = isNaN(message.altitude) ? this.altitudeNaN : message.altitude;
+    var p = this.convert(message.longitude, message.latitude, altitude);
+
+    // move the object3d to the gps position
+    this.object3d.position.copy(p);
+    this.object3d.updateMatrixWorld(true);
+
+    // copy the position twice in the circular buffer
+    // the second half replicates the first to allow a single drawRange
+    this.vertices.array[3*this.next1  ] = p.x;
+    this.vertices.array[3*this.next1+1] = p.y;
+    this.vertices.array[3*this.next1+2] = p.z;
+    this.vertices.array[3*this.next2  ] = p.x;
+    this.vertices.array[3*this.next2+1] = p.y;
+    this.vertices.array[3*this.next2+2] = p.z;
+    this.vertices.needsUpdate = true;
+
+    this.next1 = (this.next1+1) % this.keep;
+    this.next2 = this.next1 + this.keep;
+    this.count = Math.min(this.count+1, this.keep);
+    this.geom.setDrawRange(this.next2-this.count, this.count );
+  };
+
+  return NavSatFix;
+}(THREE.Object3D));
+
+/**
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -57826,4 +57908,4 @@ Viewer.prototype.resize = function resize (width, height) {
   this.renderer.setSize(width, height);
 };
 
-export { Arrow, Arrow2, Axes, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };
+export { Arrow, Arrow2, Axes, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };

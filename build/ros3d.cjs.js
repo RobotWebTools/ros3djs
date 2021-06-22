@@ -56536,6 +56536,88 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @author Mathieu Bredif - mathieu.bredif@ign.fr
+ */
+
+var NavSatFix = /*@__PURE__*/(function (superclass) {
+  function NavSatFix(options) {
+  
+    superclass.call(this);
+    options = options || {};
+    this.ros = options.ros;
+    this.topicName = options.topic || '/gps/fix';
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.object3d = options.object3d || new THREE.Object3D();
+    var material = options.material || {};
+    this.altitudeNaN = options.altitudeNaN || 0;
+    this.keep = options.keep || 100;
+    this.convert = options.convert || function(lon,lat,alt) { return new THREE.Vector3(lon,lat,alt); };
+    this.count = 0;
+    this.next1 = 0;
+    this.next2 = this.keep;
+
+    this.geom = new THREE.BufferGeometry();
+    this.vertices = new THREE.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
+    this.geom.addAttribute( 'position',  this.vertices);
+    this.material = material.isMaterial ? material : new THREE.LineBasicMaterial( material );
+    this.line = new THREE.Line( this.geom, this.material );
+    this.rootObject.add(this.object3d);
+    this.rootObject.add(this.line);
+
+    this.rosTopic = undefined;
+    this.subscribe();
+  }
+
+  if ( superclass ) NavSatFix.__proto__ = superclass;
+  NavSatFix.prototype = Object.create( superclass && superclass.prototype );
+  NavSatFix.prototype.constructor = NavSatFix;
+
+  NavSatFix.prototype.unsubscribe = function unsubscribe (){
+    if(this.rosTopic){
+      this.rosTopic.unsubscribe();
+    }
+  };
+  NavSatFix.prototype.subscribe = function subscribe (){
+    this.unsubscribe();
+
+    // subscribe to the topic
+    this.rosTopic = new ROSLIB__namespace.Topic({
+        ros : this.ros,
+        name : this.topicName,
+        queue_length : 1,
+        messageType : 'sensor_msgs/NavSatFix'
+    });
+
+    this.rosTopic.subscribe(this.processMessage.bind(this));
+  };
+  NavSatFix.prototype.processMessage = function processMessage (message){
+    var altitude = isNaN(message.altitude) ? this.altitudeNaN : message.altitude;
+    var p = this.convert(message.longitude, message.latitude, altitude);
+
+    // move the object3d to the gps position
+    this.object3d.position.copy(p);
+    this.object3d.updateMatrixWorld(true);
+
+    // copy the position twice in the circular buffer
+    // the second half replicates the first to allow a single drawRange
+    this.vertices.array[3*this.next1  ] = p.x;
+    this.vertices.array[3*this.next1+1] = p.y;
+    this.vertices.array[3*this.next1+2] = p.z;
+    this.vertices.array[3*this.next2  ] = p.x;
+    this.vertices.array[3*this.next2+1] = p.y;
+    this.vertices.array[3*this.next2+2] = p.z;
+    this.vertices.needsUpdate = true;
+
+    this.next1 = (this.next1+1) % this.keep;
+    this.next2 = this.next1 + this.keep;
+    this.count = Math.min(this.count+1, this.keep);
+    this.geom.setDrawRange(this.next2-this.count, this.count );
+  };
+
+  return NavSatFix;
+}(THREE.Object3D));
+
+/**
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -57901,6 +57983,7 @@ exports.MarkerClient = MarkerClient;
 exports.MeshLoader = MeshLoader;
 exports.MeshResource = MeshResource;
 exports.MouseHandler = MouseHandler;
+exports.NavSatFix = NavSatFix;
 exports.OccupancyGrid = OccupancyGrid;
 exports.OccupancyGridClient = OccupancyGridClient;
 exports.Odometry = Odometry;
