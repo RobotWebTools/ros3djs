@@ -46,70 +46,6 @@ function InStream(data, isLittleEndian) {
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 /**
- * Base node type that represents one voxel as a node of the tree
- */
-
-ROS3D.OcTreeBaseNode = function () {
-  this._children = [null, null, null, null, null, null, null, null];
-  this.value = null;
-};
-
-ROS3D.OcTreeBaseNode.prototype.createChildNodeAt = function (newNode, index) {
-  this._children[index % 8] = newNode;
-};
-
-ROS3D.OcTreeBaseNode.prototype.hasChildAt = function (index) {
-  return this._children[index % 8] !== null;
-};
-
-ROS3D.OcTreeBaseNode.prototype.getChildAt = function (index) {
-  return this._children[index % 8];
-};
-
-ROS3D.OcTreeBaseNode.prototype.isLeafNode = function () {
-  for (let i = 0; i < 8; ++i) {
-    if (this._children[i] !== null) { return false; }
-  }
-  return true;
-};
-
-ROS3D.OcTreeBaseNode.prototype.hasChildren = function () {
-  for (let i = 0; i < 8; ++i) {
-    if (this._children[i] !== null) { return true; }
-  }
-  return false;
-};
-
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-/**
- * Toggles voxel visibility
- *
- *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
- *    * `free` - only voxels that are below the occupation threshold are shown
- *    * `all` - all allocated voxels are shown
- */
-ROS3D.OcTreeVoxelRenderMode = {
-  OCCUPIED: 'occupied',
-  FREE: 'free',
-  ALL: 'all',
-};
-
-/**
- * Coloring modes for each voxel
- *
- *     * 'solid' - voxels will have a single solid color set by the tree globally
- *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
- *     * 'color' - voxels will colorized by their
- */
-ROS3D.OcTreeColorMode = {
-  SOLID: 'solid',
-  OCCUPANCY: 'occupancy',
-  COLOR: 'color'
-};
-
-/**
  * Represensta a BaseTree that can be build from ros message and create a THREE node from it.
  * Due a tree can be represented different ways in a message, this class is also a base class to
  * represent specialized versions fo the ree.
@@ -121,7 +57,7 @@ ROS3D.OcTreeColorMode = {
  *    * color - color of the visualized map (if solid coloring option was set)
  *    * voxelRenderMode - toggle between rendering modes @see ROS3D.OcTreeVoxelRenderMode
  */
-ROS3D.OcTreeBase = function (options) {
+ROS3D.OcTreeBase = function(options) {
 
   this.resolution = (typeof options.resolution !== 'undefined') ? options.resolution : 1.;
   this.color = new THREE.Color((typeof options.color !== 'undefined') ? options.color : 'green');
@@ -132,6 +68,122 @@ ROS3D.OcTreeBase = function (options) {
   this._rootNode = null;
   this._treeDepth = 16;
   this._treeMaxKeyVal = 32768;
+
+  this._BINARY_UNALLOCATED = 0b00;
+  this._BINARY_LEAF_FREE = 0b01;
+  this._BINARY_LEAF_OCCUPIED = 0b10;
+  this._BINARY_HAS_CHILDREN = 0b11;
+
+  this._BINARY_CHILD_BUILD_TABLE = {};
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_FREE] = function (child) {
+    child.value = this._defaultFreeValue;
+  };
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_OCCUPIED] = function (child) {
+    child.value = this._defaultOccupiedValue;
+  };
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_HAS_CHILDREN] = function (child) {
+    child.value = null;
+  };
+
+  /**
+   * Table which we are building the geometry data from.
+   */
+  this._FACES = [
+    { // 0. left (x=0)
+      normal: [-1, 0, 0,],
+      vertices: [
+        [0, 1, 0],
+        [0, 0, 0],
+        [0, 1, 1],
+        [0, 0, 1],
+      ],
+      childIndex: [
+        0b001,
+        0b011,
+        0b101,
+        0b111
+      ]
+    },
+    { // 1. right (x=1)
+      normal: [1, 0, 0,],
+      vertices: [
+        [1, 1, 1],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 0, 0],
+      ],
+
+      childIndex: [
+        0b000,
+        0b010,
+        0b100,
+        0b110
+      ]
+    },
+    { // 2. bottom (y=0)
+      normal: [0, -1, 0,],
+      vertices: [
+        [1, 0, 1],
+        [0, 0, 1],
+        [1, 0, 0],
+        [0, 0, 0],
+      ],
+      childIndex: [
+        0b010,
+        0b011,
+        0b110,
+        0b111
+      ]
+    },
+    { // 3. top (y=1)
+      normal: [0, 1, 0,],
+      vertices: [
+        [0, 1, 1],
+        [1, 1, 1],
+        [0, 1, 0],
+        [1, 1, 0],
+      ],
+      childIndex: [
+        0b000,
+        0b001,
+        0b100,
+        0b101
+      ]
+    },
+    { // 4. back (z=0)
+      normal: [0, 0, -1,],
+      vertices: [
+        [1, 0, 0],
+        [0, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0],
+      ],
+      childIndex: [
+        0b100,
+        0b101,
+        0b110,
+        0b111
+      ]
+    },
+    { // 5.front (z=1)
+      normal: [0, 0, 1,],
+      vertices: [
+        [0, 0, 1],
+        [1, 0, 1],
+        [0, 1, 1],
+        [1, 1, 1],
+      ],
+      childIndex: [
+        0b000,
+        0b001,
+        0b010,
+        0b011
+      ]
+    },
+  ];
 
   // Table of voxel size for each level of the tree
   this.nodeSizeTable = new Array(this._treeDepth);
@@ -214,15 +266,6 @@ ROS3D.OcTreeBase.prototype._adjustKeyAtDepth = function (key, depth) {
   return key.map(keyVal => (((keyVal - this._treeMaxKeyVal) >> diff) << diff) + (1 << (diff - 1)) + this._treeMaxKeyVal);
 };
 
-/**
- *
- */
-ROS3D.OcTreeBase.prototype._BINARY_UNALLOCATED = 0b00;
-ROS3D.OcTreeBase.prototype._BINARY_LEAF_FREE = 0b01;
-ROS3D.OcTreeBase.prototype._BINARY_LEAF_OCCUPIED = 0b10;
-ROS3D.OcTreeBase.prototype._BINARY_HAS_CHILDREN = 0b11;
-
-
 ROS3D.OcTreeBase.prototype._newNode = function () { return new ROS3D.OcTreeBaseNode(); };
 
 /*
@@ -270,27 +313,11 @@ ROS3D.OcTreeBase.prototype.readBinary = function (data) {
 
 };
 
-ROS3D.OcTreeBase.prototype._BINARY_CHILD_BUILD_TABLE = {};
-
-ROS3D.OcTreeBase.prototype._BINARY_CHILD_BUILD_TABLE[ROS3D.OcTreeBase.prototype._BINARY_LEAF_FREE] = function (child) {
-  child.value = this._defaultFreeValue;
-};
-
-ROS3D.OcTreeBase.prototype._BINARY_CHILD_BUILD_TABLE[ROS3D.OcTreeBase.prototype._BINARY_LEAF_OCCUPIED] = function (child) {
-  child.value = this._defaultOccupiedValue;
-};
-
-ROS3D.OcTreeBase.prototype._BINARY_CHILD_BUILD_TABLE[ROS3D.OcTreeBase.prototype._BINARY_HAS_CHILDREN] = function (child) {
-  child.value = null;
-};
-
-
 /**
  * Reads a full tree (with node data) from a message.
  * A pacjet starts with the node data, followed by the allocation map of their children.
  * Each type of tree has different data structure @see ROS3DJS.OcTreeBase._readNodeData
  */
-
 ROS3D.OcTreeBase.prototype.read = function (data) {
   if (this._rootNode !== null) {
     delete this._rootNode;
@@ -407,13 +434,13 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
     _insertFace: function (face, pos, size, color) {
       const indexCount = this.vertices.length / 3;
 
-      for (let vertex of face.vertices) {
+      face.vertices.forEach(function(vertex) {
         this.vertices.push(
           pos[0] + vertex[0] * size,
           pos[1] + vertex[1] * size,
           pos[2] + vertex[2] * size
         );
-      };
+      });
 
       const colorArr = [color.r, color.g, color.b];
 
@@ -433,8 +460,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
       while (stack.length !== 0) {
         const node = stack.pop();
         if (node.hasChildren()) {
-          for (let childIndex of face.childIndex) {
-
+          face.childIndex.forEach(function(childIndex) {
             if (node.hasChildAt(childIndex)) {
               const child = node.getChildAt(childIndex);
 
@@ -447,7 +473,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
             else {
               return true;
             }
-          }
+          })
         }
       }
       return false;
@@ -469,9 +495,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
     // Hide occuped voxels if set.
     if (isOccupied && this.voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.FREE) { return; }
 
-    for (let face of this.FACES)
-    // let face = this.FACES[1] ;
-    {
+    this._FACES.forEach(function(face) {
       // Add geometry where there is no neighbor voxel
       const neighborKey = [
         key[0] + face.normal[0] * diff * diff,
@@ -492,7 +516,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
         }
       }
 
-    }
+    })
 
   });
 
@@ -504,195 +528,4 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
     indices: geometry.indices
   };
 
-};
-
-/**
- * Table which we are building the geometry data from.
- */
-ROS3D.OcTreeBase.prototype.FACES = [
-  { // 0. left (x=0)
-    normal: [-1, 0, 0,],
-    vertices: [
-      [0, 1, 0],
-      [0, 0, 0],
-      [0, 1, 1],
-      [0, 0, 1],
-    ],
-    childIndex: [
-      0b001,
-      0b011,
-      0b101,
-      0b111
-    ]
-  },
-  { // 1. right (x=1)
-    normal: [1, 0, 0,],
-    vertices: [
-      [1, 1, 1],
-      [1, 0, 1],
-      [1, 1, 0],
-      [1, 0, 0],
-    ],
-
-    childIndex: [
-      0b000,
-      0b010,
-      0b100,
-      0b110
-    ]
-  },
-  { // 2. bottom (y=0)
-    normal: [0, -1, 0,],
-    vertices: [
-      [1, 0, 1],
-      [0, 0, 1],
-      [1, 0, 0],
-      [0, 0, 0],
-    ],
-    childIndex: [
-      0b010,
-      0b011,
-      0b110,
-      0b111
-    ]
-  },
-  { // 3. top (y=1)
-    normal: [0, 1, 0,],
-    vertices: [
-      [0, 1, 1],
-      [1, 1, 1],
-      [0, 1, 0],
-      [1, 1, 0],
-    ],
-    childIndex: [
-      0b000,
-      0b001,
-      0b100,
-      0b101
-    ]
-  },
-  { // 4. back (z=0)
-    normal: [0, 0, -1,],
-    vertices: [
-      [1, 0, 0],
-      [0, 0, 0],
-      [1, 1, 0],
-      [0, 1, 0],
-    ],
-    childIndex: [
-      0b100,
-      0b101,
-      0b110,
-      0b111
-    ]
-  },
-  { // 5.front (z=1)
-    normal: [0, 0, 1,],
-    vertices: [
-      [0, 0, 1],
-      [1, 0, 1],
-      [0, 1, 1],
-      [1, 1, 1],
-    ],
-    childIndex: [
-      0b000,
-      0b001,
-      0b010,
-      0b011
-    ]
-  },
-];
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-/**
- * Specilaization of BaseOcTree
- *
- * @constructor
- * @param options - object with following keys:
- *    * inherited from BaseOctree
- *    * occupancyThreshold (optional) - threshold value that separates occupied and free voxels from each other. (Default: 0)
- *    * colorMode (optional) - Coloring mode @see ROS3D.OcTreeColorMode.
- *    * palette (optional) - Palette used for false-coloring (default: predefined palette)
- *    * paletteSclae (optional) - Scale of palette to represent a wider range of values (default: 1.)
- */
-
-ROS3D.OcTree = function (options) {
-  ROS3D.OcTreeBase.call(this, options);
-
-  this._defaultOccupiedValue = 1.;
-  this._defaultFreeValue = -1.;
-
-  this.occupancyThreshold = (typeof options.occupancyThreshold !== 'undefined') ? options.occupancyThreshold : 0.0000001;
-
-  this.useFlatColoring = (typeof options.colorMode !== 'undefined') && options.colorMode === ROS3D.OcTreeColorMode.SOLID;
-
-  this.palette = (typeof options.palette !== 'undefined') ? options.palette.map(color => new THREE.Color(color)) :
-    [
-      { r: 0, g: 0, b: 128, }, // dark blue (low)
-      { r: 0, g: 255, b: 0, }, // green
-      { r: 255, g: 255, b: 0, }, // yellow (mid)
-      { r: 255, g: 128, b: 0, }, // orange
-      { r: 255, g: 0, b: 0, } // red (high)
-    ];
-
-  this.paletteScale = (typeof options.paletteScale !== 'undefined') ? options.paletteScale : 1.;
-};
-
-ROS3D.OcTree.prototype = Object.create(ROS3D.OcTreeBase.prototype);
-
-ROS3D.OcTree.prototype._readNodeData = function (dataStream, node) {
-  node.value = dataStream.readFloat32();
-};
-
-ROS3D.OcTree.prototype._obtainColor = function (node) {
-  if (this.useFlatColoring) {
-    return this.color;
-  }
-
-  // Use a simple sigmoid curve to fit values from -inf..inf into 0..1 range
-  const value = 1. / (1. + Math.exp(-node.value * this.paletteScale)) * this.palette.length; // Normalize
-
-  const intVal = Math.trunc(value);
-  const fracVal = value - intVal;
-
-  if (intVal < 0) { return this.palette[0]; }
-  if (intVal >= this.palette.length - 1) { return this.palette[this.palette.length - 1]; }
-
-  // Simple lerp
-  return {
-    r: fracVal * this.palette[intVal].r + (1. - fracVal) * this.palette[intVal + 1].r,
-    g: fracVal * this.palette[intVal].g + (1. - fracVal) * this.palette[intVal + 1].g,
-    b: fracVal * this.palette[intVal].b + (1. - fracVal) * this.palette[intVal + 1].b,
-  };
-
-};
-
-ROS3D.OcTree.prototype._checkOccupied = function (node) {
-  return node.value >= this.occupancyThreshold;
-};
-
-ROS3D.ColorOcTree = function (options) {
-  ROS3D.OcTree.call(this, options);
-  this.useOwnColor = (typeof options.palette !== 'undefined') && options.colorMode === ROS3D.OcTreeColorMode.COLOR;
-};
-
-ROS3D.ColorOcTree.prototype = Object.create(ROS3D.OcTree.prototype);
-
-ROS3D.ColorOcTree.prototype._readNodeData = function (dataStream, node) {
-  node.value = dataStream.readFloat32(); // occupancy
-  node.color = {
-    r: dataStream.readUint8(), // red
-    g: dataStream.readUint8(), // green
-    b: dataStream.readUint8(), // blue
-  };
-
-};
-
-ROS3D.ColorOcTree.prototype._obtainColor = function (node) {
-  if (!this.useOwnColor) { return ROS3D.OcTree.prototype._obtainColor.call(this, node); }
-  return node.color;
-};
-
-ROS3D.OcTreeBase.prototype._checkOccupied = function (node) {
-  return node.value < this.freeThreshold;
 };

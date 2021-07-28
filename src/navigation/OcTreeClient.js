@@ -3,7 +3,7 @@
  */
 
 /**
- * An occupancy map client that listens to a given OcTree topic.
+ * An OcTree client that listens to a given OcTree topic.
  *
  * Emits the following events:
  *
@@ -28,7 +28,7 @@
  *
  */
 
-ROS3D.OccupancyMapClient = function (options) {
+ROS3D.OcTreeClient = function(options) {
   EventEmitter2.call(this);
   options = options || {};
   this.ros = options.ros;
@@ -58,28 +58,28 @@ ROS3D.OccupancyMapClient = function (options) {
   this.subscribe();
 };
 
-ROS3D.OccupancyMapClient.prototype.unsubscribe = function () {
+ROS3D.OcTreeClient.prototype.__proto__ = EventEmitter2.prototype;
+
+ROS3D.OcTreeClient.prototype.unsubscribe = function () {
   if (this.rosTopic) {
     this.rosTopic.unsubscribe();
   }
 };
 
-ROS3D.OccupancyMapClient.prototype._MESSAGE_TYPE = 'octomap_msgs/Octomap';
-
-ROS3D.OccupancyMapClient.prototype.subscribe = function () {
+ROS3D.OcTreeClient.prototype.subscribe = function () {
   this.unsubscribe();
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
     ros: this.ros,
     name: this.topicName,
-    messageType: this._MESSAGE_TYPE,
+    messageType: 'octomap_msgs/Octomap',
     queue_length: 1,
     compression: this.compression
   });
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
 
-ROS3D.OccupancyMapClient.prototype.processMessage = function (message) {
+ROS3D.OcTreeClient.prototype.processMessage = function (message) {
   // check for an old map
   if (this.currentMap) {
     if (this.currentMap.tfClient) {
@@ -96,7 +96,7 @@ ROS3D.OccupancyMapClient.prototype.processMessage = function (message) {
 };
 
 
-ROS3D.OccupancyMapClient.prototype._loadOcTree = function (message) {
+ROS3D.OcTreeClient.prototype._loadOcTree = function (message) {
 
   return new Promise(
     function (resolve, reject) {
@@ -143,7 +143,7 @@ ROS3D.OccupancyMapClient.prototype._loadOcTree = function (message) {
 
 };
 
-ROS3D.OccupancyMapClient.prototype._processMessagePrivate = function (message) {
+ROS3D.OcTreeClient.prototype._processMessagePrivate = function (message) {
   let promise = this._loadOcTree(message);
 
   promise.then(
