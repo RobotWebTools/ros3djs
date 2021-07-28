@@ -206,9 +206,12 @@ const transpile = {
   // Replace initial ROS3D assignment
   initialROS3DAssignment: [
     // from
-    /var ROS3D = ROS3D \|\| \{\n  REVISION \: '0.18.0'\n\};/m,
+    /var ROS3D = ROS3D \|\| \{\n  REVISION \: '([0-9]+\.[0-9]+\.[0-9]+)'\n\};/m,
     // to
-    `export var REVISION = '0.18.0';`,
+    (match, $1) => {
+      const revision = $1
+      return `export var REVISION = '${revision}';`
+    },
   ],
   // Replace mutations with exported properties
   exportedProperites: (filepath) => [
