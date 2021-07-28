@@ -214,7 +214,7 @@ const transpile = {
     },
   ],
   // Replace mutations with exported properties
-  exportedProperites: (filepath) => [
+  exportedProperties: (filepath) => [
     // from:
     // ROS3D.MARKER_ARROW = 0;
     /\nROS3D\.(.*)\s+?=\s+?(.*)/g,
@@ -674,7 +674,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
   const transpileConstructors = transpile.constructors(filepath)
   const transpileSuperCalls = transpile.superCalls(filepath)
   const transpileClasses = transpile.classes(filepath)
-  const transpileExportedProperites= transpile.exportedProperites(filepath)
+  const transpileExportedProperties= transpile.exportedProperties(filepath)
 
   return transpiled
     .replace(...transpileInternalDependencies)
@@ -685,7 +685,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
     .replace(...transpileConstructors)
     .replace(...transpileSuperCalls)
     .replace(...transpileClasses)
-    .replace(...transpileExportedProperites)
+    .replace(...transpileExportedProperties)
 }
 
 // Injects es6 imports based on dependency and export
