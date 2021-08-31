@@ -12,7 +12,7 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { terser } = require('rollup-plugin-terser');
 
 const pkg = require('./package.json');
-const input = 'src-esm/index.js';
+const input = 'src/index.js';
 
 const browserGlobals = {
   roslib: 'ROSLIB',

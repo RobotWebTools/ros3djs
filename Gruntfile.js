@@ -1,11 +1,3 @@
-const {
-  debugRules,
-  dependencies,
-  inheritance,
-  injectImports,
-  transpileToEs6
-} = require('./es6-transpiler');
-
 // Export Grunt config
 module.exports = function(grunt) {
 
@@ -75,80 +67,19 @@ module.exports = function(grunt) {
         }
       }
     },
-    pipe: {
-      transpile: {
-        options: {
-          process: transpileToEs6,
-        },
-        files: [{
-          expand: true,
-          cwd: 'src',
-          src: [
-            '*.js',
-            '**/*.js',
-          ],
-          dest: 'src-esm/',
-        }]
-      },
-      transpile_imports: {
-        options: {
-          process: injectImports,
-        },
-        files: [{
-          expand: true,
-          cwd: 'src-esm',
-          src: [
-            '*.js',
-            '**/*.js',
-          ],
-          dest: 'src-esm/',
-        }]
-      },
-      transpile_index: {
-        files: [{
-          expand: true,
-          cwd: 'es6-support',
-          src: [
-            'index.js'
-          ],
-          dest: 'src-esm/'
-        }]
-      }
-    },
-    execute: {
-      transpile: {
-        call: (grunt, options) => {
-          console.log();
-          if (debugRules.logInternalDepsAtEnd) {
-            console.log('Internal dependencies');
-            console.log(dependencies.internalToString());
-          }
-          if (debugRules.logExternalDepsAtEnd) {
-            console.log('External dependencies');
-            console.log(dependencies.externalToString());
-          }
-          if (debugRules.logInheritanceAtEnd) {
-            console.log('Inheritance hierarchy');
-            console.log(inheritance.toString());
-          }
-
-          console.log();
-        },
-      }
-    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-pipe');
-  grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('transpile', ['pipe', 'execute']);
-  grunt.registerTask('build', ['eslint:lint', 'pipe', 'shell']);
+  grunt.registerTask('build', [
+    // 'eslint:lint', // TODO restore this after updating ESLint to make it compatible with class fields syntax.
+    'shell'
+  ]);
   grunt.registerTask('build_and_watch', ['build', 'watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
   grunt.registerTask('lint', ['eslint:lint',]);

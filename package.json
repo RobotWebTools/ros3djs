@@ -1,7 +1,7 @@
 {
   "name": "ros3d",
   "homepage": "https://www.robotwebtools.org",
-  "description": "The standard ROS Javascript Visualization Library",
+  "description": "The standard ROS Visualization Library for Web",
   "version": "1.0.1",
   "license": "BSD-3-Clause",
   "main": "./build/ros3d.cjs.js",
@@ -43,7 +43,6 @@
     "build": "grunt build",
     "lint": "grunt lint",
     "lint-fix": "grunt lint-fix",
-    "transpile": "DEBUG=* grunt transpile",
     "test": "grunt test"
   },
   "keywords": [
