@@ -1,8 +1,8 @@
 import THREE from '../../shims/three/core.js';
 import * as ROSLIB from 'roslib';
 
-import { InteractiveMarkerHandle } from './InteractiveMarkerHandle'
-import { InteractiveMarker } from './InteractiveMarker'
+import { InteractiveMarkerHandle } from './InteractiveMarkerHandle';
+import { InteractiveMarker } from './InteractiveMarker';
 
 /**
  * @author David Gossow - dgossow@willowgarage.com

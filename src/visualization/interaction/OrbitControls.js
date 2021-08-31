@@ -1,6 +1,6 @@
 import THREE from '../../../shims/three/core.js';
 
-import { Axes } from '../../models/Axes'
+import { Axes } from '../../models/Axes';
 
 /**
  * @author David Gossow - dgossow@willowgarage.com

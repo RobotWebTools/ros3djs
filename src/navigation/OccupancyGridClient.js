@@ -2,8 +2,8 @@ import EventEmitter2 from 'eventemitter2';
 import THREE from '../../shims/three/core.js';
 import * as ROSLIB from 'roslib';
 
-import { OccupancyGrid } from './OccupancyGrid'
-import { SceneNode } from '../visualization/SceneNode'
+import { OccupancyGrid } from './OccupancyGrid';
+import { SceneNode } from '../visualization/SceneNode';
 
 /**
  * @author Russell Toris - rctoris@wpi.edu
