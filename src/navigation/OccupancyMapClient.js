@@ -1,3 +1,10 @@
+import EventEmitter2 from 'eventemitter2';
+import THREE from '../../shims/three/core.js';
+import * as ROSLIB from 'roslib';
+
+import { OcTreeBase, OcTree, ColorOcTree } from './OccupancyMap'
+import { SceneNode } from '../visualization/SceneNode'
+
 /**
  * @author Peter Sari - sari@photoneo.com
  */
@@ -28,7 +35,7 @@
  *
  */
 
-ROS3D.OccupancyMapClient = function (options) {
+constructor (options) {
   EventEmitter2.call(this);
   options = options || {};
   this.ros = options.ros;
@@ -58,15 +65,15 @@ ROS3D.OccupancyMapClient = function (options) {
   this.subscribe();
 };
 
-ROS3D.OccupancyMapClient.prototype.unsubscribe = function () {
+unsubscribe () {
   if (this.rosTopic) {
     this.rosTopic.unsubscribe();
   }
 };
 
-ROS3D.OccupancyMapClient.prototype._MESSAGE_TYPE = 'octomap_msgs/Octomap';
+export var OccupancyMapClient.prototype._MESSAGE_TYPE = 'octomap_msgs/Octomap';
 
-ROS3D.OccupancyMapClient.prototype.subscribe = function () {
+subscribe () {
   this.unsubscribe();
   // subscribe to the topic
   this.rosTopic = new ROSLIB.Topic({
@@ -79,7 +86,7 @@ ROS3D.OccupancyMapClient.prototype.subscribe = function () {
   this.rosTopic.subscribe(this.processMessage.bind(this));
 };
 
-ROS3D.OccupancyMapClient.prototype.processMessage = function (message) {
+processMessage (message) {
   // check for an old map
   if (this.currentMap) {
     if (this.currentMap.tfClient) {
@@ -96,7 +103,7 @@ ROS3D.OccupancyMapClient.prototype.processMessage = function (message) {
 };
 
 
-ROS3D.OccupancyMapClient.prototype._loadOcTree = function (message) {
+_loadOcTree (message) {
 
   return new Promise(
     function (resolve, reject) {
@@ -109,15 +116,15 @@ ROS3D.OccupancyMapClient.prototype._loadOcTree = function (message) {
       let newOcTree = null;
       {
         if (message.binary) {
-          newOcTree = new ROS3D.OcTreeBase(
+          newOcTree = new OcTreeBase(
             options
           );
           newOcTree.readBinary(message.data);
         } else {
 
           const ctorTable = {
-            'OcTree': ROS3D.OcTree,
-            'ColorOcTree': ROS3D.ColorOcTree,
+            'OcTree': OcTree,
+            'ColorOcTree': ColorOcTree,
           };
 
           if (message.id in ctorTable) {
@@ -143,7 +150,7 @@ ROS3D.OccupancyMapClient.prototype._loadOcTree = function (message) {
 
 };
 
-ROS3D.OccupancyMapClient.prototype._processMessagePrivate = function (message) {
+_processMessagePrivate (message) {
   let promise = this._loadOcTree(message);
 
   promise.then(
@@ -153,7 +160,7 @@ ROS3D.OccupancyMapClient.prototype._processMessagePrivate = function (message) {
       const oldNode = this.sceneNode;
       if (this.tfClient) {
         this.currentMap = newOcTree;
-        this.sceneNode = new ROS3D.SceneNode({
+        this.sceneNode = new SceneNode({
           frameID: message.header.frame_id,
           tfClient: this.tfClient,
           object: newOcTree.object,

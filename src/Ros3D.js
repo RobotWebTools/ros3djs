@@ -1,3 +1,5 @@
+import THREE from '../shims/three/core.js';
+
 /**
  * @author Russell Toris - rctoris@wpi.edu
  * @author David Gossow - dgossow@willowgarage.com
@@ -8,43 +10,43 @@ var ROS3D = ROS3D || {
 };
 
 // Marker types
-ROS3D.MARKER_ARROW = 0;
-ROS3D.MARKER_CUBE = 1;
-ROS3D.MARKER_SPHERE = 2;
-ROS3D.MARKER_CYLINDER = 3;
-ROS3D.MARKER_LINE_STRIP = 4;
-ROS3D.MARKER_LINE_LIST = 5;
-ROS3D.MARKER_CUBE_LIST = 6;
-ROS3D.MARKER_SPHERE_LIST = 7;
-ROS3D.MARKER_POINTS = 8;
-ROS3D.MARKER_TEXT_VIEW_FACING = 9;
-ROS3D.MARKER_MESH_RESOURCE = 10;
-ROS3D.MARKER_TRIANGLE_LIST = 11;
+export var MARKER_ARROW = 0;
+export var MARKER_CUBE = 1;
+export var MARKER_SPHERE = 2;
+export var MARKER_CYLINDER = 3;
+export var MARKER_LINE_STRIP = 4;
+export var MARKER_LINE_LIST = 5;
+export var MARKER_CUBE_LIST = 6;
+export var MARKER_SPHERE_LIST = 7;
+export var MARKER_POINTS = 8;
+export var MARKER_TEXT_VIEW_FACING = 9;
+export var MARKER_MESH_RESOURCE = 10;
+export var MARKER_TRIANGLE_LIST = 11;
 
 // Interactive marker feedback types
-ROS3D.INTERACTIVE_MARKER_KEEP_ALIVE = 0;
-ROS3D.INTERACTIVE_MARKER_POSE_UPDATE = 1;
-ROS3D.INTERACTIVE_MARKER_MENU_SELECT = 2;
-ROS3D.INTERACTIVE_MARKER_BUTTON_CLICK = 3;
-ROS3D.INTERACTIVE_MARKER_MOUSE_DOWN = 4;
-ROS3D.INTERACTIVE_MARKER_MOUSE_UP = 5;
+export var INTERACTIVE_MARKER_KEEP_ALIVE = 0;
+export var INTERACTIVE_MARKER_POSE_UPDATE = 1;
+export var INTERACTIVE_MARKER_MENU_SELECT = 2;
+export var INTERACTIVE_MARKER_BUTTON_CLICK = 3;
+export var INTERACTIVE_MARKER_MOUSE_DOWN = 4;
+export var INTERACTIVE_MARKER_MOUSE_UP = 5;
 
 // Interactive marker control types
-ROS3D.INTERACTIVE_MARKER_NONE = 0;
-ROS3D.INTERACTIVE_MARKER_MENU = 1;
-ROS3D.INTERACTIVE_MARKER_BUTTON = 2;
-ROS3D.INTERACTIVE_MARKER_MOVE_AXIS = 3;
-ROS3D.INTERACTIVE_MARKER_MOVE_PLANE = 4;
-ROS3D.INTERACTIVE_MARKER_ROTATE_AXIS = 5;
-ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE = 6;
-ROS3D.INTERACTIVE_MARKER_MOVE_3D = 7;
-ROS3D.INTERACTIVE_MARKER_ROTATE_3D = 8;
-ROS3D.INTERACTIVE_MARKER_MOVE_ROTATE_3D = 9;
+export var INTERACTIVE_MARKER_NONE = 0;
+export var INTERACTIVE_MARKER_MENU = 1;
+export var INTERACTIVE_MARKER_BUTTON = 2;
+export var INTERACTIVE_MARKER_MOVE_AXIS = 3;
+export var INTERACTIVE_MARKER_MOVE_PLANE = 4;
+export var INTERACTIVE_MARKER_ROTATE_AXIS = 5;
+export var INTERACTIVE_MARKER_MOVE_ROTATE = 6;
+export var INTERACTIVE_MARKER_MOVE_3D = 7;
+export var INTERACTIVE_MARKER_ROTATE_3D = 8;
+export var INTERACTIVE_MARKER_MOVE_ROTATE_3D = 9;
 
 // Interactive marker rotation behavior
-ROS3D.INTERACTIVE_MARKER_INHERIT = 0;
-ROS3D.INTERACTIVE_MARKER_FIXED = 1;
-ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
+export var INTERACTIVE_MARKER_INHERIT = 0;
+export var INTERACTIVE_MARKER_FIXED = 1;
+export var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
  * Create a THREE material based on the given RGBA values.
@@ -55,7 +57,7 @@ ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
  * @param a - the alpha value
  * @returns the THREE material
  */
-ROS3D.makeColorMaterial = function(r, g, b, a) {
+export var makeColorMaterial = function(r, g, b, a) {
   var color = new THREE.Color();
   color.setRGB(r, g, b);
   if (a <= 0.99) {
@@ -86,7 +88,7 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
  * @param planeNormal - the normal of the plane
  * @returns the intersection point
  */
-ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
+export var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
   var vector = new THREE.Vector3();
   var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
@@ -112,7 +114,7 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
  * @param mouseRay - the mouse ray
  * @param the closest point between the two rays
  */
-ROS3D.findClosestPoint = function(targetRay, mouseRay) {
+export var findClosestPoint = function(targetRay, mouseRay) {
   var v13 = new THREE.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
@@ -142,7 +144,7 @@ ROS3D.findClosestPoint = function(targetRay, mouseRay) {
  * @param mousePos - the mouse position
  * @returns the closest axis point
  */
-ROS3D.closestAxisPoint = function(axisRay, camera, mousePos) {
+export var closestAxisPoint = function(axisRay, camera, mousePos) {
   // project axis onto screen
   var o = axisRay.origin.clone();
   o.project(camera);
@@ -166,5 +168,5 @@ ROS3D.closestAxisPoint = function(axisRay, camera, mousePos) {
   vector.unproject(camera);
   var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
 
-  return ROS3D.findClosestPoint(axisRay, mpRay);
+  return findClosestPoint(axisRay, mpRay);
 };

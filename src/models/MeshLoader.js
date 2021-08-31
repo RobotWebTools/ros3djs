@@ -1,3 +1,9 @@
+import THREE from '../../shims/three/core.js';
+import '../../shims/three/STLLoader.js';
+import '../../shims/three/OBJLoader.js';
+import '../../shims/three/MTLLoader.js';
+import '../../shims/three/ColladaLoader.js';
+
 /**
  * @author Jose Rojas - jrojas@redlinesolutions.co
  */
@@ -15,7 +21,7 @@
   *  * uri - the uri path to the mesh file
   *  @returns loader object
   */
-ROS3D.MeshLoader = {
+export var MeshLoader = {
    onError: function(error) {
      console.error(error);
    },
@@ -46,7 +52,7 @@ ROS3D.MeshLoader = {
            meshRes.add(collada.scene);
          },
          /*onProgress=*/null,
-         ROS3D.MeshLoader.onError);
+         MeshLoader.onError);
          return loader;
      },
 
@@ -72,7 +78,7 @@ ROS3D.MeshLoader = {
              meshRes.add(obj);
            },
            null,
-           ROS3D.MeshLoader.onError);
+           MeshLoader.onError);
        }
 
        loader.load(
@@ -91,7 +97,7 @@ ROS3D.MeshLoader = {
                   onMaterialsLoaded(loader, materials);
                },
                null,
-               ROS3D.MeshLoader.onError
+               MeshLoader.onError
              );
            } else {
              // add the container group
@@ -100,7 +106,7 @@ ROS3D.MeshLoader = {
 
          },
          /*onProgress=*/null,
-         ROS3D.MeshLoader.onError
+         MeshLoader.onError
          );
          return loader;
      },
@@ -122,7 +128,7 @@ ROS3D.MeshLoader = {
                        meshRes.add(mesh);
                      },
                      /*onProgress=*/null,
-                     ROS3D.MeshLoader.onError);
+                     MeshLoader.onError);
        }
        return loader;
      }
