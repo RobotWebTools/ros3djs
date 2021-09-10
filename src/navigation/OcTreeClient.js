@@ -2,17 +2,18 @@ import EventEmitter2 from 'eventemitter2';
 import THREE from '../../shims/three/core.js';
 import * as ROSLIB from 'roslib';
 
-import { OcTreeBase, OcTree, ColorOcTree } from './OccupancyMap'
-import { SceneNode } from '../visualization/SceneNode'
+import {OcTree} from './OcTree';
+import {OcTreeBase} from './OcTreeBase';
+import {ColorOcTree} from './ColorOcTree';
+import {SceneNode} from '../visualization/SceneNode';
 
 /**
  * @author Peter Sari - sari@photoneo.com
  */
 
-export class OccupancyMapClient {
-
+export class OcTreeClient extends EventEmitter2 {
   /**
-   * An occupancy map client that listens to a given OcTree topic.
+   * An OcTree client that listens to a given OcTree topic.
    *
    * Emits the following events:
    *
@@ -37,8 +38,8 @@ export class OccupancyMapClient {
    *
    */
 
-  constructor (options) {
-    EventEmitter2.call(this);
+  constructor(options) {
+    super();
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/octomap';
@@ -52,12 +53,24 @@ export class OccupancyMapClient {
     this.options = {};
 
     // Append only when it was set, otherwise defaults are provided by the underlying layer
-    if (typeof options.color !== 'undefined') { this.options['color'] = options.color; }
-    if (typeof options.opacity !== 'undefined') { this.options['opacity'] = options.opacity; }
-    if (typeof options.colorMode !== 'undefined') { this.options['colorMode'] = options.colorMode; }
-    if (typeof options.palette !== 'undefined') { this.options['palette'] = options.palette; }
-    if (typeof options.paletteScale !== 'undefined') { this.options['paletteScale'] = options.palette; }
-    if (typeof options.voxelRenderMode !== 'undefined') { this.options['voxelRenderMode'] = options.voxelRenderMode; }
+    if (typeof options.color !== 'undefined') {
+      this.options['color'] = options.color;
+    }
+    if (typeof options.opacity !== 'undefined') {
+      this.options['opacity'] = options.opacity;
+    }
+    if (typeof options.colorMode !== 'undefined') {
+      this.options['colorMode'] = options.colorMode;
+    }
+    if (typeof options.palette !== 'undefined') {
+      this.options['palette'] = options.palette;
+    }
+    if (typeof options.paletteScale !== 'undefined') {
+      this.options['paletteScale'] = options.palette;
+    }
+    if (typeof options.voxelRenderMode !== 'undefined') {
+      this.options['voxelRenderMode'] = options.voxelRenderMode;
+    }
 
     // current grid that is displayed
     this.currentMap = null;
@@ -67,15 +80,15 @@ export class OccupancyMapClient {
     this.subscribe();
   }
 
-  unsubscribe () {
+  unsubscribe() {
     if (this.rosTopic) {
       this.rosTopic.unsubscribe();
     }
   }
 
-  _MESSAGE_TYPE = 'octomap_msgs/Octomap'
+  _MESSAGE_TYPE = 'octomap_msgs/Octomap';
 
-  subscribe () {
+  subscribe() {
     this.unsubscribe();
     // subscribe to the topic
     this.rosTopic = new ROSLIB.Topic({
@@ -83,12 +96,12 @@ export class OccupancyMapClient {
       name: this.topicName,
       messageType: this._MESSAGE_TYPE,
       queue_length: 1,
-      compression: this.compression
+      compression: this.compression,
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   }
 
-  processMessage (message) {
+  processMessage(message) {
     // check for an old map
     if (this.currentMap) {
       if (this.currentMap.tfClient) {
@@ -101,58 +114,50 @@ export class OccupancyMapClient {
     if (!this.continuous) {
       this.rosTopic.unsubscribe();
     }
-
   }
 
-
-  _loadOcTree (message) {
-
+  _loadOcTree(message) {
     return new Promise(
       function (resolve, reject) {
-
         // 1. Create the corresponding octree object from message
-        const options = Object.assign({
-          resolution: message.resolution,
-        }, this.options);
+        const options = Object.assign(
+          {
+            resolution: message.resolution,
+          },
+          this.options
+        );
 
         let newOcTree = null;
         {
           if (message.binary) {
-            newOcTree = new OcTreeBase(
-              options
-            );
+            newOcTree = new OcTreeBase(options);
             newOcTree.readBinary(message.data);
           } else {
-
             const ctorTable = {
-              'OcTree': OcTree,
-              'ColorOcTree': ColorOcTree,
+              OcTree: OcTree,
+              ColorOcTree: ColorOcTree,
             };
 
             if (message.id in ctorTable) {
               console.log(message.id, ctorTable);
 
-              newOcTree = new ctorTable[message.id](
-                options
-              );
+              newOcTree = new ctorTable[message.id](options);
 
               newOcTree.read(message.data);
             }
-
           }
         }
-
 
         {
           newOcTree.buildGeometry();
         }
 
         resolve(newOcTree);
-      }.bind(this));
-
+      }.bind(this)
+    );
   }
 
-  _processMessagePrivate (message) {
+  _processMessagePrivate(message) {
     let promise = this._loadOcTree(message);
 
     promise.then(
@@ -166,7 +171,7 @@ export class OccupancyMapClient {
             frameID: message.header.frame_id,
             tfClient: this.tfClient,
             object: newOcTree.object,
-            pose: this.offsetPose
+            pose: this.offsetPose,
           });
         } else {
           this.sceneNode = newOcTree.object;

@@ -120,7 +120,7 @@ export class InteractiveMarkerClient {
   /**
    * Process the given interactive marker update message.
    *
-   * @param initMessage - the interactive marker update message to process
+   * @param message - the interactive marker update message to process
    */
   processUpdate(message) {
     var that = this;

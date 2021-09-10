@@ -1,4 +1,3 @@
-
 export * from './Ros3D';
 
 export * from './depthcloud/DepthCloud';
@@ -23,6 +22,9 @@ export * from './models/TriangleList';
 
 export * from './navigation/OccupancyGrid';
 export * from './navigation/OccupancyGridClient';
+export * from './navigation/OcTree';
+export * from './navigation/ColorOcTree';
+export * from './navigation/OcTreeClient';
 export * from './navigation/Odometry';
 export * from './navigation/Path';
 export * from './navigation/Point';

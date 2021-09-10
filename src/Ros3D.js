@@ -5,9 +5,7 @@ import THREE from '../shims/three/core.js';
  * @author David Gossow - dgossow@willowgarage.com
  */
 
-var ROS3D = ROS3D || {
-  REVISION : '1.0.1'
-};
+export const REVISION = '1.0.1';
 
 // Marker types
 export var MARKER_ARROW = 0;
