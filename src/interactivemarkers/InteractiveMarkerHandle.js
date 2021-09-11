@@ -1,5 +1,5 @@
-import * as ROSLIB from 'roslib';
-import EventEmitter2 from 'eventemitter2';
+import * as ROSLIB from 'roslib/build/roslib.js';
+import { EventEmitter2 } from '../../shims/eventemitter2/EventEmitter2.js';
 
 import { INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MENU_SELECT } from '../Ros3D';
 

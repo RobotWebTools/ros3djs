@@ -1,6 +1,6 @@
 import THREE from '../../shims/three/core.js';
-import EventEmitter2 from 'eventemitter2';
-import * as ROSLIB from 'roslib';
+import { EventEmitter2 } from '../../shims/eventemitter2/EventEmitter2.js';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
 import { Marker } from './Marker';
 import { SceneNode } from '../visualization/SceneNode';

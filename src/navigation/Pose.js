@@ -1,8 +1,8 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
-import { Arrow } from '../models/Arrow';
-import { SceneNode } from '../visualization/SceneNode';
+import { Arrow } from '../models/Arrow.js';
+import { SceneNode } from '../visualization/SceneNode.js';
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com

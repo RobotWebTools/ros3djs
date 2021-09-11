@@ -1,6 +1,6 @@
 import THREE from '../../shims/three/core.js';
 
-import { MeshLoader } from './MeshLoader';
+import { MeshLoader } from './MeshLoader.js';
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com

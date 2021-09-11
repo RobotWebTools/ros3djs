@@ -1,8 +1,8 @@
 import THREE from '../../shims/three/core.js';
 
-import { OrbitControls } from './interaction/OrbitControls';
-import { MouseHandler } from './interaction/MouseHandler';
-import { Highlighter } from './interaction/Highlighter';
+import { OrbitControls } from './interaction/OrbitControls.js';
+import { MouseHandler } from './interaction/MouseHandler.js';
+import { Highlighter } from './interaction/Highlighter.js';
 
 /**
  * @author David Gossow - dgossow@willowgarage.com

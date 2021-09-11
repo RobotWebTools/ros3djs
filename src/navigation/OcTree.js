@@ -1,4 +1,4 @@
-import {OcTreeBase} from './OcTreeBase';
+import {OcTreeBase} from './OcTreeBase.js';
 
 /**
  * Coloring modes for each voxel

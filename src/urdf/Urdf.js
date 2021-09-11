@@ -1,10 +1,10 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
-import { makeColorMaterial } from '../Ros3D';
-import { MeshLoader } from '../models/MeshLoader';
-import { MeshResource } from '../models/MeshResource';
-import { SceneNode } from '../visualization/SceneNode';
+import { makeColorMaterial } from '../Ros3D.js';
+import { MeshLoader } from '../models/MeshLoader.js';
+import { MeshResource } from '../models/MeshResource.js';
+import { SceneNode } from '../visualization/SceneNode.js';
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com

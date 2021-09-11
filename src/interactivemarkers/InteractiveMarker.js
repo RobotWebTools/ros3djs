@@ -1,8 +1,8 @@
 import THREE from '../../shims/three/core.js';
 
-import { InteractiveMarkerControl } from './InteractiveMarkerControl';
-import { InteractiveMarkerMenu } from './InteractiveMarkerMenu';
-import { closestAxisPoint, intersectPlane } from '../Ros3D';
+import { InteractiveMarkerControl } from './InteractiveMarkerControl.js';
+import { InteractiveMarkerMenu } from './InteractiveMarkerMenu.js';
+import { closestAxisPoint, intersectPlane } from '../Ros3D.js';
 
 /**
  * @author David Gossow - dgossow@willowgarage.com

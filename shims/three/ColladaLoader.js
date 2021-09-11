@@ -10,7 +10,7 @@
  * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
  */
 
-import THREE from './core'
+import THREE from './core.js'
 
 THREE.ColladaLoader = function (manager) {
 

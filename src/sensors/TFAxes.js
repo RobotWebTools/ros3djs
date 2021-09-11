@@ -1,7 +1,7 @@
 import THREE from '../../shims/three/core.js';
 
-import { Axes } from '../models/Axes';
-import { SceneNode } from '../visualization/SceneNode';
+import { Axes } from '../models/Axes.js';
+import { SceneNode } from '../visualization/SceneNode.js';
 
 /**
  * @author Jihoon Lee - jihoon.lee@kakaobrain.com

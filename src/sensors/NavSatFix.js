@@ -1,5 +1,5 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
 /**
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
@@ -24,9 +24,9 @@ export class NavSatFix extends THREE.Object3D {
    *  * keep (optional) - number of gps fix points to keep (default: 100)
    *  * convert (optional) - conversion function from lon/lat/alt to THREE.Vector3 (default: passthrough)
    */
-  
+
   constructor(options) {
-  
+
     super();
     options = options || {};
     this.ros = options.ros;

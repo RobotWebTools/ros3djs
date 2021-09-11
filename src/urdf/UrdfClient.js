@@ -1,7 +1,7 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
-import { Urdf } from './Urdf';
+import { Urdf } from './Urdf.js';
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com

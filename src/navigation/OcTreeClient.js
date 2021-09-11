@@ -1,11 +1,11 @@
-import EventEmitter2 from 'eventemitter2';
+import { EventEmitter2 } from '../../shims/eventemitter2/EventEmitter2.js';
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
-import {OcTree} from './OcTree';
-import {OcTreeBase} from './OcTreeBase';
-import {ColorOcTree} from './ColorOcTree';
-import {SceneNode} from '../visualization/SceneNode';
+import {OcTree} from './OcTree.js';
+import {OcTreeBase} from './OcTreeBase.js';
+import {ColorOcTree} from './ColorOcTree.js';
+import {SceneNode} from '../visualization/SceneNode.js';
 
 /**
  * @author Peter Sari - sari@photoneo.com

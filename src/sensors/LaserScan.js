@@ -1,7 +1,7 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib';
+import * as ROSLIB from 'roslib/build/roslib.js';
 
-import { Points } from './Points';
+import { Points } from './Points.js';
 
 /**
  * @author David V. Lu!! - davidvlu@gmail.com

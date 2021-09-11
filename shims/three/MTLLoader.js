@@ -4,7 +4,7 @@
  * @author angelxuanchang
  */
 
-import THREE from './core'
+import THREE from './core.js'
 
 THREE.MTLLoader = function ( manager ) {
 

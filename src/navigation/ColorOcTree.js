@@ -1,4 +1,4 @@
-import {OcTree, OcTreeColorMode} from './OcTree';
+import {OcTree, OcTreeColorMode} from './OcTree.js';
 
 export class ColorOcTree extends OcTree {
   constructor(options) {

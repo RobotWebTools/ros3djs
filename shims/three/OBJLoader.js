@@ -5,7 +5,7 @@
  *
  */
 
-import THREE from './core'
+import THREE from './core.js'
 
 // o object_name | g group_name
 var object_pattern = /^[og]\s*(.+)?/;
