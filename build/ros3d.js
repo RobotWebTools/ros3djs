@@ -45586,7 +45586,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	}
 
-	var THREE$1 = /*#__PURE__*/Object.freeze({
+	var THREE$2 = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		WebGLRenderTargetCube: WebGLRenderTargetCube,
 		WebGLRenderTarget: WebGLRenderTarget,
@@ -45975,53 +45975,53 @@ var ROS3D = (function (exports, ROSLIB) {
 		CanvasRenderer: CanvasRenderer
 	});
 
-	var THREE = Object.assign({}, THREE$1);
+	var THREE$1 = Object.assign({}, THREE$2);
 
 	/**
 	 * @author Russell Toris - rctoris@wpi.edu
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	var REVISION = '1.0.1';
+	const REVISION = '1.0.1';
 
 	// Marker types
-	var MARKER_ARROW$1  = 0;
-	var MARKER_CUBE$1  = 1;
-	var MARKER_SPHERE$1  = 2;
-	var MARKER_CYLINDER$1  = 3;
-	var MARKER_LINE_STRIP$1  = 4;
-	var MARKER_LINE_LIST$1  = 5;
-	var MARKER_CUBE_LIST$1  = 6;
-	var MARKER_SPHERE_LIST$1  = 7;
-	var MARKER_POINTS$1  = 8;
-	var MARKER_TEXT_VIEW_FACING$1  = 9;
-	var MARKER_MESH_RESOURCE$1  = 10;
-	var MARKER_TRIANGLE_LIST$1  = 11;
+	var MARKER_ARROW = 0;
+	var MARKER_CUBE = 1;
+	var MARKER_SPHERE = 2;
+	var MARKER_CYLINDER = 3;
+	var MARKER_LINE_STRIP = 4;
+	var MARKER_LINE_LIST = 5;
+	var MARKER_CUBE_LIST = 6;
+	var MARKER_SPHERE_LIST = 7;
+	var MARKER_POINTS = 8;
+	var MARKER_TEXT_VIEW_FACING = 9;
+	var MARKER_MESH_RESOURCE = 10;
+	var MARKER_TRIANGLE_LIST = 11;
 
 	// Interactive marker feedback types
-	var INTERACTIVE_MARKER_KEEP_ALIVE  = 0;
-	var INTERACTIVE_MARKER_POSE_UPDATE$1  = 1;
-	var INTERACTIVE_MARKER_MENU_SELECT$1  = 2;
-	var INTERACTIVE_MARKER_BUTTON_CLICK$1  = 3;
-	var INTERACTIVE_MARKER_MOUSE_DOWN$1  = 4;
-	var INTERACTIVE_MARKER_MOUSE_UP$1  = 5;
+	var INTERACTIVE_MARKER_KEEP_ALIVE = 0;
+	var INTERACTIVE_MARKER_POSE_UPDATE = 1;
+	var INTERACTIVE_MARKER_MENU_SELECT = 2;
+	var INTERACTIVE_MARKER_BUTTON_CLICK = 3;
+	var INTERACTIVE_MARKER_MOUSE_DOWN = 4;
+	var INTERACTIVE_MARKER_MOUSE_UP = 5;
 
 	// Interactive marker control types
-	var INTERACTIVE_MARKER_NONE$1  = 0;
-	var INTERACTIVE_MARKER_MENU  = 1;
-	var INTERACTIVE_MARKER_BUTTON$1  = 2;
-	var INTERACTIVE_MARKER_MOVE_AXIS$1  = 3;
-	var INTERACTIVE_MARKER_MOVE_PLANE$1  = 4;
-	var INTERACTIVE_MARKER_ROTATE_AXIS$1  = 5;
-	var INTERACTIVE_MARKER_MOVE_ROTATE  = 6;
-	var INTERACTIVE_MARKER_MOVE_3D$1  = 7;
-	var INTERACTIVE_MARKER_ROTATE_3D  = 8;
-	var INTERACTIVE_MARKER_MOVE_ROTATE_3D$1  = 9;
+	var INTERACTIVE_MARKER_NONE = 0;
+	var INTERACTIVE_MARKER_MENU = 1;
+	var INTERACTIVE_MARKER_BUTTON = 2;
+	var INTERACTIVE_MARKER_MOVE_AXIS = 3;
+	var INTERACTIVE_MARKER_MOVE_PLANE = 4;
+	var INTERACTIVE_MARKER_ROTATE_AXIS = 5;
+	var INTERACTIVE_MARKER_MOVE_ROTATE = 6;
+	var INTERACTIVE_MARKER_MOVE_3D = 7;
+	var INTERACTIVE_MARKER_ROTATE_3D = 8;
+	var INTERACTIVE_MARKER_MOVE_ROTATE_3D = 9;
 
 	// Interactive marker rotation behavior
-	var INTERACTIVE_MARKER_INHERIT$1  = 0;
-	var INTERACTIVE_MARKER_FIXED$1  = 1;
-	var INTERACTIVE_MARKER_VIEW_FACING$1  = 2;
+	var INTERACTIVE_MARKER_INHERIT = 0;
+	var INTERACTIVE_MARKER_FIXED = 1;
+	var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 	/**
 	 * Create a THREE material based on the given RGBA values.
@@ -46032,25 +46032,25 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @param a - the alpha value
 	 * @returns the THREE material
 	 */
-	var makeColorMaterial$1  = function(r, g, b, a) {
-	  var color = new THREE.Color();
+	var makeColorMaterial = function(r, g, b, a) {
+	  var color = new THREE$1.Color();
 	  color.setRGB(r, g, b);
 	  if (a <= 0.99) {
-	    return new THREE.MeshBasicMaterial({
+	    return new THREE$1.MeshBasicMaterial({
 	      color : color.getHex(),
 	      opacity : a + 0.1,
 	      transparent : true,
 	      depthWrite : true,
-	      blendSrc : THREE.SrcAlphaFactor,
-	      blendDst : THREE.OneMinusSrcAlphaFactor,
-	      blendEquation : THREE.ReverseSubtractEquation,
-	      blending : THREE.NormalBlending
+	      blendSrc : THREE$1.SrcAlphaFactor,
+	      blendDst : THREE$1.OneMinusSrcAlphaFactor,
+	      blendEquation : THREE$1.ReverseSubtractEquation,
+	      blending : THREE$1.NormalBlending
 	    });
 	  } else {
-	    return new THREE.MeshPhongMaterial({
+	    return new THREE$1.MeshPhongMaterial({
 	      color : color.getHex(),
 	      opacity : a,
-	      blending : THREE.NormalBlending
+	      blending : THREE$1.NormalBlending
 	    });
 	  }
 	};
@@ -46063,9 +46063,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @param planeNormal - the normal of the plane
 	 * @returns the intersection point
 	 */
-	var intersectPlane$1  = function(mouseRay, planeOrigin, planeNormal) {
-	  var vector = new THREE.Vector3();
-	  var intersectPoint = new THREE.Vector3();
+	var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
+	  var vector = new THREE$1.Vector3();
+	  var intersectPoint = new THREE$1.Vector3();
 	  vector.subVectors(planeOrigin, mouseRay.origin);
 	  var dot = mouseRay.direction.dot(planeNormal);
 
@@ -46089,8 +46089,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @param mouseRay - the mouse ray
 	 * @param the closest point between the two rays
 	 */
-	var findClosestPoint  = function(targetRay, mouseRay) {
-	  var v13 = new THREE.Vector3();
+	var findClosestPoint = function(targetRay, mouseRay) {
+	  var v13 = new THREE$1.Vector3();
 	  v13.subVectors(targetRay.origin, mouseRay.origin);
 	  var v43 = mouseRay.direction.clone();
 	  var v21 = targetRay.direction.clone();
@@ -46119,7 +46119,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @param mousePos - the mouse position
 	 * @returns the closest axis point
 	 */
-	var closestAxisPoint$1  = function(axisRay, camera, mousePos) {
+	var closestAxisPoint = function(axisRay, camera, mousePos) {
 	  // project axis onto screen
 	  var o = axisRay.origin.clone();
 	  o.project(camera);
@@ -46130,18 +46130,18 @@ var ROS3D = (function (exports, ROSLIB) {
 	  var d = o2.clone().sub(o);
 
 	  // t is the 2d ray param of perpendicular projection of mousePos onto o
-	  var tmp = new THREE.Vector2();
+	  var tmp = new THREE$1.Vector2();
 	  // (t = (mousePos - o) * d / (d*d))
 	  var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
 
 	  // mp is the final 2d-projected mouse pos (mp = o + d*t)
-	  var mp = new THREE.Vector2();
+	  var mp = new THREE$1.Vector2();
 	  mp.addVectors(o, d.clone().multiplyScalar(t));
 
 	  // go back to 3d by shooting a ray
-	  var vector = new THREE.Vector3(mp.x, mp.y, 0.5);
+	  var vector = new THREE$1.Vector3(mp.x, mp.y, 0.5);
 	  vector.unproject(camera);
-	  var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
+	  var mpRay = new THREE$1.Ray(camera.position, vector.sub(camera.position).normalize());
 
 	  return findClosestPoint(axisRay, mpRay);
 	};
@@ -46150,7 +46150,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Julius Kammerl - jkammerl@willowgarage.com
 	 */
 
-	class DepthCloud extends THREE.Object3D {
+	class DepthCloud extends THREE$1.Object3D {
 
 	  /**
 	   * The DepthCloud object.
@@ -46384,19 +46384,19 @@ var ROS3D = (function (exports, ROSLIB) {
 	  initStreamer() {
 
 	    if (this.metaLoaded) {
-	      this.texture = new THREE.Texture(this.video);
-	      this.geometry = new THREE.Geometry();
+	      this.texture = new THREE$1.Texture(this.video);
+	      this.geometry = new THREE$1.Geometry();
 
 	      for (var i = 0, l = this.width * this.height; i < l; i++) {
 
-	        var vertex = new THREE.Vector3();
+	        var vertex = new THREE$1.Vector3();
 	        vertex.x = (i % this.width);
 	        vertex.y = Math.floor(i / this.width);
 
 	        this.geometry.vertices.push(vertex);
 	      }
 
-	      this.material = new THREE.ShaderMaterial({
+	      this.material = new THREE$1.ShaderMaterial({
 	        uniforms : {
 	          'map' : {
 	            type : 't',
@@ -46443,7 +46443,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        fragmentShader : this.fragment_shader
 	      });
 
-	      this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
+	      this.mesh = new THREE$1.ParticleSystem(this.geometry, this.material);
 	      this.mesh.position.x = 0;
 	      this.mesh.position.y = 0;
 	      this.add(this.mesh);
@@ -46481,7 +46481,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class Arrow extends THREE.Mesh {
+	class Arrow extends THREE$1.Mesh {
 
 	  /**
 	   * A Arrow is a THREE object that can be used to display an arrow model.
@@ -46499,26 +46499,26 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  constructor(options) {
 	    options = options || {};
-	    var origin = options.origin || new THREE.Vector3(0, 0, 0);
-	    var direction = options.direction || new THREE.Vector3(1, 0, 0);
+	    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
+	    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
 	    var length = options.length || 1;
 	    var headLength = options.headLength || 0.2;
 	    var shaftDiameter = options.shaftDiameter || 0.05;
 	    var headDiameter = options.headDiameter || 0.1;
-	    var material = options.material || new THREE.MeshBasicMaterial();
+	    var material = options.material || new THREE$1.MeshBasicMaterial();
 
 	    var shaftLength = length - headLength;
 
 	    // create and merge geometry
-	    var geometry = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
+	    var geometry = new THREE$1.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
 	        12, 1);
-	    var m = new THREE.Matrix4();
-	    m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
+	    var m = new THREE$1.Matrix4();
+	    m.setPosition(new THREE$1.Vector3(0, shaftLength * 0.5, 0));
 	    geometry.applyMatrix(m);
 
 	    // create the head
-	    var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
-	    m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
+	    var coneGeometry = new THREE$1.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
+	    m.setPosition(new THREE$1.Vector3(0, shaftLength + (headLength * 0.5), 0));
 	    coneGeometry.applyMatrix(m);
 
 	    // put the arrow together
@@ -46536,14 +46536,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	   * @param direction - the direction to set this arrow
 	   */
 	  setDirection(direction) {
-	    var axis = new THREE.Vector3();
+	    var axis = new THREE$1.Vector3();
 	    if(direction.x === 0 && direction.z === 0){
 	      axis.set(1, 0, 0);
 	    } else {
 	      axis.set(0, 1, 0).cross(direction);
 	    }
-	    var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
-	    this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
+	    var radians = Math.acos(new THREE$1.Vector3(0, 1, 0).dot(direction.clone().normalize()));
+	    this.matrix = new THREE$1.Matrix4().makeRotationAxis(axis.normalize(), radians);
 	    this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
 	  };
 
@@ -46579,11 +46579,5299 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @author aleeper / http://adamleeper.com/
+	 * @author mrdoob / http://mrdoob.com/
+	 * @author gero3 / https://github.com/gero3
+	 * @author Mugen87 / https://github.com/Mugen87
+	 *
+	 * Description: A THREE loader for STL ASCII files, as created by Solidworks and other CAD programs.
+	 *
+	 * Supports both binary and ASCII encoded files, with automatic detection of type.
+	 *
+	 * The loader returns a non-indexed buffer geometry.
+	 *
+	 * Limitations:
+	 *  Binary decoding supports "Magics" color format (http://en.wikipedia.org/wiki/STL_(file_format)#Color_in_binary_STL).
+	 *  There is perhaps some question as to how valid it is to always assume little-endian-ness.
+	 *  ASCII decoding assumes file is UTF-8.
+	 *
+	 * Usage:
+	 *  var loader = new THREE.STLLoader();
+	 *  loader.load( './models/stl/slotted_disk.stl', function ( geometry ) {
+	 *    scene.add( new THREE.Mesh( geometry ) );
+	 *  });
+	 *
+	 * For binary STLs geometry might contain colors for vertices. To use it:
+	 *  // use the same code to load STL as above
+	 *  if (geometry.hasColors) {
+	 *    material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: THREE.VertexColors });
+	 *  } else { .... }
+	 *  var mesh = new THREE.Mesh( geometry, material );
+	 */
+
+	THREE$1.STLLoader = function (manager) {
+
+	  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+
+	};
+
+	THREE$1.STLLoader.prototype = {
+
+	  constructor: THREE$1.STLLoader,
+
+	  load: function (url, onLoad, onProgress, onError) {
+
+	    var scope = this;
+
+	    var loader = new THREE$1.FileLoader(scope.manager);
+	    loader.setResponseType('arraybuffer');
+	    loader.load(url, function (text) {
+
+	      onLoad(scope.parse(text));
+
+	    }, onProgress, onError);
+
+	  },
+
+	  parse: function (data) {
+
+	    function isBinary(data) {
+
+	      var expect, face_size, n_faces, reader;
+	      reader = new DataView(data);
+	      face_size = (32 / 8 * 3) + ((32 / 8 * 3) * 3) + (16 / 8);
+	      n_faces = reader.getUint32(80, true);
+	      expect = 80 + (32 / 8) + (n_faces * face_size);
+
+	      if (expect === reader.byteLength) {
+
+	        return true;
+
+	      }
+
+	      // An ASCII STL data must begin with 'solid ' as the first six bytes.
+	      // However, ASCII STLs lacking the SPACE after the 'd' are known to be
+	      // plentiful.  So, check the first 5 bytes for 'solid'.
+
+	      // US-ASCII ordinal values for 's', 'o', 'l', 'i', 'd'
+
+	      var solid = [115, 111, 108, 105, 100];
+
+	      for (var i = 0; i < 5; i++) {
+
+	        // If solid[ i ] does not match the i-th byte, then it is not an
+	        // ASCII STL; hence, it is binary and return true.
+
+	        if (solid[i] != reader.getUint8(i, false)) return true;
+
+	      }
+
+	      // First 5 bytes read "solid"; declare it to be an ASCII STL
+
+	      return false;
+
+	    }
+
+	    function parseBinary(data) {
+
+	      var reader = new DataView(data);
+	      var faces = reader.getUint32(80, true);
+
+	      var r, g, b, hasColors = false, colors;
+	      var defaultR, defaultG, defaultB, alpha;
+
+	      // process STL header
+	      // check for default color in header ("COLOR=rgba" sequence).
+
+	      for (var index = 0; index < 80 - 10; index++) {
+
+	        if ((reader.getUint32(index, false) == 0x434F4C4F /*COLO*/) &&
+	          (reader.getUint8(index + 4) == 0x52 /*'R'*/) &&
+	          (reader.getUint8(index + 5) == 0x3D /*'='*/)) {
+
+	          hasColors = true;
+	          colors = [];
+
+	          defaultR = reader.getUint8(index + 6) / 255;
+	          defaultG = reader.getUint8(index + 7) / 255;
+	          defaultB = reader.getUint8(index + 8) / 255;
+	          alpha = reader.getUint8(index + 9) / 255;
+
+	        }
+
+	      }
+
+	      var dataOffset = 84;
+	      var faceLength = 12 * 4 + 2;
+
+	      var geometry = new THREE$1.BufferGeometry();
+
+	      var vertices = [];
+	      var normals = [];
+
+	      for (var face = 0; face < faces; face++) {
+
+	        var start = dataOffset + face * faceLength;
+	        var normalX = reader.getFloat32(start, true);
+	        var normalY = reader.getFloat32(start + 4, true);
+	        var normalZ = reader.getFloat32(start + 8, true);
+
+	        if (hasColors) {
+
+	          var packedColor = reader.getUint16(start + 48, true);
+
+	          if ((packedColor & 0x8000) === 0) {
+
+	            // facet has its own unique color
+
+	            r = (packedColor & 0x1F) / 31;
+	            g = ((packedColor >> 5) & 0x1F) / 31;
+	            b = ((packedColor >> 10) & 0x1F) / 31;
+
+	          } else {
+
+	            r = defaultR;
+	            g = defaultG;
+	            b = defaultB;
+
+	          }
+
+	        }
+
+	        for (var i = 1; i <= 3; i++) {
+
+	          var vertexstart = start + i * 12;
+
+	          vertices.push(reader.getFloat32(vertexstart, true));
+	          vertices.push(reader.getFloat32(vertexstart + 4, true));
+	          vertices.push(reader.getFloat32(vertexstart + 8, true));
+
+	          normals.push(normalX, normalY, normalZ);
+
+	          if (hasColors) {
+
+	            colors.push(r, g, b);
+
+	          }
+
+	        }
+
+	      }
+
+	      geometry.addAttribute('position', new THREE$1.BufferAttribute(new Float32Array(vertices), 3));
+	      geometry.addAttribute('normal', new THREE$1.BufferAttribute(new Float32Array(normals), 3));
+
+	      if (hasColors) {
+
+	        geometry.addAttribute('color', new THREE$1.BufferAttribute(new Float32Array(colors), 3));
+	        geometry.hasColors = true;
+	        geometry.alpha = alpha;
+
+	      }
+
+	      return geometry;
+
+	    }
+
+	    function parseASCII(data) {
+
+	      var geometry = new THREE$1.BufferGeometry();
+	      var patternFace = /facet([\s\S]*?)endfacet/g;
+	      var faceCounter = 0;
+
+	      var patternFloat = /[\s]+([+-]?(?:\d+.\d+|\d+.|\d+|.\d+)(?:[eE][+-]?\d+)?)/.source;
+	      var patternVertex = new RegExp('vertex' + patternFloat + patternFloat + patternFloat, 'g');
+	      var patternNormal = new RegExp('normal' + patternFloat + patternFloat + patternFloat, 'g');
+
+	      var vertices = [];
+	      var normals = [];
+
+	      var normal = new THREE$1.Vector3();
+
+	      var result;
+
+	      while ((result = patternFace.exec(data)) !== null) {
+
+	        var vertexCountPerFace = 0;
+	        var normalCountPerFace = 0;
+
+	        var text = result[0];
+
+	        while ((result = patternNormal.exec(text)) !== null) {
+
+	          normal.x = parseFloat(result[1]);
+	          normal.y = parseFloat(result[2]);
+	          normal.z = parseFloat(result[3]);
+	          normalCountPerFace++;
+
+	        }
+
+	        while ((result = patternVertex.exec(text)) !== null) {
+
+	          vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
+	          normals.push(normal.x, normal.y, normal.z);
+	          vertexCountPerFace++;
+
+	        }
+
+	        // every face have to own ONE valid normal
+
+	        if (normalCountPerFace !== 1) {
+
+	          console.error('THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter);
+
+	        }
+
+	        // each face have to own THREE valid vertices
+
+	        if (vertexCountPerFace !== 3) {
+
+	          console.error('THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter);
+
+	        }
+
+	        faceCounter++;
+
+	      }
+
+	      geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(vertices, 3));
+	      geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normals, 3));
+
+	      return geometry;
+
+	    }
+
+	    function ensureString(buffer) {
+
+	      if (typeof buffer !== 'string') {
+
+	        var array_buffer = new Uint8Array(buffer);
+
+	        if (window.TextDecoder !== undefined) {
+
+	          return new TextDecoder().decode(array_buffer);
+
+	        }
+
+	        var str = '';
+
+	        for (var i = 0, il = buffer.byteLength; i < il; i++) {
+
+	          str += String.fromCharCode(array_buffer[i]); // implicitly assumes little-endian
+
+	        }
+
+	        return str;
+
+	      } else {
+
+	        return buffer;
+
+	      }
+
+	    }
+
+	    function ensureBinary(buffer) {
+
+	      if (typeof buffer === 'string') {
+
+	        var array_buffer = new Uint8Array(buffer.length);
+	        for (var i = 0; i < buffer.length; i++) {
+
+	          array_buffer[i] = buffer.charCodeAt(i) & 0xff; // implicitly assumes little-endian
+
+	        }
+	        return array_buffer.buffer || array_buffer;
+
+	      } else {
+
+	        return buffer;
+
+	      }
+
+	    }
+
+	    // start
+
+	    var binData = ensureBinary(data);
+
+	    return isBinary(binData) ? parseBinary(binData) : parseASCII(ensureString(data));
+
+	  }
+
+	};
+
+	/**
+	 * @author mrdoob / http://mrdoob.com/
+	 *
+	 * @Modified by Jose Rojas from OBJLoader.js@r106
+	 *
+	 */
+
+	// o object_name | g group_name
+	var object_pattern = /^[og]\s*(.+)?/;
+	// mtllib file_reference
+	var material_library_pattern = /^mtllib /;
+	// usemtl material_name
+	var material_use_pattern = /^usemtl /;
+
+	function ParserState() {
+
+	  var state = {
+	    objects: [],
+	    object: {},
+
+	    vertices: [],
+	    normals: [],
+	    colors: [],
+	    uvs: [],
+
+	    materialLibraries: [],
+
+	    startObject: function ( name, fromDeclaration ) {
+
+	      // If the current object (initial from reset) is not from a g/o declaration in the parsed
+	      // file. We need to use it for the first parsed g/o to keep things in sync.
+	      if ( this.object && this.object.fromDeclaration === false ) {
+
+	        this.object.name = name;
+	        this.object.fromDeclaration = ( fromDeclaration !== false );
+	        return;
+
+	      }
+
+	      var previousMaterial = ( this.object && typeof this.object.currentMaterial === 'function' ? this.object.currentMaterial() : undefined );
+
+	      if ( this.object && typeof this.object._finalize === 'function' ) {
+
+	        this.object._finalize( true );
+
+	      }
+
+	      this.object = {
+	        name: name || '',
+	        fromDeclaration: ( fromDeclaration !== false ),
+
+	        geometry: {
+	          vertices: [],
+	          normals: [],
+	          colors: [],
+	          uvs: []
+	        },
+	        materials: [],
+	        smooth: true,
+
+	        startMaterial: function ( name, libraries ) {
+
+	          var previous = this._finalize( false );
+
+	          // New usemtl declaration overwrites an inherited material, except if faces were declared
+	          // after the material, then it must be preserved for proper MultiMaterial continuation.
+	          if ( previous && ( previous.inherited || previous.groupCount <= 0 ) ) {
+
+	            this.materials.splice( previous.index, 1 );
+
+	          }
+
+	          var material = {
+	            index: this.materials.length,
+	            name: name || '',
+	            mtllib: ( Array.isArray( libraries ) && libraries.length > 0 ? libraries[ libraries.length - 1 ] : '' ),
+	            smooth: ( previous !== undefined ? previous.smooth : this.smooth ),
+	            groupStart: ( previous !== undefined ? previous.groupEnd : 0 ),
+	            groupEnd: - 1,
+	            groupCount: - 1,
+	            inherited: false,
+
+	            clone: function ( index ) {
+
+	              var cloned = {
+	                index: ( typeof index === 'number' ? index : this.index ),
+	                name: this.name,
+	                mtllib: this.mtllib,
+	                smooth: this.smooth,
+	                groupStart: 0,
+	                groupEnd: - 1,
+	                groupCount: - 1,
+	                inherited: false
+	              };
+	              cloned.clone = this.clone.bind( cloned );
+	              return cloned;
+
+	            }
+	          };
+
+	          this.materials.push( material );
+
+	          return material;
+
+	        },
+
+	        currentMaterial: function () {
+
+	          if ( this.materials.length > 0 ) {
+
+	            return this.materials[ this.materials.length - 1 ];
+
+	          }
+
+	          return undefined;
+
+	        },
+
+	        _finalize: function ( end ) {
+
+	          var lastMultiMaterial = this.currentMaterial();
+	          if ( lastMultiMaterial && lastMultiMaterial.groupEnd === - 1 ) {
+
+	            lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
+	            lastMultiMaterial.groupCount = lastMultiMaterial.groupEnd - lastMultiMaterial.groupStart;
+	            lastMultiMaterial.inherited = false;
+
+	          }
+
+	          // Ignore objects tail materials if no face declarations followed them before a new o/g started.
+	          if ( end && this.materials.length > 1 ) {
+
+	            for ( var mi = this.materials.length - 1; mi >= 0; mi -- ) {
+
+	              if ( this.materials[ mi ].groupCount <= 0 ) {
+
+	                this.materials.splice( mi, 1 );
+
+	              }
+
+	            }
+
+	          }
+
+	          // Guarantee at least one empty material, this makes the creation later more straight forward.
+	          if ( end && this.materials.length === 0 ) {
+
+	            this.materials.push( {
+	              name: '',
+	              smooth: this.smooth
+	            } );
+
+	          }
+
+	          return lastMultiMaterial;
+
+	        }
+	      };
+
+	      // Inherit previous objects material.
+	      // Spec tells us that a declared material must be set to all objects until a new material is declared.
+	      // If a usemtl declaration is encountered while this new object is being parsed, it will
+	      // overwrite the inherited material. Exception being that there was already face declarations
+	      // to the inherited material, then it will be preserved for proper MultiMaterial continuation.
+
+	      if ( previousMaterial && previousMaterial.name && typeof previousMaterial.clone === 'function' ) {
+
+	        var declared = previousMaterial.clone( 0 );
+	        declared.inherited = true;
+	        this.object.materials.push( declared );
+
+	      }
+
+	      this.objects.push( this.object );
+
+	    },
+
+	    finalize: function () {
+
+	      if ( this.object && typeof this.object._finalize === 'function' ) {
+
+	        this.object._finalize( true );
+
+	      }
+
+	    },
+
+	    parseVertexIndex: function ( value, len ) {
+
+	      var index = parseInt( value, 10 );
+	      return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
+
+	    },
+
+	    parseNormalIndex: function ( value, len ) {
+
+	      var index = parseInt( value, 10 );
+	      return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
+
+	    },
+
+	    parseUVIndex: function ( value, len ) {
+
+	      var index = parseInt( value, 10 );
+	      return ( index >= 0 ? index - 1 : index + len / 2 ) * 2;
+
+	    },
+
+	    addVertex: function ( a, b, c ) {
+
+	      var src = this.vertices;
+	      var dst = this.object.geometry.vertices;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+	    },
+
+	    addVertexPoint: function ( a ) {
+
+	      var src = this.vertices;
+	      var dst = this.object.geometry.vertices;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+
+	    },
+
+	    addVertexLine: function ( a ) {
+
+	      var src = this.vertices;
+	      var dst = this.object.geometry.vertices;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+
+	    },
+
+	    addNormal: function ( a, b, c ) {
+
+	      var src = this.normals;
+	      var dst = this.object.geometry.normals;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+	    },
+
+	    addColor: function ( a, b, c ) {
+
+	      var src = this.colors;
+	      var dst = this.object.geometry.colors;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
+	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
+	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
+
+	    },
+
+	    addUV: function ( a, b, c ) {
+
+	      var src = this.uvs;
+	      var dst = this.object.geometry.uvs;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ] );
+	      dst.push( src[ b + 0 ], src[ b + 1 ] );
+	      dst.push( src[ c + 0 ], src[ c + 1 ] );
+
+	    },
+
+	    addUVLine: function ( a ) {
+
+	      var src = this.uvs;
+	      var dst = this.object.geometry.uvs;
+
+	      dst.push( src[ a + 0 ], src[ a + 1 ] );
+
+	    },
+
+	    addFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
+
+	      var vLen = this.vertices.length;
+
+	      var ia = this.parseVertexIndex( a, vLen );
+	      var ib = this.parseVertexIndex( b, vLen );
+	      var ic = this.parseVertexIndex( c, vLen );
+
+	      this.addVertex( ia, ib, ic );
+
+	      if ( ua !== undefined && ua !== '' ) {
+
+	        var uvLen = this.uvs.length;
+	        ia = this.parseUVIndex( ua, uvLen );
+	        ib = this.parseUVIndex( ub, uvLen );
+	        ic = this.parseUVIndex( uc, uvLen );
+	        this.addUV( ia, ib, ic );
+
+	      }
+
+	      if ( na !== undefined && na !== '' ) {
+
+	        // Normals are many times the same. If so, skip function call and parseInt.
+	        var nLen = this.normals.length;
+	        ia = this.parseNormalIndex( na, nLen );
+
+	        ib = na === nb ? ia : this.parseNormalIndex( nb, nLen );
+	        ic = na === nc ? ia : this.parseNormalIndex( nc, nLen );
+
+	        this.addNormal( ia, ib, ic );
+
+	      }
+
+	      if ( this.colors.length > 0 ) {
+
+	        this.addColor( ia, ib, ic );
+
+	      }
+
+	    },
+
+	    addPointGeometry: function ( vertices ) {
+
+	      this.object.geometry.type = 'Points';
+
+	      var vLen = this.vertices.length;
+
+	      for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
+
+	        this.addVertexPoint( this.parseVertexIndex( vertices[ vi ], vLen ) );
+
+	      }
+
+	    },
+
+	    addLineGeometry: function ( vertices, uvs ) {
+
+	      this.object.geometry.type = 'Line';
+
+	      var vLen = this.vertices.length;
+	      var uvLen = this.uvs.length;
+
+	      for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
+
+	        this.addVertexLine( this.parseVertexIndex( vertices[ vi ], vLen ) );
+
+	      }
+
+	      for ( var uvi = 0, l = uvs.length; uvi < l; uvi ++ ) {
+
+	        this.addUVLine( this.parseUVIndex( uvs[ uvi ], uvLen ) );
+
+	      }
+
+	    }
+
+	  };
+
+	  state.startObject( '', false );
+
+	  return state;
+
+	}
+
+	THREE$1.OBJLoader = function( manager ) {
+
+		this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+
+		this.materials = null;
+
+	};
+
+	THREE$1.OBJLoader.prototype = {
+
+		constructor: THREE$1.OBJLoader,
+
+		load: function ( url, onLoad, onProgress, onError ) {
+
+			var scope = this;
+
+			var loader = new THREE$1.FileLoader( scope.manager );
+			loader.setPath( this.path );
+			loader.load( url, function ( text ) {
+
+				onLoad( scope.parse( text ) );
+
+			}, onProgress, onError );
+
+		},
+
+		setPath: function ( value ) {
+
+			this.path = value;
+
+			return this;
+
+		},
+
+		setMaterials: function ( materials ) {
+
+			this.materials = materials;
+
+			return this;
+
+		},
+
+		parse: function ( text ) {
+
+			console.time( 'OBJLoader' );
+
+			var state = new ParserState();
+
+			if ( text.indexOf( '\r\n' ) !== - 1 ) {
+
+				// This is faster than String.split with regex that splits on both
+				text = text.replace( /\r\n/g, '\n' );
+
+			}
+
+			if ( text.indexOf( '\\\n' ) !== - 1 ) {
+
+				// join lines separated by a line continuation character (\)
+				text = text.replace( /\\\n/g, '' );
+
+			}
+
+			var lines = text.split( '\n' );
+			var line = '', lineFirstChar = '';
+			var lineLength = 0;
+			var result = [];
+
+			// Faster to just trim left side of the line. Use if available.
+			var trimLeft = ( typeof ''.trimLeft === 'function' );
+
+			for ( var i = 0, l = lines.length; i < l; i ++ ) {
+
+				line = lines[ i ];
+
+				line = trimLeft ? line.trimLeft() : line.trim();
+
+				lineLength = line.length;
+
+				if ( lineLength === 0 ) continue;
+
+				lineFirstChar = line.charAt( 0 );
+
+				// @todo invoke passed in handler if any
+				if ( lineFirstChar === '#' ) continue;
+
+				if ( lineFirstChar === 'v' ) {
+
+					var data = line.split( /\s+/ );
+
+					switch ( data[ 0 ] ) {
+
+						case 'v':
+							state.vertices.push(
+								parseFloat( data[ 1 ] ),
+								parseFloat( data[ 2 ] ),
+								parseFloat( data[ 3 ] )
+							);
+							if ( data.length === 8 ) {
+
+								state.colors.push(
+									parseFloat( data[ 4 ] ),
+									parseFloat( data[ 5 ] ),
+									parseFloat( data[ 6 ] )
+
+								);
+
+							}
+							break;
+						case 'vn':
+							state.normals.push(
+								parseFloat( data[ 1 ] ),
+								parseFloat( data[ 2 ] ),
+								parseFloat( data[ 3 ] )
+							);
+							break;
+						case 'vt':
+							state.uvs.push(
+								parseFloat( data[ 1 ] ),
+								parseFloat( data[ 2 ] )
+							);
+							break;
+
+					}
+
+				} else if ( lineFirstChar === 'f' ) {
+
+					var lineData = line.substr( 1 ).trim();
+					var vertexData = lineData.split( /\s+/ );
+					var faceVertices = [];
+
+					// Parse the face vertex data into an easy to work with format
+
+					for ( var j = 0, jl = vertexData.length; j < jl; j ++ ) {
+
+						var vertex = vertexData[ j ];
+
+						if ( vertex.length > 0 ) {
+
+							var vertexParts = vertex.split( '/' );
+							faceVertices.push( vertexParts );
+
+						}
+
+					}
+
+					// Draw an edge between the first vertex and all subsequent vertices to form an n-gon
+
+					var v1 = faceVertices[ 0 ];
+
+					for ( var j = 1, jl = faceVertices.length - 1; j < jl; j ++ ) {
+
+						var v2 = faceVertices[ j ];
+						var v3 = faceVertices[ j + 1 ];
+
+						state.addFace(
+							v1[ 0 ], v2[ 0 ], v3[ 0 ],
+							v1[ 1 ], v2[ 1 ], v3[ 1 ],
+							v1[ 2 ], v2[ 2 ], v3[ 2 ]
+						);
+
+					}
+
+				} else if ( lineFirstChar === 'l' ) {
+
+					var lineParts = line.substring( 1 ).trim().split( " " );
+					var lineVertices = [], lineUVs = [];
+
+					if ( line.indexOf( "/" ) === - 1 ) {
+
+						lineVertices = lineParts;
+
+					} else {
+
+						for ( var li = 0, llen = lineParts.length; li < llen; li ++ ) {
+
+							var parts = lineParts[ li ].split( "/" );
+
+							if ( parts[ 0 ] !== "" ) lineVertices.push( parts[ 0 ] );
+							if ( parts[ 1 ] !== "" ) lineUVs.push( parts[ 1 ] );
+
+						}
+
+					}
+					state.addLineGeometry( lineVertices, lineUVs );
+
+				} else if ( lineFirstChar === 'p' ) {
+
+					var lineData = line.substr( 1 ).trim();
+					var pointData = lineData.split( " " );
+
+					state.addPointGeometry( pointData );
+
+				} else if ( ( result = object_pattern.exec( line ) ) !== null ) {
+
+					// o object_name
+					// or
+					// g group_name
+
+					// WORKAROUND: https://bugs.chromium.org/p/v8/issues/detail?id=2869
+					// var name = result[ 0 ].substr( 1 ).trim();
+					var name = ( " " + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
+
+					state.startObject( name );
+
+				} else if ( material_use_pattern.test( line ) ) {
+
+					// material
+
+					state.object.startMaterial( line.substring( 7 ).trim(), state.materialLibraries );
+
+				} else if ( material_library_pattern.test( line ) ) {
+
+					// mtl file
+
+					state.materialLibraries.push( line.substring( 7 ).trim() );
+
+				} else if ( lineFirstChar === 's' ) {
+
+					result = line.split( ' ' );
+
+					// smooth shading
+
+					// @todo Handle files that have varying smooth values for a set of faces inside one geometry,
+					// but does not define a usemtl for each face set.
+					// This should be detected and a dummy material created (later MultiMaterial and geometry groups).
+					// This requires some care to not create extra material on each smooth value for "normal" obj files.
+					// where explicit usemtl defines geometry groups.
+					// Example asset: examples/models/obj/cerberus/Cerberus.obj
+
+					/*
+					 * http://paulbourke.net/dataformats/obj/
+					 * or
+					 * http://www.cs.utah.edu/~boulos/cs3505/obj_spec.pdf
+					 *
+					 * From chapter "Grouping" Syntax explanation "s group_number":
+					 * "group_number is the smoothing group number. To turn off smoothing groups, use a value of 0 or off.
+					 * Polygonal elements use group numbers to put elements in different smoothing groups. For free-form
+					 * surfaces, smoothing groups are either turned on or off; there is no difference between values greater
+					 * than 0."
+					 */
+					if ( result.length > 1 ) {
+
+						var value = result[ 1 ].trim().toLowerCase();
+						state.object.smooth = ( value !== '0' && value !== 'off' );
+
+					} else {
+
+						// ZBrush can produce "s" lines #11707
+						state.object.smooth = true;
+
+					}
+					var material = state.object.currentMaterial();
+					if ( material ) material.smooth = state.object.smooth;
+
+				} else {
+
+					// Handle null terminated files without exception
+					if ( line === '\0' ) continue;
+
+					throw new Error( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
+
+				}
+
+			}
+
+			state.finalize();
+
+			var container = new THREE$1.Object3D();
+			container.materialLibraries = [].concat( state.materialLibraries );
+
+			for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
+
+				var object = state.objects[ i ];
+				var geometry = object.geometry;
+				var materials = object.materials;
+				var isLine = ( geometry.type === 'Line' );
+				var isPoints = ( geometry.type === 'Points' );
+				var hasVertexColors = false;
+
+				// Skip o/g line declarations that did not follow with any faces
+				if ( geometry.vertices.length === 0 ) continue;
+
+				var buffergeometry = new THREE$1.BufferGeometry();
+
+				buffergeometry.addAttribute( 'position', new THREE$1.Float32BufferAttribute( geometry.vertices, 3 ) );
+
+				if ( geometry.normals.length > 0 ) {
+
+					buffergeometry.addAttribute( 'normal', new THREE$1.Float32BufferAttribute( geometry.normals, 3 ) );
+
+				} else {
+
+					buffergeometry.computeVertexNormals();
+
+				}
+
+				if ( geometry.colors.length > 0 ) {
+
+					hasVertexColors = true;
+					buffergeometry.addAttribute( 'color', new THREE$1.Float32BufferAttribute( geometry.colors, 3 ) );
+
+				}
+
+				if ( geometry.uvs.length > 0 ) {
+
+					buffergeometry.addAttribute( 'uv', new THREE$1.Float32BufferAttribute( geometry.uvs, 2 ) );
+
+				}
+
+				// Create materials
+
+				var createdMaterials = [];
+
+				for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
+
+					var sourceMaterial = materials[ mi ];
+					var material = undefined;
+
+					if ( this.materials !== null ) {
+
+						material = this.materials.create( sourceMaterial.name );
+
+						// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
+						if ( isLine && material && ! ( material instanceof THREE$1.LineBasicMaterial ) ) {
+
+							var materialLine = new THREE$1.LineBasicMaterial();
+							THREE$1.Material.prototype.copy.call( materialLine, material );
+							materialLine.color.copy( material.color );
+							materialLine.lights = false;
+							material = materialLine;
+
+						} else if ( isPoints && material && ! ( material instanceof THREE$1.PointsMaterial ) ) {
+
+							var materialPoints = new THREE$1.PointsMaterial( { size: 10, sizeAttenuation: false } );
+							THREE$1.Material.prototype.copy.call( materialPoints, material );
+							materialPoints.color.copy( material.color );
+							materialPoints.map = material.map;
+							materialPoints.lights = false;
+							material = materialPoints;
+
+						}
+
+					}
+
+					if ( ! material ) {
+
+						if ( isLine ) {
+
+							material = new THREE$1.LineBasicMaterial();
+
+						} else if ( isPoints ) {
+
+							material = new THREE$1.PointsMaterial( { size: 1, sizeAttenuation: false } );
+
+						} else {
+
+							material = new THREE$1.MeshPhongMaterial();
+
+						}
+
+						material.name = sourceMaterial.name;
+
+					}
+
+					material.flatShading = sourceMaterial.smooth ? false : true;
+					material.vertexColors = hasVertexColors ? THREE$1.VertexColors : THREE$1.NoColors;
+
+					createdMaterials.push( material );
+
+				}
+
+				// Create mesh
+
+				var mesh;
+
+				if ( createdMaterials.length > 1 ) {
+
+					for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
+
+						var sourceMaterial = materials[ mi ];
+						buffergeometry.addGroup( sourceMaterial.groupStart, sourceMaterial.groupCount, mi );
+
+					}
+
+					if ( isLine ) {
+
+						mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials );
+
+					} else if ( isPoints ) {
+
+						mesh = new THREE$1.Points( buffergeometry, createdMaterials );
+
+					} else {
+
+						mesh = new THREE$1.Mesh( buffergeometry, createdMaterials );
+
+					}
+
+				} else {
+
+					if ( isLine ) {
+
+						mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials[ 0 ] );
+
+					} else if ( isPoints ) {
+
+						mesh = new THREE$1.Points( buffergeometry, createdMaterials[ 0 ] );
+
+					} else {
+
+						mesh = new THREE$1.Mesh( buffergeometry, createdMaterials[ 0 ] );
+
+					}
+
+				}
+
+				mesh.name = object.name;
+
+				container.add( mesh );
+
+			}
+
+			console.timeEnd( 'OBJLoader' );
+
+			return container;
+
+		}
+
+	};
+
+	/**
+	 * Loads a Wavefront .mtl file specifying materials
+	 *
+	 * @author angelxuanchang
+	 */
+
+	THREE$1.MTLLoader = function ( manager ) {
+
+		this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+
+	};
+
+	THREE$1.MTLLoader.prototype = {
+
+		constructor: THREE$1.MTLLoader,
+
+		crossOrigin: 'anonymous',
+
+		/**
+		 * Loads and parses a MTL asset from a URL.
+		 *
+		 * @param {String} url - URL to the MTL file.
+		 * @param {Function} [onLoad] - Callback invoked with the loaded object.
+		 * @param {Function} [onProgress] - Callback for download progress.
+		 * @param {Function} [onError] - Callback for download errors.
+		 *
+		 * @see setPath setResourcePath
+		 *
+		 * @note In order for relative texture references to resolve correctly
+		 * you must call setResourcePath() explicitly prior to load.
+		 */
+		load: function ( url, onLoad, onProgress, onError ) {
+
+			var scope = this;
+
+			var path = ( this.path === undefined ) ? THREE$1.LoaderUtils.extractUrlBase( url ) : this.path;
+
+			var loader = new THREE$1.FileLoader( this.manager );
+			loader.setPath( this.path );
+			loader.load( url, function ( text ) {
+
+				onLoad( scope.parse( text, path ) );
+
+			}, onProgress, onError );
+
+		},
+
+		/**
+		 * Set base path for resolving references.
+		 * If set this path will be prepended to each loaded and found reference.
+		 *
+		 * @see setResourcePath
+		 * @param {String} path
+		 * @return {THREE.MTLLoader}
+		 *
+		 * @example
+		 *     mtlLoader.setPath( 'assets/obj/' );
+		 *     mtlLoader.load( 'my.mtl', ... );
+		 */
+		setPath: function ( path ) {
+
+			this.path = path;
+			return this;
+
+		},
+
+		/**
+		 * Set base path for additional resources like textures.
+		 *
+		 * @see setPath
+		 * @param {String} path
+		 * @return {THREE.MTLLoader}
+		 *
+		 * @example
+		 *     mtlLoader.setPath( 'assets/obj/' );
+		 *     mtlLoader.setResourcePath( 'assets/textures/' );
+		 *     mtlLoader.load( 'my.mtl', ... );
+		 */
+		setResourcePath: function ( path ) {
+
+			this.resourcePath = path;
+			return this;
+
+		},
+
+		setTexturePath: function ( path ) {
+
+			console.warn( 'THREE.MTLLoader: .setTexturePath() has been renamed to .setResourcePath().' );
+			return this.setResourcePath( path );
+
+		},
+
+		setCrossOrigin: function ( value ) {
+
+			this.crossOrigin = value;
+			return this;
+
+		},
+
+		setMaterialOptions: function ( value ) {
+
+			this.materialOptions = value;
+			return this;
+
+		},
+
+		/**
+		 * Parses a MTL file.
+		 *
+		 * @param {String} text - Content of MTL file
+		 * @return {THREE.MTLLoader.MaterialCreator}
+		 *
+		 * @see setPath setResourcePath
+		 *
+		 * @note In order for relative texture references to resolve correctly
+		 * you must call setResourcePath() explicitly prior to parse.
+		 */
+		parse: function ( text, path ) {
+
+			var lines = text.split( '\n' );
+			var info = {};
+			var delimiter_pattern = /\s+/;
+			var materialsInfo = {};
+
+			for ( var i = 0; i < lines.length; i ++ ) {
+
+				var line = lines[ i ];
+				line = line.trim();
+
+				if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
+
+					// Blank line or comment ignore
+					continue;
+
+				}
+
+				var pos = line.indexOf( ' ' );
+
+				var key = ( pos >= 0 ) ? line.substring( 0, pos ) : line;
+				key = key.toLowerCase();
+
+				var value = ( pos >= 0 ) ? line.substring( pos + 1 ) : '';
+				value = value.trim();
+
+				if ( key === 'newmtl' ) {
+
+					// New material
+
+					info = { name: value };
+					materialsInfo[ value ] = info;
+
+				} else {
+
+					if ( key === 'ka' || key === 'kd' || key === 'ks' || key === 'ke' ) {
+
+						var ss = value.split( delimiter_pattern, 3 );
+						info[ key ] = [ parseFloat( ss[ 0 ] ), parseFloat( ss[ 1 ] ), parseFloat( ss[ 2 ] ) ];
+
+					} else {
+
+						info[ key ] = value;
+
+					}
+
+				}
+
+			}
+
+			var materialCreator = new THREE$1.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
+			materialCreator.setCrossOrigin( this.crossOrigin );
+			materialCreator.setManager( this.manager );
+			materialCreator.setMaterials( materialsInfo );
+			return materialCreator;
+
+		}
+
+	};
+
+	/**
+	 * Create a new THREE-MTLLoader.MaterialCreator
+	 * @param baseUrl - Url relative to which textures are loaded
+	 * @param options - Set of options on how to construct the materials
+	 *                  side: Which side to apply the material
+	 *                        THREE.FrontSide (default), THREE.BackSide, THREE.DoubleSide
+	 *                  wrap: What type of wrapping to apply for textures
+	 *                        THREE.RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
+	 *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
+	 *                                Default: false, assumed to be already normalized
+	 *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
+	 *                                  Default: false
+	 * @constructor
+	 */
+
+	THREE$1.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
+
+		this.baseUrl = baseUrl || '';
+		this.options = options;
+		this.materialsInfo = {};
+		this.materials = {};
+		this.materialsArray = [];
+		this.nameLookup = {};
+
+		this.side = ( this.options && this.options.side ) ? this.options.side : THREE$1.FrontSide;
+		this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE$1.RepeatWrapping;
+
+	};
+
+	THREE$1.MTLLoader.MaterialCreator.prototype = {
+
+		constructor: THREE$1.MTLLoader.MaterialCreator,
+
+		crossOrigin: 'anonymous',
+
+		setCrossOrigin: function ( value ) {
+
+			this.crossOrigin = value;
+			return this;
+
+		},
+
+		setManager: function ( value ) {
+
+			this.manager = value;
+
+		},
+
+		setMaterials: function ( materialsInfo ) {
+
+			this.materialsInfo = this.convert( materialsInfo );
+			this.materials = {};
+			this.materialsArray = [];
+			this.nameLookup = {};
+
+		},
+
+		convert: function ( materialsInfo ) {
+
+			if ( ! this.options ) return materialsInfo;
+
+			var converted = {};
+
+			for ( var mn in materialsInfo ) {
+
+				// Convert materials info into normalized form based on options
+
+				var mat = materialsInfo[ mn ];
+
+				var covmat = {};
+
+				converted[ mn ] = covmat;
+
+				for ( var prop in mat ) {
+
+					var save = true;
+					var value = mat[ prop ];
+					var lprop = prop.toLowerCase();
+
+					switch ( lprop ) {
+
+						case 'kd':
+						case 'ka':
+						case 'ks':
+
+							// Diffuse color (color under white light) using RGB values
+
+							if ( this.options && this.options.normalizeRGB ) {
+
+								value = [ value[ 0 ] / 255, value[ 1 ] / 255, value[ 2 ] / 255 ];
+
+							}
+
+							if ( this.options && this.options.ignoreZeroRGBs ) {
+
+								if ( value[ 0 ] === 0 && value[ 1 ] === 0 && value[ 2 ] === 0 ) {
+
+									// ignore
+
+									save = false;
+
+								}
+
+							}
+
+							break;
+
+					}
+
+					if ( save ) {
+
+						covmat[ lprop ] = value;
+
+					}
+
+				}
+
+			}
+
+			return converted;
+
+		},
+
+		preload: function () {
+
+			for ( var mn in this.materialsInfo ) {
+
+				this.create( mn );
+
+			}
+
+		},
+
+		getIndex: function ( materialName ) {
+
+			return this.nameLookup[ materialName ];
+
+		},
+
+		getAsArray: function () {
+
+			var index = 0;
+
+			for ( var mn in this.materialsInfo ) {
+
+				this.materialsArray[ index ] = this.create( mn );
+				this.nameLookup[ mn ] = index;
+				index ++;
+
+			}
+
+			return this.materialsArray;
+
+		},
+
+		create: function ( materialName ) {
+
+			if ( this.materials[ materialName ] === undefined ) {
+
+				this.createMaterial_( materialName );
+
+			}
+
+			return this.materials[ materialName ];
+
+		},
+
+		createMaterial_: function ( materialName ) {
+
+			// Create material
+
+			var scope = this;
+			var mat = this.materialsInfo[ materialName ];
+			var params = {
+
+				name: materialName,
+				side: this.side
+
+			};
+
+			function resolveURL( baseUrl, url ) {
+
+				if ( typeof url !== 'string' || url === '' )
+					return '';
+
+				// Absolute URL
+				if ( /^https?:\/\//i.test( url ) ) return url;
+
+				return baseUrl + url;
+
+			}
+
+			function setMapForType( mapType, value ) {
+
+				if ( params[ mapType ] ) return; // Keep the first encountered texture
+
+				var texParams = scope.getTextureParams( value, params );
+				var map = scope.loadTexture( resolveURL( scope.baseUrl, texParams.url ) );
+
+				map.repeat.copy( texParams.scale );
+				map.offset.copy( texParams.offset );
+
+				map.wrapS = scope.wrap;
+				map.wrapT = scope.wrap;
+
+				params[ mapType ] = map;
+
+			}
+
+			for ( var prop in mat ) {
+
+				var value = mat[ prop ];
+				var n;
+
+				if ( value === '' ) continue;
+
+				switch ( prop.toLowerCase() ) {
+
+					// Ns is material specular exponent
+
+					case 'kd':
+
+						// Diffuse color (color under white light) using RGB values
+
+						params.color = new THREE$1.Color().fromArray( value );
+
+						break;
+
+					case 'ks':
+
+						// Specular color (color when light is reflected from shiny surface) using RGB values
+						params.specular = new THREE$1.Color().fromArray( value );
+
+						break;
+
+					case 'ke':
+
+						// Emissive using RGB values
+						params.emissive = new THREE$1.Color().fromArray( value );
+
+						break;
+
+					case 'map_kd':
+
+						// Diffuse texture map
+
+						setMapForType( "map", value );
+
+						break;
+
+					case 'map_ks':
+
+						// Specular map
+
+						setMapForType( "specularMap", value );
+
+						break;
+
+					case 'map_ke':
+
+						// Emissive map
+
+						setMapForType( "emissiveMap", value );
+
+						break;
+
+					case 'norm':
+
+						setMapForType( "normalMap", value );
+
+						break;
+
+					case 'map_bump':
+					case 'bump':
+
+						// Bump texture map
+
+						setMapForType( "bumpMap", value );
+
+						break;
+
+					case 'map_d':
+
+						// Alpha map
+
+						setMapForType( "alphaMap", value );
+						params.transparent = true;
+
+						break;
+
+					case 'ns':
+
+						// The specular exponent (defines the focus of the specular highlight)
+						// A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
+
+						params.shininess = parseFloat( value );
+
+						break;
+
+					case 'd':
+						n = parseFloat( value );
+
+						if ( n < 1 ) {
+
+							params.opacity = n;
+							params.transparent = true;
+
+						}
+
+						break;
+
+					case 'tr':
+						n = parseFloat( value );
+
+						if ( this.options && this.options.invertTrProperty ) n = 1 - n;
+
+						if ( n > 0 ) {
+
+							params.opacity = 1 - n;
+							params.transparent = true;
+
+						}
+
+						break;
+
+				}
+
+			}
+
+			this.materials[ materialName ] = new THREE$1.MeshPhongMaterial( params );
+			return this.materials[ materialName ];
+
+		},
+
+		getTextureParams: function ( value, matParams ) {
+
+			var texParams = {
+
+				scale: new THREE$1.Vector2( 1, 1 ),
+				offset: new THREE$1.Vector2( 0, 0 )
+
+			 };
+
+			var items = value.split( /\s+/ );
+			var pos;
+
+			pos = items.indexOf( '-bm' );
+
+			if ( pos >= 0 ) {
+
+				matParams.bumpScale = parseFloat( items[ pos + 1 ] );
+				items.splice( pos, 2 );
+
+			}
+
+			pos = items.indexOf( '-s' );
+
+			if ( pos >= 0 ) {
+
+				texParams.scale.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+				items.splice( pos, 4 ); // we expect 3 parameters here!
+
+			}
+
+			pos = items.indexOf( '-o' );
+
+			if ( pos >= 0 ) {
+
+				texParams.offset.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
+				items.splice( pos, 4 ); // we expect 3 parameters here!
+
+			}
+
+			texParams.url = items.join( ' ' ).trim();
+			return texParams;
+
+		},
+
+		loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
+
+			var texture;
+			var loader = THREE$1.Loader.Handlers.get( url );
+			var manager = ( this.manager !== undefined ) ? this.manager : THREE$1.DefaultLoadingManager;
+
+			if ( loader === null ) {
+
+				loader = new THREE$1.TextureLoader( manager );
+
+			}
+
+			if ( loader.setCrossOrigin ) loader.setCrossOrigin( this.crossOrigin );
+			texture = loader.load( url, onLoad, onProgress, onError );
+
+			if ( mapping !== undefined ) texture.mapping = mapping;
+
+			return texture;
+
+		}
+
+	};
+
+	/**
+	 * @author mrdoob / http://mrdoob.com/
+	 * @author Mugen87 / https://github.com/Mugen87
+	 *
+	 *
+	 * @Modified by Jihoon Lee from ColladerLoader.js@r88
+	 * To support rviz compatible collada viewing.
+	 * See: #202 why it is forked.
+	 *
+	 * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
+	 */
+
+	THREE$1.ColladaLoader = function (manager) {
+
+	  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+
+	};
+
+	THREE$1.ColladaLoader.prototype = {
+
+	  constructor: THREE$1.ColladaLoader,
+
+	  crossOrigin: 'Anonymous',
+
+	  load: function (url, onLoad, onProgress, onError) {
+
+	    var scope = this;
+
+	    var path = THREE$1.Loader.prototype.extractUrlBase(url);
+
+	    var loader = new THREE$1.FileLoader(scope.manager);
+	    loader.load(url, function (text) {
+
+	      onLoad(scope.parse(text, path));
+
+	    }, onProgress, onError);
+
+	  },
+
+	  options: {
+
+	    set convertUpAxis(value) {
+
+	      console.warn('THREE.ColladaLoader: options.convertUpAxis() has been removed. Up axis is converted automatically.');
+
+	    }
+
+	  },
+
+	  setCrossOrigin: function (value) {
+
+	    this.crossOrigin = value;
+
+	  },
+
+	  parse: function (text, path) {
+
+	    function getElementsByTagName(xml, name) {
+
+	      // Non recursive xml.getElementsByTagName() ...
+
+	      var array = [];
+	      var childNodes = xml.childNodes;
+
+	      for (var i = 0, l = childNodes.length; i < l; i++) {
+
+	        var child = childNodes[i];
+
+	        if (child.nodeName === name) {
+
+	          array.push(child);
+
+	        }
+
+	      }
+
+	      return array;
+
+	    }
+
+	    function parseStrings(text) {
+
+	      if (text.length === 0) return [];
+
+	      var parts = text.trim().split(/\s+/);
+	      var array = new Array(parts.length);
+
+	      for (var i = 0, l = parts.length; i < l; i++) {
+
+	        array[i] = parts[i];
+
+	      }
+
+	      return array;
+
+	    }
+
+	    function parseFloats(text) {
+
+	      if (text.length === 0) return [];
+
+	      var parts = text.trim().split(/\s+/);
+	      var array = new Array(parts.length);
+
+	      for (var i = 0, l = parts.length; i < l; i++) {
+
+	        array[i] = parseFloat(parts[i]);
+
+	      }
+
+	      return array;
+
+	    }
+
+	    function parseInts(text) {
+
+	      if (text.length === 0) return [];
+
+	      var parts = text.trim().split(/\s+/);
+	      var array = new Array(parts.length);
+
+	      for (var i = 0, l = parts.length; i < l; i++) {
+
+	        array[i] = parseInt(parts[i]);
+
+	      }
+
+	      return array;
+
+	    }
+
+	    function parseId(text) {
+
+	      return text.substring(1);
+
+	    }
+
+	    function generateId() {
+
+	      return 'three_default_' + (count++);
+
+	    }
+
+	    function isEmpty(object) {
+
+	      return Object.keys(object).length === 0;
+
+	    }
+
+	    // asset
+
+	    function parseAsset(xml) {
+
+	      return {
+	        unit: parseAssetUnit(getElementsByTagName(xml, 'unit')[0]),
+	        upAxis: parseAssetUpAxis(getElementsByTagName(xml, 'up_axis')[0])
+	      };
+
+	    }
+
+	    function parseAssetUnit(xml) {
+
+	      return xml !== undefined ? parseFloat(xml.getAttribute('meter')) : 1;
+
+	    }
+
+	    function parseAssetUpAxis(xml) {
+
+	      return xml !== undefined ? xml.textContent : 'Y_UP';
+
+	    }
+
+	    // library
+
+	    function parseLibrary(xml, libraryName, nodeName, parser) {
+
+	      var library = getElementsByTagName(xml, libraryName)[0];
+
+	      if (library !== undefined) {
+
+	        var elements = getElementsByTagName(library, nodeName);
+
+	        for (var i = 0; i < elements.length; i++) {
+
+	          parser(elements[i]);
+
+	        }
+
+	      }
+
+	    }
+
+	    function buildLibrary(data, builder) {
+
+	      for (var name in data) {
+
+	        var object = data[name];
+	        object.build = builder(data[name]);
+
+	      }
+
+	    }
+
+	    // get
+
+	    function getBuild(data, builder) {
+
+	      if (data.build !== undefined) return data.build;
+
+	      data.build = builder(data);
+
+	      return data.build;
+
+	    }
+
+	    // animation
+
+	    function parseAnimation(xml) {
+
+	      var data = {
+	        sources: {},
+	        samplers: {},
+	        channels: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        var id;
+
+	        switch (child.nodeName) {
+
+	          case 'source':
+	            id = child.getAttribute('id');
+	            data.sources[id] = parseSource(child);
+	            break;
+
+	          case 'sampler':
+	            id = child.getAttribute('id');
+	            data.samplers[id] = parseAnimationSampler(child);
+	            break;
+
+	          case 'channel':
+	            id = child.getAttribute('target');
+	            data.channels[id] = parseAnimationChannel(child);
+	            break;
+
+	          default:
+	            console.log(child);
+
+	        }
+
+	      }
+
+	      library.animations[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseAnimationSampler(xml) {
+
+	      var data = {
+	        inputs: {},
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'input':
+	            var id = parseId(child.getAttribute('source'));
+	            var semantic = child.getAttribute('semantic');
+	            data.inputs[semantic] = id;
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseAnimationChannel(xml) {
+
+	      var data = {};
+
+	      var target = xml.getAttribute('target');
+
+	      // parsing SID Addressing Syntax
+
+	      var parts = target.split('/');
+
+	      var id = parts.shift();
+	      var sid = parts.shift();
+
+	      // check selection syntax
+
+	      var arraySyntax = (sid.indexOf('(') !== - 1);
+	      var memberSyntax = (sid.indexOf('.') !== - 1);
+
+	      if (memberSyntax) {
+
+	        //  member selection access
+
+	        parts = sid.split('.');
+	        sid = parts.shift();
+	        data.member = parts.shift();
+
+	      } else if (arraySyntax) {
+
+	        // array-access syntax. can be used to express fields in one-dimensional vectors or two-dimensional matrices.
+
+	        var indices = sid.split('(');
+	        sid = indices.shift();
+
+	        for (var i = 0; i < indices.length; i++) {
+
+	          indices[i] = parseInt(indices[i].replace(/\)/, ''));
+
+	        }
+
+	        data.indices = indices;
+
+	      }
+
+	      data.id = id;
+	      data.sid = sid;
+
+	      data.arraySyntax = arraySyntax;
+	      data.memberSyntax = memberSyntax;
+
+	      data.sampler = parseId(xml.getAttribute('source'));
+
+	      return data;
+
+	    }
+
+	    function buildAnimation(data) {
+
+	      var tracks = [];
+
+	      var channels = data.channels;
+	      var samplers = data.samplers;
+	      var sources = data.sources;
+
+	      for (var target in channels) {
+
+	        if (channels.hasOwnProperty(target)) {
+
+	          var channel = channels[target];
+	          var sampler = samplers[channel.sampler];
+
+	          var inputId = sampler.inputs.INPUT;
+	          var outputId = sampler.inputs.OUTPUT;
+
+	          var inputSource = sources[inputId];
+	          var outputSource = sources[outputId];
+
+	          var animation = buildAnimationChannel(channel, inputSource, outputSource);
+
+	          createKeyframeTracks(animation, tracks);
+
+	        }
+
+	      }
+
+	      return tracks;
+
+	    }
+
+	    function getAnimation(id) {
+
+	      return getBuild(library.animations[id], buildAnimation);
+
+	    }
+
+	    function buildAnimationChannel(channel, inputSource, outputSource) {
+
+	      var node = library.nodes[channel.id];
+	      var object3D = getNode(node.id);
+
+	      var transform = node.transforms[channel.sid];
+	      var defaultMatrix = node.matrix.clone().transpose();
+
+	      var time, stride;
+	      var i, il, j, jl;
+
+	      var data = {};
+
+	      // the collada spec allows the animation of data in various ways.
+	      // depending on the transform type (matrix, translate, rotate, scale), we execute different logic
+
+	      switch (transform) {
+
+	        case 'matrix':
+
+	          for (i = 0, il = inputSource.array.length; i < il; i++) {
+
+	            time = inputSource.array[i];
+	            stride = i * outputSource.stride;
+
+	            if (data[time] === undefined) data[time] = {};
+
+	            if (channel.arraySyntax === true) {
+
+	              var value = outputSource.array[stride];
+	              var index = channel.indices[0] + 4 * channel.indices[1];
+
+	              data[time][index] = value;
+
+	            } else {
+
+	              for (j = 0, jl = outputSource.stride; j < jl; j++) {
+
+	                data[time][j] = outputSource.array[stride + j];
+
+	              }
+
+	            }
+
+	          }
+
+	          break;
+
+	        case 'translate':
+	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
+	          break;
+
+	        case 'rotate':
+	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
+	          break;
+
+	        case 'scale':
+	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
+	          break;
+
+	      }
+
+	      var keyframes = prepareAnimationData(data, defaultMatrix);
+
+	      var animation = {
+	        name: object3D.uuid,
+	        keyframes: keyframes
+	      };
+
+	      return animation;
+
+	    }
+
+	    function prepareAnimationData(data, defaultMatrix) {
+
+	      var keyframes = [];
+
+	      // transfer data into a sortable array
+
+	      for (var time in data) {
+
+	        keyframes.push({ time: parseFloat(time), value: data[time] });
+
+	      }
+
+	      // ensure keyframes are sorted by time
+
+	      keyframes.sort(ascending);
+
+	      // now we clean up all animation data, so we can use them for keyframe tracks
+
+	      for (var i = 0; i < 16; i++) {
+
+	        transformAnimationData(keyframes, i, defaultMatrix.elements[i]);
+
+	      }
+
+	      return keyframes;
+
+	      // array sort function
+
+	      function ascending(a, b) {
+
+	        return a.time - b.time;
+
+	      }
+
+	    }
+
+	    var position = new THREE$1.Vector3();
+	    var scale = new THREE$1.Vector3();
+	    var quaternion = new THREE$1.Quaternion();
+
+	    function createKeyframeTracks(animation, tracks) {
+
+	      var keyframes = animation.keyframes;
+	      var name = animation.name;
+
+	      var times = [];
+	      var positionData = [];
+	      var quaternionData = [];
+	      var scaleData = [];
+
+	      for (var i = 0, l = keyframes.length; i < l; i++) {
+
+	        var keyframe = keyframes[i];
+
+	        var time = keyframe.time;
+	        var value = keyframe.value;
+
+	        matrix.fromArray(value).transpose();
+	        matrix.decompose(position, quaternion, scale);
+
+	        times.push(time);
+	        positionData.push(position.x, position.y, position.z);
+	        quaternionData.push(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+	        scaleData.push(scale.x, scale.y, scale.z);
+
+	      }
+
+	      if (positionData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData));
+	      if (quaternionData.length > 0) tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData));
+	      if (scaleData.length > 0) tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData));
+
+	      return tracks;
+
+	    }
+
+	    function transformAnimationData(keyframes, property, defaultValue) {
+
+	      var keyframe;
+
+	      var empty = true;
+	      var i, l;
+
+	      // check, if values of a property are missing in our keyframes
+
+	      for (i = 0, l = keyframes.length; i < l; i++) {
+
+	        keyframe = keyframes[i];
+
+	        if (keyframe.value[property] === undefined) {
+
+	          keyframe.value[property] = null; // mark as missing
+
+	        } else {
+
+	          empty = false;
+
+	        }
+
+	      }
+
+	      if (empty === true) {
+
+	        // no values at all, so we set a default value
+
+	        for (i = 0, l = keyframes.length; i < l; i++) {
+
+	          keyframe = keyframes[i];
+
+	          keyframe.value[property] = defaultValue;
+
+	        }
+
+	      } else {
+
+	        // filling gaps
+
+	        createMissingKeyframes(keyframes, property);
+
+	      }
+
+	    }
+
+	    function createMissingKeyframes(keyframes, property) {
+
+	      var prev, next;
+
+	      for (var i = 0, l = keyframes.length; i < l; i++) {
+
+	        var keyframe = keyframes[i];
+
+	        if (keyframe.value[property] === null) {
+
+	          prev = getPrev(keyframes, i, property);
+	          next = getNext(keyframes, i, property);
+
+	          if (prev === null) {
+
+	            keyframe.value[property] = next.value[property];
+	            continue;
+
+	          }
+
+	          if (next === null) {
+
+	            keyframe.value[property] = prev.value[property];
+	            continue;
+
+	          }
+
+	          interpolate(keyframe, prev, next, property);
+
+	        }
+
+	      }
+
+	    }
+
+	    function getPrev(keyframes, i, property) {
+
+	      while (i >= 0) {
+
+	        var keyframe = keyframes[i];
+
+	        if (keyframe.value[property] !== null) return keyframe;
+
+	        i--;
+
+	      }
+
+	      return null;
+
+	    }
+
+	    function getNext(keyframes, i, property) {
+
+	      while (i < keyframes.length) {
+
+	        var keyframe = keyframes[i];
+
+	        if (keyframe.value[property] !== null) return keyframe;
+
+	        i++;
+
+	      }
+
+	      return null;
+
+	    }
+
+	    function interpolate(key, prev, next, property) {
+
+	      if ((next.time - prev.time) === 0) {
+
+	        key.value[property] = prev.value[property];
+	        return;
+
+	      }
+
+	      key.value[property] = ((key.time - prev.time) * (next.value[property] - prev.value[property]) / (next.time - prev.time)) + prev.value[property];
+
+	    }
+
+	    // animation clips
+
+	    function parseAnimationClip(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('id') || 'default',
+	        start: parseFloat(xml.getAttribute('start') || 0),
+	        end: parseFloat(xml.getAttribute('end') || 0),
+	        animations: []
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'instance_animation':
+	            data.animations.push(parseId(child.getAttribute('url')));
+	            break;
+
+	        }
+
+	      }
+
+	      library.clips[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function buildAnimationClip(data) {
+
+	      var tracks = [];
+
+	      var name = data.name;
+	      var duration = (data.end - data.start) || - 1;
+	      var animations = data.animations;
+
+	      for (var i = 0, il = animations.length; i < il; i++) {
+
+	        var animationTracks = getAnimation(animations[i]);
+
+	        for (var j = 0, jl = animationTracks.length; j < jl; j++) {
+
+	          tracks.push(animationTracks[j]);
+
+	        }
+
+	      }
+
+	      return new THREE$1.AnimationClip(name, duration, tracks);
+
+	    }
+
+	    function getAnimationClip(id) {
+
+	      return getBuild(library.clips[id], buildAnimationClip);
+
+	    }
+
+	    // controller
+
+	    function parseController(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'skin':
+	            // there is exactly one skin per controller
+	            data.id = parseId(child.getAttribute('source'));
+	            data.skin = parseSkin(child);
+	            break;
+
+	          case 'morph':
+	            data.id = parseId(child.getAttribute('source'));
+	            console.warn('THREE.ColladaLoader: Morph target animation not supported yet.');
+	            break;
+
+	        }
+
+	      }
+
+	      library.controllers[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseSkin(xml) {
+
+	      var data = {
+	        sources: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'bind_shape_matrix':
+	            data.bindShapeMatrix = parseFloats(child.textContent);
+	            break;
+
+	          case 'source':
+	            var id = child.getAttribute('id');
+	            data.sources[id] = parseSource(child);
+	            break;
+
+	          case 'joints':
+	            data.joints = parseJoints(child);
+	            break;
+
+	          case 'vertex_weights':
+	            data.vertexWeights = parseVertexWeights(child);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseJoints(xml) {
+
+	      var data = {
+	        inputs: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'input':
+	            var semantic = child.getAttribute('semantic');
+	            var id = parseId(child.getAttribute('source'));
+	            data.inputs[semantic] = id;
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseVertexWeights(xml) {
+
+	      var data = {
+	        inputs: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'input':
+	            var semantic = child.getAttribute('semantic');
+	            var id = parseId(child.getAttribute('source'));
+	            var offset = parseInt(child.getAttribute('offset'));
+	            data.inputs[semantic] = { id: id, offset: offset };
+	            break;
+
+	          case 'vcount':
+	            data.vcount = parseInts(child.textContent);
+	            break;
+
+	          case 'v':
+	            data.v = parseInts(child.textContent);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function buildController(data) {
+
+	      var build = {
+	        id: data.id
+	      };
+
+	      var geometry = library.geometries[build.id];
+
+	      if (data.skin !== undefined) {
+
+	        build.skin = buildSkin(data.skin);
+
+	        // we enhance the 'sources' property of the corresponding geometry with our skin data
+
+	        geometry.sources.skinIndices = build.skin.indices;
+	        geometry.sources.skinWeights = build.skin.weights;
+
+	      }
+
+	      return build;
+
+	    }
+
+	    function buildSkin(data) {
+
+	      var BONE_LIMIT = 4;
+
+	      var build = {
+	        joints: [], // this must be an array to preserve the joint order
+	        indices: {
+	          array: [],
+	          stride: BONE_LIMIT
+	        },
+	        weights: {
+	          array: [],
+	          stride: BONE_LIMIT
+	        }
+	      };
+
+	      var sources = data.sources;
+	      var vertexWeights = data.vertexWeights;
+
+	      var vcount = vertexWeights.vcount;
+	      var v = vertexWeights.v;
+	      var jointOffset = vertexWeights.inputs.JOINT.offset;
+	      var weightOffset = vertexWeights.inputs.WEIGHT.offset;
+
+	      var jointSource = data.sources[data.joints.inputs.JOINT];
+	      var inverseSource = data.sources[data.joints.inputs.INV_BIND_MATRIX];
+
+	      var weights = sources[vertexWeights.inputs.WEIGHT.id].array;
+	      var stride = 0;
+
+	      var i, j, l;
+
+	      // procces skin data for each vertex
+
+	      for (i = 0, l = vcount.length; i < l; i++) {
+
+	        var jointCount = vcount[i]; // this is the amount of joints that affect a single vertex
+	        var vertexSkinData = [];
+
+	        for (j = 0; j < jointCount; j++) {
+
+	          var skinIndex = v[stride + jointOffset];
+	          var weightId = v[stride + weightOffset];
+	          var skinWeight = weights[weightId];
+
+	          vertexSkinData.push({ index: skinIndex, weight: skinWeight });
+
+	          stride += 2;
+
+	        }
+
+	        // we sort the joints in descending order based on the weights.
+	        // this ensures, we only procced the most important joints of the vertex
+
+	        vertexSkinData.sort(descending);
+
+	        // now we provide for each vertex a set of four index and weight values.
+	        // the order of the skin data matches the order of vertices
+
+	        for (j = 0; j < BONE_LIMIT; j++) {
+
+	          var d = vertexSkinData[j];
+
+	          if (d !== undefined) {
+
+	            build.indices.array.push(d.index);
+	            build.weights.array.push(d.weight);
+
+	          } else {
+
+	            build.indices.array.push(0);
+	            build.weights.array.push(0);
+
+	          }
+
+	        }
+
+	      }
+
+	      // setup bind matrix
+
+	      build.bindMatrix = new THREE$1.Matrix4().fromArray(data.bindShapeMatrix).transpose();
+
+	      // process bones and inverse bind matrix data
+
+	      for (i = 0, l = jointSource.array.length; i < l; i++) {
+
+	        var name = jointSource.array[i];
+	        var boneInverse = new THREE$1.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
+
+	        build.joints.push({ name: name, boneInverse: boneInverse });
+
+	      }
+
+	      return build;
+
+	      // array sort function
+
+	      function descending(a, b) {
+
+	        return b.weight - a.weight;
+
+	      }
+
+	    }
+
+	    function getController(id) {
+
+	      return getBuild(library.controllers[id], buildController);
+
+	    }
+
+	    // image
+
+	    function parseImage(xml) {
+
+	      var data = {
+	        init_from: getElementsByTagName(xml, 'init_from')[0].textContent
+	      };
+
+	      library.images[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function buildImage(data) {
+
+	      if (data.build !== undefined) return data.build;
+
+	      return data.init_from;
+
+	    }
+
+	    function getImage(id) {
+
+	      return getBuild(library.images[id], buildImage);
+
+	    }
+
+	    // effect
+
+	    function parseEffect(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'profile_COMMON':
+	            data.profile = parseEffectProfileCOMMON(child);
+	            break;
+
+	        }
+
+	      }
+
+	      library.effects[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseEffectProfileCOMMON(xml) {
+
+	      var data = {
+	        surfaces: {},
+	        samplers: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'newparam':
+	            parseEffectNewparam(child, data);
+	            break;
+
+	          case 'technique':
+	            data.technique = parseEffectTechnique(child);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectNewparam(xml, data) {
+
+	      var sid = xml.getAttribute('sid');
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'surface':
+	            data.surfaces[sid] = parseEffectSurface(child);
+	            break;
+
+	          case 'sampler2D':
+	            data.samplers[sid] = parseEffectSampler(child);
+	            break;
+
+	        }
+
+	      }
+
+	    }
+
+	    function parseEffectSurface(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'init_from':
+	            data.init_from = child.textContent;
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectSampler(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'source':
+	            data.source = child.textContent;
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectTechnique(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'constant':
+	          case 'lambert':
+	          case 'blinn':
+	          case 'phong':
+	            data.type = child.nodeName;
+	            data.parameters = parseEffectParameters(child);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectParameters(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'emission':
+	          case 'diffuse':
+	          case 'specular':
+	          case 'shininess':
+	          case 'transparent':
+	          case 'transparency':
+	            data[child.nodeName] = parseEffectParameter(child);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectParameter(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'color':
+	            data[child.nodeName] = parseFloats(child.textContent);
+	            break;
+
+	          case 'float':
+	            data[child.nodeName] = parseFloat(child.textContent);
+	            break;
+
+	          case 'texture':
+	            data[child.nodeName] = { id: child.getAttribute('texture'), extra: parseEffectParameterTexture(child) };
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectParameterTexture(xml) {
+
+	      var data = {
+	        technique: {}
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'extra':
+	            parseEffectParameterTextureExtra(child, data);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseEffectParameterTextureExtra(xml, data) {
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'technique':
+	            parseEffectParameterTextureExtraTechnique(child, data);
+	            break;
+
+	        }
+
+	      }
+
+	    }
+
+	    function parseEffectParameterTextureExtraTechnique(xml, data) {
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'repeatU':
+	          case 'repeatV':
+	          case 'offsetU':
+	          case 'offsetV':
+	            data.technique[child.nodeName] = parseFloat(child.textContent);
+	            break;
+
+	          case 'wrapU':
+	          case 'wrapV':
+
+	            // some files have values for wrapU/wrapV which become NaN via parseInt
+
+	            if (child.textContent.toUpperCase() === 'TRUE') {
+
+	              data.technique[child.nodeName] = 1;
+
+	            } else if (child.textContent.toUpperCase() === 'FALSE') {
+
+	              data.technique[child.nodeName] = 0;
+
+	            } else {
+
+	              data.technique[child.nodeName] = parseInt(child.textContent);
+
+	            }
+
+	            break;
+
+	        }
+
+	      }
+
+	    }
+
+	    function buildEffect(data) {
+
+	      return data;
+
+	    }
+
+	    function getEffect(id) {
+
+	      return getBuild(library.effects[id], buildEffect);
+
+	    }
+
+	    // material
+
+	    function parseMaterial(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name')
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'instance_effect':
+	            data.url = parseId(child.getAttribute('url'));
+	            break;
+
+	        }
+
+	      }
+
+	      library.materials[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function buildMaterial(data) {
+
+	      var effect = getEffect(data.url);
+	      var technique = effect.profile.technique;
+
+	      var material;
+
+	      switch (technique.type) {
+
+	        case 'phong':
+	        case 'blinn':
+	          material = new THREE$1.MeshPhongMaterial();
+	          break;
+
+	        case 'lambert':
+	          material = new THREE$1.MeshLambertMaterial();
+	          break;
+
+	        default:
+	          material = new THREE$1.MeshBasicMaterial();
+	          break;
+
+	      }
+
+	      material.name = data.name;
+
+	      function getTexture(textureObject) {
+
+	        var sampler = effect.profile.samplers[textureObject.id];
+
+	        if (sampler !== undefined) {
+
+	          var surface = effect.profile.surfaces[sampler.source];
+
+	          var texture = textureLoader.load(getImage(surface.init_from));
+
+	          var extra = textureObject.extra;
+
+	          if (extra !== undefined && extra.technique !== undefined && isEmpty(extra.technique) === false) {
+
+	            var technique = extra.technique;
+
+	            texture.wrapS = technique.wrapU ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
+	            texture.wrapT = technique.wrapV ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
+
+	            texture.offset.set(technique.offsetU || 0, technique.offsetV || 0);
+	            texture.repeat.set(technique.repeatU || 1, technique.repeatV || 1);
+
+	          } else {
+
+	            texture.wrapS = THREE$1.RepeatWrapping;
+	            texture.wrapT = THREE$1.RepeatWrapping;
+
+	          }
+
+	          return texture;
+
+	        }
+
+	        console.error('THREE.ColladaLoader: Undefined sampler', textureObject.id);
+
+	        return null;
+
+	      }
+
+	      var parameters = technique.parameters;
+
+	      for (var key in parameters) {
+
+	        var parameter = parameters[key];
+
+	        switch (key) {
+
+	          case 'diffuse':
+	            if (parameter.color) material.color.fromArray(parameter.color);
+	            if (parameter.texture) material.map = getTexture(parameter.texture);
+	            break;
+	          case 'specular':
+	            if (parameter.color && material.specular) material.specular.fromArray(parameter.color);
+	            if (parameter.texture) material.specularMap = getTexture(parameter.texture);
+	            break;
+	          case 'shininess':
+	            if (parameter.float && material.shininess)
+	              material.shininess = parameter.float;
+	            break;
+	          case 'emission':
+	            if (parameter.color && material.emissive)
+	              material.emissive.fromArray(parameter.color);
+	            break;
+	          case 'transparent':
+	            // if ( parameter.texture ) material.alphaMap = getTexture( parameter.texture );
+	            material.transparent = true;
+	            break;
+	          case 'transparency':
+	            if (parameter.float !== undefined) material.opacity = parameter.float;
+	            material.transparent = true;
+	            break;
+
+	        }
+
+	      }
+
+	      return material;
+
+	    }
+
+	    function getMaterial(id) {
+
+	      return getBuild(library.materials[id], buildMaterial);
+
+	    }
+
+	    // camera
+
+	    function parseCamera(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name')
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'optics':
+	            data.optics = parseCameraOptics(child);
+	            break;
+
+	        }
+
+	      }
+
+	      library.cameras[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseCameraOptics(xml) {
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        switch (child.nodeName) {
+
+	          case 'technique_common':
+	            return parseCameraTechnique(child);
+
+	        }
+
+	      }
+
+	      return {};
+
+	    }
+
+	    function parseCameraTechnique(xml) {
+
+	      var data = {};
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        switch (child.nodeName) {
+
+	          case 'perspective':
+	          case 'orthographic':
+
+	            data.technique = child.nodeName;
+	            data.parameters = parseCameraParameters(child);
+
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseCameraParameters(xml) {
+
+	      var data = {};
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        switch (child.nodeName) {
+
+	          case 'xfov':
+	          case 'yfov':
+	          case 'xmag':
+	          case 'ymag':
+	          case 'znear':
+	          case 'zfar':
+	          case 'aspect_ratio':
+	            data[child.nodeName] = parseFloat(child.textContent);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function buildCamera(data) {
+
+	      var camera;
+
+	      switch (data.optics.technique) {
+
+	        case 'perspective':
+	          camera = new THREE$1.PerspectiveCamera(
+	            data.optics.parameters.yfov,
+	            data.optics.parameters.aspect_ratio,
+	            data.optics.parameters.znear,
+	            data.optics.parameters.zfar
+	          );
+	          break;
+
+	        case 'orthographic':
+	          var ymag = data.optics.parameters.ymag;
+	          var xmag = data.optics.parameters.xmag;
+	          var aspectRatio = data.optics.parameters.aspect_ratio;
+
+	          xmag = (xmag === undefined) ? (ymag * aspectRatio) : xmag;
+	          ymag = (ymag === undefined) ? (xmag / aspectRatio) : ymag;
+
+	          xmag *= 0.5;
+	          ymag *= 0.5;
+
+	          camera = new THREE$1.OrthographicCamera(
+	            - xmag, xmag, ymag, - ymag, // left, right, top, bottom
+	            data.optics.parameters.znear,
+	            data.optics.parameters.zfar
+	          );
+	          break;
+
+	        default:
+	          camera = new THREE$1.PerspectiveCamera();
+	          break;
+
+	      }
+
+	      camera.name = data.name;
+
+	      return camera;
+
+	    }
+
+	    function getCamera(id) {
+	      var data = library.cameras[id];
+	      if (data !== undefined) {
+	        return getBuild(data, buildCamera);
+	      }
+	      return null;
+	    }
+
+	    // light
+
+	    function parseLight(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'technique_common':
+	            data = parseLightTechnique(child);
+	            break;
+
+	        }
+
+	      }
+
+	      library.lights[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseLightTechnique(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'directional':
+	          case 'point':
+	          case 'spot':
+	          case 'ambient':
+
+	            data.technique = child.nodeName;
+	            data.parameters = parseLightParameters(child);
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseLightParameters(xml) {
+
+	      var data = {};
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'color':
+	            var array = parseFloats(child.textContent);
+	            data.color = new THREE$1.Color().fromArray(array);
+	            break;
+
+	          case 'falloff_angle':
+	            data.falloffAngle = parseFloat(child.textContent);
+	            break;
+
+	          case 'quadratic_attenuation':
+	            var f = parseFloat(child.textContent);
+	            data.distance = f ? Math.sqrt(1 / f) : 0;
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function buildLight(data) {
+
+	      var light;
+
+	      switch (data.technique) {
+
+	        case 'directional':
+	          light = new THREE$1.DirectionalLight();
+	          break;
+
+	        case 'point':
+	          light = new THREE$1.PointLight();
+	          break;
+
+	        case 'spot':
+	          light = new THREE$1.SpotLight();
+	          break;
+
+	        case 'ambient':
+	          light = new THREE$1.AmbientLight();
+	          break;
+
+	      }
+
+	      if (data.parameters.color) light.color.copy(data.parameters.color);
+	      if (data.parameters.distance) light.distance = data.parameters.distance;
+
+	      return light;
+
+	    }
+
+	    // geometry
+
+	    function parseGeometry(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name'),
+	        sources: {},
+	        vertices: {},
+	        primitives: []
+	      };
+
+	      var mesh = getElementsByTagName(xml, 'mesh')[0];
+
+	      for (var i = 0; i < mesh.childNodes.length; i++) {
+
+	        var child = mesh.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        var id = child.getAttribute('id');
+
+	        switch (child.nodeName) {
+
+	          case 'source':
+	            data.sources[id] = parseSource(child);
+	            break;
+
+	          case 'vertices':
+	            // data.sources[ id ] = data.sources[ parseId( getElementsByTagName( child, 'input' )[ 0 ].getAttribute( 'source' ) ) ];
+	            data.vertices = parseGeometryVertices(child);
+	            break;
+
+	          case 'polygons':
+	            console.warn('THREE.ColladaLoader: Unsupported primitive type: ', child.nodeName);
+	            break;
+
+	          case 'lines':
+	          case 'linestrips':
+	          case 'polylist':
+	          case 'triangles':
+	            data.primitives.push(parseGeometryPrimitive(child));
+	            break;
+
+	          default:
+	            console.log(child);
+
+	        }
+
+	      }
+
+	      library.geometries[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function parseSource(xml) {
+
+	      var data = {
+	        array: [],
+	        stride: 3
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'float_array':
+	            data.array = parseFloats(child.textContent);
+	            break;
+
+	          case 'Name_array':
+	            data.array = parseStrings(child.textContent);
+	            break;
+
+	          case 'technique_common':
+	            var accessor = getElementsByTagName(child, 'accessor')[0];
+
+	            if (accessor !== undefined) {
+
+	              data.stride = parseInt(accessor.getAttribute('stride'));
+
+	            }
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseGeometryVertices(xml) {
+
+	      var data = {};
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        data[child.getAttribute('semantic')] = parseId(child.getAttribute('source'));
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseGeometryPrimitive(xml) {
+
+	      var primitive = {
+	        type: xml.nodeName,
+	        material: xml.getAttribute('material'),
+	        count: parseInt(xml.getAttribute('count')),
+	        inputs: {},
+	        stride: 0
+	      };
+
+	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'input':
+	            var id = parseId(child.getAttribute('source'));
+	            var semantic = child.getAttribute('semantic');
+	            var offset = parseInt(child.getAttribute('offset'));
+	            primitive.inputs[semantic] = { id: id, offset: offset };
+	            primitive.stride = Math.max(primitive.stride, offset + 1);
+	            break;
+
+	          case 'vcount':
+	            primitive.vcount = parseInts(child.textContent);
+	            break;
+
+	          case 'p':
+	            primitive.p = parseInts(child.textContent);
+	            break;
+
+	        }
+
+	      }
+
+	      return primitive;
+
+	    }
+
+	    function groupPrimitives(primitives) {
+
+	      var build = {};
+
+	      for (var i = 0; i < primitives.length; i++) {
+
+	        var primitive = primitives[i];
+
+	        if (build[primitive.type] === undefined) build[primitive.type] = [];
+
+	        build[primitive.type].push(primitive);
+
+	      }
+
+	      return build;
+
+	    }
+
+	    function buildGeometry(data) {
+
+	      var build = {};
+
+	      var sources = data.sources;
+	      var vertices = data.vertices;
+	      var primitives = data.primitives;
+
+	      if (primitives.length === 0) return {};
+
+	      // our goal is to create one buffer geoemtry for a single type of primitives
+	      // first, we group all primitives by their type
+
+	      var groupedPrimitives = groupPrimitives(primitives);
+
+	      for (var type in groupedPrimitives) {
+
+	        // second, we create for each type of primitives (polylist,triangles or lines) a buffer geometry
+
+	        build[type] = buildGeometryType(groupedPrimitives[type], sources, vertices);
+
+	      }
+
+	      return build;
+
+	    }
+
+	    function buildGeometryType(primitives, sources, vertices) {
+
+	      var build = {};
+
+	      var position = { array: [], stride: 0 };
+	      var normal = { array: [], stride: 0 };
+	      var uv = { array: [], stride: 0 };
+	      var color = { array: [], stride: 0 };
+
+	      var skinIndex = { array: [], stride: 4 };
+	      var skinWeight = { array: [], stride: 4 };
+
+	      var geometry = new THREE$1.BufferGeometry();
+
+	      var materialKeys = [];
+
+	      var start = 0, count = 0;
+
+	      for (var p = 0; p < primitives.length; p++) {
+
+	        var primitive = primitives[p];
+	        var inputs = primitive.inputs;
+	        var triangleCount = 1;
+
+	        if (primitive.vcount && primitive.vcount[0] === 4) {
+
+	          triangleCount = 2; // one quad -> two triangles
+
+	        }
+
+	        // groups
+
+	        if (primitive.type === 'lines' || primitive.type === 'linestrips') {
+
+	          count = primitive.count * 2;
+
+	        } else {
+
+	          count = primitive.count * 3 * triangleCount;
+
+	        }
+
+	        geometry.addGroup(start, count, p);
+	        start += count;
+
+	        // material
+
+	        if (primitive.material) {
+
+	          materialKeys.push(primitive.material);
+
+	        }
+
+	        // geometry data
+
+	        for (var name in inputs) {
+
+	          var input = inputs[name];
+
+	          switch (name) {
+
+	            case 'VERTEX':
+	              for (var key in vertices) {
+
+	                var id = vertices[key];
+
+	                switch (key) {
+
+	                  case 'POSITION':
+	                    buildGeometryData(primitive, sources[id], input.offset, position.array);
+	                    position.stride = sources[id].stride;
+
+	                    if (sources.skinWeights && sources.skinIndices) {
+
+	                      buildGeometryData(primitive, sources.skinIndices, input.offset, skinIndex.array);
+	                      buildGeometryData(primitive, sources.skinWeights, input.offset, skinWeight.array);
+
+	                    }
+	                    break;
+
+	                  case 'NORMAL':
+	                    buildGeometryData(primitive, sources[id], input.offset, normal.array);
+	                    normal.stride = sources[id].stride;
+	                    break;
+
+	                  case 'COLOR':
+	                    buildGeometryData(primitive, sources[id], input.offset, color.array);
+	                    color.stride = sources[id].stride;
+	                    break;
+
+	                  case 'TEXCOORD':
+	                    buildGeometryData(primitive, sources[id], input.offset, uv.array);
+	                    uv.stride = sources[id].stride;
+	                    break;
+
+	                  default:
+	                    console.warn('THREE.ColladaLoader: Semantic "%s" not handled in geometry build process.', key);
+
+	                }
+
+	              }
+	              break;
+
+	            case 'NORMAL':
+	              buildGeometryData(primitive, sources[input.id], input.offset, normal.array);
+	              normal.stride = sources[input.id].stride;
+	              break;
+
+	            case 'COLOR':
+	              buildGeometryData(primitive, sources[input.id], input.offset, color.array);
+	              color.stride = sources[input.id].stride;
+	              break;
+
+	            case 'TEXCOORD':
+	              buildGeometryData(primitive, sources[input.id], input.offset, uv.array);
+	              uv.stride = sources[input.id].stride;
+	              break;
+
+	          }
+
+	        }
+
+	      }
+
+	      // build geometry
+
+	      if (position.array.length > 0) geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride));
+	      if (normal.array.length > 0) geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride));
+	      if (color.array.length > 0) geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride));
+	      if (uv.array.length > 0) geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride));
+
+	      if (skinIndex.array.length > 0) geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride));
+	      if (skinWeight.array.length > 0) geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride));
+
+	      build.data = geometry;
+	      build.type = primitives[0].type;
+	      build.materialKeys = materialKeys;
+
+	      return build;
+
+	    }
+
+	    function buildGeometryData(primitive, source, offset, array) {
+
+	      var indices = primitive.p;
+	      var stride = primitive.stride;
+	      var vcount = primitive.vcount;
+
+	      function pushVector(i) {
+
+	        var index = indices[i + offset] * sourceStride;
+	        var length = index + sourceStride;
+
+	        for (; index < length; index++) {
+
+	          array.push(sourceArray[index]);
+
+	        }
+
+	      }
+
+	      var maxcount = 0;
+
+	      var sourceArray = source.array;
+	      var sourceStride = source.stride;
+
+	      if (primitive.vcount !== undefined) {
+
+	        var index = 0;
+
+	        for (var i = 0, l = vcount.length; i < l; i++) {
+
+	          var count = vcount[i];
+
+	          if (count === 4) {
+
+	            var a = index + stride * 0;
+	            var b = index + stride * 1;
+	            var c = index + stride * 2;
+	            var d = index + stride * 3;
+
+	            pushVector(a); pushVector(b); pushVector(d);
+	            pushVector(b); pushVector(c); pushVector(d);
+
+	          } else if (count === 3) {
+
+	            var a = index + stride * 0;
+	            var b = index + stride * 1;
+	            var c = index + stride * 2;
+
+	            pushVector(a); pushVector(b); pushVector(c);
+
+	          } else {
+
+	            maxcount = Math.max(maxcount, count);
+
+	          }
+
+	          index += stride * count;
+
+	        }
+
+	        if (maxcount > 0) {
+
+	          console.log('THREE.ColladaLoader: Geometry has faces with more than 4 vertices.');
+
+	        }
+
+	      } else {
+
+	        for (var i = 0, l = indices.length; i < l; i += stride) {
+
+	          pushVector(i);
+
+	        }
+
+	      }
+
+	    }
+
+	    function getGeometry(id) {
+
+	      return getBuild(library.geometries[id], buildGeometry);
+
+	    }
+
+	    // kinematics
+
+	    function parseKinematicsModel(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name') || '',
+	        joints: {},
+	        links: []
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'technique_common':
+	            parseKinematicsTechniqueCommon(child, data);
+	            break;
+
+	        }
+
+	      }
+
+	      library.kinematicsModels[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function buildKinematicsModel(data) {
+
+	      if (data.build !== undefined) return data.build;
+
+	      return data;
+
+	    }
+
+	    function getKinematicsModel(id) {
+
+	      return getBuild(library.kinematicsModels[id], buildKinematicsModel);
+
+	    }
+
+	    function parseKinematicsTechniqueCommon(xml, data) {
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'joint':
+	            data.joints[child.getAttribute('sid')] = parseKinematicsJoint(child);
+	            break;
+
+	          case 'link':
+	            data.links.push(parseKinematicsLink(child));
+	            break;
+
+	        }
+
+	      }
+
+	    }
+
+	    function parseKinematicsJoint(xml) {
+
+	      var data;
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'prismatic':
+	          case 'revolute':
+	            data = parseKinematicsJointParameter(child);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseKinematicsJointParameter(xml, data) {
+
+	      var data = {
+	        sid: xml.getAttribute('sid'),
+	        name: xml.getAttribute('name') || '',
+	        axis: new THREE$1.Vector3(),
+	        limits: {
+	          min: 0,
+	          max: 0
+	        },
+	        type: xml.nodeName,
+	        static: false,
+	        zeroPosition: 0,
+	        middlePosition: 0
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'axis':
+	            var array = parseFloats(child.textContent);
+	            data.axis.fromArray(array);
+	            break;
+	          case 'limits':
+	            var max = child.getElementsByTagName('max')[0];
+	            var min = child.getElementsByTagName('min')[0];
+
+	            data.limits.max = parseFloat(max.textContent);
+	            data.limits.min = parseFloat(min.textContent);
+	            break;
+
+	        }
+
+	      }
+
+	      // if min is equal to or greater than max, consider the joint static
+
+	      if (data.limits.min >= data.limits.max) {
+
+	        data.static = true;
+
+	      }
+
+	      // calculate middle position
+
+	      data.middlePosition = (data.limits.min + data.limits.max) / 2.0;
+
+	      return data;
+
+	    }
+
+	    function parseKinematicsLink(xml) {
+
+	      var data = {
+	        sid: xml.getAttribute('sid'),
+	        name: xml.getAttribute('name') || '',
+	        attachments: [],
+	        transforms: []
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'attachment_full':
+	            data.attachments.push(parseKinematicsAttachment(child));
+	            break;
+
+	          case 'matrix':
+	          case 'translate':
+	          case 'rotate':
+	            data.transforms.push(parseKinematicsTransform(child));
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseKinematicsAttachment(xml) {
+
+	      var data = {
+	        joint: xml.getAttribute('joint').split('/').pop(),
+	        transforms: [],
+	        links: []
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'link':
+	            data.links.push(parseKinematicsLink(child));
+	            break;
+
+	          case 'matrix':
+	          case 'translate':
+	          case 'rotate':
+	            data.transforms.push(parseKinematicsTransform(child));
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseKinematicsTransform(xml) {
+
+	      var data = {
+	        type: xml.nodeName
+	      };
+
+	      var array = parseFloats(xml.textContent);
+
+	      switch (data.type) {
+
+	        case 'matrix':
+	          data.obj = new THREE$1.Matrix4();
+	          data.obj.fromArray(array).transpose();
+	          break;
+
+	        case 'translate':
+	          data.obj = new THREE$1.Vector3();
+	          data.obj.fromArray(array);
+	          break;
+
+	        case 'rotate':
+	          data.obj = new THREE$1.Vector3();
+	          data.obj.fromArray(array);
+	          data.angle = THREE$1.Math.degToRad(array[3]);
+	          break;
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function parseKinematicsScene(xml) {
+
+	      var data = {
+	        bindJointAxis: []
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'bind_joint_axis':
+	            data.bindJointAxis.push(parseKinematicsBindJointAxis(child));
+	            break;
+
+	        }
+
+	      }
+
+	      library.kinematicsScenes[parseId(xml.getAttribute('url'))] = data;
+
+	    }
+
+	    function parseKinematicsBindJointAxis(xml) {
+
+	      var data = {
+	        target: xml.getAttribute('target').split('/').pop()
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'axis':
+	            var param = child.getElementsByTagName('param')[0];
+	            data.axis = param.textContent;
+	            var tmpJointIndex = data.axis.split('inst_').pop().split('axis')[0];
+	            data.jointIndex = tmpJointIndex.substr(0, tmpJointIndex.length - 1);
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function buildKinematicsScene(data) {
+
+	      if (data.build !== undefined) return data.build;
+
+	      return data;
+
+	    }
+
+	    function getKinematicsScene(id) {
+
+	      return getBuild(library.kinematicsScenes[id], buildKinematicsScene);
+
+	    }
+
+	    function setupKinematics() {
+
+	      var kinematicsModelId = Object.keys(library.kinematicsModels)[0];
+	      var kinematicsSceneId = Object.keys(library.kinematicsScenes)[0];
+	      var visualSceneId = Object.keys(library.visualScenes)[0];
+
+	      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) return;
+
+	      var kinematicsModel = getKinematicsModel(kinematicsModelId);
+	      var kinematicsScene = getKinematicsScene(kinematicsSceneId);
+	      var visualScene = getVisualScene(visualSceneId);
+
+	      var bindJointAxis = kinematicsScene.bindJointAxis;
+	      var jointMap = {};
+
+	      for (var i = 0, l = bindJointAxis.length; i < l; i++) {
+
+	        var axis = bindJointAxis[i];
+
+	        // the result of the following query is an element of type 'translate', 'rotate','scale' or 'matrix'
+
+	        var targetElement = collada.querySelector('[sid="' + axis.target + '"]');
+
+	        if (targetElement) {
+
+	          // get the parent of the transfrom element
+
+	          var parentVisualElement = targetElement.parentElement;
+
+	          // connect the joint of the kinematics model with the element in the visual scene
+
+	          connect(axis.jointIndex, parentVisualElement);
+
+	        }
+
+	      }
+
+	      function connect(jointIndex, visualElement) {
+
+	        var visualElementName = visualElement.getAttribute('name');
+	        var joint = kinematicsModel.joints[jointIndex];
+
+	        visualScene.traverse(function (object) {
+
+	          if (object.name === visualElementName) {
+
+	            jointMap[jointIndex] = {
+	              object: object,
+	              transforms: buildTransformList(visualElement),
+	              joint: joint,
+	              position: joint.zeroPosition
+	            };
+
+	          }
+
+	        });
+
+	      }
+
+	      var m0 = new THREE$1.Matrix4();
+
+	      kinematics = {
+
+	        joints: kinematicsModel && kinematicsModel.joints,
+
+	        getJointValue: function (jointIndex) {
+
+	          var jointData = jointMap[jointIndex];
+
+	          if (jointData) {
+
+	            return jointData.position;
+
+	          } else {
+
+	            console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' doesn\'t exist.');
+
+	          }
+
+	        },
+
+	        setJointValue: function (jointIndex, value) {
+
+	          var jointData = jointMap[jointIndex];
+
+	          if (jointData) {
+
+	            var joint = jointData.joint;
+
+	            if (value > joint.limits.max || value < joint.limits.min) {
+
+	              console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' value ' + value + ' outside of limits (min: ' + joint.limits.min + ', max: ' + joint.limits.max + ').');
+
+	            } else if (joint.static) {
+
+	              console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' is static.');
+
+	            } else {
+
+	              var object = jointData.object;
+	              var axis = joint.axis;
+	              var transforms = jointData.transforms;
+
+	              matrix.identity();
+
+	              // each update, we have to apply all transforms in the correct order
+
+	              for (var i = 0; i < transforms.length; i++) {
+
+	                var transform = transforms[i];
+
+	                // if there is a connection of the transform node with a joint, apply the joint value
+
+	                if (transform.sid && transform.sid.indexOf(jointIndex) !== - 1) {
+
+	                  switch (joint.type) {
+
+	                    case 'revolute':
+	                      matrix.multiply(m0.makeRotationAxis(axis, THREE$1.Math.degToRad(value)));
+	                      break;
+
+	                    case 'prismatic':
+	                      matrix.multiply(m0.makeTranslation(axis.x * value, axis.y * value, axis.z * value));
+	                      break;
+
+	                    default:
+	                      console.warn('THREE.ColladaLoader: Unknown joint type: ' + joint.type);
+	                      break;
+
+	                  }
+
+	                } else {
+
+	                  switch (transform.type) {
+
+	                    case 'matrix':
+	                      matrix.multiply(transform.obj);
+	                      break;
+
+	                    case 'translate':
+	                      matrix.multiply(m0.makeTranslation(transform.obj.x, transform.obj.y, transform.obj.z));
+	                      break;
+
+	                    case 'scale':
+	                      matrix.scale(transform.obj);
+	                      break;
+
+	                    case 'rotate':
+	                      matrix.multiply(m0.makeRotationAxis(transform.obj, transform.angle));
+	                      break;
+
+	                  }
+
+	                }
+
+	              }
+
+	              object.matrix.copy(matrix);
+	              object.matrix.decompose(object.position, object.quaternion, object.scale);
+
+	              jointMap[jointIndex].position = value;
+
+	            }
+
+	          } else {
+
+	            console.log('THREE.ColladaLoader: ' + jointIndex + ' does not exist.');
+
+	          }
+
+	        }
+
+	      };
+
+	    }
+
+	    function buildTransformList(node) {
+
+	      var transforms = [];
+
+	      var xml = collada.querySelector('[id="' + node.id + '"]');
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'matrix':
+	            var array = parseFloats(child.textContent);
+	            var matrix = new THREE$1.Matrix4().fromArray(array).transpose();
+	            transforms.push({
+	              sid: child.getAttribute('sid'),
+	              type: child.nodeName,
+	              obj: matrix
+	            });
+	            break;
+
+	          case 'translate':
+	          case 'scale':
+	            var array = parseFloats(child.textContent);
+	            var vector = new THREE$1.Vector3().fromArray(array);
+	            transforms.push({
+	              sid: child.getAttribute('sid'),
+	              type: child.nodeName,
+	              obj: vector
+	            });
+	            break;
+
+	          case 'rotate':
+	            var array = parseFloats(child.textContent);
+	            var vector = new THREE$1.Vector3().fromArray(array);
+	            var angle = THREE$1.Math.degToRad(array[3]);
+	            transforms.push({
+	              sid: child.getAttribute('sid'),
+	              type: child.nodeName,
+	              obj: vector,
+	              angle: angle
+	            });
+	            break;
+
+	        }
+
+	      }
+
+	      return transforms;
+
+	    }
+
+	    // nodes
+
+	    function prepareNodes(xml) {
+
+	      var elements = xml.getElementsByTagName('node');
+
+	      // ensure all node elements have id attributes
+
+	      for (var i = 0; i < elements.length; i++) {
+
+	        var element = elements[i];
+
+	        if (element.hasAttribute('id') === false) {
+
+	          element.setAttribute('id', generateId());
+
+	        }
+
+	      }
+
+	    }
+
+	    var matrix = new THREE$1.Matrix4();
+	    var vector = new THREE$1.Vector3();
+
+	    function parseNode(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name') || '',
+	        type: xml.getAttribute('type'),
+	        id: xml.getAttribute('id'),
+	        sid: xml.getAttribute('sid'),
+	        matrix: new THREE$1.Matrix4(),
+	        nodes: [],
+	        instanceCameras: [],
+	        instanceControllers: [],
+	        instanceLights: [],
+	        instanceGeometries: [],
+	        instanceNodes: [],
+	        transforms: {}
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        if (child.nodeType !== 1) continue;
+
+	        switch (child.nodeName) {
+
+	          case 'node':
+	            data.nodes.push(child.getAttribute('id'));
+	            parseNode(child);
+	            break;
+
+	          case 'instance_camera':
+	            data.instanceCameras.push(parseId(child.getAttribute('url')));
+	            break;
+
+	          case 'instance_controller':
+	            data.instanceControllers.push(parseNodeInstance(child));
+	            break;
+
+	          case 'instance_light':
+	            data.instanceLights.push(parseId(child.getAttribute('url')));
+	            break;
+
+	          case 'instance_geometry':
+	            data.instanceGeometries.push(parseNodeInstance(child));
+	            break;
+
+	          case 'instance_node':
+	            data.instanceNodes.push(parseId(child.getAttribute('url')));
+	            break;
+
+	          case 'matrix':
+	            var array = parseFloats(child.textContent);
+	            data.matrix.multiply(matrix.fromArray(array).transpose());
+	            data.transforms[child.getAttribute('sid')] = child.nodeName;
+	            break;
+
+	          case 'translate':
+	            var array = parseFloats(child.textContent);
+	            vector.fromArray(array);
+	            data.matrix.multiply(matrix.makeTranslation(vector.x, vector.y, vector.z));
+	            data.transforms[child.getAttribute('sid')] = child.nodeName;
+	            break;
+
+	          case 'rotate':
+	            var array = parseFloats(child.textContent);
+	            var angle = THREE$1.Math.degToRad(array[3]);
+	            data.matrix.multiply(matrix.makeRotationAxis(vector.fromArray(array), angle));
+	            data.transforms[child.getAttribute('sid')] = child.nodeName;
+	            break;
+
+	          case 'scale':
+	            var array = parseFloats(child.textContent);
+	            data.matrix.scale(vector.fromArray(array));
+	            data.transforms[child.getAttribute('sid')] = child.nodeName;
+	            break;
+
+	          case 'extra':
+	            break;
+
+	          default:
+	            console.log(child);
+
+	        }
+
+	      }
+
+	      library.nodes[data.id] = data;
+
+	      return data;
+
+	    }
+
+	    function parseNodeInstance(xml) {
+
+	      var data = {
+	        id: parseId(xml.getAttribute('url')),
+	        materials: {},
+	        skeletons: []
+	      };
+
+	      for (var i = 0; i < xml.childNodes.length; i++) {
+
+	        var child = xml.childNodes[i];
+
+	        switch (child.nodeName) {
+
+	          case 'bind_material':
+	            var instances = child.getElementsByTagName('instance_material');
+
+	            for (var j = 0; j < instances.length; j++) {
+
+	              var instance = instances[j];
+	              var symbol = instance.getAttribute('symbol');
+	              var target = instance.getAttribute('target');
+
+	              data.materials[symbol] = parseId(target);
+
+	            }
+
+	            break;
+
+	          case 'skeleton':
+	            data.skeletons.push(parseId(child.textContent));
+	            break;
+
+	        }
+
+	      }
+
+	      return data;
+
+	    }
+
+	    function buildSkeleton(skeletons, joints) {
+
+	      var boneData = [];
+	      var sortedBoneData = [];
+
+	      var i, j, data;
+
+	      // a skeleton can have multiple root bones. collada expresses this
+	      // situtation with multiple "skeleton" tags per controller instance
+
+	      for (i = 0; i < skeletons.length; i++) {
+
+	        var skeleton = skeletons[i];
+	        var root = getNode(skeleton);
+
+	        // setup bone data for a single bone hierarchy
+
+	        buildBoneHierarchy(root, joints, boneData);
+
+	      }
+
+	      // sort bone data (the order is defined in the corresponding controller)
+
+	      for (i = 0; i < joints.length; i++) {
+
+	        for (j = 0; j < boneData.length; j++) {
+
+	          data = boneData[j];
+
+	          if (data.bone.name === joints[i].name) {
+
+	            sortedBoneData[i] = data;
+	            data.processed = true;
+	            break;
+
+	          }
+
+	        }
+
+	      }
+
+	      // add unprocessed bone data at the end of the list
+
+	      for (i = 0; i < boneData.length; i++) {
+
+	        data = boneData[i];
+
+	        if (data.processed === false) {
+
+	          sortedBoneData.push(data);
+	          data.processed = true;
+
+	        }
+
+	      }
+
+	      // setup arrays for skeleton creation
+
+	      var bones = [];
+	      var boneInverses = [];
+
+	      for (i = 0; i < sortedBoneData.length; i++) {
+
+	        data = sortedBoneData[i];
+
+	        bones.push(data.bone);
+	        boneInverses.push(data.boneInverse);
+
+	      }
+
+	      return new THREE$1.Skeleton(bones, boneInverses);
+
+	    }
+
+	    function buildBoneHierarchy(root, joints, boneData) {
+
+	      // setup bone data from visual scene
+
+	      root.traverse(function (object) {
+
+	        if (object.isBone === true) {
+
+	          var boneInverse;
+
+	          // retrieve the boneInverse from the controller data
+
+	          for (var i = 0; i < joints.length; i++) {
+
+	            var joint = joints[i];
+
+	            if (joint.name === object.name) {
+
+	              boneInverse = joint.boneInverse;
+	              break;
+
+	            }
+
+	          }
+
+	          if (boneInverse === undefined) {
+
+	            // Unfortunately, there can be joints in the visual scene that are not part of the
+	            // corresponding controller. In this case, we have to create a dummy boneInverse matrix
+	            // for the respective bone. This bone won't affect any vertices, because there are no skin indices
+	            // and weights defined for it. But we still have to add the bone to the sorted bone list in order to
+	            // ensure a correct animation of the model.
+
+	            boneInverse = new THREE$1.Matrix4();
+
+	          }
+
+	          boneData.push({ bone: object, boneInverse: boneInverse, processed: false });
+
+	        }
+
+	      });
+
+	    }
+
+	    function buildNode(data) {
+
+	      var objects = [];
+
+	      var matrix = data.matrix;
+	      var nodes = data.nodes;
+	      var type = data.type;
+	      var instanceCameras = data.instanceCameras;
+	      var instanceControllers = data.instanceControllers;
+	      var instanceLights = data.instanceLights;
+	      var instanceGeometries = data.instanceGeometries;
+	      var instanceNodes = data.instanceNodes;
+
+	      // nodes
+
+	      for (var i = 0, l = nodes.length; i < l; i++) {
+
+	        objects.push(getNode(nodes[i]));
+
+	      }
+
+	      // instance cameras
+
+	      for (var i = 0, l = instanceCameras.length; i < l; i++) {
+
+	        var instanceCamera = getCamera(instanceCameras[i]);
+
+	        if (instanceCamera !== null) {
+
+	          objects.push(instanceCamera.clone());
+
+	        }
+
+
+	      }
+
+	      // instance controllers
+
+	      for (var i = 0, l = instanceControllers.length; i < l; i++) {
+
+	        var instance = instanceControllers[i];
+	        var controller = getController(instance.id);
+	        var geometries = getGeometry(controller.id);
+	        var newObjects = buildObjects(geometries, instance.materials);
+
+	        var skeletons = instance.skeletons;
+	        var joints = controller.skin.joints;
+
+	        var skeleton = buildSkeleton(skeletons, joints);
+
+	        for (var j = 0, jl = newObjects.length; j < jl; j++) {
+
+	          var object = newObjects[j];
+
+	          if (object.isSkinnedMesh) {
+
+	            object.bind(skeleton, controller.skin.bindMatrix);
+	            object.normalizeSkinWeights();
+
+	          }
+
+	          objects.push(object);
+
+	        }
+
+	      }
+
+	      // instance lights
+
+	      for (var i = 0, l = instanceLights.length; i < l; i++) {
+	        var instanceCamera = getCamera(instanceCameras[i]);
+
+	        if (instanceCamera !== null) {
+
+	          objects.push(instanceCamera.clone());
+
+	        }
+
+	      }
+
+	      // instance geometries
+
+	      for (var i = 0, l = instanceGeometries.length; i < l; i++) {
+
+	        var instance = instanceGeometries[i];
+
+	        // a single geometry instance in collada can lead to multiple object3Ds.
+	        // this is the case when primitives are combined like triangles and lines
+
+	        var geometries = getGeometry(instance.id);
+	        var newObjects = buildObjects(geometries, instance.materials);
+
+	        for (var j = 0, jl = newObjects.length; j < jl; j++) {
+
+	          objects.push(newObjects[j]);
+
+	        }
+
+	      }
+
+	      // instance nodes
+
+	      for (var i = 0, l = instanceNodes.length; i < l; i++) {
+
+	        objects.push(getNode(instanceNodes[i]).clone());
+
+	      }
+
+	      var object;
+
+	      if (nodes.length === 0 && objects.length === 1) {
+
+	        object = objects[0];
+
+	      } else {
+
+	        object = (type === 'JOINT') ? new THREE$1.Bone() : new THREE$1.Object3D();
+
+	        for (var i = 0; i < objects.length; i++) {
+
+	          object.add(objects[i]);
+
+	        }
+
+	      }
+
+	      object.name = (type === 'JOINT') ? data.sid : data.name;
+	      object.matrix.copy(matrix);
+	      object.matrix.decompose(object.position, object.quaternion, object.scale);
+
+	      return object;
+
+	    }
+
+	    function resolveMaterialBinding(keys, instanceMaterials) {
+
+	      var materials = [];
+
+	      for (var i = 0, l = keys.length; i < l; i++) {
+
+	        var id = instanceMaterials[keys[i]];
+	        materials.push(getMaterial(id));
+
+	      }
+
+	      return materials;
+
+	    }
+
+	    function buildObjects(geometries, instanceMaterials) {
+
+	      var objects = [];
+
+	      for (var type in geometries) {
+
+	        var geometry = geometries[type];
+
+	        var materials = resolveMaterialBinding(geometry.materialKeys, instanceMaterials);
+
+	        // handle case if no materials are defined
+
+	        if (materials.length === 0) {
+
+	          if (type === 'lines' || type === 'linestrips') {
+
+	            materials.push(new THREE$1.LineBasicMaterial());
+
+	          } else {
+
+	            materials.push(new THREE$1.MeshPhongMaterial());
+
+	          }
+
+	        }
+
+	        // regard skinning
+
+	        var skinning = (geometry.data.attributes.skinIndex !== undefined);
+
+	        if (skinning) {
+
+	          for (var i = 0, l = materials.length; i < l; i++) {
+
+	            materials[i].skinning = true;
+
+	          }
+
+	        }
+
+	        // choose between a single or multi materials (material array)
+
+	        var material = (materials.length === 1) ? materials[0] : materials;
+
+	        // now create a specific 3D object
+
+	        var object;
+
+	        switch (type) {
+
+	          case 'lines':
+	            object = new THREE$1.LineSegments(geometry.data, material);
+	            break;
+
+	          case 'linestrips':
+	            object = new THREE$1.Line(geometry.data, material);
+	            break;
+
+	          case 'triangles':
+	          case 'polylist':
+	            if (skinning) {
+
+	              object = new THREE$1.SkinnedMesh(geometry.data, material);
+
+	            } else {
+
+	              object = new THREE$1.Mesh(geometry.data, material);
+
+	            }
+	            break;
+
+	        }
+
+	        objects.push(object);
+
+	      }
+
+	      return objects;
+
+	    }
+
+	    function getNode(id) {
+
+	      return getBuild(library.nodes[id], buildNode);
+
+	    }
+
+	    // visual scenes
+
+	    function parseVisualScene(xml) {
+
+	      var data = {
+	        name: xml.getAttribute('name'),
+	        children: []
+	      };
+
+	      prepareNodes(xml);
+
+	      var elements = getElementsByTagName(xml, 'node');
+
+	      for (var i = 0; i < elements.length; i++) {
+
+	        data.children.push(parseNode(elements[i]));
+
+	      }
+
+	      library.visualScenes[xml.getAttribute('id')] = data;
+
+	    }
+
+	    function buildVisualScene(data) {
+
+	      var group = new THREE$1.Object3D();
+	      group.name = data.name;
+
+	      var children = data.children;
+
+	      for (var i = 0; i < children.length; i++) {
+
+	        var child = children[i];
+
+	        if (child.id === null) {
+
+	          group.add(buildNode(child));
+
+	        } else {
+
+	          // if there is an ID, let's try to get the finished build (e.g. joints are already build)
+
+	          group.add(getNode(child.id));
+
+	        }
+
+	      }
+
+	      return group;
+
+	    }
+
+	    function getVisualScene(id) {
+
+	      return getBuild(library.visualScenes[id], buildVisualScene);
+
+	    }
+
+	    // scenes
+
+	    function parseScene(xml) {
+
+	      var instance = getElementsByTagName(xml, 'instance_visual_scene')[0];
+	      return getVisualScene(parseId(instance.getAttribute('url')));
+
+	    }
+
+	    function setupAnimations() {
+
+	      var clips = library.clips;
+
+	      if (isEmpty(clips) === true) {
+
+	        if (isEmpty(library.animations) === false) {
+
+	          // if there are animations but no clips, we create a default clip for playback
+
+	          var tracks = [];
+
+	          for (var id in library.animations) {
+
+	            var animationTracks = getAnimation(id);
+
+	            for (var i = 0, l = animationTracks.length; i < l; i++) {
+
+	              tracks.push(animationTracks[i]);
+
+	            }
+
+	          }
+
+	          animations.push(new THREE$1.AnimationClip('default', - 1, tracks));
+
+	        }
+
+	      } else {
+
+	        for (var id in clips) {
+
+	          animations.push(getAnimationClip(id));
+
+	        }
+
+	      }
+
+	    }
+
+	    console.time('THREE.ColladaLoader');
+
+	    if (text.length === 0) {
+
+	      return { scene: new THREE$1.Scene() };
+
+	    }
+
+	    console.time('THREE.ColladaLoader: DOMParser');
+
+	    var xml = new DOMParser().parseFromString(text, 'application/xml');
+
+	    console.timeEnd('THREE.ColladaLoader: DOMParser');
+
+	    var collada = getElementsByTagName(xml, 'COLLADA')[0];
+
+	    // metadata
+
+	    var version = collada.getAttribute('version');
+	    console.log('THREE.ColladaLoader: File version', version);
+
+	    var asset = parseAsset(getElementsByTagName(collada, 'asset')[0]);
+	    var textureLoader = new THREE$1.TextureLoader(this.manager);
+	    textureLoader.setPath(path).setCrossOrigin(this.crossOrigin);
+
+	    //
+
+	    var animations = [];
+	    var kinematics = {};
+	    var count = 0;
+
+	    //
+
+	    var library = {
+	      animations: {},
+	      clips: {},
+	      controllers: {},
+	      images: {},
+	      effects: {},
+	      materials: {},
+	      cameras: {},
+	      lights: {},
+	      geometries: {},
+	      nodes: {},
+	      visualScenes: {},
+	      kinematicsModels: {},
+	      kinematicsScenes: {}
+	    };
+
+	    console.time('THREE.ColladaLoader: Parse');
+
+	    parseLibrary(collada, 'library_animations', 'animation', parseAnimation);
+	    parseLibrary(collada, 'library_animation_clips', 'animation_clip', parseAnimationClip);
+	    parseLibrary(collada, 'library_controllers', 'controller', parseController);
+	    parseLibrary(collada, 'library_images', 'image', parseImage);
+	    parseLibrary(collada, 'library_effects', 'effect', parseEffect);
+	    parseLibrary(collada, 'library_materials', 'material', parseMaterial);
+	    parseLibrary(collada, 'library_cameras', 'camera', parseCamera);
+	    parseLibrary(collada, 'library_lights', 'light', parseLight);
+	    parseLibrary(collada, 'library_geometries', 'geometry', parseGeometry);
+	    parseLibrary(collada, 'library_nodes', 'node', parseNode);
+	    parseLibrary(collada, 'library_visual_scenes', 'visual_scene', parseVisualScene);
+	    parseLibrary(collada, 'library_kinematics_models', 'kinematics_model', parseKinematicsModel);
+	    parseLibrary(collada, 'scene', 'instance_kinematics_scene', parseKinematicsScene);
+
+	    console.timeEnd('THREE.ColladaLoader: Parse');
+
+	    console.time('THREE.ColladaLoader: Build');
+
+	    buildLibrary(library.animations, buildAnimation);
+	    buildLibrary(library.clips, buildAnimationClip);
+	    buildLibrary(library.controllers, buildController);
+	    buildLibrary(library.images, buildImage);
+	    buildLibrary(library.effects, buildEffect);
+	    buildLibrary(library.materials, buildMaterial);
+	    buildLibrary(library.cameras, buildCamera);
+	    buildLibrary(library.lights, buildLight);
+	    buildLibrary(library.geometries, buildGeometry);
+	    buildLibrary(library.visualScenes, buildVisualScene);
+
+	    console.timeEnd('THREE.ColladaLoader: Build');
+
+	    setupAnimations();
+	    setupKinematics();
+
+	    var scene = parseScene(getElementsByTagName(collada, 'scene')[0]);
+
+	    /*
+	     * up_axis of some robot models in ROS world aren't properly set because
+	     * rviz ignores this field. Thus, ignores Z_UP to show urdfs just like rviz.
+	     * See https://github.com/ros-visualization/rviz/issues/1045 for the detail
+	      if ( asset.upAxis === 'Z_UP' ) {
+
+	        scene.rotation.x = - Math.PI / 2;
+
+	      }
+	     */
+
+	    scene.scale.multiplyScalar(asset.unit);
+
+	    console.timeEnd('THREE.ColladaLoader');
+
+	    return {
+	      animations: animations,
+	      kinematics: kinematics,
+	      library: library,
+	      scene: scene
+	    };
+
+	  }
+
+	};
+
+	/**
+	 * @author Jose Rojas - jrojas@redlinesolutions.co
+	 */
+
+	 /**
+	  * MeshLoader is a singleton factory class for using various helper classes to
+	  * load mesh files of different types.
+	  *
+	  * It consists of one dictionary property 'loaders'. The dictionary keys consist
+	  * of the file extension for each supported loader type. The dictionary values
+	  * are functions used to construct the loader objects. The functions have the
+	  * following parameters:
+	  *
+	  *  * meshRes - the MeshResource that will contain the loaded mesh
+	  *  * uri - the uri path to the mesh file
+	  *  @returns loader object
+	  */
+	var MeshLoader = {
+	   onError: function(error) {
+	     console.error(error);
+	   },
+	   loaders: {
+	     'dae': function(meshRes, uri, options) {
+	       const material = options.material;
+	       const loader = new THREE$1.ColladaLoader(options.loader);
+	       loader.log = function(message) {
+	         if (meshRes.warnings) {
+	           console.warn(message);
+	         }
+	       };
+	       loader.load(
+	         uri,
+	         function colladaReady(collada) {
+	           // check for a scale factor in ColladaLoader2
+	           // add a texture to anything that is missing one
+	           if(material !== null) {
+	             collada.scene.traverse(function(child) {
+	               if(child instanceof THREE$1.Mesh) {
+	                 if(child.material === undefined) {
+	                   child.material = material;
+	                 }
+	               }
+	             });
+	           }
+
+	           meshRes.add(collada.scene);
+	         },
+	         /*onProgress=*/null,
+	         MeshLoader.onError);
+	         return loader;
+	     },
+
+	     'obj': function(meshRes, uri, options) {
+	       options.material;
+	       const loader = new THREE$1.OBJLoader(options.loader);
+	       loader.log = function(message) {
+	         if (meshRes.warnings) {
+	           console.warn(message);
+	         }
+	       };
+
+	       //Reload the mesh again after materials have been loaded
+	       // @todo: this should be improved so that the file doesn't need to be
+	       // reloaded however that would involve more changes within the OBJLoader.
+	       function onMaterialsLoaded(loader, materials) {
+	         loader.
+	         setMaterials(materials).
+	         load(
+	           uri,
+	           function OBJMaterialsReady(obj) {
+	             // add the container group
+	             meshRes.add(obj);
+	           },
+	           null,
+	           MeshLoader.onError);
+	       }
+
+	       loader.load(
+	         uri,
+	         function OBJFileReady(obj) {
+
+	           const baseUri = THREE$1.LoaderUtils.extractUrlBase( uri );
+
+	           if (obj.materialLibraries.length) {
+	             // load the material libraries
+	             const materialUri = obj.materialLibraries[0];
+	             new THREE$1.MTLLoader(options.loader).setPath(baseUri).load(
+	               materialUri,
+	               function(materials) {
+	                  materials.preload();
+	                  onMaterialsLoaded(loader, materials);
+	               },
+	               null,
+	               MeshLoader.onError
+	             );
+	           } else {
+	             // add the container group
+	             meshRes.add(obj);
+	           }
+
+	         },
+	         /*onProgress=*/null,
+	         MeshLoader.onError
+	         );
+	         return loader;
+	     },
+
+	     'stl': function(meshRes, uri, options) {
+	       const material = options.material;
+	       const loader = new THREE$1.STLLoader(options.loader);
+	       {
+	         loader.load(uri,
+	                     function ( geometry ) {
+	                       geometry.computeFaceNormals();
+	                       var mesh;
+	                       if(material !== null) {
+	                         mesh = new THREE$1.Mesh( geometry, material );
+	                       } else {
+	                         mesh = new THREE$1.Mesh( geometry,
+	                                                new THREE$1.MeshBasicMaterial( { color: 0x999999 } ) );
+	                       }
+	                       meshRes.add(mesh);
+	                     },
+	                     /*onProgress=*/null,
+	                     MeshLoader.onError);
+	       }
+	       return loader;
+	     }
+
+	   }
+	 };
+
+	/**
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class MeshResource extends THREE.Object3D {
+	class MeshResource extends THREE$1.Object3D {
 
 	  /**
 	   * A MeshResource is an THREE object that will load from a external mesh file. Currently loads
@@ -46628,7 +51916,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class TriangleList extends THREE.Object3D {
+	class TriangleList extends THREE$1.Object3D {
 
 	  /**
 	   * A TriangleList is a THREE object that can be used to display a list of triangles as a geometry.
@@ -46642,19 +51930,19 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  constructor(options) {
 	    options = options || {};
-	    var material = options.material || new THREE.MeshBasicMaterial();
+	    var material = options.material || new THREE$1.MeshBasicMaterial();
 	    var vertices = options.vertices;
 	    var colors = options.colors;
 
 	    super();
 
 	    // set the material to be double sided
-	    material.side = THREE.DoubleSide;
+	    material.side = THREE$1.DoubleSide;
 
 	    // construct the geometry
-	    var geometry = new THREE.Geometry();
+	    var geometry = new THREE$1.Geometry();
 	    for (i = 0; i < vertices.length; i++) {
-	      geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
+	      geometry.vertices.push(new THREE$1.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
 	    }
 
 	    // set the colors
@@ -46662,27 +51950,27 @@ var ROS3D = (function (exports, ROSLIB) {
 	    if (colors.length === vertices.length) {
 	      // use per-vertex color
 	      for (i = 0; i < vertices.length; i += 3) {
-	        var faceVert = new THREE.Face3(i, i + 1, i + 2);
+	        var faceVert = new THREE$1.Face3(i, i + 1, i + 2);
 	        for (j = i * 3; j < i * 3 + 3; i++) {
-	          var color = new THREE.Color();
+	          var color = new THREE$1.Color();
 	          color.setRGB(colors[i].r, colors[i].g, colors[i].b);
 	          faceVert.vertexColors.push(color);
 	        }
 	        geometry.faces.push(faceVert);
 	      }
-	      material.vertexColors = THREE.VertexColors;
+	      material.vertexColors = THREE$1.VertexColors;
 	    } else if (colors.length === vertices.length / 3) {
 	      // use per-triangle color
 	      for (i = 0; i < vertices.length; i += 3) {
-	        var faceTri = new THREE.Face3(i, i + 1, i + 2);
+	        var faceTri = new THREE$1.Face3(i, i + 1, i + 2);
 	        faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
 	        geometry.faces.push(faceTri);
 	      }
-	      material.vertexColors = THREE.FaceColors;
+	      material.vertexColors = THREE$1.FaceColors;
 	    } else {
 	      // use marker color
 	      for (i = 0; i < vertices.length; i += 3) {
-	        var face = new THREE.Face3(i, i + 1, i + 2);
+	        var face = new THREE$1.Face3(i, i + 1, i + 2);
 	        geometry.faces.push(face);
 	      }
 	    }
@@ -46691,7 +51979,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    geometry.computeBoundingSphere();
 	    geometry.computeFaceNormals();
 
-	    this.add(new THREE.Mesh(geometry, material));
+	    this.add(new THREE$1.Mesh(geometry, material));
 	  };
 
 	  /**
@@ -46709,7 +51997,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class Marker extends THREE.Object3D {
+	class Marker extends THREE$1.Object3D {
 
 	  /**
 	   * A Marker can convert a ROS marker message into a THREE object.
@@ -46758,8 +52046,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	        // determine the points
 	        var direction, p1 = null;
 	        if (message.points.length === 2) {
-	          p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
-	          var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
+	          p1 = new THREE$1.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
+	          var p2 = new THREE$1.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
 	          direction = p1.clone().negate().add(p2);
 	          // direction = p2 - p1;
 	          len = direction.length();
@@ -46784,13 +52072,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	        break;
 	      case MARKER_CUBE:
 	        // set the cube dimensions
-	        var cubeGeom = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
-	        this.add(new THREE.Mesh(cubeGeom, colorMaterial));
+	        var cubeGeom = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+	        this.add(new THREE$1.Mesh(cubeGeom, colorMaterial));
 	        break;
 	      case MARKER_SPHERE:
 	        // set the sphere dimensions
-	        var sphereGeom = new THREE.SphereGeometry(0.5);
-	        var sphereMesh = new THREE.Mesh(sphereGeom, colorMaterial);
+	        var sphereGeom = new THREE$1.SphereGeometry(0.5);
+	        var sphereMesh = new THREE$1.Mesh(sphereGeom, colorMaterial);
 	        sphereMesh.scale.x = message.scale.x;
 	        sphereMesh.scale.y = message.scale.y;
 	        sphereMesh.scale.z = message.scale.z;
@@ -46798,22 +52086,22 @@ var ROS3D = (function (exports, ROSLIB) {
 	        break;
 	      case MARKER_CYLINDER:
 	        // set the cylinder dimensions
-	        var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
-	        var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
-	        cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+	        var cylinderGeom = new THREE$1.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
+	        var cylinderMesh = new THREE$1.Mesh(cylinderGeom, colorMaterial);
+	        cylinderMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
 	        cylinderMesh.scale.set(message.scale.x, message.scale.z, message.scale.y);
 	        this.add(cylinderMesh);
 	        break;
 	      case MARKER_LINE_STRIP:
-	        var lineStripGeom = new THREE.Geometry();
-	        var lineStripMaterial = new THREE.LineBasicMaterial({
+	        var lineStripGeom = new THREE$1.Geometry();
+	        var lineStripMaterial = new THREE$1.LineBasicMaterial({
 	          size : message.scale.x
 	        });
 
 	        // add the points
 	        var j;
 	        for ( j = 0; j < message.points.length; j++) {
-	          var pt = new THREE.Vector3();
+	          var pt = new THREE$1.Vector3();
 	          pt.x = message.points[j].x;
 	          pt.y = message.points[j].y;
 	          pt.z = message.points[j].z;
@@ -46824,7 +52112,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        if (message.colors.length === message.points.length) {
 	          lineStripMaterial.vertexColors = true;
 	          for ( j = 0; j < message.points.length; j++) {
-	            var clr = new THREE.Color();
+	            var clr = new THREE$1.Color();
 	            clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
 	            lineStripGeom.colors.push(clr);
 	          }
@@ -46833,18 +52121,18 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 
 	        // add the line
-	        this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
+	        this.add(new THREE$1.Line(lineStripGeom, lineStripMaterial));
 	        break;
 	      case MARKER_LINE_LIST:
-	        var lineListGeom = new THREE.Geometry();
-	        var lineListMaterial = new THREE.LineBasicMaterial({
+	        var lineListGeom = new THREE$1.Geometry();
+	        var lineListMaterial = new THREE$1.LineBasicMaterial({
 	          size : message.scale.x
 	        });
 
 	        // add the points
 	        var k;
 	        for ( k = 0; k < message.points.length; k++) {
-	          var v = new THREE.Vector3();
+	          var v = new THREE$1.Vector3();
 	          v.x = message.points[k].x;
 	          v.y = message.points[k].y;
 	          v.z = message.points[k].z;
@@ -46855,7 +52143,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        if (message.colors.length === message.points.length) {
 	          lineListMaterial.vertexColors = true;
 	          for ( k = 0; k < message.points.length; k++) {
-	            var c = new THREE.Color();
+	            var c = new THREE$1.Color();
 	            c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
 	            lineListGeom.colors.push(c);
 	          }
@@ -46864,11 +52152,11 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 
 	        // add the line
-	        this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
+	        this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LinePieces));
 	        break;
 	      case MARKER_CUBE_LIST:
 	        // holds the main object
-	        var object = new THREE.Object3D();
+	        var object = new THREE$1.Object3D();
 
 	        // check if custom colors should be used
 	        var numPoints = message.points.length;
@@ -46879,7 +52167,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        // add the points
 	        var p, cube, curColor, newMesh;
 	        for (p = 0; p < numPoints; p+=stepSize) {
-	          cube = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+	          cube = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
 
 	          // check the color
 	          if(createColors) {
@@ -46888,7 +52176,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	            curColor = colorMaterial;
 	          }
 
-	          newMesh = new THREE.Mesh(cube, curColor);
+	          newMesh = new THREE$1.Mesh(cube, curColor);
 	          newMesh.position.x = message.points[p].x;
 	          newMesh.position.y = message.points[p].y;
 	          newMesh.position.z = message.points[p].z;
@@ -46899,7 +52187,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        break;
 	      case MARKER_SPHERE_LIST:
 	        // holds the main object
-	        var sphereObject = new THREE.Object3D();
+	        var sphereObject = new THREE$1.Object3D();
 
 	        // check if custom colors should be used
 	        var numSpherePoints = message.points.length;
@@ -46910,7 +52198,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        // add the points
 	        var q, sphere, curSphereColor, newSphereMesh;
 	        for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
-	          sphere = new THREE.SphereGeometry(0.5, 8, 8);
+	          sphere = new THREE$1.SphereGeometry(0.5, 8, 8);
 
 	          // check the color
 	          if(createSphereColors) {
@@ -46919,7 +52207,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	            curSphereColor = colorMaterial;
 	          }
 
-	          newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
+	          newSphereMesh = new THREE$1.Mesh(sphere, curSphereColor);
 	          newSphereMesh.scale.x = message.scale.x;
 	          newSphereMesh.scale.y = message.scale.y;
 	          newSphereMesh.scale.z = message.scale.z;
@@ -46932,15 +52220,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	        break;
 	      case MARKER_POINTS:
 	        // for now, use a particle system for the lists
-	        var geometry = new THREE.Geometry();
-	        var material = new THREE.ParticleBasicMaterial({
+	        var geometry = new THREE$1.Geometry();
+	        var material = new THREE$1.ParticleBasicMaterial({
 	          size : message.scale.x
 	        });
 
 	        // add the points
 	        var i;
 	        for ( i = 0; i < message.points.length; i++) {
-	          var vertex = new THREE.Vector3();
+	          var vertex = new THREE$1.Vector3();
 	          vertex.x = message.points[i].x;
 	          vertex.y = message.points[i].y;
 	          vertex.z = message.points[i].z;
@@ -46951,7 +52239,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        if (message.colors.length === message.points.length) {
 	          material.vertexColors = true;
 	          for ( i = 0; i < message.points.length; i++) {
-	            var color = new THREE.Color();
+	            var color = new THREE$1.Color();
 	            color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
 	            geometry.colors.push(color);
 	          }
@@ -46960,7 +52248,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 
 	        // add the particle system
-	        this.add(new THREE.ParticleSystem(geometry, material));
+	        this.add(new THREE$1.ParticleSystem(geometry, material));
 	        break;
 	      case MARKER_TEXT_VIEW_FACING:
 	        // only work on non-empty text
@@ -46993,14 +52281,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	          context.textBaseline = 'middle';
 	          context.fillText( message.text, 0, canvas.height/2);
 
-	          var texture = new THREE.Texture(canvas);
+	          var texture = new THREE$1.Texture(canvas);
 	          texture.needsUpdate = true;
 
-	          var spriteMaterial = new THREE.SpriteMaterial({
+	          var spriteMaterial = new THREE$1.SpriteMaterial({
 	            map: texture,
 	            // NOTE: This is needed for THREE.js r61, unused in r70
 	            useScreenCoordinates: false });
-	          var sprite = new THREE.Sprite( spriteMaterial );
+	          var sprite = new THREE$1.Sprite( spriteMaterial );
 	          var textSize = message.scale.x;
 	          sprite.scale.set(textWidth / canvas.height * textSize, textSize, 1);
 
@@ -47089,7 +52377,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        case MARKER_TRIANGLE_LIST:
 	        case MARKER_TEXT_VIEW_FACING:
 	            this.traverse (function (child){
-	                if (child instanceof THREE.Mesh) {
+	                if (child instanceof THREE$1.Mesh) {
 	                    child.material = colorMaterial;
 	                }
 	            });
@@ -47101,7 +52389,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	                meshColorMaterial = this.colorMaterial;
 	            }
 	            this.traverse (function (child){
-	                if (child instanceof THREE.Mesh) {
+	                if (child instanceof THREE$1.Mesh) {
 	                    child.material = meshColorMaterial;
 	                }
 	            });
@@ -47198,7 +52486,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class InteractiveMarkerControl extends THREE.Object3D {
+	class InteractiveMarkerControl extends THREE$1.Object3D {
 
 	  /**
 	   * The main marker control object for an interactive marker.
@@ -47226,20 +52514,20 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.path = options.path || '/';
 	    this.loader = options.loader;
 	    this.dragging = false;
-	    this.startMousePos = new THREE.Vector2();
+	    this.startMousePos = new THREE$1.Vector2();
 	    this.isShift = false;
 
 
 	    // orientation for the control
-	    var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
+	    var controlOri = new THREE$1.Quaternion(message.orientation.x, message.orientation.y,
 	        message.orientation.z, message.orientation.w);
 	    controlOri.normalize();
 
 	    // transform x axis into local frame
-	    var controlAxis = new THREE.Vector3(1, 0, 0);
+	    var controlAxis = new THREE$1.Vector3(1, 0, 0);
 	    controlAxis.applyQuaternion(controlOri);
 
-	    this.currentControlOri = new THREE.Quaternion();
+	    this.currentControlOri = new THREE$1.Quaternion();
 
 	    // determine mouse interaction
 	    switch (message.interaction_mode) {
@@ -47329,7 +52617,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    }
 
 	    // rotation behavior
-	    var rotInv = new THREE.Quaternion();
+	    var rotInv = new THREE$1.Quaternion();
 	    var posInv = this.parent.position.clone().multiplyScalar(-1);
 	    switch (message.orientation_mode) {
 	      case INTERACTIVE_MARKER_INHERIT:
@@ -47382,7 +52670,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	          transformMarker.position.add(posInv);
 	          transformMarker.position.applyQuaternion(rotInv);
 	          transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
-	          var translation = new THREE.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
+	          var translation = new THREE$1.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
 	          var transform = new ROSLIB__namespace.Transform({
 	            translation : translation,
 	            orientation : transformMarker.quaternion
@@ -47415,7 +52703,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    });
 	  };
 
-	  updateMatrixWorld(force) {
+	  updateMatrixWorld (force) {
 	    var that = this;
 	    var message = this.message;
 	    switch (message.orientation_mode) {
@@ -47433,14 +52721,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	        break;
 	      case INTERACTIVE_MARKER_VIEW_FACING:
 	        that.camera.updateMatrixWorld();
-	        var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
+	        var cameraRot = new THREE$1.Matrix4().extractRotation(that.camera.matrixWorld);
 
-	        var ros2Gl = new THREE.Matrix4();
+	        var ros2Gl = new THREE$1.Matrix4();
 	        var r90 = Math.PI * 0.5;
-	        var rv = new THREE.Euler(-r90, 0, r90);
+	        var rv = new THREE$1.Euler(-r90, 0, r90);
 	        ros2Gl.makeRotationFromEuler(rv);
 
-	        var worldToLocal = new THREE.Matrix4();
+	        var worldToLocal = new THREE$1.Matrix4();
 	        worldToLocal.getInverse(that.parent.matrixWorld);
 
 	        cameraRot.multiplyMatrices(cameraRot, ros2Gl);
@@ -47467,7 +52755,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class InteractiveMarkerMenu extends THREE.EventDispatcher {
+	class InteractiveMarkerMenu extends THREE$1.EventDispatcher {
 
 	  /**
 	   * A menu for an interactive marker. This will be overlayed on the canvas.
@@ -47650,7 +52938,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class InteractiveMarker extends THREE.Object3D {
+	class InteractiveMarker extends THREE$1.Object3D {
 
 	  /**
 	   * The main interactive marker object.
@@ -47682,10 +52970,10 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // information on where the drag started
 	    this.dragStart = {
-	      position : new THREE.Vector3(),
-	      orientation : new THREE.Quaternion(),
-	      positionWorld : new THREE.Vector3(),
-	      orientationWorld : new THREE.Quaternion(),
+	      position : new THREE$1.Vector3(),
+	      orientation : new THREE$1.Quaternion(),
+	      positionWorld : new THREE$1.Vector3(),
+	      orientationWorld : new THREE$1.Quaternion(),
 	      event3d : {}
 	    };
 
@@ -47742,13 +53030,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	      var originWorld = this.dragStart.event3d.intersection.point;
 	      var axisWorld = axis.clone().applyQuaternion(this.dragStart.orientationWorld.clone());
 
-	      var axisRay = new THREE.Ray(originWorld, axisWorld);
+	      var axisRay = new THREE$1.Ray(originWorld, axisWorld);
 
 	      // find closest point to mouse on axis
 	      var t = closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
 
 	      // offset from drag start position
-	      var p = new THREE.Vector3();
+	      var p = new THREE$1.Vector3();
 	      p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
 	          .multiplyScalar(t));
 	      this.setPosition(control, p);
@@ -47776,18 +53064,18 @@ var ROS3D = (function (exports, ROSLIB) {
 	        var x = Math.abs(cameraVector.x);
 	        var y = Math.abs(cameraVector.y);
 	        var z = Math.abs(cameraVector.z);
-	        var controlOri = new THREE.Quaternion(1, 0, 0, 1);
+	        var controlOri = new THREE$1.Quaternion(1, 0, 0, 1);
 	        if(y > x && y > z){
 	          // orientation for the control
-	          controlOri = new THREE.Quaternion(0, 0, 1, 1);
+	          controlOri = new THREE$1.Quaternion(0, 0, 1, 1);
 	        }else if(z > x && z > y){
 	          // orientation for the control
-	          controlOri = new THREE.Quaternion(0, 1, 0, 1);
+	          controlOri = new THREE$1.Quaternion(0, 1, 0, 1);
 	        }
 	        controlOri.normalize();
 
 	        // transform x axis into local frame
-	        origNormal = new THREE.Vector3(1, 0, 0);
+	        origNormal = new THREE$1.Vector3(1, 0, 0);
 	        origNormal.applyQuaternion(controlOri);
 	        this.movePlane(control, origNormal, event3d);
 	      }
@@ -47813,7 +53101,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
 	      // offset from drag start position
-	      var p = new THREE.Vector3();
+	      var p = new THREE$1.Vector3();
 	      p.subVectors(intersection, originWorld);
 	      p.add(this.dragStart.positionWorld);
 	      this.setPosition(control, p);
@@ -47835,7 +53123,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      var currentControlOri = control.currentControlOri;
 	      var orientation = currentControlOri.clone().multiply(origOrientation.clone());
 
-	      var normal = (new THREE.Vector3(1, 0, 0)).applyQuaternion(orientation);
+	      var normal = (new THREE$1.Vector3(1, 0, 0)).applyQuaternion(orientation);
 
 	      // get plane params in world coords
 	      var originWorld = this.dragStart.event3d.intersection.point;
@@ -47845,7 +53133,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
 	      // offset local origin to lie on intersection plane
-	      var normalRay = new THREE.Ray(this.dragStart.positionWorld, normalWorld);
+	      var normalRay = new THREE$1.Ray(this.dragStart.positionWorld, normalWorld);
 	      var rotOrigin = intersectPlane(normalRay, originWorld, normalWorld);
 
 	      // rotates from world to plane coords
@@ -47865,7 +53153,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      var a2 = Math.atan2(origIntersection.y, origIntersection.z);
 	      var a = a2 - a1;
 
-	      var rot = new THREE.Quaternion();
+	      var rot = new THREE$1.Quaternion();
 	      rot.setFromAxisAngle(normal, a);
 
 	      // rotate
@@ -47902,7 +53190,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      event3d.stopPropagation();
 	      this.dragging = true;
 	      this.updateMatrixWorld(true);
-	      var scale = new THREE.Vector3();
+	      var scale = new THREE$1.Vector3();
 	      this.matrixWorld
 	          .decompose(this.dragStart.positionWorld, this.dragStart.orientationWorld, scale);
 	      this.dragStart.position = this.position.clone();
@@ -49850,7 +55138,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic;
 	    this.path = options.path || '/';
 	    this.camera = options.camera;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.loader = options.loader;
 	    this.menuFontSize = options.menuFontSize || '0.8em';
 
@@ -49937,7 +55225,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	  /**
 	   * Process the given interactive marker update message.
 	   *
-	   * @param initMessage - the interactive marker update message to process
+	   * @param message - the interactive marker update message to process
 	   */
 	  processUpdate(message) {
 	    var that = this;
@@ -50036,7 +55324,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class SceneNode extends THREE.Object3D {
+	class SceneNode extends THREE$1.Object3D {
 
 	  /**
 	   * A SceneNode can be used to keep track of a 3D object with respect to a ROS frame within a scene.
@@ -50130,7 +55418,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.ros = options.ros;
 	    this.topicName = options.topic;
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.path = options.path || '/';
 
 	    // Markers that are displayed (Map ns+id--Marker)
@@ -50245,7 +55533,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.ros = options.ros;
 	    this.topicName = options.topic;
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.path = options.path || '/';
 	    this.lifetime = options.lifetime || 0;
 
@@ -50334,7 +55622,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Jihoon Lee - lee@magazino.eu
 	 */
 
-	class Arrow2 extends THREE.ArrowHelper {
+	class Arrow2 extends THREE$1.ArrowHelper {
 
 	  /**
 	   * A Arrow is a THREE object that can be used to display an arrow model using ArrowHelper
@@ -50352,13 +55640,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  constructor(options) {
 	    options = options || {};
-	    var origin = options.origin || new THREE.Vector3(0, 0, 0);
-	    var direction = options.direction || new THREE.Vector3(1, 0, 0);
+	    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
+	    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
 	    var length = options.length || 1;
 	    options.headLength || 0.2;
 	    options.shaftDiameter || 0.05;
 	    options.headDiameter || 0.1;
-	    options.material || new THREE.MeshBasicMaterial();
+	    options.material || new THREE$1.MeshBasicMaterial();
 
 	    super(direction, origin, length, 0xff0000);
 
@@ -50380,7 +55668,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	  };
 
 	  /*
-	  setLength( length, headLength, headWidth ) {
+	  setLength ( length, headLength, headWidth ) {
 	  	if ( headLength === undefined ) {
 	      headLength = 0.2 * length;
 	    }
@@ -50403,7 +55691,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class Axes extends THREE.Object3D {
+	class Axes extends THREE$1.Object3D {
 
 	  /**
 	   * An Axes object can be used to display the axis of a particular coordinate frame.
@@ -50437,8 +55725,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.scale.set(scaleArg, scaleArg, scaleArg);
 
 	    // create the cylinders for the objects
-	    this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-	    this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
+	    this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+	    this.headGeom = new THREE$1.CylinderGeometry(0, headRadius, headLength);
 
 	    /**
 	     * Adds an axis marker to this axes object.
@@ -50447,20 +55735,20 @@ var ROS3D = (function (exports, ROSLIB) {
 	     */
 	    function addAxis(axis) {
 	      // set the color of the axis
-	      var color = new THREE.Color();
+	      var color = new THREE$1.Color();
 	      color.setRGB(axis.x, axis.y, axis.z);
-	      var material = new THREE.MeshBasicMaterial({
+	      var material = new THREE$1.MeshBasicMaterial({
 	        color : color.getHex()
 	      });
 
 	      // setup the rotation information
-	      var rotAxis = new THREE.Vector3();
-	      rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
-	      var rot = new THREE.Quaternion();
+	      var rotAxis = new THREE$1.Vector3();
+	      rotAxis.crossVectors(axis, new THREE$1.Vector3(0, -1, 0));
+	      var rot = new THREE$1.Quaternion();
 	      rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
 
 	      // create the arrow
-	      var arrow = new THREE.Mesh(that.headGeom, material);
+	      var arrow = new THREE$1.Mesh(that.headGeom, material);
 	      arrow.position.copy(axis);
 	      arrow.position.multiplyScalar(0.95);
 	      arrow.quaternion.copy(rot);
@@ -50472,8 +55760,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      if (lineType === 'dashed') {
 	        var l = lineDashLength;
 	        for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
-	          var geom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, l);
-	          line = new THREE.Mesh(geom, material);
+	          var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
+	          line = new THREE$1.Mesh(geom, material);
 	          line.position.copy(axis);
 	          // Make spacing between dashes equal to 1.5 times the dash length.
 	          line.position.multiplyScalar(l / 2 + 3 * l * i);
@@ -50482,7 +55770,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	          that.add(line);
 	        }
 	      } else if (lineType === 'full') {
-	        line = new THREE.Mesh(that.lineGeom, material);
+	        line = new THREE$1.Mesh(that.lineGeom, material);
 	        line.position.copy(axis);
 	        line.position.multiplyScalar(0.45);
 	        line.quaternion.copy(rot);
@@ -50494,9 +55782,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	    }
 
 	    // add the three markers to the axes
-	    addAxis(new THREE.Vector3(1, 0, 0));
-	    addAxis(new THREE.Vector3(0, 1, 0));
-	    addAxis(new THREE.Vector3(0, 0, 1));
+	    addAxis(new THREE$1.Vector3(1, 0, 0));
+	    addAxis(new THREE$1.Vector3(0, 1, 0));
+	    addAxis(new THREE$1.Vector3(0, 0, 1));
 	  };
 	}
 
@@ -50504,7 +55792,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class Grid extends THREE.Object3D {
+	class Grid extends THREE$1.Object3D {
 
 	  /**
 	   * Create a grid object.
@@ -50526,7 +55814,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    super();
 
-	    var material = new THREE.LineBasicMaterial({
+	    var material = new THREE$1.LineBasicMaterial({
 	      color: color,
 	      linewidth: lineWidth
 	    });
@@ -50534,5315 +55822,27 @@ var ROS3D = (function (exports, ROSLIB) {
 	    for (var i = 0; i <= num_cells; ++i) {
 	      var edge = cellSize * num_cells / 2;
 	      var position = edge - (i * cellSize);
-	      var geometryH = new THREE.Geometry();
+	      var geometryH = new THREE$1.Geometry();
 	      geometryH.vertices.push(
-	        new THREE.Vector3( -edge, position, 0 ),
-	        new THREE.Vector3( edge, position, 0 )
+	        new THREE$1.Vector3( -edge, position, 0 ),
+	        new THREE$1.Vector3( edge, position, 0 )
 	      );
-	      var geometryV = new THREE.Geometry();
+	      var geometryV = new THREE$1.Geometry();
 	      geometryV.vertices.push(
-	        new THREE.Vector3( position, -edge, 0 ),
-	        new THREE.Vector3( position, edge, 0 )
+	        new THREE$1.Vector3( position, -edge, 0 ),
+	        new THREE$1.Vector3( position, edge, 0 )
 	      );
-	      this.add(new THREE.Line(geometryH, material));
-	      this.add(new THREE.Line(geometryV, material));
+	      this.add(new THREE$1.Line(geometryH, material));
+	      this.add(new THREE$1.Line(geometryV, material));
 	    }
 	  };
 	}
-
-	/**
-	 * @author aleeper / http://adamleeper.com/
-	 * @author mrdoob / http://mrdoob.com/
-	 * @author gero3 / https://github.com/gero3
-	 * @author Mugen87 / https://github.com/Mugen87
-	 *
-	 * Description: A THREE loader for STL ASCII files, as created by Solidworks and other CAD programs.
-	 *
-	 * Supports both binary and ASCII encoded files, with automatic detection of type.
-	 *
-	 * The loader returns a non-indexed buffer geometry.
-	 *
-	 * Limitations:
-	 *  Binary decoding supports "Magics" color format (http://en.wikipedia.org/wiki/STL_(file_format)#Color_in_binary_STL).
-	 *  There is perhaps some question as to how valid it is to always assume little-endian-ness.
-	 *  ASCII decoding assumes file is UTF-8.
-	 *
-	 * Usage:
-	 *  var loader = new THREE.STLLoader();
-	 *  loader.load( './models/stl/slotted_disk.stl', function ( geometry ) {
-	 *    scene.add( new THREE.Mesh( geometry ) );
-	 *  });
-	 *
-	 * For binary STLs geometry might contain colors for vertices. To use it:
-	 *  // use the same code to load STL as above
-	 *  if (geometry.hasColors) {
-	 *    material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: THREE.VertexColors });
-	 *  } else { .... }
-	 *  var mesh = new THREE.Mesh( geometry, material );
-	 */
-
-	THREE.STLLoader = function (manager) {
-
-	  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-
-	};
-
-	THREE.STLLoader.prototype = {
-
-	  constructor: THREE.STLLoader,
-
-	  load: function (url, onLoad, onProgress, onError) {
-
-	    var scope = this;
-
-	    var loader = new THREE.FileLoader(scope.manager);
-	    loader.setResponseType('arraybuffer');
-	    loader.load(url, function (text) {
-
-	      onLoad(scope.parse(text));
-
-	    }, onProgress, onError);
-
-	  },
-
-	  parse: function (data) {
-
-	    function isBinary(data) {
-
-	      var expect, face_size, n_faces, reader;
-	      reader = new DataView(data);
-	      face_size = (32 / 8 * 3) + ((32 / 8 * 3) * 3) + (16 / 8);
-	      n_faces = reader.getUint32(80, true);
-	      expect = 80 + (32 / 8) + (n_faces * face_size);
-
-	      if (expect === reader.byteLength) {
-
-	        return true;
-
-	      }
-
-	      // An ASCII STL data must begin with 'solid ' as the first six bytes.
-	      // However, ASCII STLs lacking the SPACE after the 'd' are known to be
-	      // plentiful.  So, check the first 5 bytes for 'solid'.
-
-	      // US-ASCII ordinal values for 's', 'o', 'l', 'i', 'd'
-
-	      var solid = [115, 111, 108, 105, 100];
-
-	      for (var i = 0; i < 5; i++) {
-
-	        // If solid[ i ] does not match the i-th byte, then it is not an
-	        // ASCII STL; hence, it is binary and return true.
-
-	        if (solid[i] != reader.getUint8(i, false)) return true;
-
-	      }
-
-	      // First 5 bytes read "solid"; declare it to be an ASCII STL
-
-	      return false;
-
-	    }
-
-	    function parseBinary(data) {
-
-	      var reader = new DataView(data);
-	      var faces = reader.getUint32(80, true);
-
-	      var r, g, b, hasColors = false, colors;
-	      var defaultR, defaultG, defaultB, alpha;
-
-	      // process STL header
-	      // check for default color in header ("COLOR=rgba" sequence).
-
-	      for (var index = 0; index < 80 - 10; index++) {
-
-	        if ((reader.getUint32(index, false) == 0x434F4C4F /*COLO*/) &&
-	          (reader.getUint8(index + 4) == 0x52 /*'R'*/) &&
-	          (reader.getUint8(index + 5) == 0x3D /*'='*/)) {
-
-	          hasColors = true;
-	          colors = [];
-
-	          defaultR = reader.getUint8(index + 6) / 255;
-	          defaultG = reader.getUint8(index + 7) / 255;
-	          defaultB = reader.getUint8(index + 8) / 255;
-	          alpha = reader.getUint8(index + 9) / 255;
-
-	        }
-
-	      }
-
-	      var dataOffset = 84;
-	      var faceLength = 12 * 4 + 2;
-
-	      var geometry = new THREE.BufferGeometry();
-
-	      var vertices = [];
-	      var normals = [];
-
-	      for (var face = 0; face < faces; face++) {
-
-	        var start = dataOffset + face * faceLength;
-	        var normalX = reader.getFloat32(start, true);
-	        var normalY = reader.getFloat32(start + 4, true);
-	        var normalZ = reader.getFloat32(start + 8, true);
-
-	        if (hasColors) {
-
-	          var packedColor = reader.getUint16(start + 48, true);
-
-	          if ((packedColor & 0x8000) === 0) {
-
-	            // facet has its own unique color
-
-	            r = (packedColor & 0x1F) / 31;
-	            g = ((packedColor >> 5) & 0x1F) / 31;
-	            b = ((packedColor >> 10) & 0x1F) / 31;
-
-	          } else {
-
-	            r = defaultR;
-	            g = defaultG;
-	            b = defaultB;
-
-	          }
-
-	        }
-
-	        for (var i = 1; i <= 3; i++) {
-
-	          var vertexstart = start + i * 12;
-
-	          vertices.push(reader.getFloat32(vertexstart, true));
-	          vertices.push(reader.getFloat32(vertexstart + 4, true));
-	          vertices.push(reader.getFloat32(vertexstart + 8, true));
-
-	          normals.push(normalX, normalY, normalZ);
-
-	          if (hasColors) {
-
-	            colors.push(r, g, b);
-
-	          }
-
-	        }
-
-	      }
-
-	      geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
-	      geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
-
-	      if (hasColors) {
-
-	        geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
-	        geometry.hasColors = true;
-	        geometry.alpha = alpha;
-
-	      }
-
-	      return geometry;
-
-	    }
-
-	    function parseASCII(data) {
-
-	      var geometry = new THREE.BufferGeometry();
-	      var patternFace = /facet([\s\S]*?)endfacet/g;
-	      var faceCounter = 0;
-
-	      var patternFloat = /[\s]+([+-]?(?:\d+.\d+|\d+.|\d+|.\d+)(?:[eE][+-]?\d+)?)/.source;
-	      var patternVertex = new RegExp('vertex' + patternFloat + patternFloat + patternFloat, 'g');
-	      var patternNormal = new RegExp('normal' + patternFloat + patternFloat + patternFloat, 'g');
-
-	      var vertices = [];
-	      var normals = [];
-
-	      var normal = new THREE.Vector3();
-
-	      var result;
-
-	      while ((result = patternFace.exec(data)) !== null) {
-
-	        var vertexCountPerFace = 0;
-	        var normalCountPerFace = 0;
-
-	        var text = result[0];
-
-	        while ((result = patternNormal.exec(text)) !== null) {
-
-	          normal.x = parseFloat(result[1]);
-	          normal.y = parseFloat(result[2]);
-	          normal.z = parseFloat(result[3]);
-	          normalCountPerFace++;
-
-	        }
-
-	        while ((result = patternVertex.exec(text)) !== null) {
-
-	          vertices.push(parseFloat(result[1]), parseFloat(result[2]), parseFloat(result[3]));
-	          normals.push(normal.x, normal.y, normal.z);
-	          vertexCountPerFace++;
-
-	        }
-
-	        // every face have to own ONE valid normal
-
-	        if (normalCountPerFace !== 1) {
-
-	          console.error('THREE.STLLoader: Something isn\'t right with the normal of face number ' + faceCounter);
-
-	        }
-
-	        // each face have to own THREE valid vertices
-
-	        if (vertexCountPerFace !== 3) {
-
-	          console.error('THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter);
-
-	        }
-
-	        faceCounter++;
-
-	      }
-
-	      geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-	      geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
-
-	      return geometry;
-
-	    }
-
-	    function ensureString(buffer) {
-
-	      if (typeof buffer !== 'string') {
-
-	        var array_buffer = new Uint8Array(buffer);
-
-	        if (window.TextDecoder !== undefined) {
-
-	          return new TextDecoder().decode(array_buffer);
-
-	        }
-
-	        var str = '';
-
-	        for (var i = 0, il = buffer.byteLength; i < il; i++) {
-
-	          str += String.fromCharCode(array_buffer[i]); // implicitly assumes little-endian
-
-	        }
-
-	        return str;
-
-	      } else {
-
-	        return buffer;
-
-	      }
-
-	    }
-
-	    function ensureBinary(buffer) {
-
-	      if (typeof buffer === 'string') {
-
-	        var array_buffer = new Uint8Array(buffer.length);
-	        for (var i = 0; i < buffer.length; i++) {
-
-	          array_buffer[i] = buffer.charCodeAt(i) & 0xff; // implicitly assumes little-endian
-
-	        }
-	        return array_buffer.buffer || array_buffer;
-
-	      } else {
-
-	        return buffer;
-
-	      }
-
-	    }
-
-	    // start
-
-	    var binData = ensureBinary(data);
-
-	    return isBinary(binData) ? parseBinary(binData) : parseASCII(ensureString(data));
-
-	  }
-
-	};
-
-	/**
-	 * @author mrdoob / http://mrdoob.com/
-	 *
-	 * @Modified by Jose Rojas from OBJLoader.js@r106
-	 *
-	 */
-
-	// o object_name | g group_name
-	var object_pattern = /^[og]\s*(.+)?/;
-	// mtllib file_reference
-	var material_library_pattern = /^mtllib /;
-	// usemtl material_name
-	var material_use_pattern = /^usemtl /;
-
-	function ParserState() {
-
-	  var state = {
-	    objects: [],
-	    object: {},
-
-	    vertices: [],
-	    normals: [],
-	    colors: [],
-	    uvs: [],
-
-	    materialLibraries: [],
-
-	    startObject: function ( name, fromDeclaration ) {
-
-	      // If the current object (initial from reset) is not from a g/o declaration in the parsed
-	      // file. We need to use it for the first parsed g/o to keep things in sync.
-	      if ( this.object && this.object.fromDeclaration === false ) {
-
-	        this.object.name = name;
-	        this.object.fromDeclaration = ( fromDeclaration !== false );
-	        return;
-
-	      }
-
-	      var previousMaterial = ( this.object && typeof this.object.currentMaterial === 'function' ? this.object.currentMaterial() : undefined );
-
-	      if ( this.object && typeof this.object._finalize === 'function' ) {
-
-	        this.object._finalize( true );
-
-	      }
-
-	      this.object = {
-	        name: name || '',
-	        fromDeclaration: ( fromDeclaration !== false ),
-
-	        geometry: {
-	          vertices: [],
-	          normals: [],
-	          colors: [],
-	          uvs: []
-	        },
-	        materials: [],
-	        smooth: true,
-
-	        startMaterial: function ( name, libraries ) {
-
-	          var previous = this._finalize( false );
-
-	          // New usemtl declaration overwrites an inherited material, except if faces were declared
-	          // after the material, then it must be preserved for proper MultiMaterial continuation.
-	          if ( previous && ( previous.inherited || previous.groupCount <= 0 ) ) {
-
-	            this.materials.splice( previous.index, 1 );
-
-	          }
-
-	          var material = {
-	            index: this.materials.length,
-	            name: name || '',
-	            mtllib: ( Array.isArray( libraries ) && libraries.length > 0 ? libraries[ libraries.length - 1 ] : '' ),
-	            smooth: ( previous !== undefined ? previous.smooth : this.smooth ),
-	            groupStart: ( previous !== undefined ? previous.groupEnd : 0 ),
-	            groupEnd: - 1,
-	            groupCount: - 1,
-	            inherited: false,
-
-	            clone: function ( index ) {
-
-	              var cloned = {
-	                index: ( typeof index === 'number' ? index : this.index ),
-	                name: this.name,
-	                mtllib: this.mtllib,
-	                smooth: this.smooth,
-	                groupStart: 0,
-	                groupEnd: - 1,
-	                groupCount: - 1,
-	                inherited: false
-	              };
-	              cloned.clone = this.clone.bind( cloned );
-	              return cloned;
-
-	            }
-	          };
-
-	          this.materials.push( material );
-
-	          return material;
-
-	        },
-
-	        currentMaterial: function () {
-
-	          if ( this.materials.length > 0 ) {
-
-	            return this.materials[ this.materials.length - 1 ];
-
-	          }
-
-	          return undefined;
-
-	        },
-
-	        _finalize: function ( end ) {
-
-	          var lastMultiMaterial = this.currentMaterial();
-	          if ( lastMultiMaterial && lastMultiMaterial.groupEnd === - 1 ) {
-
-	            lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
-	            lastMultiMaterial.groupCount = lastMultiMaterial.groupEnd - lastMultiMaterial.groupStart;
-	            lastMultiMaterial.inherited = false;
-
-	          }
-
-	          // Ignore objects tail materials if no face declarations followed them before a new o/g started.
-	          if ( end && this.materials.length > 1 ) {
-
-	            for ( var mi = this.materials.length - 1; mi >= 0; mi -- ) {
-
-	              if ( this.materials[ mi ].groupCount <= 0 ) {
-
-	                this.materials.splice( mi, 1 );
-
-	              }
-
-	            }
-
-	          }
-
-	          // Guarantee at least one empty material, this makes the creation later more straight forward.
-	          if ( end && this.materials.length === 0 ) {
-
-	            this.materials.push( {
-	              name: '',
-	              smooth: this.smooth
-	            } );
-
-	          }
-
-	          return lastMultiMaterial;
-
-	        }
-	      };
-
-	      // Inherit previous objects material.
-	      // Spec tells us that a declared material must be set to all objects until a new material is declared.
-	      // If a usemtl declaration is encountered while this new object is being parsed, it will
-	      // overwrite the inherited material. Exception being that there was already face declarations
-	      // to the inherited material, then it will be preserved for proper MultiMaterial continuation.
-
-	      if ( previousMaterial && previousMaterial.name && typeof previousMaterial.clone === 'function' ) {
-
-	        var declared = previousMaterial.clone( 0 );
-	        declared.inherited = true;
-	        this.object.materials.push( declared );
-
-	      }
-
-	      this.objects.push( this.object );
-
-	    },
-
-	    finalize: function () {
-
-	      if ( this.object && typeof this.object._finalize === 'function' ) {
-
-	        this.object._finalize( true );
-
-	      }
-
-	    },
-
-	    parseVertexIndex: function ( value, len ) {
-
-	      var index = parseInt( value, 10 );
-	      return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
-
-	    },
-
-	    parseNormalIndex: function ( value, len ) {
-
-	      var index = parseInt( value, 10 );
-	      return ( index >= 0 ? index - 1 : index + len / 3 ) * 3;
-
-	    },
-
-	    parseUVIndex: function ( value, len ) {
-
-	      var index = parseInt( value, 10 );
-	      return ( index >= 0 ? index - 1 : index + len / 2 ) * 2;
-
-	    },
-
-	    addVertex: function ( a, b, c ) {
-
-	      var src = this.vertices;
-	      var dst = this.object.geometry.vertices;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
-	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
-	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
-
-	    },
-
-	    addVertexPoint: function ( a ) {
-
-	      var src = this.vertices;
-	      var dst = this.object.geometry.vertices;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
-
-	    },
-
-	    addVertexLine: function ( a ) {
-
-	      var src = this.vertices;
-	      var dst = this.object.geometry.vertices;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
-
-	    },
-
-	    addNormal: function ( a, b, c ) {
-
-	      var src = this.normals;
-	      var dst = this.object.geometry.normals;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
-	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
-	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
-
-	    },
-
-	    addColor: function ( a, b, c ) {
-
-	      var src = this.colors;
-	      var dst = this.object.geometry.colors;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ], src[ a + 2 ] );
-	      dst.push( src[ b + 0 ], src[ b + 1 ], src[ b + 2 ] );
-	      dst.push( src[ c + 0 ], src[ c + 1 ], src[ c + 2 ] );
-
-	    },
-
-	    addUV: function ( a, b, c ) {
-
-	      var src = this.uvs;
-	      var dst = this.object.geometry.uvs;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ] );
-	      dst.push( src[ b + 0 ], src[ b + 1 ] );
-	      dst.push( src[ c + 0 ], src[ c + 1 ] );
-
-	    },
-
-	    addUVLine: function ( a ) {
-
-	      var src = this.uvs;
-	      var dst = this.object.geometry.uvs;
-
-	      dst.push( src[ a + 0 ], src[ a + 1 ] );
-
-	    },
-
-	    addFace: function ( a, b, c, ua, ub, uc, na, nb, nc ) {
-
-	      var vLen = this.vertices.length;
-
-	      var ia = this.parseVertexIndex( a, vLen );
-	      var ib = this.parseVertexIndex( b, vLen );
-	      var ic = this.parseVertexIndex( c, vLen );
-
-	      this.addVertex( ia, ib, ic );
-
-	      if ( ua !== undefined && ua !== '' ) {
-
-	        var uvLen = this.uvs.length;
-	        ia = this.parseUVIndex( ua, uvLen );
-	        ib = this.parseUVIndex( ub, uvLen );
-	        ic = this.parseUVIndex( uc, uvLen );
-	        this.addUV( ia, ib, ic );
-
-	      }
-
-	      if ( na !== undefined && na !== '' ) {
-
-	        // Normals are many times the same. If so, skip function call and parseInt.
-	        var nLen = this.normals.length;
-	        ia = this.parseNormalIndex( na, nLen );
-
-	        ib = na === nb ? ia : this.parseNormalIndex( nb, nLen );
-	        ic = na === nc ? ia : this.parseNormalIndex( nc, nLen );
-
-	        this.addNormal( ia, ib, ic );
-
-	      }
-
-	      if ( this.colors.length > 0 ) {
-
-	        this.addColor( ia, ib, ic );
-
-	      }
-
-	    },
-
-	    addPointGeometry: function ( vertices ) {
-
-	      this.object.geometry.type = 'Points';
-
-	      var vLen = this.vertices.length;
-
-	      for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
-
-	        this.addVertexPoint( this.parseVertexIndex( vertices[ vi ], vLen ) );
-
-	      }
-
-	    },
-
-	    addLineGeometry: function ( vertices, uvs ) {
-
-	      this.object.geometry.type = 'Line';
-
-	      var vLen = this.vertices.length;
-	      var uvLen = this.uvs.length;
-
-	      for ( var vi = 0, l = vertices.length; vi < l; vi ++ ) {
-
-	        this.addVertexLine( this.parseVertexIndex( vertices[ vi ], vLen ) );
-
-	      }
-
-	      for ( var uvi = 0, l = uvs.length; uvi < l; uvi ++ ) {
-
-	        this.addUVLine( this.parseUVIndex( uvs[ uvi ], uvLen ) );
-
-	      }
-
-	    }
-
-	  };
-
-	  state.startObject( '', false );
-
-	  return state;
-
-	}
-
-	THREE.OBJLoader = function( manager ) {
-
-		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
-
-		this.materials = null;
-
-	};
-
-	THREE.OBJLoader.prototype = {
-
-		constructor: THREE.OBJLoader,
-
-		load: function ( url, onLoad, onProgress, onError ) {
-
-			var scope = this;
-
-			var loader = new THREE.FileLoader( scope.manager );
-			loader.setPath( this.path );
-			loader.load( url, function ( text ) {
-
-				onLoad( scope.parse( text ) );
-
-			}, onProgress, onError );
-
-		},
-
-		setPath: function ( value ) {
-
-			this.path = value;
-
-			return this;
-
-		},
-
-		setMaterials: function ( materials ) {
-
-			this.materials = materials;
-
-			return this;
-
-		},
-
-		parse: function ( text ) {
-
-			console.time( 'OBJLoader' );
-
-			var state = new ParserState();
-
-			if ( text.indexOf( '\r\n' ) !== - 1 ) {
-
-				// This is faster than String.split with regex that splits on both
-				text = text.replace( /\r\n/g, '\n' );
-
-			}
-
-			if ( text.indexOf( '\\\n' ) !== - 1 ) {
-
-				// join lines separated by a line continuation character (\)
-				text = text.replace( /\\\n/g, '' );
-
-			}
-
-			var lines = text.split( '\n' );
-			var line = '', lineFirstChar = '';
-			var lineLength = 0;
-			var result = [];
-
-			// Faster to just trim left side of the line. Use if available.
-			var trimLeft = ( typeof ''.trimLeft === 'function' );
-
-			for ( var i = 0, l = lines.length; i < l; i ++ ) {
-
-				line = lines[ i ];
-
-				line = trimLeft ? line.trimLeft() : line.trim();
-
-				lineLength = line.length;
-
-				if ( lineLength === 0 ) continue;
-
-				lineFirstChar = line.charAt( 0 );
-
-				// @todo invoke passed in handler if any
-				if ( lineFirstChar === '#' ) continue;
-
-				if ( lineFirstChar === 'v' ) {
-
-					var data = line.split( /\s+/ );
-
-					switch ( data[ 0 ] ) {
-
-						case 'v':
-							state.vertices.push(
-								parseFloat( data[ 1 ] ),
-								parseFloat( data[ 2 ] ),
-								parseFloat( data[ 3 ] )
-							);
-							if ( data.length === 8 ) {
-
-								state.colors.push(
-									parseFloat( data[ 4 ] ),
-									parseFloat( data[ 5 ] ),
-									parseFloat( data[ 6 ] )
-
-								);
-
-							}
-							break;
-						case 'vn':
-							state.normals.push(
-								parseFloat( data[ 1 ] ),
-								parseFloat( data[ 2 ] ),
-								parseFloat( data[ 3 ] )
-							);
-							break;
-						case 'vt':
-							state.uvs.push(
-								parseFloat( data[ 1 ] ),
-								parseFloat( data[ 2 ] )
-							);
-							break;
-
-					}
-
-				} else if ( lineFirstChar === 'f' ) {
-
-					var lineData = line.substr( 1 ).trim();
-					var vertexData = lineData.split( /\s+/ );
-					var faceVertices = [];
-
-					// Parse the face vertex data into an easy to work with format
-
-					for ( var j = 0, jl = vertexData.length; j < jl; j ++ ) {
-
-						var vertex = vertexData[ j ];
-
-						if ( vertex.length > 0 ) {
-
-							var vertexParts = vertex.split( '/' );
-							faceVertices.push( vertexParts );
-
-						}
-
-					}
-
-					// Draw an edge between the first vertex and all subsequent vertices to form an n-gon
-
-					var v1 = faceVertices[ 0 ];
-
-					for ( var j = 1, jl = faceVertices.length - 1; j < jl; j ++ ) {
-
-						var v2 = faceVertices[ j ];
-						var v3 = faceVertices[ j + 1 ];
-
-						state.addFace(
-							v1[ 0 ], v2[ 0 ], v3[ 0 ],
-							v1[ 1 ], v2[ 1 ], v3[ 1 ],
-							v1[ 2 ], v2[ 2 ], v3[ 2 ]
-						);
-
-					}
-
-				} else if ( lineFirstChar === 'l' ) {
-
-					var lineParts = line.substring( 1 ).trim().split( " " );
-					var lineVertices = [], lineUVs = [];
-
-					if ( line.indexOf( "/" ) === - 1 ) {
-
-						lineVertices = lineParts;
-
-					} else {
-
-						for ( var li = 0, llen = lineParts.length; li < llen; li ++ ) {
-
-							var parts = lineParts[ li ].split( "/" );
-
-							if ( parts[ 0 ] !== "" ) lineVertices.push( parts[ 0 ] );
-							if ( parts[ 1 ] !== "" ) lineUVs.push( parts[ 1 ] );
-
-						}
-
-					}
-					state.addLineGeometry( lineVertices, lineUVs );
-
-				} else if ( lineFirstChar === 'p' ) {
-
-					var lineData = line.substr( 1 ).trim();
-					var pointData = lineData.split( " " );
-
-					state.addPointGeometry( pointData );
-
-				} else if ( ( result = object_pattern.exec( line ) ) !== null ) {
-
-					// o object_name
-					// or
-					// g group_name
-
-					// WORKAROUND: https://bugs.chromium.org/p/v8/issues/detail?id=2869
-					// var name = result[ 0 ].substr( 1 ).trim();
-					var name = ( " " + result[ 0 ].substr( 1 ).trim() ).substr( 1 );
-
-					state.startObject( name );
-
-				} else if ( material_use_pattern.test( line ) ) {
-
-					// material
-
-					state.object.startMaterial( line.substring( 7 ).trim(), state.materialLibraries );
-
-				} else if ( material_library_pattern.test( line ) ) {
-
-					// mtl file
-
-					state.materialLibraries.push( line.substring( 7 ).trim() );
-
-				} else if ( lineFirstChar === 's' ) {
-
-					result = line.split( ' ' );
-
-					// smooth shading
-
-					// @todo Handle files that have varying smooth values for a set of faces inside one geometry,
-					// but does not define a usemtl for each face set.
-					// This should be detected and a dummy material created (later MultiMaterial and geometry groups).
-					// This requires some care to not create extra material on each smooth value for "normal" obj files.
-					// where explicit usemtl defines geometry groups.
-					// Example asset: examples/models/obj/cerberus/Cerberus.obj
-
-					/*
-					 * http://paulbourke.net/dataformats/obj/
-					 * or
-					 * http://www.cs.utah.edu/~boulos/cs3505/obj_spec.pdf
-					 *
-					 * From chapter "Grouping" Syntax explanation "s group_number":
-					 * "group_number is the smoothing group number. To turn off smoothing groups, use a value of 0 or off.
-					 * Polygonal elements use group numbers to put elements in different smoothing groups. For free-form
-					 * surfaces, smoothing groups are either turned on or off; there is no difference between values greater
-					 * than 0."
-					 */
-					if ( result.length > 1 ) {
-
-						var value = result[ 1 ].trim().toLowerCase();
-						state.object.smooth = ( value !== '0' && value !== 'off' );
-
-					} else {
-
-						// ZBrush can produce "s" lines #11707
-						state.object.smooth = true;
-
-					}
-					var material = state.object.currentMaterial();
-					if ( material ) material.smooth = state.object.smooth;
-
-				} else {
-
-					// Handle null terminated files without exception
-					if ( line === '\0' ) continue;
-
-					throw new Error( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
-
-				}
-
-			}
-
-			state.finalize();
-
-			var container = new THREE.Object3D();
-			container.materialLibraries = [].concat( state.materialLibraries );
-
-			for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
-
-				var object = state.objects[ i ];
-				var geometry = object.geometry;
-				var materials = object.materials;
-				var isLine = ( geometry.type === 'Line' );
-				var isPoints = ( geometry.type === 'Points' );
-				var hasVertexColors = false;
-
-				// Skip o/g line declarations that did not follow with any faces
-				if ( geometry.vertices.length === 0 ) continue;
-
-				var buffergeometry = new THREE.BufferGeometry();
-
-				buffergeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( geometry.vertices, 3 ) );
-
-				if ( geometry.normals.length > 0 ) {
-
-					buffergeometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( geometry.normals, 3 ) );
-
-				} else {
-
-					buffergeometry.computeVertexNormals();
-
-				}
-
-				if ( geometry.colors.length > 0 ) {
-
-					hasVertexColors = true;
-					buffergeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( geometry.colors, 3 ) );
-
-				}
-
-				if ( geometry.uvs.length > 0 ) {
-
-					buffergeometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( geometry.uvs, 2 ) );
-
-				}
-
-				// Create materials
-
-				var createdMaterials = [];
-
-				for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
-
-					var sourceMaterial = materials[ mi ];
-					var material = undefined;
-
-					if ( this.materials !== null ) {
-
-						material = this.materials.create( sourceMaterial.name );
-
-						// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
-						if ( isLine && material && ! ( material instanceof THREE.LineBasicMaterial ) ) {
-
-							var materialLine = new THREE.LineBasicMaterial();
-							THREE.Material.prototype.copy.call( materialLine, material );
-							materialLine.color.copy( material.color );
-							materialLine.lights = false;
-							material = materialLine;
-
-						} else if ( isPoints && material && ! ( material instanceof THREE.PointsMaterial ) ) {
-
-							var materialPoints = new THREE.PointsMaterial( { size: 10, sizeAttenuation: false } );
-							THREE.Material.prototype.copy.call( materialPoints, material );
-							materialPoints.color.copy( material.color );
-							materialPoints.map = material.map;
-							materialPoints.lights = false;
-							material = materialPoints;
-
-						}
-
-					}
-
-					if ( ! material ) {
-
-						if ( isLine ) {
-
-							material = new THREE.LineBasicMaterial();
-
-						} else if ( isPoints ) {
-
-							material = new THREE.PointsMaterial( { size: 1, sizeAttenuation: false } );
-
-						} else {
-
-							material = new THREE.MeshPhongMaterial();
-
-						}
-
-						material.name = sourceMaterial.name;
-
-					}
-
-					material.flatShading = sourceMaterial.smooth ? false : true;
-					material.vertexColors = hasVertexColors ? THREE.VertexColors : THREE.NoColors;
-
-					createdMaterials.push( material );
-
-				}
-
-				// Create mesh
-
-				var mesh;
-
-				if ( createdMaterials.length > 1 ) {
-
-					for ( var mi = 0, miLen = materials.length; mi < miLen; mi ++ ) {
-
-						var sourceMaterial = materials[ mi ];
-						buffergeometry.addGroup( sourceMaterial.groupStart, sourceMaterial.groupCount, mi );
-
-					}
-
-					if ( isLine ) {
-
-						mesh = new THREE.LineSegments( buffergeometry, createdMaterials );
-
-					} else if ( isPoints ) {
-
-						mesh = new THREE.Points( buffergeometry, createdMaterials );
-
-					} else {
-
-						mesh = new THREE.Mesh( buffergeometry, createdMaterials );
-
-					}
-
-				} else {
-
-					if ( isLine ) {
-
-						mesh = new THREE.LineSegments( buffergeometry, createdMaterials[ 0 ] );
-
-					} else if ( isPoints ) {
-
-						mesh = new THREE.Points( buffergeometry, createdMaterials[ 0 ] );
-
-					} else {
-
-						mesh = new THREE.Mesh( buffergeometry, createdMaterials[ 0 ] );
-
-					}
-
-				}
-
-				mesh.name = object.name;
-
-				container.add( mesh );
-
-			}
-
-			console.timeEnd( 'OBJLoader' );
-
-			return container;
-
-		}
-
-	};
-
-	/**
-	 * Loads a Wavefront .mtl file specifying materials
-	 *
-	 * @author angelxuanchang
-	 */
-
-	THREE.MTLLoader = function ( manager ) {
-
-		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
-
-	};
-
-	THREE.MTLLoader.prototype = {
-
-		constructor: THREE.MTLLoader,
-
-		crossOrigin: 'anonymous',
-
-		/**
-		 * Loads and parses a MTL asset from a URL.
-		 *
-		 * @param {String} url - URL to the MTL file.
-		 * @param {Function} [onLoad] - Callback invoked with the loaded object.
-		 * @param {Function} [onProgress] - Callback for download progress.
-		 * @param {Function} [onError] - Callback for download errors.
-		 *
-		 * @see setPath setResourcePath
-		 *
-		 * @note In order for relative texture references to resolve correctly
-		 * you must call setResourcePath() explicitly prior to load.
-		 */
-		load: function ( url, onLoad, onProgress, onError ) {
-
-			var scope = this;
-
-			var path = ( this.path === undefined ) ? THREE.LoaderUtils.extractUrlBase( url ) : this.path;
-
-			var loader = new THREE.FileLoader( this.manager );
-			loader.setPath( this.path );
-			loader.load( url, function ( text ) {
-
-				onLoad( scope.parse( text, path ) );
-
-			}, onProgress, onError );
-
-		},
-
-		/**
-		 * Set base path for resolving references.
-		 * If set this path will be prepended to each loaded and found reference.
-		 *
-		 * @see setResourcePath
-		 * @param {String} path
-		 * @return {THREE.MTLLoader}
-		 *
-		 * @example
-		 *     mtlLoader.setPath( 'assets/obj/' );
-		 *     mtlLoader.load( 'my.mtl', ... );
-		 */
-		setPath: function ( path ) {
-
-			this.path = path;
-			return this;
-
-		},
-
-		/**
-		 * Set base path for additional resources like textures.
-		 *
-		 * @see setPath
-		 * @param {String} path
-		 * @return {THREE.MTLLoader}
-		 *
-		 * @example
-		 *     mtlLoader.setPath( 'assets/obj/' );
-		 *     mtlLoader.setResourcePath( 'assets/textures/' );
-		 *     mtlLoader.load( 'my.mtl', ... );
-		 */
-		setResourcePath: function ( path ) {
-
-			this.resourcePath = path;
-			return this;
-
-		},
-
-		setTexturePath: function ( path ) {
-
-			console.warn( 'THREE.MTLLoader: .setTexturePath() has been renamed to .setResourcePath().' );
-			return this.setResourcePath( path );
-
-		},
-
-		setCrossOrigin: function ( value ) {
-
-			this.crossOrigin = value;
-			return this;
-
-		},
-
-		setMaterialOptions: function ( value ) {
-
-			this.materialOptions = value;
-			return this;
-
-		},
-
-		/**
-		 * Parses a MTL file.
-		 *
-		 * @param {String} text - Content of MTL file
-		 * @return {THREE.MTLLoader.MaterialCreator}
-		 *
-		 * @see setPath setResourcePath
-		 *
-		 * @note In order for relative texture references to resolve correctly
-		 * you must call setResourcePath() explicitly prior to parse.
-		 */
-		parse: function ( text, path ) {
-
-			var lines = text.split( '\n' );
-			var info = {};
-			var delimiter_pattern = /\s+/;
-			var materialsInfo = {};
-
-			for ( var i = 0; i < lines.length; i ++ ) {
-
-				var line = lines[ i ];
-				line = line.trim();
-
-				if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
-
-					// Blank line or comment ignore
-					continue;
-
-				}
-
-				var pos = line.indexOf( ' ' );
-
-				var key = ( pos >= 0 ) ? line.substring( 0, pos ) : line;
-				key = key.toLowerCase();
-
-				var value = ( pos >= 0 ) ? line.substring( pos + 1 ) : '';
-				value = value.trim();
-
-				if ( key === 'newmtl' ) {
-
-					// New material
-
-					info = { name: value };
-					materialsInfo[ value ] = info;
-
-				} else {
-
-					if ( key === 'ka' || key === 'kd' || key === 'ks' || key === 'ke' ) {
-
-						var ss = value.split( delimiter_pattern, 3 );
-						info[ key ] = [ parseFloat( ss[ 0 ] ), parseFloat( ss[ 1 ] ), parseFloat( ss[ 2 ] ) ];
-
-					} else {
-
-						info[ key ] = value;
-
-					}
-
-				}
-
-			}
-
-			var materialCreator = new THREE.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
-			materialCreator.setCrossOrigin( this.crossOrigin );
-			materialCreator.setManager( this.manager );
-			materialCreator.setMaterials( materialsInfo );
-			return materialCreator;
-
-		}
-
-	};
-
-	/**
-	 * Create a new THREE-MTLLoader.MaterialCreator
-	 * @param baseUrl - Url relative to which textures are loaded
-	 * @param options - Set of options on how to construct the materials
-	 *                  side: Which side to apply the material
-	 *                        THREE.FrontSide (default), THREE.BackSide, THREE.DoubleSide
-	 *                  wrap: What type of wrapping to apply for textures
-	 *                        THREE.RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
-	 *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
-	 *                                Default: false, assumed to be already normalized
-	 *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
-	 *                                  Default: false
-	 * @constructor
-	 */
-
-	THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
-
-		this.baseUrl = baseUrl || '';
-		this.options = options;
-		this.materialsInfo = {};
-		this.materials = {};
-		this.materialsArray = [];
-		this.nameLookup = {};
-
-		this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
-		this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
-
-	};
-
-	THREE.MTLLoader.MaterialCreator.prototype = {
-
-		constructor: THREE.MTLLoader.MaterialCreator,
-
-		crossOrigin: 'anonymous',
-
-		setCrossOrigin: function ( value ) {
-
-			this.crossOrigin = value;
-			return this;
-
-		},
-
-		setManager: function ( value ) {
-
-			this.manager = value;
-
-		},
-
-		setMaterials: function ( materialsInfo ) {
-
-			this.materialsInfo = this.convert( materialsInfo );
-			this.materials = {};
-			this.materialsArray = [];
-			this.nameLookup = {};
-
-		},
-
-		convert: function ( materialsInfo ) {
-
-			if ( ! this.options ) return materialsInfo;
-
-			var converted = {};
-
-			for ( var mn in materialsInfo ) {
-
-				// Convert materials info into normalized form based on options
-
-				var mat = materialsInfo[ mn ];
-
-				var covmat = {};
-
-				converted[ mn ] = covmat;
-
-				for ( var prop in mat ) {
-
-					var save = true;
-					var value = mat[ prop ];
-					var lprop = prop.toLowerCase();
-
-					switch ( lprop ) {
-
-						case 'kd':
-						case 'ka':
-						case 'ks':
-
-							// Diffuse color (color under white light) using RGB values
-
-							if ( this.options && this.options.normalizeRGB ) {
-
-								value = [ value[ 0 ] / 255, value[ 1 ] / 255, value[ 2 ] / 255 ];
-
-							}
-
-							if ( this.options && this.options.ignoreZeroRGBs ) {
-
-								if ( value[ 0 ] === 0 && value[ 1 ] === 0 && value[ 2 ] === 0 ) {
-
-									// ignore
-
-									save = false;
-
-								}
-
-							}
-
-							break;
-
-					}
-
-					if ( save ) {
-
-						covmat[ lprop ] = value;
-
-					}
-
-				}
-
-			}
-
-			return converted;
-
-		},
-
-		preload: function () {
-
-			for ( var mn in this.materialsInfo ) {
-
-				this.create( mn );
-
-			}
-
-		},
-
-		getIndex: function ( materialName ) {
-
-			return this.nameLookup[ materialName ];
-
-		},
-
-		getAsArray: function () {
-
-			var index = 0;
-
-			for ( var mn in this.materialsInfo ) {
-
-				this.materialsArray[ index ] = this.create( mn );
-				this.nameLookup[ mn ] = index;
-				index ++;
-
-			}
-
-			return this.materialsArray;
-
-		},
-
-		create: function ( materialName ) {
-
-			if ( this.materials[ materialName ] === undefined ) {
-
-				this.createMaterial_( materialName );
-
-			}
-
-			return this.materials[ materialName ];
-
-		},
-
-		createMaterial_: function ( materialName ) {
-
-			// Create material
-
-			var scope = this;
-			var mat = this.materialsInfo[ materialName ];
-			var params = {
-
-				name: materialName,
-				side: this.side
-
-			};
-
-			function resolveURL( baseUrl, url ) {
-
-				if ( typeof url !== 'string' || url === '' )
-					return '';
-
-				// Absolute URL
-				if ( /^https?:\/\//i.test( url ) ) return url;
-
-				return baseUrl + url;
-
-			}
-
-			function setMapForType( mapType, value ) {
-
-				if ( params[ mapType ] ) return; // Keep the first encountered texture
-
-				var texParams = scope.getTextureParams( value, params );
-				var map = scope.loadTexture( resolveURL( scope.baseUrl, texParams.url ) );
-
-				map.repeat.copy( texParams.scale );
-				map.offset.copy( texParams.offset );
-
-				map.wrapS = scope.wrap;
-				map.wrapT = scope.wrap;
-
-				params[ mapType ] = map;
-
-			}
-
-			for ( var prop in mat ) {
-
-				var value = mat[ prop ];
-				var n;
-
-				if ( value === '' ) continue;
-
-				switch ( prop.toLowerCase() ) {
-
-					// Ns is material specular exponent
-
-					case 'kd':
-
-						// Diffuse color (color under white light) using RGB values
-
-						params.color = new THREE.Color().fromArray( value );
-
-						break;
-
-					case 'ks':
-
-						// Specular color (color when light is reflected from shiny surface) using RGB values
-						params.specular = new THREE.Color().fromArray( value );
-
-						break;
-
-					case 'ke':
-
-						// Emissive using RGB values
-						params.emissive = new THREE.Color().fromArray( value );
-
-						break;
-
-					case 'map_kd':
-
-						// Diffuse texture map
-
-						setMapForType( "map", value );
-
-						break;
-
-					case 'map_ks':
-
-						// Specular map
-
-						setMapForType( "specularMap", value );
-
-						break;
-
-					case 'map_ke':
-
-						// Emissive map
-
-						setMapForType( "emissiveMap", value );
-
-						break;
-
-					case 'norm':
-
-						setMapForType( "normalMap", value );
-
-						break;
-
-					case 'map_bump':
-					case 'bump':
-
-						// Bump texture map
-
-						setMapForType( "bumpMap", value );
-
-						break;
-
-					case 'map_d':
-
-						// Alpha map
-
-						setMapForType( "alphaMap", value );
-						params.transparent = true;
-
-						break;
-
-					case 'ns':
-
-						// The specular exponent (defines the focus of the specular highlight)
-						// A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
-
-						params.shininess = parseFloat( value );
-
-						break;
-
-					case 'd':
-						n = parseFloat( value );
-
-						if ( n < 1 ) {
-
-							params.opacity = n;
-							params.transparent = true;
-
-						}
-
-						break;
-
-					case 'tr':
-						n = parseFloat( value );
-
-						if ( this.options && this.options.invertTrProperty ) n = 1 - n;
-
-						if ( n > 0 ) {
-
-							params.opacity = 1 - n;
-							params.transparent = true;
-
-						}
-
-						break;
-
-				}
-
-			}
-
-			this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
-			return this.materials[ materialName ];
-
-		},
-
-		getTextureParams: function ( value, matParams ) {
-
-			var texParams = {
-
-				scale: new THREE.Vector2( 1, 1 ),
-				offset: new THREE.Vector2( 0, 0 )
-
-			 };
-
-			var items = value.split( /\s+/ );
-			var pos;
-
-			pos = items.indexOf( '-bm' );
-
-			if ( pos >= 0 ) {
-
-				matParams.bumpScale = parseFloat( items[ pos + 1 ] );
-				items.splice( pos, 2 );
-
-			}
-
-			pos = items.indexOf( '-s' );
-
-			if ( pos >= 0 ) {
-
-				texParams.scale.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
-				items.splice( pos, 4 ); // we expect 3 parameters here!
-
-			}
-
-			pos = items.indexOf( '-o' );
-
-			if ( pos >= 0 ) {
-
-				texParams.offset.set( parseFloat( items[ pos + 1 ] ), parseFloat( items[ pos + 2 ] ) );
-				items.splice( pos, 4 ); // we expect 3 parameters here!
-
-			}
-
-			texParams.url = items.join( ' ' ).trim();
-			return texParams;
-
-		},
-
-		loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
-
-			var texture;
-			var loader = THREE.Loader.Handlers.get( url );
-			var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
-
-			if ( loader === null ) {
-
-				loader = new THREE.TextureLoader( manager );
-
-			}
-
-			if ( loader.setCrossOrigin ) loader.setCrossOrigin( this.crossOrigin );
-			texture = loader.load( url, onLoad, onProgress, onError );
-
-			if ( mapping !== undefined ) texture.mapping = mapping;
-
-			return texture;
-
-		}
-
-	};
-
-	/**
-	 * @author mrdoob / http://mrdoob.com/
-	 * @author Mugen87 / https://github.com/Mugen87
-	 *
-	 *
-	 * @Modified by Jihoon Lee from ColladerLoader.js@r88
-	 * To support rviz compatible collada viewing.
-	 * See: #202 why it is forked.
-	 *
-	 * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
-	 */
-
-	THREE.ColladaLoader = function (manager) {
-
-	  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
-
-	};
-
-	THREE.ColladaLoader.prototype = {
-
-	  constructor: THREE.ColladaLoader,
-
-	  crossOrigin: 'Anonymous',
-
-	  load: function (url, onLoad, onProgress, onError) {
-
-	    var scope = this;
-
-	    var path = THREE.Loader.prototype.extractUrlBase(url);
-
-	    var loader = new THREE.FileLoader(scope.manager);
-	    loader.load(url, function (text) {
-
-	      onLoad(scope.parse(text, path));
-
-	    }, onProgress, onError);
-
-	  },
-
-	  options: {
-
-	    set convertUpAxis(value) {
-
-	      console.warn('THREE.ColladaLoader: options.convertUpAxis() has been removed. Up axis is converted automatically.');
-
-	    }
-
-	  },
-
-	  setCrossOrigin: function (value) {
-
-	    this.crossOrigin = value;
-
-	  },
-
-	  parse: function (text, path) {
-
-	    function getElementsByTagName(xml, name) {
-
-	      // Non recursive xml.getElementsByTagName() ...
-
-	      var array = [];
-	      var childNodes = xml.childNodes;
-
-	      for (var i = 0, l = childNodes.length; i < l; i++) {
-
-	        var child = childNodes[i];
-
-	        if (child.nodeName === name) {
-
-	          array.push(child);
-
-	        }
-
-	      }
-
-	      return array;
-
-	    }
-
-	    function parseStrings(text) {
-
-	      if (text.length === 0) return [];
-
-	      var parts = text.trim().split(/\s+/);
-	      var array = new Array(parts.length);
-
-	      for (var i = 0, l = parts.length; i < l; i++) {
-
-	        array[i] = parts[i];
-
-	      }
-
-	      return array;
-
-	    }
-
-	    function parseFloats(text) {
-
-	      if (text.length === 0) return [];
-
-	      var parts = text.trim().split(/\s+/);
-	      var array = new Array(parts.length);
-
-	      for (var i = 0, l = parts.length; i < l; i++) {
-
-	        array[i] = parseFloat(parts[i]);
-
-	      }
-
-	      return array;
-
-	    }
-
-	    function parseInts(text) {
-
-	      if (text.length === 0) return [];
-
-	      var parts = text.trim().split(/\s+/);
-	      var array = new Array(parts.length);
-
-	      for (var i = 0, l = parts.length; i < l; i++) {
-
-	        array[i] = parseInt(parts[i]);
-
-	      }
-
-	      return array;
-
-	    }
-
-	    function parseId(text) {
-
-	      return text.substring(1);
-
-	    }
-
-	    function generateId() {
-
-	      return 'three_default_' + (count++);
-
-	    }
-
-	    function isEmpty(object) {
-
-	      return Object.keys(object).length === 0;
-
-	    }
-
-	    // asset
-
-	    function parseAsset(xml) {
-
-	      return {
-	        unit: parseAssetUnit(getElementsByTagName(xml, 'unit')[0]),
-	        upAxis: parseAssetUpAxis(getElementsByTagName(xml, 'up_axis')[0])
-	      };
-
-	    }
-
-	    function parseAssetUnit(xml) {
-
-	      return xml !== undefined ? parseFloat(xml.getAttribute('meter')) : 1;
-
-	    }
-
-	    function parseAssetUpAxis(xml) {
-
-	      return xml !== undefined ? xml.textContent : 'Y_UP';
-
-	    }
-
-	    // library
-
-	    function parseLibrary(xml, libraryName, nodeName, parser) {
-
-	      var library = getElementsByTagName(xml, libraryName)[0];
-
-	      if (library !== undefined) {
-
-	        var elements = getElementsByTagName(library, nodeName);
-
-	        for (var i = 0; i < elements.length; i++) {
-
-	          parser(elements[i]);
-
-	        }
-
-	      }
-
-	    }
-
-	    function buildLibrary(data, builder) {
-
-	      for (var name in data) {
-
-	        var object = data[name];
-	        object.build = builder(data[name]);
-
-	      }
-
-	    }
-
-	    // get
-
-	    function getBuild(data, builder) {
-
-	      if (data.build !== undefined) return data.build;
-
-	      data.build = builder(data);
-
-	      return data.build;
-
-	    }
-
-	    // animation
-
-	    function parseAnimation(xml) {
-
-	      var data = {
-	        sources: {},
-	        samplers: {},
-	        channels: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        var id;
-
-	        switch (child.nodeName) {
-
-	          case 'source':
-	            id = child.getAttribute('id');
-	            data.sources[id] = parseSource(child);
-	            break;
-
-	          case 'sampler':
-	            id = child.getAttribute('id');
-	            data.samplers[id] = parseAnimationSampler(child);
-	            break;
-
-	          case 'channel':
-	            id = child.getAttribute('target');
-	            data.channels[id] = parseAnimationChannel(child);
-	            break;
-
-	          default:
-	            console.log(child);
-
-	        }
-
-	      }
-
-	      library.animations[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseAnimationSampler(xml) {
-
-	      var data = {
-	        inputs: {},
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'input':
-	            var id = parseId(child.getAttribute('source'));
-	            var semantic = child.getAttribute('semantic');
-	            data.inputs[semantic] = id;
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseAnimationChannel(xml) {
-
-	      var data = {};
-
-	      var target = xml.getAttribute('target');
-
-	      // parsing SID Addressing Syntax
-
-	      var parts = target.split('/');
-
-	      var id = parts.shift();
-	      var sid = parts.shift();
-
-	      // check selection syntax
-
-	      var arraySyntax = (sid.indexOf('(') !== - 1);
-	      var memberSyntax = (sid.indexOf('.') !== - 1);
-
-	      if (memberSyntax) {
-
-	        //  member selection access
-
-	        parts = sid.split('.');
-	        sid = parts.shift();
-	        data.member = parts.shift();
-
-	      } else if (arraySyntax) {
-
-	        // array-access syntax. can be used to express fields in one-dimensional vectors or two-dimensional matrices.
-
-	        var indices = sid.split('(');
-	        sid = indices.shift();
-
-	        for (var i = 0; i < indices.length; i++) {
-
-	          indices[i] = parseInt(indices[i].replace(/\)/, ''));
-
-	        }
-
-	        data.indices = indices;
-
-	      }
-
-	      data.id = id;
-	      data.sid = sid;
-
-	      data.arraySyntax = arraySyntax;
-	      data.memberSyntax = memberSyntax;
-
-	      data.sampler = parseId(xml.getAttribute('source'));
-
-	      return data;
-
-	    }
-
-	    function buildAnimation(data) {
-
-	      var tracks = [];
-
-	      var channels = data.channels;
-	      var samplers = data.samplers;
-	      var sources = data.sources;
-
-	      for (var target in channels) {
-
-	        if (channels.hasOwnProperty(target)) {
-
-	          var channel = channels[target];
-	          var sampler = samplers[channel.sampler];
-
-	          var inputId = sampler.inputs.INPUT;
-	          var outputId = sampler.inputs.OUTPUT;
-
-	          var inputSource = sources[inputId];
-	          var outputSource = sources[outputId];
-
-	          var animation = buildAnimationChannel(channel, inputSource, outputSource);
-
-	          createKeyframeTracks(animation, tracks);
-
-	        }
-
-	      }
-
-	      return tracks;
-
-	    }
-
-	    function getAnimation(id) {
-
-	      return getBuild(library.animations[id], buildAnimation);
-
-	    }
-
-	    function buildAnimationChannel(channel, inputSource, outputSource) {
-
-	      var node = library.nodes[channel.id];
-	      var object3D = getNode(node.id);
-
-	      var transform = node.transforms[channel.sid];
-	      var defaultMatrix = node.matrix.clone().transpose();
-
-	      var time, stride;
-	      var i, il, j, jl;
-
-	      var data = {};
-
-	      // the collada spec allows the animation of data in various ways.
-	      // depending on the transform type (matrix, translate, rotate, scale), we execute different logic
-
-	      switch (transform) {
-
-	        case 'matrix':
-
-	          for (i = 0, il = inputSource.array.length; i < il; i++) {
-
-	            time = inputSource.array[i];
-	            stride = i * outputSource.stride;
-
-	            if (data[time] === undefined) data[time] = {};
-
-	            if (channel.arraySyntax === true) {
-
-	              var value = outputSource.array[stride];
-	              var index = channel.indices[0] + 4 * channel.indices[1];
-
-	              data[time][index] = value;
-
-	            } else {
-
-	              for (j = 0, jl = outputSource.stride; j < jl; j++) {
-
-	                data[time][j] = outputSource.array[stride + j];
-
-	              }
-
-	            }
-
-	          }
-
-	          break;
-
-	        case 'translate':
-	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
-	          break;
-
-	        case 'rotate':
-	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
-	          break;
-
-	        case 'scale':
-	          console.warn('THREE.ColladaLoader: Animation transform type "%s" not yet implemented.', transform);
-	          break;
-
-	      }
-
-	      var keyframes = prepareAnimationData(data, defaultMatrix);
-
-	      var animation = {
-	        name: object3D.uuid,
-	        keyframes: keyframes
-	      };
-
-	      return animation;
-
-	    }
-
-	    function prepareAnimationData(data, defaultMatrix) {
-
-	      var keyframes = [];
-
-	      // transfer data into a sortable array
-
-	      for (var time in data) {
-
-	        keyframes.push({ time: parseFloat(time), value: data[time] });
-
-	      }
-
-	      // ensure keyframes are sorted by time
-
-	      keyframes.sort(ascending);
-
-	      // now we clean up all animation data, so we can use them for keyframe tracks
-
-	      for (var i = 0; i < 16; i++) {
-
-	        transformAnimationData(keyframes, i, defaultMatrix.elements[i]);
-
-	      }
-
-	      return keyframes;
-
-	      // array sort function
-
-	      function ascending(a, b) {
-
-	        return a.time - b.time;
-
-	      }
-
-	    }
-
-	    var position = new THREE.Vector3();
-	    var scale = new THREE.Vector3();
-	    var quaternion = new THREE.Quaternion();
-
-	    function createKeyframeTracks(animation, tracks) {
-
-	      var keyframes = animation.keyframes;
-	      var name = animation.name;
-
-	      var times = [];
-	      var positionData = [];
-	      var quaternionData = [];
-	      var scaleData = [];
-
-	      for (var i = 0, l = keyframes.length; i < l; i++) {
-
-	        var keyframe = keyframes[i];
-
-	        var time = keyframe.time;
-	        var value = keyframe.value;
-
-	        matrix.fromArray(value).transpose();
-	        matrix.decompose(position, quaternion, scale);
-
-	        times.push(time);
-	        positionData.push(position.x, position.y, position.z);
-	        quaternionData.push(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
-	        scaleData.push(scale.x, scale.y, scale.z);
-
-	      }
-
-	      if (positionData.length > 0) tracks.push(new THREE.VectorKeyframeTrack(name + '.position', times, positionData));
-	      if (quaternionData.length > 0) tracks.push(new THREE.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData));
-	      if (scaleData.length > 0) tracks.push(new THREE.VectorKeyframeTrack(name + '.scale', times, scaleData));
-
-	      return tracks;
-
-	    }
-
-	    function transformAnimationData(keyframes, property, defaultValue) {
-
-	      var keyframe;
-
-	      var empty = true;
-	      var i, l;
-
-	      // check, if values of a property are missing in our keyframes
-
-	      for (i = 0, l = keyframes.length; i < l; i++) {
-
-	        keyframe = keyframes[i];
-
-	        if (keyframe.value[property] === undefined) {
-
-	          keyframe.value[property] = null; // mark as missing
-
-	        } else {
-
-	          empty = false;
-
-	        }
-
-	      }
-
-	      if (empty === true) {
-
-	        // no values at all, so we set a default value
-
-	        for (i = 0, l = keyframes.length; i < l; i++) {
-
-	          keyframe = keyframes[i];
-
-	          keyframe.value[property] = defaultValue;
-
-	        }
-
-	      } else {
-
-	        // filling gaps
-
-	        createMissingKeyframes(keyframes, property);
-
-	      }
-
-	    }
-
-	    function createMissingKeyframes(keyframes, property) {
-
-	      var prev, next;
-
-	      for (var i = 0, l = keyframes.length; i < l; i++) {
-
-	        var keyframe = keyframes[i];
-
-	        if (keyframe.value[property] === null) {
-
-	          prev = getPrev(keyframes, i, property);
-	          next = getNext(keyframes, i, property);
-
-	          if (prev === null) {
-
-	            keyframe.value[property] = next.value[property];
-	            continue;
-
-	          }
-
-	          if (next === null) {
-
-	            keyframe.value[property] = prev.value[property];
-	            continue;
-
-	          }
-
-	          interpolate(keyframe, prev, next, property);
-
-	        }
-
-	      }
-
-	    }
-
-	    function getPrev(keyframes, i, property) {
-
-	      while (i >= 0) {
-
-	        var keyframe = keyframes[i];
-
-	        if (keyframe.value[property] !== null) return keyframe;
-
-	        i--;
-
-	      }
-
-	      return null;
-
-	    }
-
-	    function getNext(keyframes, i, property) {
-
-	      while (i < keyframes.length) {
-
-	        var keyframe = keyframes[i];
-
-	        if (keyframe.value[property] !== null) return keyframe;
-
-	        i++;
-
-	      }
-
-	      return null;
-
-	    }
-
-	    function interpolate(key, prev, next, property) {
-
-	      if ((next.time - prev.time) === 0) {
-
-	        key.value[property] = prev.value[property];
-	        return;
-
-	      }
-
-	      key.value[property] = ((key.time - prev.time) * (next.value[property] - prev.value[property]) / (next.time - prev.time)) + prev.value[property];
-
-	    }
-
-	    // animation clips
-
-	    function parseAnimationClip(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('id') || 'default',
-	        start: parseFloat(xml.getAttribute('start') || 0),
-	        end: parseFloat(xml.getAttribute('end') || 0),
-	        animations: []
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'instance_animation':
-	            data.animations.push(parseId(child.getAttribute('url')));
-	            break;
-
-	        }
-
-	      }
-
-	      library.clips[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function buildAnimationClip(data) {
-
-	      var tracks = [];
-
-	      var name = data.name;
-	      var duration = (data.end - data.start) || - 1;
-	      var animations = data.animations;
-
-	      for (var i = 0, il = animations.length; i < il; i++) {
-
-	        var animationTracks = getAnimation(animations[i]);
-
-	        for (var j = 0, jl = animationTracks.length; j < jl; j++) {
-
-	          tracks.push(animationTracks[j]);
-
-	        }
-
-	      }
-
-	      return new THREE.AnimationClip(name, duration, tracks);
-
-	    }
-
-	    function getAnimationClip(id) {
-
-	      return getBuild(library.clips[id], buildAnimationClip);
-
-	    }
-
-	    // controller
-
-	    function parseController(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'skin':
-	            // there is exactly one skin per controller
-	            data.id = parseId(child.getAttribute('source'));
-	            data.skin = parseSkin(child);
-	            break;
-
-	          case 'morph':
-	            data.id = parseId(child.getAttribute('source'));
-	            console.warn('THREE.ColladaLoader: Morph target animation not supported yet.');
-	            break;
-
-	        }
-
-	      }
-
-	      library.controllers[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseSkin(xml) {
-
-	      var data = {
-	        sources: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'bind_shape_matrix':
-	            data.bindShapeMatrix = parseFloats(child.textContent);
-	            break;
-
-	          case 'source':
-	            var id = child.getAttribute('id');
-	            data.sources[id] = parseSource(child);
-	            break;
-
-	          case 'joints':
-	            data.joints = parseJoints(child);
-	            break;
-
-	          case 'vertex_weights':
-	            data.vertexWeights = parseVertexWeights(child);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseJoints(xml) {
-
-	      var data = {
-	        inputs: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'input':
-	            var semantic = child.getAttribute('semantic');
-	            var id = parseId(child.getAttribute('source'));
-	            data.inputs[semantic] = id;
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseVertexWeights(xml) {
-
-	      var data = {
-	        inputs: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'input':
-	            var semantic = child.getAttribute('semantic');
-	            var id = parseId(child.getAttribute('source'));
-	            var offset = parseInt(child.getAttribute('offset'));
-	            data.inputs[semantic] = { id: id, offset: offset };
-	            break;
-
-	          case 'vcount':
-	            data.vcount = parseInts(child.textContent);
-	            break;
-
-	          case 'v':
-	            data.v = parseInts(child.textContent);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function buildController(data) {
-
-	      var build = {
-	        id: data.id
-	      };
-
-	      var geometry = library.geometries[build.id];
-
-	      if (data.skin !== undefined) {
-
-	        build.skin = buildSkin(data.skin);
-
-	        // we enhance the 'sources' property of the corresponding geometry with our skin data
-
-	        geometry.sources.skinIndices = build.skin.indices;
-	        geometry.sources.skinWeights = build.skin.weights;
-
-	      }
-
-	      return build;
-
-	    }
-
-	    function buildSkin(data) {
-
-	      var BONE_LIMIT = 4;
-
-	      var build = {
-	        joints: [], // this must be an array to preserve the joint order
-	        indices: {
-	          array: [],
-	          stride: BONE_LIMIT
-	        },
-	        weights: {
-	          array: [],
-	          stride: BONE_LIMIT
-	        }
-	      };
-
-	      var sources = data.sources;
-	      var vertexWeights = data.vertexWeights;
-
-	      var vcount = vertexWeights.vcount;
-	      var v = vertexWeights.v;
-	      var jointOffset = vertexWeights.inputs.JOINT.offset;
-	      var weightOffset = vertexWeights.inputs.WEIGHT.offset;
-
-	      var jointSource = data.sources[data.joints.inputs.JOINT];
-	      var inverseSource = data.sources[data.joints.inputs.INV_BIND_MATRIX];
-
-	      var weights = sources[vertexWeights.inputs.WEIGHT.id].array;
-	      var stride = 0;
-
-	      var i, j, l;
-
-	      // procces skin data for each vertex
-
-	      for (i = 0, l = vcount.length; i < l; i++) {
-
-	        var jointCount = vcount[i]; // this is the amount of joints that affect a single vertex
-	        var vertexSkinData = [];
-
-	        for (j = 0; j < jointCount; j++) {
-
-	          var skinIndex = v[stride + jointOffset];
-	          var weightId = v[stride + weightOffset];
-	          var skinWeight = weights[weightId];
-
-	          vertexSkinData.push({ index: skinIndex, weight: skinWeight });
-
-	          stride += 2;
-
-	        }
-
-	        // we sort the joints in descending order based on the weights.
-	        // this ensures, we only procced the most important joints of the vertex
-
-	        vertexSkinData.sort(descending);
-
-	        // now we provide for each vertex a set of four index and weight values.
-	        // the order of the skin data matches the order of vertices
-
-	        for (j = 0; j < BONE_LIMIT; j++) {
-
-	          var d = vertexSkinData[j];
-
-	          if (d !== undefined) {
-
-	            build.indices.array.push(d.index);
-	            build.weights.array.push(d.weight);
-
-	          } else {
-
-	            build.indices.array.push(0);
-	            build.weights.array.push(0);
-
-	          }
-
-	        }
-
-	      }
-
-	      // setup bind matrix
-
-	      build.bindMatrix = new THREE.Matrix4().fromArray(data.bindShapeMatrix).transpose();
-
-	      // process bones and inverse bind matrix data
-
-	      for (i = 0, l = jointSource.array.length; i < l; i++) {
-
-	        var name = jointSource.array[i];
-	        var boneInverse = new THREE.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
-
-	        build.joints.push({ name: name, boneInverse: boneInverse });
-
-	      }
-
-	      return build;
-
-	      // array sort function
-
-	      function descending(a, b) {
-
-	        return b.weight - a.weight;
-
-	      }
-
-	    }
-
-	    function getController(id) {
-
-	      return getBuild(library.controllers[id], buildController);
-
-	    }
-
-	    // image
-
-	    function parseImage(xml) {
-
-	      var data = {
-	        init_from: getElementsByTagName(xml, 'init_from')[0].textContent
-	      };
-
-	      library.images[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function buildImage(data) {
-
-	      if (data.build !== undefined) return data.build;
-
-	      return data.init_from;
-
-	    }
-
-	    function getImage(id) {
-
-	      return getBuild(library.images[id], buildImage);
-
-	    }
-
-	    // effect
-
-	    function parseEffect(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'profile_COMMON':
-	            data.profile = parseEffectProfileCOMMON(child);
-	            break;
-
-	        }
-
-	      }
-
-	      library.effects[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseEffectProfileCOMMON(xml) {
-
-	      var data = {
-	        surfaces: {},
-	        samplers: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'newparam':
-	            parseEffectNewparam(child, data);
-	            break;
-
-	          case 'technique':
-	            data.technique = parseEffectTechnique(child);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectNewparam(xml, data) {
-
-	      var sid = xml.getAttribute('sid');
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'surface':
-	            data.surfaces[sid] = parseEffectSurface(child);
-	            break;
-
-	          case 'sampler2D':
-	            data.samplers[sid] = parseEffectSampler(child);
-	            break;
-
-	        }
-
-	      }
-
-	    }
-
-	    function parseEffectSurface(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'init_from':
-	            data.init_from = child.textContent;
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectSampler(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'source':
-	            data.source = child.textContent;
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectTechnique(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'constant':
-	          case 'lambert':
-	          case 'blinn':
-	          case 'phong':
-	            data.type = child.nodeName;
-	            data.parameters = parseEffectParameters(child);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectParameters(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'emission':
-	          case 'diffuse':
-	          case 'specular':
-	          case 'shininess':
-	          case 'transparent':
-	          case 'transparency':
-	            data[child.nodeName] = parseEffectParameter(child);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectParameter(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'color':
-	            data[child.nodeName] = parseFloats(child.textContent);
-	            break;
-
-	          case 'float':
-	            data[child.nodeName] = parseFloat(child.textContent);
-	            break;
-
-	          case 'texture':
-	            data[child.nodeName] = { id: child.getAttribute('texture'), extra: parseEffectParameterTexture(child) };
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectParameterTexture(xml) {
-
-	      var data = {
-	        technique: {}
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'extra':
-	            parseEffectParameterTextureExtra(child, data);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseEffectParameterTextureExtra(xml, data) {
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'technique':
-	            parseEffectParameterTextureExtraTechnique(child, data);
-	            break;
-
-	        }
-
-	      }
-
-	    }
-
-	    function parseEffectParameterTextureExtraTechnique(xml, data) {
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'repeatU':
-	          case 'repeatV':
-	          case 'offsetU':
-	          case 'offsetV':
-	            data.technique[child.nodeName] = parseFloat(child.textContent);
-	            break;
-
-	          case 'wrapU':
-	          case 'wrapV':
-
-	            // some files have values for wrapU/wrapV which become NaN via parseInt
-
-	            if (child.textContent.toUpperCase() === 'TRUE') {
-
-	              data.technique[child.nodeName] = 1;
-
-	            } else if (child.textContent.toUpperCase() === 'FALSE') {
-
-	              data.technique[child.nodeName] = 0;
-
-	            } else {
-
-	              data.technique[child.nodeName] = parseInt(child.textContent);
-
-	            }
-
-	            break;
-
-	        }
-
-	      }
-
-	    }
-
-	    function buildEffect(data) {
-
-	      return data;
-
-	    }
-
-	    function getEffect(id) {
-
-	      return getBuild(library.effects[id], buildEffect);
-
-	    }
-
-	    // material
-
-	    function parseMaterial(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name')
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'instance_effect':
-	            data.url = parseId(child.getAttribute('url'));
-	            break;
-
-	        }
-
-	      }
-
-	      library.materials[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function buildMaterial(data) {
-
-	      var effect = getEffect(data.url);
-	      var technique = effect.profile.technique;
-
-	      var material;
-
-	      switch (technique.type) {
-
-	        case 'phong':
-	        case 'blinn':
-	          material = new THREE.MeshPhongMaterial();
-	          break;
-
-	        case 'lambert':
-	          material = new THREE.MeshLambertMaterial();
-	          break;
-
-	        default:
-	          material = new THREE.MeshBasicMaterial();
-	          break;
-
-	      }
-
-	      material.name = data.name;
-
-	      function getTexture(textureObject) {
-
-	        var sampler = effect.profile.samplers[textureObject.id];
-
-	        if (sampler !== undefined) {
-
-	          var surface = effect.profile.surfaces[sampler.source];
-
-	          var texture = textureLoader.load(getImage(surface.init_from));
-
-	          var extra = textureObject.extra;
-
-	          if (extra !== undefined && extra.technique !== undefined && isEmpty(extra.technique) === false) {
-
-	            var technique = extra.technique;
-
-	            texture.wrapS = technique.wrapU ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
-	            texture.wrapT = technique.wrapV ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
-
-	            texture.offset.set(technique.offsetU || 0, technique.offsetV || 0);
-	            texture.repeat.set(technique.repeatU || 1, technique.repeatV || 1);
-
-	          } else {
-
-	            texture.wrapS = THREE.RepeatWrapping;
-	            texture.wrapT = THREE.RepeatWrapping;
-
-	          }
-
-	          return texture;
-
-	        }
-
-	        console.error('THREE.ColladaLoader: Undefined sampler', textureObject.id);
-
-	        return null;
-
-	      }
-
-	      var parameters = technique.parameters;
-
-	      for (var key in parameters) {
-
-	        var parameter = parameters[key];
-
-	        switch (key) {
-
-	          case 'diffuse':
-	            if (parameter.color) material.color.fromArray(parameter.color);
-	            if (parameter.texture) material.map = getTexture(parameter.texture);
-	            break;
-	          case 'specular':
-	            if (parameter.color && material.specular) material.specular.fromArray(parameter.color);
-	            if (parameter.texture) material.specularMap = getTexture(parameter.texture);
-	            break;
-	          case 'shininess':
-	            if (parameter.float && material.shininess)
-	              material.shininess = parameter.float;
-	            break;
-	          case 'emission':
-	            if (parameter.color && material.emissive)
-	              material.emissive.fromArray(parameter.color);
-	            break;
-	          case 'transparent':
-	            // if ( parameter.texture ) material.alphaMap = getTexture( parameter.texture );
-	            material.transparent = true;
-	            break;
-	          case 'transparency':
-	            if (parameter.float !== undefined) material.opacity = parameter.float;
-	            material.transparent = true;
-	            break;
-
-	        }
-
-	      }
-
-	      return material;
-
-	    }
-
-	    function getMaterial(id) {
-
-	      return getBuild(library.materials[id], buildMaterial);
-
-	    }
-
-	    // camera
-
-	    function parseCamera(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name')
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'optics':
-	            data.optics = parseCameraOptics(child);
-	            break;
-
-	        }
-
-	      }
-
-	      library.cameras[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseCameraOptics(xml) {
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        switch (child.nodeName) {
-
-	          case 'technique_common':
-	            return parseCameraTechnique(child);
-
-	        }
-
-	      }
-
-	      return {};
-
-	    }
-
-	    function parseCameraTechnique(xml) {
-
-	      var data = {};
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        switch (child.nodeName) {
-
-	          case 'perspective':
-	          case 'orthographic':
-
-	            data.technique = child.nodeName;
-	            data.parameters = parseCameraParameters(child);
-
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseCameraParameters(xml) {
-
-	      var data = {};
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        switch (child.nodeName) {
-
-	          case 'xfov':
-	          case 'yfov':
-	          case 'xmag':
-	          case 'ymag':
-	          case 'znear':
-	          case 'zfar':
-	          case 'aspect_ratio':
-	            data[child.nodeName] = parseFloat(child.textContent);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function buildCamera(data) {
-
-	      var camera;
-
-	      switch (data.optics.technique) {
-
-	        case 'perspective':
-	          camera = new THREE.PerspectiveCamera(
-	            data.optics.parameters.yfov,
-	            data.optics.parameters.aspect_ratio,
-	            data.optics.parameters.znear,
-	            data.optics.parameters.zfar
-	          );
-	          break;
-
-	        case 'orthographic':
-	          var ymag = data.optics.parameters.ymag;
-	          var xmag = data.optics.parameters.xmag;
-	          var aspectRatio = data.optics.parameters.aspect_ratio;
-
-	          xmag = (xmag === undefined) ? (ymag * aspectRatio) : xmag;
-	          ymag = (ymag === undefined) ? (xmag / aspectRatio) : ymag;
-
-	          xmag *= 0.5;
-	          ymag *= 0.5;
-
-	          camera = new THREE.OrthographicCamera(
-	            - xmag, xmag, ymag, - ymag, // left, right, top, bottom
-	            data.optics.parameters.znear,
-	            data.optics.parameters.zfar
-	          );
-	          break;
-
-	        default:
-	          camera = new THREE.PerspectiveCamera();
-	          break;
-
-	      }
-
-	      camera.name = data.name;
-
-	      return camera;
-
-	    }
-
-	    function getCamera(id) {
-	      var data = library.cameras[id];
-	      if (data !== undefined) {
-	        return getBuild(data, buildCamera);
-	      }
-	      return null;
-	    }
-
-	    // light
-
-	    function parseLight(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'technique_common':
-	            data = parseLightTechnique(child);
-	            break;
-
-	        }
-
-	      }
-
-	      library.lights[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseLightTechnique(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'directional':
-	          case 'point':
-	          case 'spot':
-	          case 'ambient':
-
-	            data.technique = child.nodeName;
-	            data.parameters = parseLightParameters(child);
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseLightParameters(xml) {
-
-	      var data = {};
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'color':
-	            var array = parseFloats(child.textContent);
-	            data.color = new THREE.Color().fromArray(array);
-	            break;
-
-	          case 'falloff_angle':
-	            data.falloffAngle = parseFloat(child.textContent);
-	            break;
-
-	          case 'quadratic_attenuation':
-	            var f = parseFloat(child.textContent);
-	            data.distance = f ? Math.sqrt(1 / f) : 0;
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function buildLight(data) {
-
-	      var light;
-
-	      switch (data.technique) {
-
-	        case 'directional':
-	          light = new THREE.DirectionalLight();
-	          break;
-
-	        case 'point':
-	          light = new THREE.PointLight();
-	          break;
-
-	        case 'spot':
-	          light = new THREE.SpotLight();
-	          break;
-
-	        case 'ambient':
-	          light = new THREE.AmbientLight();
-	          break;
-
-	      }
-
-	      if (data.parameters.color) light.color.copy(data.parameters.color);
-	      if (data.parameters.distance) light.distance = data.parameters.distance;
-
-	      return light;
-
-	    }
-
-	    // geometry
-
-	    function parseGeometry(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name'),
-	        sources: {},
-	        vertices: {},
-	        primitives: []
-	      };
-
-	      var mesh = getElementsByTagName(xml, 'mesh')[0];
-
-	      for (var i = 0; i < mesh.childNodes.length; i++) {
-
-	        var child = mesh.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        var id = child.getAttribute('id');
-
-	        switch (child.nodeName) {
-
-	          case 'source':
-	            data.sources[id] = parseSource(child);
-	            break;
-
-	          case 'vertices':
-	            // data.sources[ id ] = data.sources[ parseId( getElementsByTagName( child, 'input' )[ 0 ].getAttribute( 'source' ) ) ];
-	            data.vertices = parseGeometryVertices(child);
-	            break;
-
-	          case 'polygons':
-	            console.warn('THREE.ColladaLoader: Unsupported primitive type: ', child.nodeName);
-	            break;
-
-	          case 'lines':
-	          case 'linestrips':
-	          case 'polylist':
-	          case 'triangles':
-	            data.primitives.push(parseGeometryPrimitive(child));
-	            break;
-
-	          default:
-	            console.log(child);
-
-	        }
-
-	      }
-
-	      library.geometries[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function parseSource(xml) {
-
-	      var data = {
-	        array: [],
-	        stride: 3
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'float_array':
-	            data.array = parseFloats(child.textContent);
-	            break;
-
-	          case 'Name_array':
-	            data.array = parseStrings(child.textContent);
-	            break;
-
-	          case 'technique_common':
-	            var accessor = getElementsByTagName(child, 'accessor')[0];
-
-	            if (accessor !== undefined) {
-
-	              data.stride = parseInt(accessor.getAttribute('stride'));
-
-	            }
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseGeometryVertices(xml) {
-
-	      var data = {};
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        data[child.getAttribute('semantic')] = parseId(child.getAttribute('source'));
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseGeometryPrimitive(xml) {
-
-	      var primitive = {
-	        type: xml.nodeName,
-	        material: xml.getAttribute('material'),
-	        count: parseInt(xml.getAttribute('count')),
-	        inputs: {},
-	        stride: 0
-	      };
-
-	      for (var i = 0, l = xml.childNodes.length; i < l; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'input':
-	            var id = parseId(child.getAttribute('source'));
-	            var semantic = child.getAttribute('semantic');
-	            var offset = parseInt(child.getAttribute('offset'));
-	            primitive.inputs[semantic] = { id: id, offset: offset };
-	            primitive.stride = Math.max(primitive.stride, offset + 1);
-	            break;
-
-	          case 'vcount':
-	            primitive.vcount = parseInts(child.textContent);
-	            break;
-
-	          case 'p':
-	            primitive.p = parseInts(child.textContent);
-	            break;
-
-	        }
-
-	      }
-
-	      return primitive;
-
-	    }
-
-	    function groupPrimitives(primitives) {
-
-	      var build = {};
-
-	      for (var i = 0; i < primitives.length; i++) {
-
-	        var primitive = primitives[i];
-
-	        if (build[primitive.type] === undefined) build[primitive.type] = [];
-
-	        build[primitive.type].push(primitive);
-
-	      }
-
-	      return build;
-
-	    }
-
-	    function buildGeometry(data) {
-
-	      var build = {};
-
-	      var sources = data.sources;
-	      var vertices = data.vertices;
-	      var primitives = data.primitives;
-
-	      if (primitives.length === 0) return {};
-
-	      // our goal is to create one buffer geoemtry for a single type of primitives
-	      // first, we group all primitives by their type
-
-	      var groupedPrimitives = groupPrimitives(primitives);
-
-	      for (var type in groupedPrimitives) {
-
-	        // second, we create for each type of primitives (polylist,triangles or lines) a buffer geometry
-
-	        build[type] = buildGeometryType(groupedPrimitives[type], sources, vertices);
-
-	      }
-
-	      return build;
-
-	    }
-
-	    function buildGeometryType(primitives, sources, vertices) {
-
-	      var build = {};
-
-	      var position = { array: [], stride: 0 };
-	      var normal = { array: [], stride: 0 };
-	      var uv = { array: [], stride: 0 };
-	      var color = { array: [], stride: 0 };
-
-	      var skinIndex = { array: [], stride: 4 };
-	      var skinWeight = { array: [], stride: 4 };
-
-	      var geometry = new THREE.BufferGeometry();
-
-	      var materialKeys = [];
-
-	      var start = 0, count = 0;
-
-	      for (var p = 0; p < primitives.length; p++) {
-
-	        var primitive = primitives[p];
-	        var inputs = primitive.inputs;
-	        var triangleCount = 1;
-
-	        if (primitive.vcount && primitive.vcount[0] === 4) {
-
-	          triangleCount = 2; // one quad -> two triangles
-
-	        }
-
-	        // groups
-
-	        if (primitive.type === 'lines' || primitive.type === 'linestrips') {
-
-	          count = primitive.count * 2;
-
-	        } else {
-
-	          count = primitive.count * 3 * triangleCount;
-
-	        }
-
-	        geometry.addGroup(start, count, p);
-	        start += count;
-
-	        // material
-
-	        if (primitive.material) {
-
-	          materialKeys.push(primitive.material);
-
-	        }
-
-	        // geometry data
-
-	        for (var name in inputs) {
-
-	          var input = inputs[name];
-
-	          switch (name) {
-
-	            case 'VERTEX':
-	              for (var key in vertices) {
-
-	                var id = vertices[key];
-
-	                switch (key) {
-
-	                  case 'POSITION':
-	                    buildGeometryData(primitive, sources[id], input.offset, position.array);
-	                    position.stride = sources[id].stride;
-
-	                    if (sources.skinWeights && sources.skinIndices) {
-
-	                      buildGeometryData(primitive, sources.skinIndices, input.offset, skinIndex.array);
-	                      buildGeometryData(primitive, sources.skinWeights, input.offset, skinWeight.array);
-
-	                    }
-	                    break;
-
-	                  case 'NORMAL':
-	                    buildGeometryData(primitive, sources[id], input.offset, normal.array);
-	                    normal.stride = sources[id].stride;
-	                    break;
-
-	                  case 'COLOR':
-	                    buildGeometryData(primitive, sources[id], input.offset, color.array);
-	                    color.stride = sources[id].stride;
-	                    break;
-
-	                  case 'TEXCOORD':
-	                    buildGeometryData(primitive, sources[id], input.offset, uv.array);
-	                    uv.stride = sources[id].stride;
-	                    break;
-
-	                  default:
-	                    console.warn('THREE.ColladaLoader: Semantic "%s" not handled in geometry build process.', key);
-
-	                }
-
-	              }
-	              break;
-
-	            case 'NORMAL':
-	              buildGeometryData(primitive, sources[input.id], input.offset, normal.array);
-	              normal.stride = sources[input.id].stride;
-	              break;
-
-	            case 'COLOR':
-	              buildGeometryData(primitive, sources[input.id], input.offset, color.array);
-	              color.stride = sources[input.id].stride;
-	              break;
-
-	            case 'TEXCOORD':
-	              buildGeometryData(primitive, sources[input.id], input.offset, uv.array);
-	              uv.stride = sources[input.id].stride;
-	              break;
-
-	          }
-
-	        }
-
-	      }
-
-	      // build geometry
-
-	      if (position.array.length > 0) geometry.addAttribute('position', new THREE.Float32BufferAttribute(position.array, position.stride));
-	      if (normal.array.length > 0) geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normal.array, normal.stride));
-	      if (color.array.length > 0) geometry.addAttribute('color', new THREE.Float32BufferAttribute(color.array, color.stride));
-	      if (uv.array.length > 0) geometry.addAttribute('uv', new THREE.Float32BufferAttribute(uv.array, uv.stride));
-
-	      if (skinIndex.array.length > 0) geometry.addAttribute('skinIndex', new THREE.Float32BufferAttribute(skinIndex.array, skinIndex.stride));
-	      if (skinWeight.array.length > 0) geometry.addAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight.array, skinWeight.stride));
-
-	      build.data = geometry;
-	      build.type = primitives[0].type;
-	      build.materialKeys = materialKeys;
-
-	      return build;
-
-	    }
-
-	    function buildGeometryData(primitive, source, offset, array) {
-
-	      var indices = primitive.p;
-	      var stride = primitive.stride;
-	      var vcount = primitive.vcount;
-
-	      function pushVector(i) {
-
-	        var index = indices[i + offset] * sourceStride;
-	        var length = index + sourceStride;
-
-	        for (; index < length; index++) {
-
-	          array.push(sourceArray[index]);
-
-	        }
-
-	      }
-
-	      var maxcount = 0;
-
-	      var sourceArray = source.array;
-	      var sourceStride = source.stride;
-
-	      if (primitive.vcount !== undefined) {
-
-	        var index = 0;
-
-	        for (var i = 0, l = vcount.length; i < l; i++) {
-
-	          var count = vcount[i];
-
-	          if (count === 4) {
-
-	            var a = index + stride * 0;
-	            var b = index + stride * 1;
-	            var c = index + stride * 2;
-	            var d = index + stride * 3;
-
-	            pushVector(a); pushVector(b); pushVector(d);
-	            pushVector(b); pushVector(c); pushVector(d);
-
-	          } else if (count === 3) {
-
-	            var a = index + stride * 0;
-	            var b = index + stride * 1;
-	            var c = index + stride * 2;
-
-	            pushVector(a); pushVector(b); pushVector(c);
-
-	          } else {
-
-	            maxcount = Math.max(maxcount, count);
-
-	          }
-
-	          index += stride * count;
-
-	        }
-
-	        if (maxcount > 0) {
-
-	          console.log('THREE.ColladaLoader: Geometry has faces with more than 4 vertices.');
-
-	        }
-
-	      } else {
-
-	        for (var i = 0, l = indices.length; i < l; i += stride) {
-
-	          pushVector(i);
-
-	        }
-
-	      }
-
-	    }
-
-	    function getGeometry(id) {
-
-	      return getBuild(library.geometries[id], buildGeometry);
-
-	    }
-
-	    // kinematics
-
-	    function parseKinematicsModel(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name') || '',
-	        joints: {},
-	        links: []
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'technique_common':
-	            parseKinematicsTechniqueCommon(child, data);
-	            break;
-
-	        }
-
-	      }
-
-	      library.kinematicsModels[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function buildKinematicsModel(data) {
-
-	      if (data.build !== undefined) return data.build;
-
-	      return data;
-
-	    }
-
-	    function getKinematicsModel(id) {
-
-	      return getBuild(library.kinematicsModels[id], buildKinematicsModel);
-
-	    }
-
-	    function parseKinematicsTechniqueCommon(xml, data) {
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'joint':
-	            data.joints[child.getAttribute('sid')] = parseKinematicsJoint(child);
-	            break;
-
-	          case 'link':
-	            data.links.push(parseKinematicsLink(child));
-	            break;
-
-	        }
-
-	      }
-
-	    }
-
-	    function parseKinematicsJoint(xml) {
-
-	      var data;
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'prismatic':
-	          case 'revolute':
-	            data = parseKinematicsJointParameter(child);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseKinematicsJointParameter(xml, data) {
-
-	      var data = {
-	        sid: xml.getAttribute('sid'),
-	        name: xml.getAttribute('name') || '',
-	        axis: new THREE.Vector3(),
-	        limits: {
-	          min: 0,
-	          max: 0
-	        },
-	        type: xml.nodeName,
-	        static: false,
-	        zeroPosition: 0,
-	        middlePosition: 0
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'axis':
-	            var array = parseFloats(child.textContent);
-	            data.axis.fromArray(array);
-	            break;
-	          case 'limits':
-	            var max = child.getElementsByTagName('max')[0];
-	            var min = child.getElementsByTagName('min')[0];
-
-	            data.limits.max = parseFloat(max.textContent);
-	            data.limits.min = parseFloat(min.textContent);
-	            break;
-
-	        }
-
-	      }
-
-	      // if min is equal to or greater than max, consider the joint static
-
-	      if (data.limits.min >= data.limits.max) {
-
-	        data.static = true;
-
-	      }
-
-	      // calculate middle position
-
-	      data.middlePosition = (data.limits.min + data.limits.max) / 2.0;
-
-	      return data;
-
-	    }
-
-	    function parseKinematicsLink(xml) {
-
-	      var data = {
-	        sid: xml.getAttribute('sid'),
-	        name: xml.getAttribute('name') || '',
-	        attachments: [],
-	        transforms: []
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'attachment_full':
-	            data.attachments.push(parseKinematicsAttachment(child));
-	            break;
-
-	          case 'matrix':
-	          case 'translate':
-	          case 'rotate':
-	            data.transforms.push(parseKinematicsTransform(child));
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseKinematicsAttachment(xml) {
-
-	      var data = {
-	        joint: xml.getAttribute('joint').split('/').pop(),
-	        transforms: [],
-	        links: []
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'link':
-	            data.links.push(parseKinematicsLink(child));
-	            break;
-
-	          case 'matrix':
-	          case 'translate':
-	          case 'rotate':
-	            data.transforms.push(parseKinematicsTransform(child));
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseKinematicsTransform(xml) {
-
-	      var data = {
-	        type: xml.nodeName
-	      };
-
-	      var array = parseFloats(xml.textContent);
-
-	      switch (data.type) {
-
-	        case 'matrix':
-	          data.obj = new THREE.Matrix4();
-	          data.obj.fromArray(array).transpose();
-	          break;
-
-	        case 'translate':
-	          data.obj = new THREE.Vector3();
-	          data.obj.fromArray(array);
-	          break;
-
-	        case 'rotate':
-	          data.obj = new THREE.Vector3();
-	          data.obj.fromArray(array);
-	          data.angle = THREE.Math.degToRad(array[3]);
-	          break;
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function parseKinematicsScene(xml) {
-
-	      var data = {
-	        bindJointAxis: []
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'bind_joint_axis':
-	            data.bindJointAxis.push(parseKinematicsBindJointAxis(child));
-	            break;
-
-	        }
-
-	      }
-
-	      library.kinematicsScenes[parseId(xml.getAttribute('url'))] = data;
-
-	    }
-
-	    function parseKinematicsBindJointAxis(xml) {
-
-	      var data = {
-	        target: xml.getAttribute('target').split('/').pop()
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'axis':
-	            var param = child.getElementsByTagName('param')[0];
-	            data.axis = param.textContent;
-	            var tmpJointIndex = data.axis.split('inst_').pop().split('axis')[0];
-	            data.jointIndex = tmpJointIndex.substr(0, tmpJointIndex.length - 1);
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function buildKinematicsScene(data) {
-
-	      if (data.build !== undefined) return data.build;
-
-	      return data;
-
-	    }
-
-	    function getKinematicsScene(id) {
-
-	      return getBuild(library.kinematicsScenes[id], buildKinematicsScene);
-
-	    }
-
-	    function setupKinematics() {
-
-	      var kinematicsModelId = Object.keys(library.kinematicsModels)[0];
-	      var kinematicsSceneId = Object.keys(library.kinematicsScenes)[0];
-	      var visualSceneId = Object.keys(library.visualScenes)[0];
-
-	      if (kinematicsModelId === undefined || kinematicsSceneId === undefined) return;
-
-	      var kinematicsModel = getKinematicsModel(kinematicsModelId);
-	      var kinematicsScene = getKinematicsScene(kinematicsSceneId);
-	      var visualScene = getVisualScene(visualSceneId);
-
-	      var bindJointAxis = kinematicsScene.bindJointAxis;
-	      var jointMap = {};
-
-	      for (var i = 0, l = bindJointAxis.length; i < l; i++) {
-
-	        var axis = bindJointAxis[i];
-
-	        // the result of the following query is an element of type 'translate', 'rotate','scale' or 'matrix'
-
-	        var targetElement = collada.querySelector('[sid="' + axis.target + '"]');
-
-	        if (targetElement) {
-
-	          // get the parent of the transfrom element
-
-	          var parentVisualElement = targetElement.parentElement;
-
-	          // connect the joint of the kinematics model with the element in the visual scene
-
-	          connect(axis.jointIndex, parentVisualElement);
-
-	        }
-
-	      }
-
-	      function connect(jointIndex, visualElement) {
-
-	        var visualElementName = visualElement.getAttribute('name');
-	        var joint = kinematicsModel.joints[jointIndex];
-
-	        visualScene.traverse(function (object) {
-
-	          if (object.name === visualElementName) {
-
-	            jointMap[jointIndex] = {
-	              object: object,
-	              transforms: buildTransformList(visualElement),
-	              joint: joint,
-	              position: joint.zeroPosition
-	            };
-
-	          }
-
-	        });
-
-	      }
-
-	      var m0 = new THREE.Matrix4();
-
-	      kinematics = {
-
-	        joints: kinematicsModel && kinematicsModel.joints,
-
-	        getJointValue: function (jointIndex) {
-
-	          var jointData = jointMap[jointIndex];
-
-	          if (jointData) {
-
-	            return jointData.position;
-
-	          } else {
-
-	            console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' doesn\'t exist.');
-
-	          }
-
-	        },
-
-	        setJointValue: function (jointIndex, value) {
-
-	          var jointData = jointMap[jointIndex];
-
-	          if (jointData) {
-
-	            var joint = jointData.joint;
-
-	            if (value > joint.limits.max || value < joint.limits.min) {
-
-	              console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' value ' + value + ' outside of limits (min: ' + joint.limits.min + ', max: ' + joint.limits.max + ').');
-
-	            } else if (joint.static) {
-
-	              console.warn('THREE.ColladaLoader: Joint ' + jointIndex + ' is static.');
-
-	            } else {
-
-	              var object = jointData.object;
-	              var axis = joint.axis;
-	              var transforms = jointData.transforms;
-
-	              matrix.identity();
-
-	              // each update, we have to apply all transforms in the correct order
-
-	              for (var i = 0; i < transforms.length; i++) {
-
-	                var transform = transforms[i];
-
-	                // if there is a connection of the transform node with a joint, apply the joint value
-
-	                if (transform.sid && transform.sid.indexOf(jointIndex) !== - 1) {
-
-	                  switch (joint.type) {
-
-	                    case 'revolute':
-	                      matrix.multiply(m0.makeRotationAxis(axis, THREE.Math.degToRad(value)));
-	                      break;
-
-	                    case 'prismatic':
-	                      matrix.multiply(m0.makeTranslation(axis.x * value, axis.y * value, axis.z * value));
-	                      break;
-
-	                    default:
-	                      console.warn('THREE.ColladaLoader: Unknown joint type: ' + joint.type);
-	                      break;
-
-	                  }
-
-	                } else {
-
-	                  switch (transform.type) {
-
-	                    case 'matrix':
-	                      matrix.multiply(transform.obj);
-	                      break;
-
-	                    case 'translate':
-	                      matrix.multiply(m0.makeTranslation(transform.obj.x, transform.obj.y, transform.obj.z));
-	                      break;
-
-	                    case 'scale':
-	                      matrix.scale(transform.obj);
-	                      break;
-
-	                    case 'rotate':
-	                      matrix.multiply(m0.makeRotationAxis(transform.obj, transform.angle));
-	                      break;
-
-	                  }
-
-	                }
-
-	              }
-
-	              object.matrix.copy(matrix);
-	              object.matrix.decompose(object.position, object.quaternion, object.scale);
-
-	              jointMap[jointIndex].position = value;
-
-	            }
-
-	          } else {
-
-	            console.log('THREE.ColladaLoader: ' + jointIndex + ' does not exist.');
-
-	          }
-
-	        }
-
-	      };
-
-	    }
-
-	    function buildTransformList(node) {
-
-	      var transforms = [];
-
-	      var xml = collada.querySelector('[id="' + node.id + '"]');
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'matrix':
-	            var array = parseFloats(child.textContent);
-	            var matrix = new THREE.Matrix4().fromArray(array).transpose();
-	            transforms.push({
-	              sid: child.getAttribute('sid'),
-	              type: child.nodeName,
-	              obj: matrix
-	            });
-	            break;
-
-	          case 'translate':
-	          case 'scale':
-	            var array = parseFloats(child.textContent);
-	            var vector = new THREE.Vector3().fromArray(array);
-	            transforms.push({
-	              sid: child.getAttribute('sid'),
-	              type: child.nodeName,
-	              obj: vector
-	            });
-	            break;
-
-	          case 'rotate':
-	            var array = parseFloats(child.textContent);
-	            var vector = new THREE.Vector3().fromArray(array);
-	            var angle = THREE.Math.degToRad(array[3]);
-	            transforms.push({
-	              sid: child.getAttribute('sid'),
-	              type: child.nodeName,
-	              obj: vector,
-	              angle: angle
-	            });
-	            break;
-
-	        }
-
-	      }
-
-	      return transforms;
-
-	    }
-
-	    // nodes
-
-	    function prepareNodes(xml) {
-
-	      var elements = xml.getElementsByTagName('node');
-
-	      // ensure all node elements have id attributes
-
-	      for (var i = 0; i < elements.length; i++) {
-
-	        var element = elements[i];
-
-	        if (element.hasAttribute('id') === false) {
-
-	          element.setAttribute('id', generateId());
-
-	        }
-
-	      }
-
-	    }
-
-	    var matrix = new THREE.Matrix4();
-	    var vector = new THREE.Vector3();
-
-	    function parseNode(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name') || '',
-	        type: xml.getAttribute('type'),
-	        id: xml.getAttribute('id'),
-	        sid: xml.getAttribute('sid'),
-	        matrix: new THREE.Matrix4(),
-	        nodes: [],
-	        instanceCameras: [],
-	        instanceControllers: [],
-	        instanceLights: [],
-	        instanceGeometries: [],
-	        instanceNodes: [],
-	        transforms: {}
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        if (child.nodeType !== 1) continue;
-
-	        switch (child.nodeName) {
-
-	          case 'node':
-	            data.nodes.push(child.getAttribute('id'));
-	            parseNode(child);
-	            break;
-
-	          case 'instance_camera':
-	            data.instanceCameras.push(parseId(child.getAttribute('url')));
-	            break;
-
-	          case 'instance_controller':
-	            data.instanceControllers.push(parseNodeInstance(child));
-	            break;
-
-	          case 'instance_light':
-	            data.instanceLights.push(parseId(child.getAttribute('url')));
-	            break;
-
-	          case 'instance_geometry':
-	            data.instanceGeometries.push(parseNodeInstance(child));
-	            break;
-
-	          case 'instance_node':
-	            data.instanceNodes.push(parseId(child.getAttribute('url')));
-	            break;
-
-	          case 'matrix':
-	            var array = parseFloats(child.textContent);
-	            data.matrix.multiply(matrix.fromArray(array).transpose());
-	            data.transforms[child.getAttribute('sid')] = child.nodeName;
-	            break;
-
-	          case 'translate':
-	            var array = parseFloats(child.textContent);
-	            vector.fromArray(array);
-	            data.matrix.multiply(matrix.makeTranslation(vector.x, vector.y, vector.z));
-	            data.transforms[child.getAttribute('sid')] = child.nodeName;
-	            break;
-
-	          case 'rotate':
-	            var array = parseFloats(child.textContent);
-	            var angle = THREE.Math.degToRad(array[3]);
-	            data.matrix.multiply(matrix.makeRotationAxis(vector.fromArray(array), angle));
-	            data.transforms[child.getAttribute('sid')] = child.nodeName;
-	            break;
-
-	          case 'scale':
-	            var array = parseFloats(child.textContent);
-	            data.matrix.scale(vector.fromArray(array));
-	            data.transforms[child.getAttribute('sid')] = child.nodeName;
-	            break;
-
-	          case 'extra':
-	            break;
-
-	          default:
-	            console.log(child);
-
-	        }
-
-	      }
-
-	      library.nodes[data.id] = data;
-
-	      return data;
-
-	    }
-
-	    function parseNodeInstance(xml) {
-
-	      var data = {
-	        id: parseId(xml.getAttribute('url')),
-	        materials: {},
-	        skeletons: []
-	      };
-
-	      for (var i = 0; i < xml.childNodes.length; i++) {
-
-	        var child = xml.childNodes[i];
-
-	        switch (child.nodeName) {
-
-	          case 'bind_material':
-	            var instances = child.getElementsByTagName('instance_material');
-
-	            for (var j = 0; j < instances.length; j++) {
-
-	              var instance = instances[j];
-	              var symbol = instance.getAttribute('symbol');
-	              var target = instance.getAttribute('target');
-
-	              data.materials[symbol] = parseId(target);
-
-	            }
-
-	            break;
-
-	          case 'skeleton':
-	            data.skeletons.push(parseId(child.textContent));
-	            break;
-
-	        }
-
-	      }
-
-	      return data;
-
-	    }
-
-	    function buildSkeleton(skeletons, joints) {
-
-	      var boneData = [];
-	      var sortedBoneData = [];
-
-	      var i, j, data;
-
-	      // a skeleton can have multiple root bones. collada expresses this
-	      // situtation with multiple "skeleton" tags per controller instance
-
-	      for (i = 0; i < skeletons.length; i++) {
-
-	        var skeleton = skeletons[i];
-	        var root = getNode(skeleton);
-
-	        // setup bone data for a single bone hierarchy
-
-	        buildBoneHierarchy(root, joints, boneData);
-
-	      }
-
-	      // sort bone data (the order is defined in the corresponding controller)
-
-	      for (i = 0; i < joints.length; i++) {
-
-	        for (j = 0; j < boneData.length; j++) {
-
-	          data = boneData[j];
-
-	          if (data.bone.name === joints[i].name) {
-
-	            sortedBoneData[i] = data;
-	            data.processed = true;
-	            break;
-
-	          }
-
-	        }
-
-	      }
-
-	      // add unprocessed bone data at the end of the list
-
-	      for (i = 0; i < boneData.length; i++) {
-
-	        data = boneData[i];
-
-	        if (data.processed === false) {
-
-	          sortedBoneData.push(data);
-	          data.processed = true;
-
-	        }
-
-	      }
-
-	      // setup arrays for skeleton creation
-
-	      var bones = [];
-	      var boneInverses = [];
-
-	      for (i = 0; i < sortedBoneData.length; i++) {
-
-	        data = sortedBoneData[i];
-
-	        bones.push(data.bone);
-	        boneInverses.push(data.boneInverse);
-
-	      }
-
-	      return new THREE.Skeleton(bones, boneInverses);
-
-	    }
-
-	    function buildBoneHierarchy(root, joints, boneData) {
-
-	      // setup bone data from visual scene
-
-	      root.traverse(function (object) {
-
-	        if (object.isBone === true) {
-
-	          var boneInverse;
-
-	          // retrieve the boneInverse from the controller data
-
-	          for (var i = 0; i < joints.length; i++) {
-
-	            var joint = joints[i];
-
-	            if (joint.name === object.name) {
-
-	              boneInverse = joint.boneInverse;
-	              break;
-
-	            }
-
-	          }
-
-	          if (boneInverse === undefined) {
-
-	            // Unfortunately, there can be joints in the visual scene that are not part of the
-	            // corresponding controller. In this case, we have to create a dummy boneInverse matrix
-	            // for the respective bone. This bone won't affect any vertices, because there are no skin indices
-	            // and weights defined for it. But we still have to add the bone to the sorted bone list in order to
-	            // ensure a correct animation of the model.
-
-	            boneInverse = new THREE.Matrix4();
-
-	          }
-
-	          boneData.push({ bone: object, boneInverse: boneInverse, processed: false });
-
-	        }
-
-	      });
-
-	    }
-
-	    function buildNode(data) {
-
-	      var objects = [];
-
-	      var matrix = data.matrix;
-	      var nodes = data.nodes;
-	      var type = data.type;
-	      var instanceCameras = data.instanceCameras;
-	      var instanceControllers = data.instanceControllers;
-	      var instanceLights = data.instanceLights;
-	      var instanceGeometries = data.instanceGeometries;
-	      var instanceNodes = data.instanceNodes;
-
-	      // nodes
-
-	      for (var i = 0, l = nodes.length; i < l; i++) {
-
-	        objects.push(getNode(nodes[i]));
-
-	      }
-
-	      // instance cameras
-
-	      for (var i = 0, l = instanceCameras.length; i < l; i++) {
-
-	        var instanceCamera = getCamera(instanceCameras[i]);
-
-	        if (instanceCamera !== null) {
-
-	          objects.push(instanceCamera.clone());
-
-	        }
-
-
-	      }
-
-	      // instance controllers
-
-	      for (var i = 0, l = instanceControllers.length; i < l; i++) {
-
-	        var instance = instanceControllers[i];
-	        var controller = getController(instance.id);
-	        var geometries = getGeometry(controller.id);
-	        var newObjects = buildObjects(geometries, instance.materials);
-
-	        var skeletons = instance.skeletons;
-	        var joints = controller.skin.joints;
-
-	        var skeleton = buildSkeleton(skeletons, joints);
-
-	        for (var j = 0, jl = newObjects.length; j < jl; j++) {
-
-	          var object = newObjects[j];
-
-	          if (object.isSkinnedMesh) {
-
-	            object.bind(skeleton, controller.skin.bindMatrix);
-	            object.normalizeSkinWeights();
-
-	          }
-
-	          objects.push(object);
-
-	        }
-
-	      }
-
-	      // instance lights
-
-	      for (var i = 0, l = instanceLights.length; i < l; i++) {
-	        var instanceCamera = getCamera(instanceCameras[i]);
-
-	        if (instanceCamera !== null) {
-
-	          objects.push(instanceCamera.clone());
-
-	        }
-
-	      }
-
-	      // instance geometries
-
-	      for (var i = 0, l = instanceGeometries.length; i < l; i++) {
-
-	        var instance = instanceGeometries[i];
-
-	        // a single geometry instance in collada can lead to multiple object3Ds.
-	        // this is the case when primitives are combined like triangles and lines
-
-	        var geometries = getGeometry(instance.id);
-	        var newObjects = buildObjects(geometries, instance.materials);
-
-	        for (var j = 0, jl = newObjects.length; j < jl; j++) {
-
-	          objects.push(newObjects[j]);
-
-	        }
-
-	      }
-
-	      // instance nodes
-
-	      for (var i = 0, l = instanceNodes.length; i < l; i++) {
-
-	        objects.push(getNode(instanceNodes[i]).clone());
-
-	      }
-
-	      var object;
-
-	      if (nodes.length === 0 && objects.length === 1) {
-
-	        object = objects[0];
-
-	      } else {
-
-	        object = (type === 'JOINT') ? new THREE.Bone() : new THREE.Object3D();
-
-	        for (var i = 0; i < objects.length; i++) {
-
-	          object.add(objects[i]);
-
-	        }
-
-	      }
-
-	      object.name = (type === 'JOINT') ? data.sid : data.name;
-	      object.matrix.copy(matrix);
-	      object.matrix.decompose(object.position, object.quaternion, object.scale);
-
-	      return object;
-
-	    }
-
-	    function resolveMaterialBinding(keys, instanceMaterials) {
-
-	      var materials = [];
-
-	      for (var i = 0, l = keys.length; i < l; i++) {
-
-	        var id = instanceMaterials[keys[i]];
-	        materials.push(getMaterial(id));
-
-	      }
-
-	      return materials;
-
-	    }
-
-	    function buildObjects(geometries, instanceMaterials) {
-
-	      var objects = [];
-
-	      for (var type in geometries) {
-
-	        var geometry = geometries[type];
-
-	        var materials = resolveMaterialBinding(geometry.materialKeys, instanceMaterials);
-
-	        // handle case if no materials are defined
-
-	        if (materials.length === 0) {
-
-	          if (type === 'lines' || type === 'linestrips') {
-
-	            materials.push(new THREE.LineBasicMaterial());
-
-	          } else {
-
-	            materials.push(new THREE.MeshPhongMaterial());
-
-	          }
-
-	        }
-
-	        // regard skinning
-
-	        var skinning = (geometry.data.attributes.skinIndex !== undefined);
-
-	        if (skinning) {
-
-	          for (var i = 0, l = materials.length; i < l; i++) {
-
-	            materials[i].skinning = true;
-
-	          }
-
-	        }
-
-	        // choose between a single or multi materials (material array)
-
-	        var material = (materials.length === 1) ? materials[0] : materials;
-
-	        // now create a specific 3D object
-
-	        var object;
-
-	        switch (type) {
-
-	          case 'lines':
-	            object = new THREE.LineSegments(geometry.data, material);
-	            break;
-
-	          case 'linestrips':
-	            object = new THREE.Line(geometry.data, material);
-	            break;
-
-	          case 'triangles':
-	          case 'polylist':
-	            if (skinning) {
-
-	              object = new THREE.SkinnedMesh(geometry.data, material);
-
-	            } else {
-
-	              object = new THREE.Mesh(geometry.data, material);
-
-	            }
-	            break;
-
-	        }
-
-	        objects.push(object);
-
-	      }
-
-	      return objects;
-
-	    }
-
-	    function getNode(id) {
-
-	      return getBuild(library.nodes[id], buildNode);
-
-	    }
-
-	    // visual scenes
-
-	    function parseVisualScene(xml) {
-
-	      var data = {
-	        name: xml.getAttribute('name'),
-	        children: []
-	      };
-
-	      prepareNodes(xml);
-
-	      var elements = getElementsByTagName(xml, 'node');
-
-	      for (var i = 0; i < elements.length; i++) {
-
-	        data.children.push(parseNode(elements[i]));
-
-	      }
-
-	      library.visualScenes[xml.getAttribute('id')] = data;
-
-	    }
-
-	    function buildVisualScene(data) {
-
-	      var group = new THREE.Object3D();
-	      group.name = data.name;
-
-	      var children = data.children;
-
-	      for (var i = 0; i < children.length; i++) {
-
-	        var child = children[i];
-
-	        if (child.id === null) {
-
-	          group.add(buildNode(child));
-
-	        } else {
-
-	          // if there is an ID, let's try to get the finished build (e.g. joints are already build)
-
-	          group.add(getNode(child.id));
-
-	        }
-
-	      }
-
-	      return group;
-
-	    }
-
-	    function getVisualScene(id) {
-
-	      return getBuild(library.visualScenes[id], buildVisualScene);
-
-	    }
-
-	    // scenes
-
-	    function parseScene(xml) {
-
-	      var instance = getElementsByTagName(xml, 'instance_visual_scene')[0];
-	      return getVisualScene(parseId(instance.getAttribute('url')));
-
-	    }
-
-	    function setupAnimations() {
-
-	      var clips = library.clips;
-
-	      if (isEmpty(clips) === true) {
-
-	        if (isEmpty(library.animations) === false) {
-
-	          // if there are animations but no clips, we create a default clip for playback
-
-	          var tracks = [];
-
-	          for (var id in library.animations) {
-
-	            var animationTracks = getAnimation(id);
-
-	            for (var i = 0, l = animationTracks.length; i < l; i++) {
-
-	              tracks.push(animationTracks[i]);
-
-	            }
-
-	          }
-
-	          animations.push(new THREE.AnimationClip('default', - 1, tracks));
-
-	        }
-
-	      } else {
-
-	        for (var id in clips) {
-
-	          animations.push(getAnimationClip(id));
-
-	        }
-
-	      }
-
-	    }
-
-	    console.time('THREE.ColladaLoader');
-
-	    if (text.length === 0) {
-
-	      return { scene: new THREE.Scene() };
-
-	    }
-
-	    console.time('THREE.ColladaLoader: DOMParser');
-
-	    var xml = new DOMParser().parseFromString(text, 'application/xml');
-
-	    console.timeEnd('THREE.ColladaLoader: DOMParser');
-
-	    var collada = getElementsByTagName(xml, 'COLLADA')[0];
-
-	    // metadata
-
-	    var version = collada.getAttribute('version');
-	    console.log('THREE.ColladaLoader: File version', version);
-
-	    var asset = parseAsset(getElementsByTagName(collada, 'asset')[0]);
-	    var textureLoader = new THREE.TextureLoader(this.manager);
-	    textureLoader.setPath(path).setCrossOrigin(this.crossOrigin);
-
-	    //
-
-	    var animations = [];
-	    var kinematics = {};
-	    var count = 0;
-
-	    //
-
-	    var library = {
-	      animations: {},
-	      clips: {},
-	      controllers: {},
-	      images: {},
-	      effects: {},
-	      materials: {},
-	      cameras: {},
-	      lights: {},
-	      geometries: {},
-	      nodes: {},
-	      visualScenes: {},
-	      kinematicsModels: {},
-	      kinematicsScenes: {}
-	    };
-
-	    console.time('THREE.ColladaLoader: Parse');
-
-	    parseLibrary(collada, 'library_animations', 'animation', parseAnimation);
-	    parseLibrary(collada, 'library_animation_clips', 'animation_clip', parseAnimationClip);
-	    parseLibrary(collada, 'library_controllers', 'controller', parseController);
-	    parseLibrary(collada, 'library_images', 'image', parseImage);
-	    parseLibrary(collada, 'library_effects', 'effect', parseEffect);
-	    parseLibrary(collada, 'library_materials', 'material', parseMaterial);
-	    parseLibrary(collada, 'library_cameras', 'camera', parseCamera);
-	    parseLibrary(collada, 'library_lights', 'light', parseLight);
-	    parseLibrary(collada, 'library_geometries', 'geometry', parseGeometry);
-	    parseLibrary(collada, 'library_nodes', 'node', parseNode);
-	    parseLibrary(collada, 'library_visual_scenes', 'visual_scene', parseVisualScene);
-	    parseLibrary(collada, 'library_kinematics_models', 'kinematics_model', parseKinematicsModel);
-	    parseLibrary(collada, 'scene', 'instance_kinematics_scene', parseKinematicsScene);
-
-	    console.timeEnd('THREE.ColladaLoader: Parse');
-
-	    console.time('THREE.ColladaLoader: Build');
-
-	    buildLibrary(library.animations, buildAnimation);
-	    buildLibrary(library.clips, buildAnimationClip);
-	    buildLibrary(library.controllers, buildController);
-	    buildLibrary(library.images, buildImage);
-	    buildLibrary(library.effects, buildEffect);
-	    buildLibrary(library.materials, buildMaterial);
-	    buildLibrary(library.cameras, buildCamera);
-	    buildLibrary(library.lights, buildLight);
-	    buildLibrary(library.geometries, buildGeometry);
-	    buildLibrary(library.visualScenes, buildVisualScene);
-
-	    console.timeEnd('THREE.ColladaLoader: Build');
-
-	    setupAnimations();
-	    setupKinematics();
-
-	    var scene = parseScene(getElementsByTagName(collada, 'scene')[0]);
-
-	    /*
-	     * up_axis of some robot models in ROS world aren't properly set because
-	     * rviz ignores this field. Thus, ignores Z_UP to show urdfs just like rviz.
-	     * See https://github.com/ros-visualization/rviz/issues/1045 for the detail
-	      if ( asset.upAxis === 'Z_UP' ) {
-
-	        scene.rotation.x = - Math.PI / 2;
-
-	      }
-	     */
-
-	    scene.scale.multiplyScalar(asset.unit);
-
-	    console.timeEnd('THREE.ColladaLoader');
-
-	    return {
-	      animations: animations,
-	      kinematics: kinematics,
-	      library: library,
-	      scene: scene
-	    };
-
-	  }
-
-	};
-
-	/**
-	 * @author Jose Rojas - jrojas@redlinesolutions.co
-	 */
-
-	 /**
-	  * MeshLoader is a singleton factory class for using various helper classes to
-	  * load mesh files of different types.
-	  *
-	  * It consists of one dictionary property 'loaders'. The dictionary keys consist
-	  * of the file extension for each supported loader type. The dictionary values
-	  * are functions used to construct the loader objects. The functions have the
-	  * following parameters:
-	  *
-	  *  * meshRes - the MeshResource that will contain the loaded mesh
-	  *  * uri - the uri path to the mesh file
-	  *  @returns loader object
-	  */
-	var MeshLoader$1  = {
-	   onError: function(error) {
-	     console.error(error);
-	   },
-	   loaders: {
-	     'dae': function(meshRes, uri, options) {
-	       const material = options.material;
-	       const loader = new THREE.ColladaLoader(options.loader);
-	       loader.log = function(message) {
-	         if (meshRes.warnings) {
-	           console.warn(message);
-	         }
-	       };
-	       loader.load(
-	         uri,
-	         function colladaReady(collada) {
-	           // check for a scale factor in ColladaLoader2
-	           // add a texture to anything that is missing one
-	           if(material !== null) {
-	             collada.scene.traverse(function(child) {
-	               if(child instanceof THREE.Mesh) {
-	                 if(child.material === undefined) {
-	                   child.material = material;
-	                 }
-	               }
-	             });
-	           }
-
-	           meshRes.add(collada.scene);
-	         },
-	         /*onProgress=*/null,
-	         MeshLoader$1.onError);
-	         return loader;
-	     },
-
-	     'obj': function(meshRes, uri, options) {
-	       options.material;
-	       const loader = new THREE.OBJLoader(options.loader);
-	       loader.log = function(message) {
-	         if (meshRes.warnings) {
-	           console.warn(message);
-	         }
-	       };
-
-	       //Reload the mesh again after materials have been loaded
-	       // @todo: this should be improved so that the file doesn't need to be
-	       // reloaded however that would involve more changes within the OBJLoader.
-	       function onMaterialsLoaded(loader, materials) {
-	         loader.
-	         setMaterials(materials).
-	         load(
-	           uri,
-	           function OBJMaterialsReady(obj) {
-	             // add the container group
-	             meshRes.add(obj);
-	           },
-	           null,
-	           MeshLoader$1.onError);
-	       }
-
-	       loader.load(
-	         uri,
-	         function OBJFileReady(obj) {
-
-	           const baseUri = THREE.LoaderUtils.extractUrlBase( uri );
-
-	           if (obj.materialLibraries.length) {
-	             // load the material libraries
-	             const materialUri = obj.materialLibraries[0];
-	             new THREE.MTLLoader(options.loader).setPath(baseUri).load(
-	               materialUri,
-	               function(materials) {
-	                  materials.preload();
-	                  onMaterialsLoaded(loader, materials);
-	               },
-	               null,
-	               MeshLoader$1.onError
-	             );
-	           } else {
-	             // add the container group
-	             meshRes.add(obj);
-	           }
-
-	         },
-	         /*onProgress=*/null,
-	         MeshLoader$1.onError
-	         );
-	         return loader;
-	     },
-
-	     'stl': function(meshRes, uri, options) {
-	       const material = options.material;
-	       const loader = new THREE.STLLoader(options.loader);
-	       {
-	         loader.load(uri,
-	                     function ( geometry ) {
-	                       geometry.computeFaceNormals();
-	                       var mesh;
-	                       if(material !== null) {
-	                         mesh = new THREE.Mesh( geometry, material );
-	                       } else {
-	                         mesh = new THREE.Mesh( geometry,
-	                                                new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
-	                       }
-	                       meshRes.add(mesh);
-	                     },
-	                     /*onProgress=*/null,
-	                     MeshLoader$1.onError);
-	       }
-	       return loader;
-	     }
-
-	   }
-	 };
 
 	/**
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class OccupancyGrid extends THREE.Mesh {
+	class OccupancyGrid extends THREE$1.Mesh {
 
 	  /**
 	   * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
@@ -55865,22 +55865,22 @@ var ROS3D = (function (exports, ROSLIB) {
 	    var origin = info.origin;
 	    var width = info.width;
 	    var height = info.height;
-	    var geom = new THREE.PlaneBufferGeometry(width, height);
+	    var geom = new THREE$1.PlaneBufferGeometry(width, height);
 
 	    // create the color material
 	    var imageData = new Uint8Array(width * height * 4);
-	    var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBAFormat);
+	    var texture = new THREE$1.DataTexture(imageData, width, height, THREE$1.RGBAFormat);
 	    texture.flipY = true;
-	    texture.minFilter = THREE.NearestFilter;
-	    texture.magFilter = THREE.NearestFilter;
+	    texture.minFilter = THREE$1.NearestFilter;
+	    texture.magFilter = THREE$1.NearestFilter;
 	    texture.needsUpdate = true;
 
-	    var material = new THREE.MeshBasicMaterial({
+	    var material = new THREE$1.MeshBasicMaterial({
 	      map : texture,
 	      transparent : opacity < 1.0,
 	      opacity : opacity
 	    });
-	    material.side = THREE.DoubleSide;
+	    material.side = THREE$1.DoubleSide;
 
 	    // create the mesh
 	    super(geom, material);
@@ -55889,7 +55889,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    // assign options to this for subclasses
 	    Object.assign(this, options);
 
-	    this.quaternion.copy(new THREE.Quaternion(
+	    this.quaternion.copy(new THREE$1.Quaternion(
 	        origin.orientation.x,
 	        origin.orientation.y,
 	        origin.orientation.z,
@@ -56001,7 +56001,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.compression = options.compression || 'cbor';
 	    this.continuous = options.continuous;
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.offsetPose = options.offsetPose || new ROSLIB__namespace.Pose();
 	    this.color = options.color || {r:255,g:255,b:255};
 	    this.opacity = options.opacity || 1.0;
@@ -56081,47 +56081,58 @@ var ROS3D = (function (exports, ROSLIB) {
 	  };
 	}
 
-	/**
-	 * @author Peter Sari - sari@photoneo.com
-	 */
-
 	class OcTreeBaseNode {
-
 	  /**
 	   * Base node type that represents one voxel as a node of the tree
 	   */
-	  
 	  constructor() {
 	    this._children = [null, null, null, null, null, null, null, null];
 	    this.value = null;
-	  };
+	  }
 
 	  createChildNodeAt(newNode, index) {
 	    this._children[index % 8] = newNode;
-	  };
+	  }
 
 	  hasChildAt(index) {
 	    return this._children[index % 8] !== null;
-	  };
+	  }
 
 	  getChildAt(index) {
 	    return this._children[index % 8];
-	  };
+	  }
 
 	  isLeafNode() {
 	    for (let i = 0; i < 8; ++i) {
-	      if (this._children[i] !== null) { return false; }
+	      if (this._children[i] !== null) {
+	        return false;
+	      }
 	    }
 	    return true;
-	  };
+	  }
 
 	  hasChildren() {
 	    for (let i = 0; i < 8; ++i) {
-	      if (this._children[i] !== null) { return true; }
+	      if (this._children[i] !== null) {
+	        return true;
+	      }
 	    }
 	    return false;
-	  };
+	  }
 	}
+
+	/**
+	 * Toggles voxel visibility
+	 *
+	 *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
+	 *    * `free` - only voxels that are below the occupation threshold are shown
+	 *    * `all` - all allocated voxels are shown
+	 */
+	var OcTreeVoxelRenderMode = {
+	  OCCUPIED: 'occupied',
+	  FREE: 'free',
+	  ALL: 'all',
+	};
 
 	/**
 	 * @author Peter Sari - sari@photoneo.com
@@ -56134,43 +56145,44 @@ var ROS3D = (function (exports, ROSLIB) {
 	function InStream(data, isLittleEndian) {
 	  this.buffer = data.buffer;
 	  this.length = data.length;
-	  this.isLittleEndian = (typeof isLittleEndian !== 'undefined') ? !!isLittleEndian : true;
+	  this.isLittleEndian = typeof isLittleEndian !== 'undefined' ? !!isLittleEndian : true;
 	  this._dataView = new DataView(this.buffer);
 	  this._cursor = 0;
 
 	  // Creates a set of wrapper functions for DataView
 	  // also flattens all dependencies
 	  [
-	    { kind: 'Int8', width: 1 },
-	    { kind: 'Uint8', width: 1 },
-	    { kind: 'Int16', width: 2 },
-	    { kind: 'Uint16', width: 2 },
-	    { kind: 'Int32', width: 4 },
-	    { kind: 'Uint32', width: 4 },
-	    { kind: 'BigInt64', width: 8 },
-	    { kind: 'BigUint64', width: 8 },
-	    { kind: 'Float32', width: 4 },
-	    { kind: 'Float64', width: 8 },
-	  ]
-	    .forEach(wrap => {
-	      const interfaceFunction = 'read' + wrap.kind;
-	      const wrappedFunction = 'get' + wrap.kind;       // Function name which going to be wrapped from DataView
+	    {kind: 'Int8', width: 1},
+	    {kind: 'Uint8', width: 1},
+	    {kind: 'Int16', width: 2},
+	    {kind: 'Uint16', width: 2},
+	    {kind: 'Int32', width: 4},
+	    {kind: 'Uint32', width: 4},
+	    {kind: 'BigInt64', width: 8},
+	    {kind: 'BigUint64', width: 8},
+	    {kind: 'Float32', width: 4},
+	    {kind: 'Float64', width: 8},
+	  ].forEach(wrap => {
+	    const interfaceFunction = 'read' + wrap.kind;
+	    const wrappedFunction = 'get' + wrap.kind; // Function name which going to be wrapped from DataView
 
-	      this[interfaceFunction] = () => {
-	        if (this._cursor + wrap.width > this.length) { throw new Error('Cannot read data stream. Overflow. Len=' + this.length + ' crsr=' + this._cursor); }
-	        const returningValue = this._dataView[wrappedFunction](this._cursor, this.isLittleEndian);
-	        this._cursor += wrap.width;
-	        return returningValue;
-	      };
-	    });
+	    this[interfaceFunction] = () => {
+	      if (this._cursor + wrap.width > this.length) {
+	        throw new Error('Cannot read data stream. Overflow. Len=' + this.length + ' crsr=' + this._cursor);
+	      }
+	      const returningValue = this._dataView[wrappedFunction](this._cursor, this.isLittleEndian);
+	      this._cursor += wrap.width;
+	      return returningValue;
+	    };
+	  });
 
-	  Object.defineProperty(this, 'isEnd', { get: () => this.cursor >= this.data.length });
+	  Object.defineProperty(this, 'isEnd', {get: () => this.cursor >= this.data.length});
 	  return this;
 	}
+
 	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 	class OcTreeBase {
-
 	  /**
 	   * Represensta a BaseTree that can be build from ros message and create a THREE node from it.
 	   * Due a tree can be represented different ways in a message, this class is also a base class to
@@ -56184,154 +56196,129 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *    * voxelRenderMode - toggle between rendering modes @see ROS3D.OcTreeVoxelRenderMode
 	   */
 	  constructor(options) {
+	    this.resolution = typeof options.resolution !== 'undefined' ? options.resolution : 1;
+	    this.color = new THREE$1.Color(typeof options.color !== 'undefined' ? options.color : 'green');
+	    this.opacity = typeof options.opacity !== 'undefined' ? options.opacity : 1;
 
-	    this.resolution = (typeof options.resolution !== 'undefined') ? options.resolution : 1.;
-	    this.color = new THREE.Color((typeof options.color !== 'undefined') ? options.color : 'green');
-	    this.opacity = (typeof options.opacity !== 'undefined') ? options.opacity : 1.;
-
-	    this.voxelRenderMode = (typeof options.voxelRenderMode !== 'undefined') ? options.voxelRenderMode : OcTreeVoxelRenderMode.OCCUPIED;
+	    this.voxelRenderMode =
+	      typeof options.voxelRenderMode !== 'undefined' ? options.voxelRenderMode : OcTreeVoxelRenderMode.OCCUPIED;
 
 	    this._rootNode = null;
 	    this._treeDepth = 16;
 	    this._treeMaxKeyVal = 32768;
-
-	    this._BINARY_UNALLOCATED = 0b00;
-	    this._BINARY_LEAF_FREE = 0b01;
-	    this._BINARY_LEAF_OCCUPIED = 0b10;
-	    this._BINARY_HAS_CHILDREN = 0b11;
-
-	    this._BINARY_CHILD_BUILD_TABLE = {};
-
-	    this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_FREE] = function (child) {
-	      child.value = this._defaultFreeValue;
-	    };
-
-	    this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_OCCUPIED] = function (child) {
-	      child.value = this._defaultOccupiedValue;
-	    };
-
-	    this._BINARY_CHILD_BUILD_TABLE[this._BINARY_HAS_CHILDREN] = function (child) {
-	      child.value = null;
-	    };
-
-	    /**
-	     * Table which we are building the geometry data from.
-	     */
-	    this._FACES = [
-	      { // 0. left (x=0)
-	        normal: [-1, 0, 0,],
-	        vertices: [
-	          [0, 1, 0],
-	          [0, 0, 0],
-	          [0, 1, 1],
-	          [0, 0, 1],
-	        ],
-	        childIndex: [
-	          0b001,
-	          0b011,
-	          0b101,
-	          0b111
-	        ]
-	      },
-	      { // 1. right (x=1)
-	        normal: [1, 0, 0,],
-	        vertices: [
-	          [1, 1, 1],
-	          [1, 0, 1],
-	          [1, 1, 0],
-	          [1, 0, 0],
-	        ],
-
-	        childIndex: [
-	          0b000,
-	          0b010,
-	          0b100,
-	          0b110
-	        ]
-	      },
-	      { // 2. bottom (y=0)
-	        normal: [0, -1, 0,],
-	        vertices: [
-	          [1, 0, 1],
-	          [0, 0, 1],
-	          [1, 0, 0],
-	          [0, 0, 0],
-	        ],
-	        childIndex: [
-	          0b010,
-	          0b011,
-	          0b110,
-	          0b111
-	        ]
-	      },
-	      { // 3. top (y=1)
-	        normal: [0, 1, 0,],
-	        vertices: [
-	          [0, 1, 1],
-	          [1, 1, 1],
-	          [0, 1, 0],
-	          [1, 1, 0],
-	        ],
-	        childIndex: [
-	          0b000,
-	          0b001,
-	          0b100,
-	          0b101
-	        ]
-	      },
-	      { // 4. back (z=0)
-	        normal: [0, 0, -1,],
-	        vertices: [
-	          [1, 0, 0],
-	          [0, 0, 0],
-	          [1, 1, 0],
-	          [0, 1, 0],
-	        ],
-	        childIndex: [
-	          0b100,
-	          0b101,
-	          0b110,
-	          0b111
-	        ]
-	      },
-	      { // 5.front (z=1)
-	        normal: [0, 0, 1,],
-	        vertices: [
-	          [0, 0, 1],
-	          [1, 0, 1],
-	          [0, 1, 1],
-	          [1, 1, 1],
-	        ],
-	        childIndex: [
-	          0b000,
-	          0b001,
-	          0b010,
-	          0b011
-	        ]
-	      },
-	    ];
 
 	    // Table of voxel size for each level of the tree
 	    this.nodeSizeTable = new Array(this._treeDepth);
 	    let _val = this.resolution;
 	    for (let i = this._treeDepth - 1; i >= 0; --i) {
 	      this.nodeSizeTable[i] = _val;
-	      _val = 2. * _val;
+	      _val = 2 * _val;
 	    }
 
 	    this._defaultOccupiedValue = true;
 	    this._defaultFreeValue = false;
 
 	    this.object = null;
+	  }
+
+	  _BINARY_UNALLOCATED = 0b00;
+	  _BINARY_LEAF_FREE = 0b01;
+	  _BINARY_LEAF_OCCUPIED = 0b10;
+	  _BINARY_HAS_CHILDREN = 0b11;
+
+	  _BINARY_CHILD_BUILD_TABLE = {
+	    [this._BINARY_LEAF_FREE]: child => {
+	      child.value = this._defaultFreeValue;
+	    },
+
+	    [this._BINARY_LEAF_OCCUPIED]: child => {
+	      child.value = this._defaultOccupiedValue;
+	    },
+
+	    [this._BINARY_HAS_CHILDREN]: child => {
+	      child.value = null;
+	    },
 	  };
 
+	  /**
+	   * Table which we are building the geometry data from.
+	   */
+	  _FACES = [
+	    {
+	      // 0. left (x=0)
+	      normal: [-1, 0, 0],
+	      vertices: [
+	        [0, 1, 0],
+	        [0, 0, 0],
+	        [0, 1, 1],
+	        [0, 0, 1],
+	      ],
+	      childIndex: [0b001, 0b011, 0b101, 0b111],
+	    },
+	    {
+	      // 1. right (x=1)
+	      normal: [1, 0, 0],
+	      vertices: [
+	        [1, 1, 1],
+	        [1, 0, 1],
+	        [1, 1, 0],
+	        [1, 0, 0],
+	      ],
+
+	      childIndex: [0b000, 0b010, 0b100, 0b110],
+	    },
+	    {
+	      // 2. bottom (y=0)
+	      normal: [0, -1, 0],
+	      vertices: [
+	        [1, 0, 1],
+	        [0, 0, 1],
+	        [1, 0, 0],
+	        [0, 0, 0],
+	      ],
+	      childIndex: [0b010, 0b011, 0b110, 0b111],
+	    },
+	    {
+	      // 3. top (y=1)
+	      normal: [0, 1, 0],
+	      vertices: [
+	        [0, 1, 1],
+	        [1, 1, 1],
+	        [0, 1, 0],
+	        [1, 1, 0],
+	      ],
+	      childIndex: [0b000, 0b001, 0b100, 0b101],
+	    },
+	    {
+	      // 4. back (z=0)
+	      normal: [0, 0, -1],
+	      vertices: [
+	        [1, 0, 0],
+	        [0, 0, 0],
+	        [1, 1, 0],
+	        [0, 1, 0],
+	      ],
+	      childIndex: [0b100, 0b101, 0b110, 0b111],
+	    },
+	    {
+	      // 5.front (z=1)
+	      normal: [0, 0, 1],
+	      vertices: [
+	        [0, 0, 1],
+	        [1, 0, 1],
+	        [0, 1, 1],
+	        [1, 1, 1],
+	      ],
+	      childIndex: [0b000, 0b001, 0b010, 0b011],
+	    },
+	  ];
 
 	  /*
 	   * Finds a key in a given depth. Search is performed on the lowest level by default.
 	   * @return the node at given position, null if not found
 	   */
 	  searchAtDepth(key, depth) {
-	    depth = (typeof depth !== 'undefined') ? (depth > 0 ? depth : this._treeDepth) : this._treeDepth;
+	    depth = typeof depth !== 'undefined' ? (depth > 0 ? depth : this._treeDepth) : this._treeDepth;
 
 	    const keyAtDepth = this._adjustKeyAtDepth(key, depth);
 	    const diff = this._treeDepth - depth;
@@ -56340,38 +56327,45 @@ var ROS3D = (function (exports, ROSLIB) {
 	    // follow nodes down to requested level (for diff = 0 it's the last level)
 	    // Return the closest node, or null if not any
 
-	    for (let i = (this._treeDepth - 1); i >= diff; --i) {
+	    for (let i = this._treeDepth - 1; i >= diff; --i) {
 	      const pos = this._computeChildIdx(keyAtDepth, i);
 	      if (currentNode.hasChildAt(pos)) {
 	        currentNode = currentNode.getChildAt(pos);
 	      } else {
 	        // we expected a child but did not get it
 	        // is the current node a leaf already?
-	        if (!currentNode.hasChildren()) { return currentNode; }
+	        if (!currentNode.hasChildren()) {
+	          return currentNode;
+	        }
 	        // it is not, search failed
 	        return null;
 	      }
 	    }
 
 	    return currentNode;
-
-	  };
+	  }
 
 	  /**
 	   *
 	   */
 	  _computeCoordFromKey(key) {
 	    return key.map(keyVal => this.resolution * (keyVal - this._treeMaxKeyVal));
-	  };
+	  }
 
 	  _computeChildIdx(key, depth) {
 	    let pos = 0;
-	    if (key[0] & (1 << depth)) { pos += 1; }
-	    if (key[1] & (1 << depth)) { pos += 2; }
-	    if (key[2] & (1 << depth)) { pos += 4; }
+	    if (key[0] & (1 << depth)) {
+	      pos += 1;
+	    }
+	    if (key[1] & (1 << depth)) {
+	      pos += 2;
+	    }
+	    if (key[2] & (1 << depth)) {
+	      pos += 4;
+	    }
 
 	    return pos;
-	  };
+	  }
 
 	  _computeKeyFromChildIdx(index, offset, depth) {
 	    const diff = this._treeDepth - depth - 1;
@@ -56381,18 +56375,23 @@ var ROS3D = (function (exports, ROSLIB) {
 	      offset[1] + (!!(index & 2) << diff),
 	      offset[2] + (!!(index & 4) << diff),
 	    ];
-
-	  };
+	  }
 
 	  _adjustKeyAtDepth(key, depth) {
 	    // generate appropriate key_at_depth for queried depth
 	    let diff = this._treeDepth - depth;
-	    if (diff === 0) { return key; }
+	    if (diff === 0) {
+	      return key;
+	    }
 
-	    return key.map(keyVal => (((keyVal - this._treeMaxKeyVal) >> diff) << diff) + (1 << (diff - 1)) + this._treeMaxKeyVal);
-	  };
+	    return key.map(
+	      keyVal => (((keyVal - this._treeMaxKeyVal) >> diff) << diff) + (1 << (diff - 1)) + this._treeMaxKeyVal
+	    );
+	  }
 
-	  _newNode() { return new OcTreeBaseNode(); };
+	  _newNode() {
+	    return new OcTreeBaseNode();
+	  }
 
 	  /*
 	   * Reads and builds a tree which was represented in a binary form from a message
@@ -56428,22 +56427,24 @@ var ROS3D = (function (exports, ROSLIB) {
 	        if (allocation !== this._BINARY_UNALLOCATED) {
 	          let child = this._newNode();
 
-	          const fn = this._BINARY_CHILD_BUILD_TABLE[allocation].bind(this);
+	          const fn = this._BINARY_CHILD_BUILD_TABLE[allocation];
 	          fn(child);
 
 	          node.createChildNodeAt(child, index);
-	          if (allocation === this._BINARY_HAS_CHILDREN) { stack.push(child); }
+	          if (allocation === this._BINARY_HAS_CHILDREN) {
+	            stack.push(child);
+	          }
 	        }
 	      }
 	    }
-
-	  };
+	  }
 
 	  /**
 	   * Reads a full tree (with node data) from a message.
 	   * A pacjet starts with the node data, followed by the allocation map of their children.
-	   * Each type of tree has different data structure @see ROS3DJS.OcTreeBase._readNodeData
+	   * Each type of tree has different data structure @see ROS3D.OcTreeBase._readNodeData
 	   */
+
 	  read(data) {
 	    if (this._rootNode !== null) {
 	      delete this._rootNode;
@@ -56477,8 +56478,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 	      }
 	    }
-
-	  };
+	  }
 
 	  /**
 	   * Abstract function; Reads and sets data of a node
@@ -56486,39 +56486,39 @@ var ROS3D = (function (exports, ROSLIB) {
 	  _readNodeData(dataStream, node) {
 	    // This needs to be implemented by specialized tree
 	    console.error('Not implemented');
-	  };
+	  }
 
 	  /**
-	  * Builds up THREE.js geometry from tree data.
-	  */
+	   * Builds up THREE.js geometry from tree data.
+	   */
 	  buildGeometry() {
 	    console.assert(this._rootNode !== null, 'No tree data');
-	    const { vertices, normals, colors, indices } = this._buildFaces();
+	    const {vertices, normals, colors, indices} = this._buildFaces();
 
-	    const geometry = new THREE.BufferGeometry();
+	    const geometry = new THREE$1.BufferGeometry();
 
-	    const material = new THREE.MeshBasicMaterial({
+	    const material = new THREE$1.MeshBasicMaterial({
 	      color: 'white',
 	      flatShading: true,
-	      vertexColors: THREE.VertexColors,
+	      vertexColors: THREE$1.VertexColors,
 	      transparent: this.opacity < 1.0,
-	      opacity: this.opacity
+	      opacity: this.opacity,
 	    });
 
-	    geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
-	    geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
-	    geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+	    geometry.addAttribute('position', new THREE$1.BufferAttribute(new Float32Array(vertices), 3));
+	    geometry.addAttribute('normal', new THREE$1.BufferAttribute(new Float32Array(normals), 3));
+	    geometry.addAttribute('color', new THREE$1.BufferAttribute(new Float32Array(colors), 3));
 
 	    geometry.setIndex(indices);
 
-	    const mesh = new THREE.Mesh(geometry, material);
-	    this.object = new THREE.Object3D();
+	    const mesh = new THREE$1.Mesh(geometry, material);
+	    this.object = new THREE$1.Object3D();
 	    this.object.add(mesh);
-	  };
+	  }
 
 	  _traverseLeaves(callback) {
 	    let stack = new Array();
-	    stack.push({ node: this._rootNode, depth: 0, key: [0, 0, 0] });
+	    stack.push({node: this._rootNode, depth: 0, key: [0, 0, 0]});
 
 	    while (stack.length > 0) {
 	      let current = stack.pop();
@@ -56531,24 +56531,29 @@ var ROS3D = (function (exports, ROSLIB) {
 	            stack.push({
 	              node: current.node.getChildAt(index),
 	              depth: current.depth + 1,
-	              key
+	              key,
 	            });
 	          }
 	        }
 	      }
 	    }
-	  };
+	  }
 
 	  /**
 	   * Abstract function; to implement different coloring schemes
 	   */
 	  _obtainColor(node) {
 	    return this.color;
-	  };
+	  }
 
 	  _checkOccupied(node) {
 	    return node.value !== false;
-	  };
+	  }
+
+	  // This is duplicate. That's how the original ES5 source was.
+	  _checkOccupied(node) {
+	    return node.value < this.freeThreshold;
+	  }
 
 	  _buildFaces() {
 	    let geometry = {
@@ -56560,23 +56565,16 @@ var ROS3D = (function (exports, ROSLIB) {
 	      _insertFace: function (face, pos, size, color) {
 	        const indexCount = this.vertices.length / 3;
 
-	        face.vertices.forEach(function(vertex) {
-	          this.vertices.push(
-	            pos[0] + vertex[0] * size,
-	            pos[1] + vertex[1] * size,
-	            pos[2] + vertex[2] * size
-	          );
-	        });
+	        for (const vertex of face.vertices) {
+	          this.vertices.push(pos[0] + vertex[0] * size, pos[1] + vertex[1] * size, pos[2] + vertex[2] * size);
+	        }
 
 	        const colorArr = [color.r, color.g, color.b];
 
 	        this.colors.push(...colorArr, ...colorArr, ...colorArr, ...colorArr);
 	        this.normals.push(...face.normal, ...face.normal, ...face.normal, ...face.normal);
 
-	        this.indices.push(
-	          indexCount, indexCount + 1, indexCount + 2,
-	          indexCount + 2, indexCount + 1, indexCount + 3
-	        );
+	        this.indices.push(indexCount, indexCount + 1, indexCount + 2, indexCount + 2, indexCount + 1, indexCount + 3);
 	      },
 
 	      _checkNeighborsTouchingFace: function (face, neighborNode, voxelRenderMode) {
@@ -56586,25 +56584,27 @@ var ROS3D = (function (exports, ROSLIB) {
 	        while (stack.length !== 0) {
 	          const node = stack.pop();
 	          if (node.hasChildren()) {
-	            face.childIndex.forEach(function(childIndex) {
+	            for (const childIndex of face.childIndex) {
 	              if (node.hasChildAt(childIndex)) {
 	                const child = node.getChildAt(childIndex);
 
 	                // filter occupancy
 	                const isOccupied = this._checkOccupied(node);
-	                const isNeedsToRender = (isOccupied && voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.OCCUPIED) || (!isOccupied && voxelRenderMode === OcTreeVoxelRenderMode.FREE);
+	                const isNeedsToRender =
+	                  (isOccupied && voxelRenderMode === OcTreeVoxelRenderMode.OCCUPIED) ||
+	                  (!isOccupied && voxelRenderMode === OcTreeVoxelRenderMode.FREE);
 
-	                if (isNeedsToRender) { stack.push(child); }
-	              }
-	              else {
+	                if (isNeedsToRender) {
+	                  stack.push(child);
+	                }
+	              } else {
 	                return true;
 	              }
-	            });
+	            }
 	          }
 	        }
 	        return false;
-	      }
-
+	      },
 	    };
 
 	    this._traverseLeaves((node, key, depth) => {
@@ -56616,12 +56616,16 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	      // By default it will show ALL
 	      // Hide free voxels if set
-	      if (!isOccupied && this.voxelRenderMode === OcTreeVoxelRenderMode.OCCUPIED) { return; }
+	      if (!isOccupied && this.voxelRenderMode === OcTreeVoxelRenderMode.OCCUPIED) {
+	        return;
+	      }
 
 	      // Hide occuped voxels if set.
-	      if (isOccupied && this.voxelRenderMode === OcTreeVoxelRenderMode.FREE) { return; }
+	      if (isOccupied && this.voxelRenderMode === OcTreeVoxelRenderMode.FREE) {
+	        return;
+	      }
 
-	      this._FACES.forEach(function(face) {
+	      for (const face of this._FACES) {
 	        // Add geometry where there is no neighbor voxel
 	        const neighborKey = [
 	          key[0] + face.normal[0] * diff * diff,
@@ -56637,11 +56641,11 @@ var ROS3D = (function (exports, ROSLIB) {
 	          // of the tree, but also need to add a geometry, because might
 	          // not be "fully covered" by neighboring voxels on the lowest level
 
-	          if (geometry._checkNeighborsTouchingFace(face, neighborNode, this.voxelRenderMode)) ;
+	          if (geometry._checkNeighborsTouchingFace(face, neighborNode, this.voxelRenderMode)) {
+	            geometry._insertFace(face, pos, size, this._obtainColor(node));
+	          }
 	        }
-
-	      });
-
+	      }
 	    });
 
 	    // return geometry;
@@ -56649,28 +56653,12 @@ var ROS3D = (function (exports, ROSLIB) {
 	      vertices: geometry.vertices,
 	      normals: geometry.normals,
 	      colors: geometry.colors,
-	      indices: geometry.indices
+	      indices: geometry.indices,
 	    };
-
-	  };
+	  }
 	}
 
-	/**
-	 * @author Peter Sari - sari@photoneo.com
-	 */
-
-	/**
-	 * Toggles voxel visibility
-	 *
-	 *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
-	 *    * `free` - only voxels that are below the occupation threshold are shown
-	 *    * `all` - all allocated voxels are shown
-	 */
-	var OcTreeVoxelRenderMode$1  = {
-	  OCCUPIED: 'occupied',
-	  FREE: 'free',
-	  ALL: 'all',
-	};
+	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 	/**
 	 * Coloring modes for each voxel
@@ -56679,18 +56667,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	 *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
 	 *     * 'color' - voxels will colorized by their
 	 */
-	var OcTreeColorMode$1  = {
+	var OcTreeColorMode$1 = {
 	  SOLID: 'solid',
 	  OCCUPANCY: 'occupancy',
-	  COLOR: 'color'
+	  COLOR: 'color',
 	};
 
-	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 	class OcTree extends OcTreeBase {
-
 	  /**
-	   * Specilaization of BaseOcTree
+	   * Specilaization of OcTreeBase
 	   *
 	   * @constructor
 	   * @param options - object with following keys:
@@ -56700,33 +56685,34 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *    * palette (optional) - Palette used for false-coloring (default: predefined palette)
 	   *    * paletteSclae (optional) - Scale of palette to represent a wider range of values (default: 1.)
 	   */
-	  
 	  constructor(options) {
 	    super(options);
 
-	    this._defaultOccupiedValue = 1.;
-	    this._defaultFreeValue = -1.;
+	    this._defaultOccupiedValue = 1;
+	    this._defaultFreeValue = -1;
 
-	    this.occupancyThreshold = (typeof options.occupancyThreshold !== 'undefined') ? options.occupancyThreshold : 0.0000001;
+	    this.occupancyThreshold =
+	      typeof options.occupancyThreshold !== 'undefined' ? options.occupancyThreshold : 0.0000001;
 
-	    this.useFlatColoring = (typeof options.colorMode !== 'undefined') && options.colorMode === OcTreeColorMode$1.SOLID;
+	    this.useFlatColoring = typeof options.colorMode !== 'undefined' && options.colorMode === OcTreeColorMode$1.SOLID;
 
-	    this.palette = (typeof options.palette !== 'undefined') ? options.palette.map(color => new THREE.Color(color)) :
-	      [
-	        { r: 0, g: 0, b: 128, }, // dark blue (low)
-	        { r: 0, g: 255, b: 0, }, // green
-	        { r: 255, g: 255, b: 0, }, // yellow (mid)
-	        { r: 255, g: 128, b: 0, }, // orange
-	        { r: 255, g: 0, b: 0, } // red (high)
-	      ];
+	    this.palette =
+	      typeof options.palette !== 'undefined'
+	        ? options.palette.map(color => new THREE.Color(color))
+	        : [
+	            {r: 0, g: 0, b: 128}, // dark blue (low)
+	            {r: 0, g: 255, b: 0}, // green
+	            {r: 255, g: 255, b: 0}, // yellow (mid)
+	            {r: 255, g: 128, b: 0}, // orange
+	            {r: 255, g: 0, b: 0}, // red (high)
+	          ];
 
-	    this.paletteScale = (typeof options.paletteScale !== 'undefined') ? options.paletteScale : 1.;
-	  };
-
+	    this.paletteScale = typeof options.paletteScale !== 'undefined' ? options.paletteScale : 1;
+	  }
 
 	  _readNodeData(dataStream, node) {
 	    node.value = dataStream.readFloat32();
-	  };
+	  }
 
 	  _obtainColor(node) {
 	    if (this.useFlatColoring) {
@@ -56734,39 +56720,36 @@ var ROS3D = (function (exports, ROSLIB) {
 	    }
 
 	    // Use a simple sigmoid curve to fit values from -inf..inf into 0..1 range
-	    const value = 1. / (1. + Math.exp(-node.value * this.paletteScale)) * this.palette.length; // Normalize
+	    const value = (1 / (1 + Math.exp(-node.value * this.paletteScale))) * this.palette.length; // Normalize
 
 	    const intVal = Math.trunc(value);
 	    const fracVal = value - intVal;
 
-	    if (intVal < 0) { return this.palette[0]; }
-	    if (intVal >= this.palette.length - 1) { return this.palette[this.palette.length - 1]; }
+	    if (intVal < 0) {
+	      return this.palette[0];
+	    }
+	    if (intVal >= this.palette.length - 1) {
+	      return this.palette[this.palette.length - 1];
+	    }
 
 	    // Simple lerp
 	    return {
-	      r: fracVal * this.palette[intVal].r + (1. - fracVal) * this.palette[intVal + 1].r,
-	      g: fracVal * this.palette[intVal].g + (1. - fracVal) * this.palette[intVal + 1].g,
-	      b: fracVal * this.palette[intVal].b + (1. - fracVal) * this.palette[intVal + 1].b,
+	      r: fracVal * this.palette[intVal].r + (1 - fracVal) * this.palette[intVal + 1].r,
+	      g: fracVal * this.palette[intVal].g + (1 - fracVal) * this.palette[intVal + 1].g,
+	      b: fracVal * this.palette[intVal].b + (1 - fracVal) * this.palette[intVal + 1].b,
 	    };
-
-	  };
+	  }
 
 	  _checkOccupied(node) {
 	    return node.value >= this.occupancyThreshold;
-	  };
+	  }
 	}
 
 	class ColorOcTree extends OcTree {
-
-	  /**
-	   * @author Peter Sari - sari@photoneo.com
-	   */
-	  
 	  constructor(options) {
 	    super(options);
-	    this.useOwnColor = (typeof options.palette !== 'undefined') && options.colorMode === OcTreeColorMode.COLOR;
-	  };
-
+	    this.useOwnColor = typeof options.palette !== 'undefined' && options.colorMode === OcTreeColorMode.COLOR;
+	  }
 
 	  _readNodeData(dataStream, node) {
 	    node.value = dataStream.readFloat32(); // occupancy
@@ -56775,13 +56758,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	      g: dataStream.readUint8(), // green
 	      b: dataStream.readUint8(), // blue
 	    };
-
-	  };
+	  }
 
 	  _obtainColor(node) {
-	    if (!this.useOwnColor) { return OcTree.prototype._obtainColor.call(this, node); }
+	    if (!this.useOwnColor) {
+	      return OcTree.prototype._obtainColor.call(this, node);
+	    }
 	    return node.color;
-	  };
+	  }
 	}
 
 	/**
@@ -56789,7 +56773,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	 */
 
 	class OcTreeClient extends EventEmitter2 {
-
 	  /**
 	   * An OcTree client that listens to a given OcTree topic.
 	   *
@@ -56815,7 +56798,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *    * voxelRenderMode (optional)- toggle between rendering modes @see ROS3D.OcTreeVoxelRenderMode. (default `occupid`)
 	   *
 	   */
-	  
+
 	  constructor(options) {
 	    super();
 	    options = options || {};
@@ -56824,19 +56807,31 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.compression = options.compression || 'cbor';
 	    this.continuous = options.continuous;
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.offsetPose = options.offsetPose || new ROSLIB__namespace.Pose();
 
 	    // Options passed to converter
 	    this.options = {};
 
 	    // Append only when it was set, otherwise defaults are provided by the underlying layer
-	    if (typeof options.color !== 'undefined') { this.options['color'] = options.color; }
-	    if (typeof options.opacity !== 'undefined') { this.options['opacity'] = options.opacity; }
-	    if (typeof options.colorMode !== 'undefined') { this.options['colorMode'] = options.colorMode; }
-	    if (typeof options.palette !== 'undefined') { this.options['palette'] = options.palette; }
-	    if (typeof options.paletteScale !== 'undefined') { this.options['paletteScale'] = options.palette; }
-	    if (typeof options.voxelRenderMode !== 'undefined') { this.options['voxelRenderMode'] = options.voxelRenderMode; }
+	    if (typeof options.color !== 'undefined') {
+	      this.options['color'] = options.color;
+	    }
+	    if (typeof options.opacity !== 'undefined') {
+	      this.options['opacity'] = options.opacity;
+	    }
+	    if (typeof options.colorMode !== 'undefined') {
+	      this.options['colorMode'] = options.colorMode;
+	    }
+	    if (typeof options.palette !== 'undefined') {
+	      this.options['palette'] = options.palette;
+	    }
+	    if (typeof options.paletteScale !== 'undefined') {
+	      this.options['paletteScale'] = options.palette;
+	    }
+	    if (typeof options.voxelRenderMode !== 'undefined') {
+	      this.options['voxelRenderMode'] = options.voxelRenderMode;
+	    }
 
 	    // current grid that is displayed
 	    this.currentMap = null;
@@ -56844,14 +56839,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	    // subscribe to the topic
 	    this.rosTopic = undefined;
 	    this.subscribe();
-	  };
-
+	  }
 
 	  unsubscribe() {
 	    if (this.rosTopic) {
 	      this.rosTopic.unsubscribe();
 	    }
-	  };
+	  }
+
+	  _MESSAGE_TYPE = 'octomap_msgs/Octomap';
 
 	  subscribe() {
 	    this.unsubscribe();
@@ -56859,12 +56855,12 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.rosTopic = new ROSLIB__namespace.Topic({
 	      ros: this.ros,
 	      name: this.topicName,
-	      messageType: 'octomap_msgs/Octomap',
+	      messageType: this._MESSAGE_TYPE,
 	      queue_length: 1,
-	      compression: this.compression
+	      compression: this.compression,
 	    });
 	    this.rosTopic.subscribe(this.processMessage.bind(this));
-	  };
+	  }
 
 	  processMessage(message) {
 	    // check for an old map
@@ -56879,56 +56875,48 @@ var ROS3D = (function (exports, ROSLIB) {
 	    if (!this.continuous) {
 	      this.rosTopic.unsubscribe();
 	    }
-
-	  };
-
+	  }
 
 	  _loadOcTree(message) {
-
 	    return new Promise(
 	      function (resolve, reject) {
-
 	        // 1. Create the corresponding octree object from message
-	        const options = Object.assign({
-	          resolution: message.resolution,
-	        }, this.options);
+	        const options = Object.assign(
+	          {
+	            resolution: message.resolution,
+	          },
+	          this.options
+	        );
 
 	        let newOcTree = null;
 	        {
 	          if (message.binary) {
-	            newOcTree = new OcTreeBase(
-	              options
-	            );
+	            newOcTree = new OcTreeBase(options);
 	            newOcTree.readBinary(message.data);
 	          } else {
-
 	            const ctorTable = {
-	              'OcTree': OcTree,
-	              'ColorOcTree': ColorOcTree,
+	              OcTree: OcTree,
+	              ColorOcTree: ColorOcTree,
 	            };
 
 	            if (message.id in ctorTable) {
 	              console.log(message.id, ctorTable);
 
-	              newOcTree = new ctorTable[message.id](
-	                options
-	              );
+	              newOcTree = new ctorTable[message.id](options);
 
 	              newOcTree.read(message.data);
 	            }
-
 	          }
 	        }
-
 
 	        {
 	          newOcTree.buildGeometry();
 	        }
 
 	        resolve(newOcTree);
-	      }.bind(this));
-
-	  };
+	      }.bind(this)
+	    );
+	  }
 
 	  _processMessagePrivate(message) {
 	    let promise = this._loadOcTree(message);
@@ -56944,7 +56932,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	            frameID: message.header.frame_id,
 	            tfClient: this.tfClient,
 	            object: newOcTree.object,
-	            pose: this.offsetPose
+	            pose: this.offsetPose,
 	          });
 	        } else {
 	          this.sceneNode = newOcTree.object;
@@ -56957,14 +56945,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.emit('change');
 	      }.bind(this)
 	    );
-	  };
+	  }
 	}
 
 	/**
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class Odometry extends THREE.Object3D {
+	class Odometry extends THREE$1.Object3D {
 
 	  /**
 	   * An Odometry client
@@ -56991,7 +56979,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
 	    this.length = options.length || 1.0;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.keep = options.keep || 1;
 
 	    this.sns = [];
@@ -57027,14 +57015,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.sns.shift();
 	    }
 
-	    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+	    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
 	                                             message.pose.pose.position.z);
 
-	    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+	    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
 	                                   message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-	    this.options.direction = new THREE.Vector3(1,0,0);
+	    this.options.direction = new THREE$1.Vector3(1,0,0);
 	    this.options.direction.applyQuaternion(rot);
-	    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
+	    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
 	    var arrow = new Arrow(this.options);
 
 	    this.sns.push(new SceneNode({
@@ -57051,7 +57039,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class Path extends THREE.Object3D {
+	class Path extends THREE$1.Object3D {
 
 	  /**
 	   * A Path client that listens to a given topic and displays a line connecting the poses.
@@ -57072,7 +57060,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic || '/path';
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 
 	    this.sn = null;
 	    this.line = null;
@@ -57107,16 +57095,16 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    var lineGeometry = new THREE.Geometry();
+	    var lineGeometry = new THREE$1.Geometry();
 	    for(var i=0; i<message.poses.length;i++){
-	        var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
+	        var v3 = new THREE$1.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
 	                                    message.poses[i].pose.position.z);
 	        lineGeometry.vertices.push(v3);
 	    }
 
 	    lineGeometry.computeLineDistances();
-	    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
-	    var line = new THREE.Line( lineGeometry, lineMaterial );
+	    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
+	    var line = new THREE$1.Line( lineGeometry, lineMaterial );
 
 	    this.sn = new SceneNode({
 	        frameID : message.header.frame_id,
@@ -57132,7 +57120,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class Point extends THREE.Object3D {
+	class Point extends THREE$1.Object3D {
 
 	  /**
 	   * A PointStamped client
@@ -57154,7 +57142,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic || '/point';
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.radius = options.radius || 0.2;
 
 	    this.sn = null;
@@ -57189,9 +57177,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    var sphereGeometry = new THREE.SphereGeometry( this.radius );
-	    var sphereMaterial = new THREE.MeshBasicMaterial( {color: this.color} );
-	    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	    var sphereGeometry = new THREE$1.SphereGeometry( this.radius );
+	    var sphereMaterial = new THREE$1.MeshBasicMaterial( {color: this.color} );
+	    var sphere = new THREE$1.Mesh(sphereGeometry, sphereMaterial);
 	    sphere.position.set(message.point.x, message.point.y, message.point.z);
 
 	    this.sn = new SceneNode({
@@ -57208,7 +57196,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class Polygon extends THREE.Object3D {
+	class Polygon extends THREE$1.Object3D {
 
 	  /**
 	   * A PolygonStamped client that listens to a given topic and displays the polygon
@@ -57229,7 +57217,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic || '/path';
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 
 	    this.sn = null;
 	    this.line = null;
@@ -57264,19 +57252,19 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    var lineGeometry = new THREE.Geometry();
+	    var lineGeometry = new THREE$1.Geometry();
 	    var v3;
 	    for(var i=0; i<message.polygon.points.length;i++){
-	        v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
+	        v3 = new THREE$1.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
 	                                message.polygon.points[i].z);
 	        lineGeometry.vertices.push(v3);
 	    }
-	    v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
+	    v3 = new THREE$1.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
 	                            message.polygon.points[0].z);
 	    lineGeometry.vertices.push(v3);
 	    lineGeometry.computeLineDistances();
-	    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
-	    var line = new THREE.Line( lineGeometry, lineMaterial );
+	    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
+	    var line = new THREE$1.Line( lineGeometry, lineMaterial );
 
 	    this.sn = new SceneNode({
 	        frameID : message.header.frame_id,
@@ -57292,7 +57280,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class Pose extends THREE.Object3D {
+	class Pose extends THREE$1.Object3D {
 
 	  /**
 	   * A PoseStamped client
@@ -57317,7 +57305,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic || '/pose';
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 
 	    this.sn = null;
 
@@ -57351,14 +57339,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    this.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
+	    this.options.origin = new THREE$1.Vector3( message.pose.position.x, message.pose.position.y,
 	                                             message.pose.position.z);
 
-	    var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+	    var rot = new THREE$1.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
 	                                   message.pose.orientation.z, message.pose.orientation.w);
-	    this.options.direction = new THREE.Vector3(1,0,0);
+	    this.options.direction = new THREE$1.Vector3(1,0,0);
 	    this.options.direction.applyQuaternion(rot);
-	    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
+	    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
 	    var arrow = new Arrow(this.options);
 
 	    this.sn = new SceneNode({
@@ -57375,7 +57363,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class PoseArray extends THREE.Object3D {
+	class PoseArray extends THREE$1.Object3D {
 
 	  /**
 	   * A PoseArray client
@@ -57398,7 +57386,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
 	    this.length = options.length || 1.0;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 
 	    this.sn = null;
 
@@ -57432,22 +57420,22 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    var group = new THREE.Object3D();
+	    var group = new THREE$1.Object3D();
 	    var line;
 
 	    for(var i=0;i<message.poses.length;i++){
-	        var lineGeometry = new THREE.Geometry();
+	        var lineGeometry = new THREE$1.Geometry();
 
-	        var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
+	        var v3 = new THREE$1.Vector3( message.poses[i].position.x, message.poses[i].position.y,
 	                                    message.poses[i].position.z);
 	        lineGeometry.vertices.push(v3);
 
-	        var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
+	        var rot = new THREE$1.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
 	                                       message.poses[i].orientation.z, message.poses[i].orientation.w);
 
-	        var tip = new THREE.Vector3(this.length,0,0);
-	        var side1 = new THREE.Vector3(this.length*0.8, this.length*0.2, 0);
-	        var side2 = new THREE.Vector3(this.length*0.8, -this.length*0.2, 0);
+	        var tip = new THREE$1.Vector3(this.length,0,0);
+	        var side1 = new THREE$1.Vector3(this.length*0.8, this.length*0.2, 0);
+	        var side2 = new THREE$1.Vector3(this.length*0.8, -this.length*0.2, 0);
 	        tip.applyQuaternion(rot);
 	        side1.applyQuaternion(rot);
 	        side2.applyQuaternion(rot);
@@ -57458,8 +57446,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	        lineGeometry.vertices.push(tip);
 
 	        lineGeometry.computeLineDistances();
-	        var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
-	        line = new THREE.Line( lineGeometry, lineMaterial );
+	        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
+	        line = new THREE$1.Line( lineGeometry, lineMaterial );
 
 	        group.add(line);
 	    }
@@ -57478,7 +57466,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class PoseWithCovariance extends THREE.Object3D {
+	class PoseWithCovariance extends THREE$1.Object3D {
 
 	  /**
 	   * A PoseWithCovarianceStamped client
@@ -57499,7 +57487,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.topicName = options.topic || '/PoseWithCovariance';
 	    this.tfClient = options.tfClient;
 	    this.color = options.color || 0xcc00ff;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 
 	    this.sn = null;
 
@@ -57533,14 +57521,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	        this.rootObject.remove(this.sn);
 	    }
 
-	    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+	    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
 	                                             message.pose.pose.position.z);
 
-	    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+	    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
 	                                   message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-	    this.options.direction = new THREE.Vector3(1,0,0);
+	    this.options.direction = new THREE$1.Vector3(1,0,0);
 	    this.options.direction.applyQuaternion(rot);
-	    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
+	    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
 	    var arrow = new Arrow(this.options);
 
 	    this.sn = new SceneNode({
@@ -57558,7 +57546,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Mathieu Bredif - mathieu.bredif@ign.fr
 	 */
 
-	class Points extends THREE.Object3D {
+	class Points extends THREE$1.Object3D {
 
 	  /**
 	   * A set of points. Used by PointCloud2 and LaserScan.
@@ -57579,7 +57567,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    super();
 	    options = options || {};
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.max_pts = options.max_pts || 10000;
 	    this.pointRatio = options.pointRatio || 1;
 	    this.messageRatio = options.messageRatio || 1;
@@ -57609,9 +57597,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	          for(var i=0; i<fields.length; i++) {
 	              this.fields[fields[i].name] = fields[i];
 	          }
-	          this.geom = new THREE.BufferGeometry();
+	          this.geom = new THREE$1.BufferGeometry();
 
-	          this.positions = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+	          this.positions = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
 	          this.geom.addAttribute( 'position', this.positions.setDynamic(true) );
 
 	          if(!this.colorsrc && this.fields.rgb) {
@@ -57620,7 +57608,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	          if(this.colorsrc) {
 	              var field = this.fields[this.colorsrc];
 	              if (field) {
-	                  this.colors = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+	                  this.colors = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
 	                  this.geom.addAttribute( 'color', this.colors.setDynamic(true) );
 	                  var offset = field.offset;
 	                  this.getColor = [
@@ -57633,7 +57621,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	                      function(dv,base,le){return dv.getFloat32(base+offset,le);},
 	                      function(dv,base,le){return dv.getFloat64(base+offset,le);}
 	                  ][field.datatype-1];
-	                  this.colormap = this.colormap || function(x){return new THREE.Color(x);};
+	                  this.colormap = this.colormap || function(x){return new THREE$1.Color(x);};
 	              } else {
 	                  console.warn('unavailable field "' + this.colorsrc + '" for coloring.');
 	              }
@@ -57641,12 +57629,12 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	          if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
 	              if(this.colors && this.material.vertexColors === undefined) {
-	                  this.material.vertexColors = THREE.VertexColors;
+	                  this.material.vertexColors = THREE$1.VertexColors;
 	              }
-	              this.material = new THREE.PointsMaterial(this.material);
+	              this.material = new THREE$1.PointsMaterial(this.material);
 	          }
 
-	          this.object = new THREE.Points( this.geom, this.material );
+	          this.object = new THREE$1.Points( this.geom, this.material );
 
 	          this.sn = new SceneNode({
 	              frameID : frame,
@@ -57677,7 +57665,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
-	class LaserScan extends THREE.Object3D {
+	class LaserScan extends THREE$1.Object3D {
 
 	  /**
 	   * A LaserScan client that listens to a given topic and displays the points.
@@ -57751,7 +57739,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Mathieu Bredif - mathieu.bredif@ign.fr
 	 */
 
-	class NavSatFix extends THREE.Object3D {
+	class NavSatFix extends THREE$1.Object3D {
 
 	  /**
 	   * A NavSatFix client that listens to a given topic and displays a line connecting the gps fixes.
@@ -57777,21 +57765,21 @@ var ROS3D = (function (exports, ROSLIB) {
 	    options = options || {};
 	    this.ros = options.ros;
 	    this.topicName = options.topic || '/gps/fix';
-	    this.rootObject = options.rootObject || new THREE.Object3D();
-	    this.object3d = options.object3d || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
+	    this.object3d = options.object3d || new THREE$1.Object3D();
 	    var material = options.material || {};
 	    this.altitudeNaN = options.altitudeNaN || 0;
 	    this.keep = options.keep || 100;
-	    this.convert = options.convert || function(lon,lat,alt) { return new THREE.Vector3(lon,lat,alt); };
+	    this.convert = options.convert || function(lon,lat,alt) { return new THREE$1.Vector3(lon,lat,alt); };
 	    this.count = 0;
 	    this.next1 = 0;
 	    this.next2 = this.keep;
 
-	    this.geom = new THREE.BufferGeometry();
-	    this.vertices = new THREE.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
+	    this.geom = new THREE$1.BufferGeometry();
+	    this.vertices = new THREE$1.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
 	    this.geom.addAttribute( 'position',  this.vertices);
-	    this.material = material.isMaterial ? material : new THREE.LineBasicMaterial( material );
-	    this.line = new THREE.Line( this.geom, this.material );
+	    this.material = material.isMaterial ? material : new THREE$1.LineBasicMaterial( material );
+	    this.line = new THREE$1.Line( this.geom, this.material );
 	    this.rootObject.add(this.object3d);
 	    this.rootObject.add(this.line);
 
@@ -57886,7 +57874,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	for(var i=0;i<64;i++){decode64.e[decode64.S.charAt(i)]=i;}
 
 
-	class PointCloud2 extends THREE.Object3D {
+	class PointCloud2 extends THREE$1.Object3D {
 
 	  /**
 	   * A PointCloud2 client that listens to a given topic and displays the points.
@@ -57987,7 +57975,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	/**
 	 * @author Jihoon Lee - jihoon.lee@kakaobrain.com
 	 */
-	class TFAxes extends THREE.Object3D {
+	class TFAxes extends THREE$1.Object3D {
 
 	  /**
 	   * An Axes node can be used to display the axis of a particular coordinate frame.
@@ -58014,7 +58002,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    this.frame_id = options.frame_id;
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.axes = new Axes(
 	      {
 	        shaftRadius: options.shaftRadius || 0.025,
@@ -58041,7 +58029,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
-	class Urdf extends THREE.Object3D {
+	class Urdf extends THREE$1.Object3D {
 
 	  /**
 	   * A URDF can be used to load a ROSLIB.UrdfModel and its associated models into a 3D object.
@@ -58142,19 +58130,19 @@ var ROS3D = (function (exports, ROSLIB) {
 	    switch (visual.geometry.type) {
 	      case ROSLIB__namespace.URDF_BOX:
 	        var dimension = visual.geometry.dimension;
-	        var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
-	        shapeMesh = new THREE.Mesh(cube, colorMaterial);
+	        var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
+	        shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
 	        break;
 	      case ROSLIB__namespace.URDF_CYLINDER:
 	        var radius = visual.geometry.radius;
 	        var length = visual.geometry.length;
-	        var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
-	        shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
-	        shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+	        var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
+	        shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
+	        shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
 	        break;
 	      case ROSLIB__namespace.URDF_SPHERE:
-	        var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
-	        shapeMesh = new THREE.Mesh(sphere, colorMaterial);
+	        var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
+	        shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
 	        break;
 	    }
 
@@ -58162,7 +58150,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	  };
 
 
-	  unsubscribeTf() {
+	  unsubscribeTf () {
 	    this.children.forEach(function(n) {
 	      if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
 	    });
@@ -58202,7 +58190,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.param = options.param || 'robot_description';
 	    this.path = options.path || '/';
 	    this.tfClient = options.tfClient;
-	    this.rootObject = options.rootObject || new THREE.Object3D();
+	    this.rootObject = options.rootObject || new THREE$1.Object3D();
 	    this.tfPrefix = options.tfPrefix || '';
 	    this.loader = options.loader;
 
@@ -58296,7 +58284,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // Providing a transparent overrideMaterial...
 	    var originalOverrideMaterial = scene.overrideMaterial;
-	    scene.overrideMaterial = new THREE.MeshBasicMaterial({
+	    scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
 	        fog : false,
 	        opacity : 0.5,
 	        transparent : true,
@@ -58304,7 +58292,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        depthWrite : false,
 	        polygonOffset : true,
 	        polygonOffsetUnits : -1,
-	        side : THREE.DoubleSide
+	        side : THREE$1.DoubleSide
 	    });
 
 	    // And then rendering over the regular scene
@@ -58324,10 +58312,10 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *
 	   * @param scene - the object to traverse
 	   */
-	  makeEverythingInvisible(scene) {
+	  makeEverythingInvisible (scene) {
 	    scene.traverse(function(currentObject) {
-	      if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
-	           || currentObject instanceof THREE.Sprite ) {
+	      if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
+	           || currentObject instanceof THREE$1.Sprite ) {
 	        currentObject.previousVisibility = currentObject.visible;
 	        currentObject.visible = false;
 	      }
@@ -58341,10 +58329,10 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *
 	   * @param scene - the object to traverse
 	   */
-	  makeHighlightedVisible(scene) {
+	  makeHighlightedVisible (scene) {
 	    var makeVisible = function(currentObject) {
-	        if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
-	             || currentObject instanceof THREE.Sprite ) {
+	        if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
+	             || currentObject instanceof THREE$1.Sprite ) {
 	          currentObject.visible = true;
 	        }
 	    };
@@ -58363,7 +58351,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *
 	   * @param scene - the object to traverse
 	   */
-	  restoreVisibility(scene) {
+	  restoreVisibility (scene) {
 	    scene.traverse(function(currentObject) {
 	      if (currentObject.hasOwnProperty('previousVisibility')) {
 	        currentObject.visible = currentObject.previousVisibility;
@@ -58376,7 +58364,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	class MouseHandler extends THREE.EventDispatcher {
+	class MouseHandler extends THREE$1.EventDispatcher {
 
 	  /**
 	   * A handler for mouse events within a 3D viewer.
@@ -58443,9 +58431,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	    var top = pos_y - rect.top - target.clientTop + target.scrollTop;
 	    var deviceX = left / target.clientWidth * 2 - 1;
 	    var deviceY = -top / target.clientHeight * 2 + 1;
-	    var mousePos = new THREE.Vector2(deviceX, deviceY);
+	    var mousePos = new THREE$1.Vector2(deviceX, deviceY);
 
-	    var mouseRaycaster = new THREE.Raycaster();
+	    var mouseRaycaster = new THREE$1.Raycaster();
 	    mouseRaycaster.linePrecision = 0.001;
 	    mouseRaycaster.setFromCamera(mousePos, this.camera);
 	    var mouseRay = mouseRaycaster.ray;
@@ -58603,7 +58591,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author AlteredQualia - http://alteredqualia.com
 	 */
 
-	class OrbitControls extends THREE.EventDispatcher {
+	class OrbitControls extends THREE$1.EventDispatcher {
 
 	  /**
 	   * Behaves like THREE.OrbitControls, but uses right-handed coordinates and z as up vector.
@@ -58627,7 +58615,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    options = options || {};
 	    var scene = options.scene;
 	    this.camera = options.camera;
-	    this.center = new THREE.Vector3();
+	    this.center = new THREE$1.Vector3();
 	    this.userZoom = true;
 	    this.userZoomSpeed = options.userZoomSpeed || 1.0;
 	    this.userRotate = true;
@@ -58639,27 +58627,27 @@ var ROS3D = (function (exports, ROSLIB) {
 	        !!options.displayPanAndZoomFrame;
 	    this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
 	    // In ROS, z is pointing upwards
-	    this.camera.up = new THREE.Vector3(0, 0, 1);
+	    this.camera.up = new THREE$1.Vector3(0, 0, 1);
 
 	    // internals
 	    var pixelsPerRound = 1800;
 	    var touchMoveThreshold = 10;
-	    var rotateStart = new THREE.Vector2();
-	    var rotateEnd = new THREE.Vector2();
-	    var rotateDelta = new THREE.Vector2();
-	    var zoomStart = new THREE.Vector2();
-	    var zoomEnd = new THREE.Vector2();
-	    var zoomDelta = new THREE.Vector2();
-	    var moveStartCenter = new THREE.Vector3();
-	    var moveStartNormal = new THREE.Vector3();
-	    var moveStartPosition = new THREE.Vector3();
-	    var moveStartIntersection = new THREE.Vector3();
+	    var rotateStart = new THREE$1.Vector2();
+	    var rotateEnd = new THREE$1.Vector2();
+	    var rotateDelta = new THREE$1.Vector2();
+	    var zoomStart = new THREE$1.Vector2();
+	    var zoomEnd = new THREE$1.Vector2();
+	    var zoomDelta = new THREE$1.Vector2();
+	    var moveStartCenter = new THREE$1.Vector3();
+	    var moveStartNormal = new THREE$1.Vector3();
+	    var moveStartPosition = new THREE$1.Vector3();
+	    var moveStartIntersection = new THREE$1.Vector3();
 	    var touchStartPosition = new Array(2);
 	    var touchMoveVector = new Array(2);
 	    this.phiDelta = 0;
 	    this.thetaDelta = 0;
 	    this.scale = 1;
-	    this.lastPosition = new THREE.Vector3();
+	    this.lastPosition = new THREE$1.Vector3();
 	    // internal states
 	    var STATE = {
 	      NONE : -1,
@@ -58700,8 +58688,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	        case 1:
 	          state = STATE.MOVE;
 
-	          moveStartNormal = new THREE.Vector3(0, 0, 1);
-	          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
+	          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
+	          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
 	          moveStartNormal.applyMatrix4(rMat);
 
 	          moveStartCenter = that.center.clone();
@@ -58756,7 +58744,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	          return;
 	        }
 
-	        var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
+	        var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(), intersection
 	            .clone());
 
 	        that.center.addVectors(moveStartCenter.clone(), delta.clone());
@@ -58777,8 +58765,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	     */
 	    function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
 
-	      var vector = new THREE.Vector3();
-	      var intersection = new THREE.Vector3();
+	      var vector = new THREE$1.Vector3();
+	      var intersection = new THREE$1.Vector3();
 
 	      vector.subVectors(planeOrigin, mouseRay.origin);
 	      var dot = mouseRay.direction.dot(planeNormal);
@@ -58851,20 +58839,20 @@ var ROS3D = (function (exports, ROSLIB) {
 	        case 2:
 	          state = STATE.NONE;
 	          /* ready for move */
-	          moveStartNormal = new THREE.Vector3(0, 0, 1);
-	          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
+	          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
+	          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
 	          moveStartNormal.applyMatrix4(rMat);
 	          moveStartCenter = that.center.clone();
 	          moveStartPosition = that.camera.position.clone();
 	          moveStartIntersection = intersectViewPlane(event3D.mouseRay,
 	                                                     moveStartCenter,
 	                                                     moveStartNormal);
-	          touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
+	          touchStartPosition[0] = new THREE$1.Vector2(event.touches[0].pageX,
 	                                                    event.touches[0].pageY);
-	          touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
+	          touchStartPosition[1] = new THREE$1.Vector2(event.touches[1].pageX,
 	                                                    event.touches[1].pageY);
-	          touchMoveVector[0] = new THREE.Vector2(0, 0);
-	          touchMoveVector[1] = new THREE.Vector2(0, 0);
+	          touchMoveVector[0] = new THREE$1.Vector2(0, 0);
+	          touchMoveVector[1] = new THREE$1.Vector2(0, 0);
 	          break;
 	      }
 
@@ -58909,7 +58897,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	            state = STATE.ZOOM;
 	          }
 	          if (state === STATE.ZOOM) {
-	            var tmpVector = new THREE.Vector2();
+	            var tmpVector = new THREE$1.Vector2();
 	            tmpVector.subVectors(touchStartPosition[0],
 	                                 touchStartPosition[1]);
 	            if (touchMoveVector[0].dot(tmpVector) < 0 &&
@@ -58928,7 +58916,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	          if (!intersection) {
 	            return;
 	          }
-	          var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(),
+	          var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(),
 	                                                     intersection.clone());
 	          that.center.addVectors(moveStartCenter.clone(), delta.clone());
 	          that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
@@ -59165,7 +59153,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
 	    // create the canvas to render to
-	    this.renderer = new THREE.WebGLRenderer({
+	    this.renderer = new THREE$1.WebGLRenderer({
 	      antialias : antialias,
 	      alpha: true
 	    });
@@ -59176,10 +59164,10 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.renderer.autoClear = false;
 
 	    // create the global scene
-	    this.scene = new THREE.Scene();
+	    this.scene = new THREE$1.Scene();
 
 	    // create the global camera
-	    this.camera = new THREE.PerspectiveCamera(40, width / height, near, far);
+	    this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
 	    this.camera.position.x = cameraPosition.x;
 	    this.camera.position.y = cameraPosition.y;
 	    this.camera.position.z = cameraPosition.z;
@@ -59193,12 +59181,12 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
 	    // lights
-	    this.scene.add(new THREE.AmbientLight(0x555555));
-	    this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
+	    this.scene.add(new THREE$1.AmbientLight(0x555555));
+	    this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
 	    this.scene.add(this.directionalLight);
 
 	    // propagates mouse events to three.js objects
-	    this.selectableObjects = new THREE.Group();
+	    this.selectableObjects = new THREE$1.Group();
 	    this.scene.add(this.selectableObjects);
 	    var mouseHandler = new MouseHandler({
 	      renderer : this.renderer,
@@ -59303,54 +59291,53 @@ var ROS3D = (function (exports, ROSLIB) {
 	exports.DepthCloud = DepthCloud;
 	exports.Grid = Grid;
 	exports.Highlighter = Highlighter;
-	exports.INTERACTIVE_MARKER_BUTTON = INTERACTIVE_MARKER_BUTTON$1;
-	exports.INTERACTIVE_MARKER_BUTTON_CLICK = INTERACTIVE_MARKER_BUTTON_CLICK$1;
-	exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED$1;
-	exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT$1;
+	exports.INTERACTIVE_MARKER_BUTTON = INTERACTIVE_MARKER_BUTTON;
+	exports.INTERACTIVE_MARKER_BUTTON_CLICK = INTERACTIVE_MARKER_BUTTON_CLICK;
+	exports.INTERACTIVE_MARKER_FIXED = INTERACTIVE_MARKER_FIXED;
+	exports.INTERACTIVE_MARKER_INHERIT = INTERACTIVE_MARKER_INHERIT;
 	exports.INTERACTIVE_MARKER_KEEP_ALIVE = INTERACTIVE_MARKER_KEEP_ALIVE;
 	exports.INTERACTIVE_MARKER_MENU = INTERACTIVE_MARKER_MENU;
-	exports.INTERACTIVE_MARKER_MENU_SELECT = INTERACTIVE_MARKER_MENU_SELECT$1;
-	exports.INTERACTIVE_MARKER_MOUSE_DOWN = INTERACTIVE_MARKER_MOUSE_DOWN$1;
-	exports.INTERACTIVE_MARKER_MOUSE_UP = INTERACTIVE_MARKER_MOUSE_UP$1;
-	exports.INTERACTIVE_MARKER_MOVE_3D = INTERACTIVE_MARKER_MOVE_3D$1;
-	exports.INTERACTIVE_MARKER_MOVE_AXIS = INTERACTIVE_MARKER_MOVE_AXIS$1;
-	exports.INTERACTIVE_MARKER_MOVE_PLANE = INTERACTIVE_MARKER_MOVE_PLANE$1;
+	exports.INTERACTIVE_MARKER_MENU_SELECT = INTERACTIVE_MARKER_MENU_SELECT;
+	exports.INTERACTIVE_MARKER_MOUSE_DOWN = INTERACTIVE_MARKER_MOUSE_DOWN;
+	exports.INTERACTIVE_MARKER_MOUSE_UP = INTERACTIVE_MARKER_MOUSE_UP;
+	exports.INTERACTIVE_MARKER_MOVE_3D = INTERACTIVE_MARKER_MOVE_3D;
+	exports.INTERACTIVE_MARKER_MOVE_AXIS = INTERACTIVE_MARKER_MOVE_AXIS;
+	exports.INTERACTIVE_MARKER_MOVE_PLANE = INTERACTIVE_MARKER_MOVE_PLANE;
 	exports.INTERACTIVE_MARKER_MOVE_ROTATE = INTERACTIVE_MARKER_MOVE_ROTATE;
-	exports.INTERACTIVE_MARKER_MOVE_ROTATE_3D = INTERACTIVE_MARKER_MOVE_ROTATE_3D$1;
-	exports.INTERACTIVE_MARKER_NONE = INTERACTIVE_MARKER_NONE$1;
-	exports.INTERACTIVE_MARKER_POSE_UPDATE = INTERACTIVE_MARKER_POSE_UPDATE$1;
+	exports.INTERACTIVE_MARKER_MOVE_ROTATE_3D = INTERACTIVE_MARKER_MOVE_ROTATE_3D;
+	exports.INTERACTIVE_MARKER_NONE = INTERACTIVE_MARKER_NONE;
+	exports.INTERACTIVE_MARKER_POSE_UPDATE = INTERACTIVE_MARKER_POSE_UPDATE;
 	exports.INTERACTIVE_MARKER_ROTATE_3D = INTERACTIVE_MARKER_ROTATE_3D;
-	exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS$1;
-	exports.INTERACTIVE_MARKER_VIEW_FACING = INTERACTIVE_MARKER_VIEW_FACING$1;
+	exports.INTERACTIVE_MARKER_ROTATE_AXIS = INTERACTIVE_MARKER_ROTATE_AXIS;
+	exports.INTERACTIVE_MARKER_VIEW_FACING = INTERACTIVE_MARKER_VIEW_FACING;
 	exports.InteractiveMarker = InteractiveMarker;
 	exports.InteractiveMarkerClient = InteractiveMarkerClient;
 	exports.InteractiveMarkerControl = InteractiveMarkerControl;
 	exports.InteractiveMarkerHandle = InteractiveMarkerHandle;
 	exports.InteractiveMarkerMenu = InteractiveMarkerMenu;
 	exports.LaserScan = LaserScan;
-	exports.MARKER_ARROW = MARKER_ARROW$1;
-	exports.MARKER_CUBE = MARKER_CUBE$1;
-	exports.MARKER_CUBE_LIST = MARKER_CUBE_LIST$1;
-	exports.MARKER_CYLINDER = MARKER_CYLINDER$1;
-	exports.MARKER_LINE_LIST = MARKER_LINE_LIST$1;
-	exports.MARKER_LINE_STRIP = MARKER_LINE_STRIP$1;
-	exports.MARKER_MESH_RESOURCE = MARKER_MESH_RESOURCE$1;
-	exports.MARKER_POINTS = MARKER_POINTS$1;
-	exports.MARKER_SPHERE = MARKER_SPHERE$1;
-	exports.MARKER_SPHERE_LIST = MARKER_SPHERE_LIST$1;
-	exports.MARKER_TEXT_VIEW_FACING = MARKER_TEXT_VIEW_FACING$1;
-	exports.MARKER_TRIANGLE_LIST = MARKER_TRIANGLE_LIST$1;
+	exports.MARKER_ARROW = MARKER_ARROW;
+	exports.MARKER_CUBE = MARKER_CUBE;
+	exports.MARKER_CUBE_LIST = MARKER_CUBE_LIST;
+	exports.MARKER_CYLINDER = MARKER_CYLINDER;
+	exports.MARKER_LINE_LIST = MARKER_LINE_LIST;
+	exports.MARKER_LINE_STRIP = MARKER_LINE_STRIP;
+	exports.MARKER_MESH_RESOURCE = MARKER_MESH_RESOURCE;
+	exports.MARKER_POINTS = MARKER_POINTS;
+	exports.MARKER_SPHERE = MARKER_SPHERE;
+	exports.MARKER_SPHERE_LIST = MARKER_SPHERE_LIST;
+	exports.MARKER_TEXT_VIEW_FACING = MARKER_TEXT_VIEW_FACING;
+	exports.MARKER_TRIANGLE_LIST = MARKER_TRIANGLE_LIST;
 	exports.Marker = Marker;
 	exports.MarkerArrayClient = MarkerArrayClient;
 	exports.MarkerClient = MarkerClient;
-	exports.MeshLoader = MeshLoader$1;
+	exports.MeshLoader = MeshLoader;
 	exports.MeshResource = MeshResource;
 	exports.MouseHandler = MouseHandler;
 	exports.NavSatFix = NavSatFix;
 	exports.OcTree = OcTree;
 	exports.OcTreeClient = OcTreeClient;
 	exports.OcTreeColorMode = OcTreeColorMode$1;
-	exports.OcTreeVoxelRenderMode = OcTreeVoxelRenderMode$1;
 	exports.OccupancyGrid = OccupancyGrid;
 	exports.OccupancyGridClient = OccupancyGridClient;
 	exports.Odometry = Odometry;
@@ -59370,10 +59357,10 @@ var ROS3D = (function (exports, ROSLIB) {
 	exports.Urdf = Urdf;
 	exports.UrdfClient = UrdfClient;
 	exports.Viewer = Viewer;
-	exports.closestAxisPoint = closestAxisPoint$1;
+	exports.closestAxisPoint = closestAxisPoint;
 	exports.findClosestPoint = findClosestPoint;
-	exports.intersectPlane = intersectPlane$1;
-	exports.makeColorMaterial = makeColorMaterial$1;
+	exports.intersectPlane = intersectPlane;
+	exports.makeColorMaterial = makeColorMaterial;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
