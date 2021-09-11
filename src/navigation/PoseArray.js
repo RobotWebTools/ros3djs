@@ -1,5 +1,5 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib/build/roslib.js';
+import * as ROSLIB from '../../shims/roslib/ROSLIB.js';
 
 import { SceneNode } from '../visualization/SceneNode.js';
 

@@ -1,5 +1,5 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from 'roslib/build/roslib.js';
+import * as ROSLIB from '../../shims/roslib/ROSLIB.js';
 
 import { InteractiveMarkerHandle } from './InteractiveMarkerHandle.js';
 import { InteractiveMarker } from './InteractiveMarker.js';
