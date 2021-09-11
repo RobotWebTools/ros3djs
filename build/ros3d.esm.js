@@ -56203,7 +56203,7 @@ class OcTreeBase {
   _BINARY_LEAF_OCCUPIED = 0b10;
   _BINARY_HAS_CHILDREN = 0b11;
 
-  _BINARY_CHILD_BUILD_TABLE = {
+  BINARY_CHILD_BUILD_TABLE = {
     [this._BINARY_LEAF_FREE]: child => {
       child.value = this._defaultFreeValue;
     },
@@ -56404,7 +56404,7 @@ class OcTreeBase {
         if (allocation !== this._BINARY_UNALLOCATED) {
           let child = this._newNode();
 
-          const fn = this._BINARY_CHILD_BUILD_TABLE[allocation];
+          const fn = this.BINARY_CHILD_BUILD_TABLE[allocation];
           fn(child);
 
           node.createChildNodeAt(child, index);
@@ -56644,7 +56644,7 @@ class OcTreeBase {
  *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
  *     * 'color' - voxels will colorized by their
  */
-var OcTreeColorMode$1 = {
+var OcTreeColorMode = {
   SOLID: 'solid',
   OCCUPANCY: 'occupancy',
   COLOR: 'color',
@@ -56671,7 +56671,7 @@ class OcTree extends OcTreeBase {
     this.occupancyThreshold =
       typeof options.occupancyThreshold !== 'undefined' ? options.occupancyThreshold : 0.0000001;
 
-    this.useFlatColoring = typeof options.colorMode !== 'undefined' && options.colorMode === OcTreeColorMode$1.SOLID;
+    this.useFlatColoring = typeof options.colorMode !== 'undefined' && options.colorMode === OcTreeColorMode.SOLID;
 
     this.palette =
       typeof options.palette !== 'undefined'
@@ -59261,4 +59261,4 @@ class Viewer {
   };
 }
 
-export { Arrow, Arrow2, Axes, ColorOcTree, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OcTree, OcTreeClient, OcTreeColorMode$1 as OcTreeColorMode, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, REVISION, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };
+export { Arrow, Arrow2, Axes, ColorOcTree, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OcTree, OcTreeClient, OcTreeColorMode, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, REVISION, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };

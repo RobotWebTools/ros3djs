@@ -56226,7 +56226,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	  _BINARY_LEAF_OCCUPIED = 0b10;
 	  _BINARY_HAS_CHILDREN = 0b11;
 
-	  _BINARY_CHILD_BUILD_TABLE = {
+	  BINARY_CHILD_BUILD_TABLE = {
 	    [this._BINARY_LEAF_FREE]: child => {
 	      child.value = this._defaultFreeValue;
 	    },
@@ -56427,7 +56427,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        if (allocation !== this._BINARY_UNALLOCATED) {
 	          let child = this._newNode();
 
-	          const fn = this._BINARY_CHILD_BUILD_TABLE[allocation];
+	          const fn = this.BINARY_CHILD_BUILD_TABLE[allocation];
 	          fn(child);
 
 	          node.createChildNodeAt(child, index);
@@ -56667,7 +56667,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
 	 *     * 'color' - voxels will colorized by their
 	 */
-	var OcTreeColorMode$1 = {
+	var OcTreeColorMode = {
 	  SOLID: 'solid',
 	  OCCUPANCY: 'occupancy',
 	  COLOR: 'color',
@@ -56694,7 +56694,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.occupancyThreshold =
 	      typeof options.occupancyThreshold !== 'undefined' ? options.occupancyThreshold : 0.0000001;
 
-	    this.useFlatColoring = typeof options.colorMode !== 'undefined' && options.colorMode === OcTreeColorMode$1.SOLID;
+	    this.useFlatColoring = typeof options.colorMode !== 'undefined' && options.colorMode === OcTreeColorMode.SOLID;
 
 	    this.palette =
 	      typeof options.palette !== 'undefined'
@@ -59337,7 +59337,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	exports.NavSatFix = NavSatFix;
 	exports.OcTree = OcTree;
 	exports.OcTreeClient = OcTreeClient;
-	exports.OcTreeColorMode = OcTreeColorMode$1;
+	exports.OcTreeColorMode = OcTreeColorMode;
 	exports.OccupancyGrid = OccupancyGrid;
 	exports.OccupancyGridClient = OccupancyGridClient;
 	exports.Odometry = Odometry;

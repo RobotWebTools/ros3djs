@@ -1,3 +1,4 @@
+/* global module */
 // Export Grunt config
 module.exports = function(grunt) {
 
@@ -76,10 +77,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('build', [
-    // 'eslint:lint', // TODO restore this after updating ESLint to make it compatible with class fields syntax.
-    'shell'
-  ]);
+  grunt.registerTask('build', ['eslint:lint', 'shell']);
   grunt.registerTask('build_and_watch', ['build', 'watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
   grunt.registerTask('lint', ['eslint:lint',]);

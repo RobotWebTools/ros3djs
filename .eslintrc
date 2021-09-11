@@ -1,8 +1,7 @@
 {
   "env": {
     "browser": true,
-    "commonjs": true,
-    "es6": true,
+    "es2021": true,
     "mocha": true
   },
   "globals": {
@@ -13,8 +12,8 @@
     "requestAnimationFrame": true,
     "cancelAnimationFrame": true
   },
+  "parser": "babel-eslint",
   "parserOptions": {
-    "ecmaVersion": 5,
     "sourceType": "module"
   },
   "rules": {

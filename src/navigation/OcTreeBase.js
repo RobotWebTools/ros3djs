@@ -106,7 +106,7 @@ export class OcTreeBase {
   _BINARY_LEAF_OCCUPIED = 0b10;
   _BINARY_HAS_CHILDREN = 0b11;
 
-  _BINARY_CHILD_BUILD_TABLE = {
+  BINARY_CHILD_BUILD_TABLE = {
     [this._BINARY_LEAF_FREE]: child => {
       child.value = this._defaultFreeValue;
     },
@@ -307,7 +307,7 @@ export class OcTreeBase {
         if (allocation !== this._BINARY_UNALLOCATED) {
           let child = this._newNode();
 
-          const fn = this._BINARY_CHILD_BUILD_TABLE[allocation];
+          const fn = this.BINARY_CHILD_BUILD_TABLE[allocation];
           fn(child);
 
           node.createChildNodeAt(child, index);
