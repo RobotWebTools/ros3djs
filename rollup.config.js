@@ -3,13 +3,12 @@ const rollup = require('rollup');
 // plugin that transpiles output into commonjs format
 const commonjs = require('@rollup/plugin-commonjs');
 // plugin that transpiles es6 to es5 for legacy platforms
-const buble = require('@rollup/plugin-buble');
 // plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const {nodeResolve} = require('@rollup/plugin-node-resolve');
 // plugin that minifies and obfuscates code
-const { terser } = require('rollup-plugin-terser');
+const {terser} = require('rollup-plugin-terser');
 
 const pkg = require('./package.json');
 const input = 'src/index.js';
@@ -39,17 +38,10 @@ export default [
       format: 'cjs',
       globals: {
         ...moduleGlobals,
-      }
+      },
     },
-    external: [
-      ...Object.keys(moduleGlobals)
-    ],
-    plugins: [
-      nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
-      filesize(),
-    ],
+    external: [...Object.keys(moduleGlobals)],
+    plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build module as ES5 in ES module format for modern tooling
   {
@@ -60,17 +52,10 @@ export default [
       format: 'es',
       globals: {
         ...moduleGlobals,
-      }
+      },
     },
-    external: [
-      ...Object.keys(moduleGlobals)
-    ],
-    plugins: [
-      nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
-      filesize(),
-    ],
+    external: [...Object.keys(moduleGlobals)],
+    plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build browser as IIFE module for script tag inclusion, unminified
   // Usage:
@@ -85,14 +70,8 @@ export default [
         ...browserGlobals,
       },
     },
-    external: [
-      ...Object.keys(browserGlobals),
-    ],
-    plugins: [
-      nodeResolve({ browser: true }),
-      commonjs(),
-      filesize(),
-    ],
+    external: [...Object.keys(browserGlobals)],
+    plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build browser as IIFE module for script tag inclusion, minified
   // Usage:
@@ -107,14 +86,7 @@ export default [
         ...browserGlobals,
       },
     },
-    external: [
-      ...Object.keys(browserGlobals),
-    ],
-    plugins: [
-      nodeResolve({ browser: true }),
-      commonjs(),
-      filesize(),
-      terser(),
-    ],
+    external: [...Object.keys(browserGlobals)],
+    plugins: [nodeResolve({browser: true}), commonjs(), filesize(), terser()],
   },
 ];
