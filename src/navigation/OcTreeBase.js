@@ -473,7 +473,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
             else {
               return true;
             }
-          })
+          });
         }
       }
       return false;
@@ -516,7 +516,7 @@ ROS3D.OcTreeBase.prototype._buildFaces = function () {
         }
       }
 
-    })
+    });
 
   });
 
