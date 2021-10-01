@@ -46,7 +46,9 @@
     "lint": "npm run grunt -- lint",
     "lint-fix": "npm run grunt -- lint-fix",
     "test": "npm run grunt -- test",
-    "grunt": "grunt --gruntfile Gruntfile.cjs"
+    "grunt": "grunt --gruntfile Gruntfile.cjs",
+    "prepare": "npm run build",
+    "publish": "npm run test"
   },
   "keywords": [
     "ROS",
