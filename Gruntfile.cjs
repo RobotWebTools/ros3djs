@@ -27,11 +27,14 @@ module.exports = function(grunt) {
     shell: {
       build: {
         command: 'rollup -c'
-      }
+      },
+      'test-esm': {
+        command: 'webpack --config esm-test.webpack.config.js'
+      },
     },
     karma: {
       build: {
-        configFile: './test/karma.conf.js',
+        configFile: './test/karma.conf.cjs',
         singleRun: true,
         browsers: process.env.CI ? ['FirefoxHeadless'] : ['Firefox'] // eslint-disable-line
       }
@@ -77,10 +80,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('build', ['eslint:lint', 'shell']);
+  grunt.registerTask('build', ['eslint:lint', 'shell:build']);
   grunt.registerTask('build_and_watch', ['build', 'watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
   grunt.registerTask('lint', ['eslint:lint',]);
   grunt.registerTask('lint-fix', ['eslint:fix',]);
-  grunt.registerTask('test', ['karma',]);
+  grunt.registerTask('test', ['test-esm', 'karma',]);
+  grunt.registerTask('test-esm', ['shell:test-esm']);
 };
