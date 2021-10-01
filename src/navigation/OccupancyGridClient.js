@@ -77,11 +77,13 @@ export class OccupancyGridClient extends EventEmitter2 {
     // check for an old map
     if (this.currentGrid) {
       // check if it there is a tf client
-      if (this.currentGrid.tfClient) {
+      if (this.tfClient) {
         // grid is of type ROS3D.SceneNode
-        this.currentGrid.unsubscribeTf();
+        this.sceneNode.unsubscribeTf();
+        this.sceneNode.remove(this.currentGrid);
+      } else {
+        this.rootObject.remove(this.currentGrid);
       }
-      this.sceneNode.remove(this.currentGrid);
       this.currentGrid.dispose();
     }
 
