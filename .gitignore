@@ -3,3 +3,7 @@
 .vagrant
 node_modules
 doc
+
+# libraries don't need lock files, only apps do
+*lock.json
+*.lock
