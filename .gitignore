@@ -7,3 +7,6 @@ doc
 # libraries don't need lock files, only apps do
 *lock.json
 *.lock
+
+# Ignore build output
+build/
