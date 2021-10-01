@@ -1,5 +1,5 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from '../../shims/roslib/ROSLIB.js';
+import ROSLIB from '../../shims/roslib/ROSLIB.js';
 
 import { Arrow } from '../models/Arrow.js';
 import { SceneNode } from '../visualization/SceneNode.js';

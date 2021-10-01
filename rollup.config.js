@@ -1,8 +1,5 @@
-const rollup = require('rollup');
-
 // plugin that transpiles output into commonjs format
 const commonjs = require('@rollup/plugin-commonjs');
-// plugin that transpiles es6 to es5 for legacy platforms
 // plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
 /// plugin that resolves node module imports
@@ -12,13 +9,11 @@ const {terser} = require('rollup-plugin-terser');
 
 const pkg = require('./package.json');
 const input = 'src/index.js';
+const name = 'ROS3D';
 
-const browserGlobals = {
+const globals = {
   roslib: 'ROSLIB',
-};
-
-const moduleGlobals = {
-  roslib: 'ROSLIB',
+  three: 'THREE',
 };
 
 const outputFiles = {
@@ -33,28 +28,24 @@ export default [
   {
     input,
     output: {
-      name: 'ROS3D',
+      name,
       file: outputFiles.commonModule,
       format: 'cjs',
-      globals: {
-        ...moduleGlobals,
-      },
+      globals,
     },
-    external: [...Object.keys(moduleGlobals)],
+    external: [...Object.keys(globals)],
     plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build module as ES5 in ES module format for modern tooling
   {
     input,
     output: {
-      name: 'ROS3D',
+      name,
       file: outputFiles.esModule,
       format: 'es',
-      globals: {
-        ...moduleGlobals,
-      },
+      globals,
     },
-    external: [...Object.keys(moduleGlobals)],
+    external: [...Object.keys(globals)],
     plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build browser as IIFE module for script tag inclusion, unminified
@@ -63,14 +54,12 @@ export default [
   {
     input,
     output: {
-      name: 'ROS3D',
+      name,
       file: outputFiles.browserGlobal,
       format: 'iife',
-      globals: {
-        ...browserGlobals,
-      },
+      globals,
     },
-    external: [...Object.keys(browserGlobals)],
+    external: [...Object.keys(globals)],
     plugins: [nodeResolve({browser: true}), commonjs(), filesize()],
   },
   // build browser as IIFE module for script tag inclusion, minified
@@ -79,14 +68,12 @@ export default [
   {
     input,
     output: {
-      name: 'ROS3D',
+      name,
       file: outputFiles.browserGlobalMinified,
       format: 'iife',
-      globals: {
-        ...browserGlobals,
-      },
+      globals,
     },
-    external: [...Object.keys(browserGlobals)],
+    external: [...Object.keys(globals)],
     plugins: [nodeResolve({browser: true}), commonjs(), filesize(), terser()],
   },
 ];

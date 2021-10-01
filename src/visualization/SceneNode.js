@@ -1,5 +1,5 @@
 import THREE from '../../shims/three/core.js';
-import * as ROSLIB from '../../shims/roslib/ROSLIB.js';
+import ROSLIB from '../../shims/roslib/ROSLIB.js';
 
 /**
  * @author Jihoon Lee - jihoonlee.in@gmail.com
