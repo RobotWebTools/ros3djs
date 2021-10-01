@@ -8,7 +8,7 @@
   "module": "./build/ros3d.esm.js",
   "type": "module",
   "dependencies": {
-    "roslib": "^1.0.0",
+    "roslib": "trusktr/roslibjs#893751a3fb698b3b2fd82fafb4e038ca2ca6c752",
     "three": "^0.89.0"
   },
   "devDependencies": {
