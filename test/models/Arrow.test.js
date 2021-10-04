@@ -1,3 +1,5 @@
+/* globals chai, _ */
+
 var assert = chai.assert;
 
 describe('Arrow', function() {

@@ -1,4 +1,4 @@
-import THREE from '../../shims/three/core.js';
+import THREE from '../shims/three/core.js';
 import {OcTreeBaseNode} from './OcTreeBaseNode.js';
 
 /**

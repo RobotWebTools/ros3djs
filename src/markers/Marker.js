@@ -1,4 +1,4 @@
-import THREE from '../../shims/three/core.js';
+import THREE from '../shims/three/core.js';
 
 import { makeColorMaterial, MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST } from '../Ros3D.js';
 import { Arrow } from '../models/Arrow.js';

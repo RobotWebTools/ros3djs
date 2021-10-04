@@ -4,32 +4,15 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    eslint: {
-      lint: {
-        options: {
-          configFile: '.eslintrc',
-        },
-        src: [
-          'Gruntfile.js',
-          './src/*.js',
-          './src/**/*.js',
-          './tests/*.js'
-        ],
-      },
-      fix: {
-        options: {
-          configFile: '<%= eslint.lint.options.configFile  %>',
-          fix: true
-        },
-        src: '<%= eslint.lint.src  %>',
-      }
-    },
     shell: {
       build: {
         command: 'rollup -c'
       },
       'test-esm': {
         command: 'webpack --config esm-test.webpack.config.js'
+      },
+      lint: {
+        command: 'eslint Gruntfile.cjs ./src/*.js ./src/**/*.js ./test/**/*.test.js'
       },
     },
     karma: {
@@ -78,13 +61,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('build', ['eslint:lint', 'shell:build']);
+  grunt.registerTask('build', ['shell:lint', 'shell:build']);
   grunt.registerTask('build_and_watch', ['build', 'watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
-  grunt.registerTask('lint', ['eslint:lint',]);
-  grunt.registerTask('lint-fix', ['eslint:fix',]);
+  grunt.registerTask('lint', ['shell:lint',]);
+  grunt.registerTask('lint-fix', ['shell:lint-fix',]);
   grunt.registerTask('test', ['test-esm', 'karma',]);
   grunt.registerTask('test-esm', ['shell:test-esm']);
 };

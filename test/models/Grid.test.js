@@ -1,3 +1,5 @@
+/* globals chai */
+
 var assert = chai.assert;
 
 describe('Grid', function() {

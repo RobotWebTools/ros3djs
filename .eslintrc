@@ -34,5 +34,6 @@
     "strict": "off",
     "quotes": ["error", "single"],
     "linebreak-style": "error"
-  }
+  },
+  "ignorePatterns": ["./src/shims/**/*.js"]
 }

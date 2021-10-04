@@ -1,4 +1,4 @@
-import THREE from '../../shims/three/core.js';
+import THREE from '../shims/three/core.js';
 
 import { InteractiveMarkerControl } from './InteractiveMarkerControl.js';
 import { InteractiveMarkerMenu } from './InteractiveMarkerMenu.js';

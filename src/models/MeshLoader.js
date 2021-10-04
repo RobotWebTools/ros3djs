@@ -1,8 +1,8 @@
-import THREE from '../../shims/three/core.js';
-import '../../shims/three/STLLoader.js';
-import '../../shims/three/OBJLoader.js';
-import '../../shims/three/MTLLoader.js';
-import '../../shims/three/ColladaLoader.js';
+import THREE from '../shims/three/core.js';
+import '../shims/three/STLLoader.js';
+import '../shims/three/OBJLoader.js';
+import '../shims/three/MTLLoader.js';
+import '../shims/three/ColladaLoader.js';
 
 /**
  * @author Jose Rojas - jrojas@redlinesolutions.co

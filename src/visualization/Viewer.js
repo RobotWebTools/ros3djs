@@ -1,4 +1,4 @@
-import THREE from '../../shims/three/core.js';
+import THREE from '../shims/three/core.js';
 
 import { OrbitControls } from './interaction/OrbitControls.js';
 import { MouseHandler } from './interaction/MouseHandler.js';

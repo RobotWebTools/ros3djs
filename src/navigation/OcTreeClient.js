@@ -1,6 +1,6 @@
-import { EventEmitter2 } from '../../shims/eventemitter2/EventEmitter2.js';
-import THREE from '../../shims/three/core.js';
-import ROSLIB from '../../shims/roslib/ROSLIB.js';
+import { EventEmitter2 } from '../shims/eventemitter2/EventEmitter2.js';
+import THREE from '../shims/three/core.js';
+import ROSLIB from '../shims/roslib/ROSLIB.js';
 
 import {OcTree} from './OcTree.js';
 import {OcTreeBase} from './OcTreeBase.js';
