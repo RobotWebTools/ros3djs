@@ -8,7 +8,7 @@
   "module": "./build/ros3d.esm.js",
   "type": "module",
   "dependencies": {
-    "roslib": "trusktr/roslibjs#2ce4ddcf9d780cab8f906f2ed271fe1e971b1422",
+    "roslib": "trusktr/roslibjs#278f847e8be560822063470c69fbd858998e36ef",
     "three": "^0.89.0"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "test": "npm run grunt -- test",
     "grunt": "grunt --gruntfile Gruntfile.cjs",
     "prepare": "npm run build",
-    "publish": "npm run test"
+    "publish": "npm test"
   },
   "keywords": [
     "ROS",

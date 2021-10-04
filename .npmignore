@@ -1,0 +1,7 @@
+# Ignore everything,
+/**/*
+
+# but include these folders
+!/build/**/*
+!/src/**/*
+!/shims/**/*
