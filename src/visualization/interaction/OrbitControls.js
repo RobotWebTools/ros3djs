@@ -94,7 +94,7 @@ export class OrbitControls extends THREE.EventDispatcher {
      *
      * @param event3D - the 3D event to handle
      */
-    function onMouseDown(event3D) {
+    const onMouseDown = (event3D) => {
       var event = event3D.domEvent;
       event.preventDefault();
 
@@ -123,14 +123,14 @@ export class OrbitControls extends THREE.EventDispatcher {
       }
 
       this.showAxes();
-    }
+    };
 
     /**
      * Handle the mousemove 3D event.
      *
      * @param event3D - the 3D event to handle
      */
-    function onMouseMove(event3D) {
+    const onMouseMove = (event3D) => {
       var event = event3D.domEvent;
       if (state === STATE.ROTATE) {
 
@@ -171,7 +171,7 @@ export class OrbitControls extends THREE.EventDispatcher {
         that.camera.updateMatrixWorld();
         this.showAxes();
       }
-    }
+    };
 
     /**
      * Used to track the movement during camera movement.
@@ -181,7 +181,7 @@ export class OrbitControls extends THREE.EventDispatcher {
      * @param planeNormal - the normal of the plane
      * @returns the intersection
      */
-    function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
+    const intersectViewPlane = (mouseRay, planeOrigin, planeNormal) => {
 
       var vector = new THREE.Vector3();
       var intersection = new THREE.Vector3();
@@ -199,27 +199,27 @@ export class OrbitControls extends THREE.EventDispatcher {
 
       intersection = mouseRay.direction.clone().multiplyScalar(scalar);
       return intersection;
-    }
+    };
 
     /**
      * Handle the mouseup 3D event.
      *
      * @param event3D - the 3D event to handle
      */
-    function onMouseUp(event3D) {
+    const onMouseUp = (event3D) => {
       if (!that.userRotate) {
         return;
       }
 
       state = STATE.NONE;
-    }
+    };
 
     /**
      * Handle the mousewheel 3D event.
      *
      * @param event3D - the 3D event to handle
      */
-    function onMouseWheel(event3D) {
+    const onMouseWheel = (event3D) => {
       if (!that.userZoom) {
         return;
       }
@@ -239,14 +239,14 @@ export class OrbitControls extends THREE.EventDispatcher {
       }
 
       this.showAxes();
-    }
+    };
 
     /**
      * Handle the touchdown 3D event.
      *
      * @param event3D - the 3D event to handle
      */
-    function onTouchDown(event3D) {
+    const onTouchDown = (event3D) => {
       var event = event3D.domEvent;
       switch (event.touches.length) {
         case 1:
@@ -277,14 +277,14 @@ export class OrbitControls extends THREE.EventDispatcher {
       this.showAxes();
 
       event.preventDefault();
-    }
+    };
 
     /**
      * Handle the touchmove 3D event.
      *
      * @param event3D - the 3D event to handle
      */
-    function onTouchMove(event3D) {
+    const onTouchMove = (event3D) => {
       var event = event3D.domEvent;
       if (state === STATE.ROTATE) {
 
@@ -346,9 +346,9 @@ export class OrbitControls extends THREE.EventDispatcher {
 
         event.preventDefault();
       }
-    }
+    };
 
-    function onTouchEnd(event3D) {
+    const onTouchEnd = (event3D) => {
       var event = event3D.domEvent;
       if (event.touches.length === 1 &&
           state !== STATE.ROTATE) {
@@ -359,7 +359,7 @@ export class OrbitControls extends THREE.EventDispatcher {
       else {
           state = STATE.NONE;
       }
-    }
+    };
 
     // add event listeners
     this.addEventListener('mousedown', onMouseDown);
