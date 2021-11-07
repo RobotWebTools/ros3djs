@@ -239,7 +239,8 @@ export class DepthCloud extends THREE.Object3D {
 
     if (this.metaLoaded) {
       this.texture = new THREE.Texture(this.video);
-      this.geometry = new THREE.Geometry();
+
+      const vertices = []
 
       for (var i = 0, l = this.width * this.height; i < l; i++) {
 
@@ -247,8 +248,10 @@ export class DepthCloud extends THREE.Object3D {
         vertex.x = (i % this.width);
         vertex.y = Math.floor(i / this.width);
 
-        this.geometry.vertices.push(vertex);
+        vertices.push(vertex);
       }
+
+      this.geometry = new THREE.BufferGeometry().setFromPoints( vertices )
 
       this.material = new THREE.ShaderMaterial({
         uniforms : {

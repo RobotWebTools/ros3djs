@@ -1,4 +1,5 @@
 import THREE from '../shims/three/core.js';
+import '../shims/three/BufferGeometryUtils';
 
 /**
  * @author David Gossow - dgossow@willowgarage.com
@@ -33,19 +34,19 @@ export class Arrow extends THREE.Mesh {
     var shaftLength = length - headLength;
 
     // create and merge geometry
-    var geometry = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
+    var coneGeometry1 = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
         12, 1);
     var m = new THREE.Matrix4();
     m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
-    geometry.applyMatrix(m);
+    coneGeometry1.applyMatrix4(m);
 
     // create the head
-    var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
+    var coneGeometry2 = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
     m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
-    coneGeometry.applyMatrix(m);
+    coneGeometry2.applyMatrix4(m);
 
     // put the arrow together
-    geometry.merge(coneGeometry);
+    var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries([coneGeometry1, coneGeometry2])
 
     super(geometry, material);
 

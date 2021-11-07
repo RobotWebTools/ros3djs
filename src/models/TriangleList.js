@@ -19,7 +19,8 @@ export class TriangleList extends THREE.Object3D {
   constructor(options) {
     options = options || {};
     var material = options.material || new THREE.MeshBasicMaterial();
-    var vertices = options.vertices;
+    var vertices = [];
+    var vertexColors = [];
     var colors = options.colors;
 
     super();
@@ -28,10 +29,15 @@ export class TriangleList extends THREE.Object3D {
     material.side = THREE.DoubleSide;
 
     // construct the geometry
-    var geometry = new THREE.Geometry();
-    for (i = 0; i < vertices.length; i++) {
-      geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
+    
+    for (i = 0; i < option.vertices.length; i++) {
+      vertices.push(option.vertices[i].x, option.vertices[i].y, option.vertices[i].z);
     }
+
+    var geometry = new THREE.BufferGeometry();
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+    geometry.computeVertexNormals();
+
 
     // set the colors
     var i, j;
@@ -40,9 +46,7 @@ export class TriangleList extends THREE.Object3D {
       for (i = 0; i < vertices.length; i += 3) {
         var faceVert = new THREE.Face3(i, i + 1, i + 2);
         for (j = i * 3; j < i * 3 + 3; i++) {
-          var color = new THREE.Color();
-          color.setRGB(colors[i].r, colors[i].g, colors[i].b);
-          faceVert.vertexColors.push(color);
+          vertexColors.push(colors[i].r, colors[i].g, colors[i].b);
         }
         geometry.faces.push(faceVert);
       }

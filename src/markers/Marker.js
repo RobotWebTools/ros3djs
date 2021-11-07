@@ -106,7 +106,9 @@ export class Marker extends THREE.Object3D {
         this.add(cylinderMesh);
         break;
       case MARKER_LINE_STRIP:
-        var lineStripGeom = new THREE.Geometry();
+        var lineStripGeom = new THREE.BufferGeometry()
+        var vertices = []
+        var colors = []
         var lineStripMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
@@ -114,12 +116,10 @@ export class Marker extends THREE.Object3D {
         // add the points
         var j;
         for ( j = 0; j < message.points.length; j++) {
-          var pt = new THREE.Vector3();
-          pt.x = message.points[j].x;
-          pt.y = message.points[j].y;
-          pt.z = message.points[j].z;
-          lineStripGeom.vertices.push(pt);
+          vertices.push(message.points[j].x, message.points[j].y, message.points[j].z);
         }
+
+        lineStripGeom.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 
         // determine the colors for each
         if (message.colors.length === message.points.length) {
@@ -127,8 +127,10 @@ export class Marker extends THREE.Object3D {
           for ( j = 0; j < message.points.length; j++) {
             var clr = new THREE.Color();
             clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
-            lineStripGeom.colors.push(clr);
+            colors.push(clr);
           }
+
+          lineStripGeom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
         } else {
           lineStripMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
         }
@@ -137,7 +139,9 @@ export class Marker extends THREE.Object3D {
         this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
         break;
       case MARKER_LINE_LIST:
-        var lineListGeom = new THREE.Geometry();
+        var lineListGeom = new THREE.BufferGeometry()
+        var vertices = []
+        var colors = []
         var lineListMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
@@ -145,12 +149,10 @@ export class Marker extends THREE.Object3D {
         // add the points
         var k;
         for ( k = 0; k < message.points.length; k++) {
-          var v = new THREE.Vector3();
-          v.x = message.points[k].x;
-          v.y = message.points[k].y;
-          v.z = message.points[k].z;
-          lineListGeom.vertices.push(v);
+          vertices.push(message.points[k].x, message.points[k].y, message.points[k].z);
         }
+
+        lineListGeom.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 
         // determine the colors for each
         if (message.colors.length === message.points.length) {
@@ -158,8 +160,10 @@ export class Marker extends THREE.Object3D {
           for ( k = 0; k < message.points.length; k++) {
             var c = new THREE.Color();
             c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
-            lineListGeom.colors.push(c);
+            colors.push(c);
           }
+
+          lineListGeom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
         } else {
           lineListMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
         }
@@ -233,7 +237,10 @@ export class Marker extends THREE.Object3D {
         break;
       case MARKER_POINTS:
         // for now, use a particle system for the lists
-        var geometry = new THREE.Geometry();
+        
+        var geometry = new THREE.BufferGeometry()
+        var vertices = []
+        var colors = []
         var material = new THREE.ParticleBasicMaterial({
           size : message.scale.x
         });
@@ -241,12 +248,10 @@ export class Marker extends THREE.Object3D {
         // add the points
         var i;
         for ( i = 0; i < message.points.length; i++) {
-          var vertex = new THREE.Vector3();
-          vertex.x = message.points[i].x;
-          vertex.y = message.points[i].y;
-          vertex.z = message.points[i].z;
-          geometry.vertices.push(vertex);
+          vertices.push(message.points[i].x, message.points[i].y, message.points[i].z);
         }
+
+        geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 
         // determine the colors for each
         if (message.colors.length === message.points.length) {
@@ -254,11 +259,16 @@ export class Marker extends THREE.Object3D {
           for ( i = 0; i < message.points.length; i++) {
             var color = new THREE.Color();
             color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
-            geometry.colors.push(color);
+            colors.push(color);
           }
+
+          geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
         } else {
           material.color.setRGB(message.color.r, message.color.g, message.color.b);
         }
+
+        
 
         // add the particle system
         this.add(new THREE.ParticleSystem(geometry, material));

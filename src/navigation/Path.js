@@ -63,16 +63,18 @@ export class Path extends THREE.Object3D {
         this.rootObject.remove(this.sn);
     }
 
-    var lineGeometry = new THREE.Geometry();
+    const vertices = []
+    
     for(var i=0; i<message.poses.length;i++){
         var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
                                     message.poses[i].pose.position.z);
-        lineGeometry.vertices.push(v3);
+        vertices.push(v3);
     }
 
-    lineGeometry.computeLineDistances();
+    var lineGeometry = new THREE.BufferGeometry().setFromPoints( vertices )
     var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
     var line = new THREE.Line( lineGeometry, lineMaterial );
+    line.computeLineDistances()
 
     this.sn = new SceneNode({
         frameID : message.header.frame_id,

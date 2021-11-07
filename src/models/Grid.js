@@ -34,16 +34,20 @@ export class Grid extends THREE.Object3D {
     for (var i = 0; i <= num_cells; ++i) {
       var edge = cellSize * num_cells / 2;
       var position = edge - (i * cellSize);
-      var geometryH = new THREE.Geometry();
-      geometryH.vertices.push(
+
+      const hPoints = [
         new THREE.Vector3( -edge, position, 0 ),
         new THREE.Vector3( edge, position, 0 )
-      );
-      var geometryV = new THREE.Geometry();
-      geometryV.vertices.push(
+      ]
+
+      const vPoints = [
         new THREE.Vector3( position, -edge, 0 ),
         new THREE.Vector3( position, edge, 0 )
-      );
+      ]
+
+      var geometryH = new THREE.BufferGeometry().setFromPoints( hPoints )
+      var geometryV = new THREE.BufferGeometry().setFromPoints( vPoints )
+      
       this.add(new THREE.Line(geometryH, material));
       this.add(new THREE.Line(geometryV, material));
     }

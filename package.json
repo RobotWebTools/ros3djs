@@ -2,14 +2,14 @@
   "name": "ros3d",
   "homepage": "https://www.robotwebtools.org",
   "description": "The standard ROS Visualization Library for Web",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "license": "BSD-3-Clause",
   "main": "./build/ros3d.cjs.js",
   "module": "./build/ros3d.esm.js",
   "type": "module",
   "dependencies": {
     "roslib": "trusktr/roslibjs#278f847e8be560822063470c69fbd858998e36ef",
-    "three": "^0.89.0"
+    "three": "0.134.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^20.0.0",
@@ -42,7 +42,7 @@
     "url": "https://github.com/RobotWebTools/ros3djs/releases"
   },
   "scripts": {
-    "build": "npm run grunt -- build",
+    "build": "npm run grunt -- build --force",
     "lint": "npm run grunt -- lint",
     "lint-fix": "npm run grunt -- lint-fix",
     "test": "npm run grunt -- test",

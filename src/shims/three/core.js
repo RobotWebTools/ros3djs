@@ -1,6 +1,6 @@
 import * as _THREE from 'three/build/three.module.js';
 
-const THREE = Object.assign({}, _THREE);
+const THREE = Object.assign({}, _THREE, );
 export default THREE;
 
 // While we are at it (bundling Three.js into ROS3D, which is something we need
