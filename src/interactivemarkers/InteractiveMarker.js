@@ -142,7 +142,9 @@ export class InteractiveMarker extends THREE.Object3D {
         // origAxis = controlAxis;
       }else{
         // we want to use the origin plane that is closest to the camera
-        var cameraVector = control.camera.getWorldDirection();
+        var cameraVector = new THREE.Vector3( );
+        cameraVector = control.camera.getWorldDirection(cameraVector);
+
         var x = Math.abs(cameraVector.x);
         var y = Math.abs(cameraVector.y);
         var z = Math.abs(cameraVector.z);
@@ -220,7 +222,7 @@ export class InteractiveMarker extends THREE.Object3D {
 
       // rotates from world to plane coords
       var orientationWorld = this.dragStart.orientationWorld.clone().multiply(orientation);
-      var orientationWorldInv = orientationWorld.clone().inverse();
+      var orientationWorldInv = orientationWorld.clone().invert();
 
       // rotate original and current intersection into local coords
       intersection.sub(rotOrigin);

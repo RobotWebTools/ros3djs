@@ -145,7 +145,7 @@ export class InteractiveMarkerControl extends THREE.Object3D {
     var posInv = this.parent.position.clone().multiplyScalar(-1);
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
-        rotInv = this.parent.quaternion.clone().inverse();
+        rotInv = this.parent.quaternion.clone().invert();
         break;
       case INTERACTIVE_MARKER_FIXED:
         break;
@@ -237,7 +237,7 @@ export class InteractiveMarkerControl extends THREE.Object3D {
         that.currentControlOri.normalize();
         break;
       case INTERACTIVE_MARKER_FIXED:
-        that.quaternion.copy(that.parent.quaternion.clone().inverse());
+        that.quaternion.copy(that.parent.quaternion.clone().invert());
         that.updateMatrix();
         that.matrixWorldNeedsUpdate = true;
         super.updateMatrixWorld(force);
@@ -252,8 +252,7 @@ export class InteractiveMarkerControl extends THREE.Object3D {
         var rv = new THREE.Euler(-r90, 0, r90);
         ros2Gl.makeRotationFromEuler(rv);
 
-        var worldToLocal = new THREE.Matrix4();
-        worldToLocal.getInverse(that.parent.matrixWorld);
+        var worldToLocal = new THREE.Matrix4().copy(that.parent.matrixWorld).invert();
 
         cameraRot.multiplyMatrices(cameraRot, ros2Gl);
         cameraRot.multiplyMatrices(worldToLocal, cameraRot);

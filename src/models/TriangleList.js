@@ -30,8 +30,8 @@ export class TriangleList extends THREE.Object3D {
 
     // construct the geometry
     
-    for (i = 0; i < option.vertices.length; i++) {
-      vertices.push(option.vertices[i].x, option.vertices[i].y, option.vertices[i].z);
+    for (i = 0; i < options.vertices.length; i++) {
+      vertices.push(options.vertices[i].x, options.vertices[i].y, options.vertices[i].z);
     }
 
     var geometry = new THREE.BufferGeometry();
@@ -42,34 +42,35 @@ export class TriangleList extends THREE.Object3D {
     // set the colors
     var i, j;
     if (colors.length === vertices.length) {
+
       // use per-vertex color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceVert = new THREE.Face3(i, i + 1, i + 2);
         for (j = i * 3; j < i * 3 + 3; i++) {
           vertexColors.push(colors[i].r, colors[i].g, colors[i].b);
         }
-        geometry.faces.push(faceVert);
       }
       material.vertexColors = THREE.VertexColors;
+      geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( vertexColors, 3 ) );
+
     } else if (colors.length === vertices.length / 3) {
+
       // use per-triangle color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceTri = new THREE.Face3(i, i + 1, i + 2);
-        faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
-        geometry.faces.push(faceTri);
+        const idx = i / 3
+        vertexColors.push(colors[idx].r, colors[idx].g, colors[idx].b);
       }
       material.vertexColors = THREE.FaceColors;
+      geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( vertexColors, 3 ) );
+
     } else {
+
       // use marker color
-      for (i = 0; i < vertices.length; i += 3) {
-        var face = new THREE.Face3(i, i + 1, i + 2);
-        geometry.faces.push(face);
-      }
+
     }
 
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
-    geometry.computeFaceNormals();
+    geometry.computeVertexNormals ();
 
     this.add(new THREE.Mesh(geometry, material));
   };

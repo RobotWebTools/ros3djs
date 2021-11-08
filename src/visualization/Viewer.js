@@ -26,12 +26,13 @@ export class Viewer {
    *  * alpha (optional) - the alpha of the background
    *  * antialias (optional) - if antialiasing should be used
    *  * intensity (optional) - the lighting intensity setting to use
-   *  * cameraPosition (optional) - the starting position of the camera
+   *  * cameraPose (optional) - the starting position of the camera
    *  * displayPanAndZoomFrame (optional) - whether to display a frame when
    *  *                                     panning/zooming. Defaults to true.
    *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
    *  *                           panning/zooming. Only has effect when
    *  *                           displayPanAndZoomFrame is set to true.
+   *  * vr - true/false
    */
   constructor(options) {
     options = options || {};
@@ -59,6 +60,8 @@ export class Viewer {
       antialias : antialias,
       alpha: true
     });
+
+    this.renderer.xr.enabled = options.vr || false;
     this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
     this.renderer.sortObjects = false;
     this.renderer.setSize(width, height);
@@ -73,14 +76,8 @@ export class Viewer {
     this.camera.position.x = cameraPosition.x;
     this.camera.position.y = cameraPosition.y;
     this.camera.position.z = cameraPosition.z;
-    // add controls to the camera
-    this.cameraControls = new OrbitControls({
-      scene : this.scene,
-      camera : this.camera,
-      displayPanAndZoomFrame : displayPanAndZoomFrame,
-      lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
-    });
-    this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+
+    
 
     // lights
     this.scene.add(new THREE.AmbientLight(0x555555));
@@ -90,17 +87,48 @@ export class Viewer {
     // propagates mouse events to three.js objects
     this.selectableObjects = new THREE.Group();
     this.scene.add(this.selectableObjects);
-    var mouseHandler = new MouseHandler({
-      renderer : this.renderer,
-      camera : this.camera,
-      rootObject : this.selectableObjects,
-      fallbackTarget : this.cameraControls
-    });
 
-    // highlights the receiver of mouse events
-    this.highlighter = new Highlighter({
-      mouseHandler : mouseHandler
-    });
+
+    if(!this.renderer.xr.enabled){
+      // add controls to the camera
+      this.cameraControls = new OrbitControls({
+        scene : this.scene,
+        camera : this.camera,
+        displayPanAndZoomFrame : displayPanAndZoomFrame,
+        lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
+      });
+      this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+
+      var mouseHandler = new MouseHandler({
+        renderer : this.renderer,
+        camera : this.camera,
+        rootObject : this.selectableObjects,
+        fallbackTarget : this.cameraControls
+      });
+  
+      // highlights the receiver of mouse events
+      this.highlighter = new Highlighter({
+        mouseHandler : mouseHandler
+      });
+
+
+    } else{
+      
+       //Add group for teleportation help
+      this.cameraGroup = new THREE.Group();
+      this.cameraGroup.add(this.camera);
+      this.scene.add(this.cameraGroup);
+
+      this.cameraGroup.up = new THREE.Vector3(0, 0, 1);
+
+      this.camera.position.set(0,0,0,);
+      this.cameraGroup.position.set(3,3,3);
+
+      let center = new THREE.Vector3();
+
+      this.cameraGroup.lookAt(center);
+    }
+   
 
     this.stopped = true;
     this.animationRequestId = undefined;
@@ -130,8 +158,11 @@ export class Viewer {
       return;
     }
 
-    // update the controls
-    this.cameraControls.update();
+    if(!this.renderer.xr.enabled){
+      // update the controls
+      this.cameraControls.update();
+    }
+    
 
     // put light to the top-left of the camera
     // BUG: position is a read-only property of DirectionalLight,
@@ -142,10 +173,13 @@ export class Viewer {
     // set the scene
     this.renderer.clear(true, true, true);
     this.renderer.render(this.scene, this.camera);
-    this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
+    
+    if(!this.renderer.xr.enabled){
+      this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
+    }
 
     // draw the frame
-    this.animationRequestId = requestAnimationFrame(this.draw.bind(this));
+    this.animationRequestId = this.renderer.setAnimationLoop(this.draw.bind(this));
   };
 
   /**

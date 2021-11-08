@@ -125,9 +125,7 @@ export class Marker extends THREE.Object3D {
         if (message.colors.length === message.points.length) {
           lineStripMaterial.vertexColors = true;
           for ( j = 0; j < message.points.length; j++) {
-            var clr = new THREE.Color();
-            clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
-            colors.push(clr);
+            colors.push(message.colors[j].r, message.colors[j].g, message.colors[j].b);
           }
 
           lineStripGeom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -158,9 +156,7 @@ export class Marker extends THREE.Object3D {
         if (message.colors.length === message.points.length) {
           lineListMaterial.vertexColors = true;
           for ( k = 0; k < message.points.length; k++) {
-            var c = new THREE.Color();
-            c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
-            colors.push(c);
+            colors.push(message.colors[k].r, message.colors[k].g, message.colors[k].b);
           }
 
           lineListGeom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -257,9 +253,7 @@ export class Marker extends THREE.Object3D {
         if (message.colors.length === message.points.length) {
           material.vertexColors = true;
           for ( i = 0; i < message.points.length; i++) {
-            var color = new THREE.Color();
-            color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
-            colors.push(color);
+            colors.push(message.colors[i].r, message.colors[i].g, message.colors[i].b);
           }
 
           geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
