@@ -51,9 +51,9 @@ export class Viewer {
       y : 3,
       z : 3
     };
-    var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
-    var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
-    var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
+    this.cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
+    this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
+    this.lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
     // create the canvas to render to
     this.renderer = new THREE.WebGLRenderer({
@@ -61,7 +61,6 @@ export class Viewer {
       alpha: true
     });
 
-    this.renderer.xr.enabled = options.vr || false;
     this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
     this.renderer.sortObjects = false;
     this.renderer.setSize(width, height);
@@ -88,45 +87,19 @@ export class Viewer {
     this.selectableObjects = new THREE.Group();
     this.scene.add(this.selectableObjects);
 
+    this.cameraGroup = null
+    this.cameraControls = null
+    this.highlighter = null
+    this.mouseHandler = null
 
-    if(!this.renderer.xr.enabled){
-      // add controls to the camera
-      this.cameraControls = new OrbitControls({
-        scene : this.scene,
-        camera : this.camera,
-        displayPanAndZoomFrame : displayPanAndZoomFrame,
-        lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
-      });
-      this.cameraControls.userZoomSpeed = cameraZoomSpeed;
+    if(!options.vr){
 
-      var mouseHandler = new MouseHandler({
-        renderer : this.renderer,
-        camera : this.camera,
-        rootObject : this.selectableObjects,
-        fallbackTarget : this.cameraControls
-      });
-  
-      // highlights the receiver of mouse events
-      this.highlighter = new Highlighter({
-        mouseHandler : mouseHandler
-      });
-
+      this.disableXR()
 
     } else{
-      
-       //Add group for teleportation help
-      this.cameraGroup = new THREE.Group();
-      this.cameraGroup.add(this.camera);
-      this.scene.add(this.cameraGroup);
 
-      this.cameraGroup.up = new THREE.Vector3(0, 0, 1);
+      this.enableXR()
 
-      this.camera.position.set(0,0,0,);
-      this.cameraGroup.position.set(3,3,3);
-
-      let center = new THREE.Vector3();
-
-      this.cameraGroup.lookAt(center);
     }
    
 
@@ -149,6 +122,85 @@ export class Viewer {
     this.draw();
   };
 
+  enableXR(){
+
+    if(this.renderer.xr.enabled){ return }
+
+    //Add group for teleportation help
+    this.cameraGroup = new THREE.Group();
+    this.cameraGroup.add(this.camera);
+    this.scene.add(this.cameraGroup);
+
+    this.cameraGroup.up = new THREE.Vector3(0, 0, 1);
+
+    this.camera.position.set(0,0,0,);
+    this.cameraGroup.position.set(3,3,3);
+
+    let center = new THREE.Vector3();
+
+    this.cameraGroup.lookAt(center);
+
+    if(this.mouseHandler){
+      this.mouseHandler.stop()
+      delete this.mouseHandler
+      this.mouseHandler = null
+    }
+
+    if(this.highlighter){
+      delete this.highlighter
+      this.highlighter = null
+    }
+
+    if(this.cameraControls){
+      this.cameraControls.stop()
+      delete this.cameraControls
+      this.cameraControls = null
+    }
+
+    this.renderer.xr.enabled = true
+  }
+
+  disableXR(){
+    if(this.cameraGroup){
+      this.scene.remove(this.cameraGroup)
+      this.cameraGroup.remove(this.camera)
+    }
+
+    if(!this.cameraControls){
+      // add controls to the camera
+      this.cameraControls = new OrbitControls({
+        scene : this.scene,
+        camera : this.camera,
+        displayPanAndZoomFrame : this.displayPanAndZoomFrame,
+        lineTypePanAndZoomFrame: this.lineTypePanAndZoomFrame
+      });
+      this.cameraControls.userZoomSpeed = this.cameraZoomSpeed;
+    }
+
+    if(!this.mouseHandler){
+      this.mouseHandler = new MouseHandler({
+        renderer : this.renderer,
+        camera : this.camera,
+        rootObject : this.selectableObjects,
+        fallbackTarget : this.cameraControls
+      });
+    }
+    
+    if(!this.mouseHandler){
+      // highlights the receiver of mouse events
+      this.highlighter = new Highlighter({
+        mouseHandler : this.mouseHandler
+      });
+    }
+
+    if(this.cameraGroup){
+      delete this.cameraGroup
+      this.cameraGroup = null
+    }
+
+    this.renderer.xr.enabled = false
+  }
+
   /**
    * Renders the associated scene to the viewer.
    */
@@ -158,7 +210,7 @@ export class Viewer {
       return;
     }
 
-    if(!this.renderer.xr.enabled){
+    if(!this.renderer.xr.enabled && this.cameraControls){
       // update the controls
       this.cameraControls.update();
     }
@@ -174,7 +226,7 @@ export class Viewer {
     this.renderer.clear(true, true, true);
     this.renderer.render(this.scene, this.camera);
     
-    if(!this.renderer.xr.enabled){
+    if(!this.renderer.xr.enabled && this.highlighter){
       this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
     }
 

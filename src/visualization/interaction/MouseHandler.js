@@ -25,19 +25,42 @@ export class MouseHandler extends THREE.EventDispatcher {
     this.fallbackTarget = options.fallbackTarget;
     this.lastTarget = this.fallbackTarget;
     this.dragging = false;
+    this.listeners = null
 
-    // listen to DOM events
-    var eventNames = [ 'contextmenu', 'click', 'dblclick', 'mouseout', 'mousedown', 'mouseup',
-        'mousemove', 'mousewheel', 'DOMMouseScroll', 'touchstart', 'touchend', 'touchcancel',
-        'touchleave', 'touchmove' ];
+    this.start()
+  };
+
+  // listen to DOM events
+  static get eventNames(){
+    return [ 'contextmenu', 'click', 'dblclick', 'mouseout', 'mousedown', 'mouseup',
+    'mousemove', 'mousewheel', 'DOMMouseScroll', 'touchstart', 'touchend', 'touchcancel',
+    'touchleave', 'touchmove' ]
+  }
+
+  start(){
+    if(this.listeners){ return }
+    
     this.listeners = {};
 
     // add event listeners for the associated mouse events
-    eventNames.forEach(function(eventName) {
+    MouseHandler.eventNames.forEach(function(eventName) {
       this.listeners[eventName] = this.processDomEvent.bind(this);
       this.renderer.domElement.addEventListener(eventName, this.listeners[eventName], false);
     }, this);
-  };
+  }
+
+  stop(){
+    if(!this.listeners){ return }
+
+    // add event listeners for the associated mouse events
+    MouseHandler.eventNames.forEach(function(eventName) {
+      this.renderer.domElement.removeEventListener(eventName, this.listeners[eventName]);
+
+      delete this.listeners[eventName]
+    }, this);
+
+    this.listeners = null
+  }
 
   /**
    * Process the particular DOM even that has occurred based on the mouse's position in the scene.

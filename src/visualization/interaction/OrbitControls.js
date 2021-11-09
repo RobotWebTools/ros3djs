@@ -361,6 +361,17 @@ export class OrbitControls extends THREE.EventDispatcher {
       }
     };
 
+    this.listeners = {
+      'mousedown': onMouseDown,
+      'mouseup': onMouseUp,
+      'mousemove': onMouseMove,
+      'touchstart': onTouchDown,
+      'touchmove': onTouchMove,
+      'touchend': onTouchEnd,
+      'mousewheel': onMouseWheel,
+      'DOMMouseScroll': onMouseWheel
+    }
+
     // add event listeners
     this.addEventListener('mousedown', onMouseDown);
     this.addEventListener('mouseup', onMouseUp);
@@ -372,6 +383,19 @@ export class OrbitControls extends THREE.EventDispatcher {
     this.addEventListener('mousewheel', onMouseWheel);
     this.addEventListener('DOMMouseScroll', onMouseWheel);
   };
+
+  stop(){
+    if(!this.listeners){ return }
+
+    // add event listeners for the associated mouse events
+    Object.keys(this.listeners).forEach((eventName) => {
+      this.removeEventListener(eventName, this.listeners[eventName]);
+
+      delete this.listeners[eventName]
+    });
+
+    this.listeners = null
+  }
 
   /**
    * Display the main axes for 1 second.
