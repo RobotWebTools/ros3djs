@@ -1,5 +1,7 @@
-ros3djs [![Build Status](https://api.travis-ci.org/RobotWebTools/ros3djs.png)](https://travis-ci.org/RobotWebTools/ros3djs)
-=======
+# ros3djs
+
+[![CI](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml/badge.svg)](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml)
+
 
 #### 3D Visualization Library for use with the ROS JavaScript Libraries
 For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](http://robotwebtools.org/demos.html).
@@ -100,8 +102,7 @@ There are a variety of [examples](examples) of the different things that can be 
 There are also some examples of how ros3djs can be used in different environments:
 
 - [Classic html script tag inclusion](examples)
-- [Modular html script tag inclusion](examples/html-import)
-- [Modular import for a Single Page Application](examples/single-page-application)
+- [Modular html script tag inclusion](examples/html-import)s
 
 ### License
 ros3djs is released with a BSD license. For full terms and conditions, see the [LICENSE](LICENSE) file.

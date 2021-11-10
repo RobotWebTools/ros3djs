@@ -98,7 +98,7 @@ ROS3D.Viewer = function(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  var node = elem || document.getElementById(divID);  
+  var node = elem || document.getElementById(divID);
   node.appendChild(this.renderer.domElement);
 
   // begin the render loop

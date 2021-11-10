@@ -40,20 +40,10 @@ module.exports = function(grunt) {
       build: {
         configFile: './test/karma.conf.js',
         singleRun: true,
-        browsers: ['PhantomJS']
+        browsers: process.env.CI ? ['FirefoxHeadless'] : ['Firefox'] // eslint-disable-line
       }
     },
     watch: {
-      dev: {
-        options: {
-          interrupt: true
-        },
-        files: [
-          './src/*.js',
-          './src/**/*.js'
-        ],
-        tasks: ['concat']
-      },
       build_and_watch: {
         options: {
           interrupt: true
@@ -148,7 +138,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-jsdoc');
@@ -158,11 +147,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('gruntify-eslint');
 
-  grunt.registerTask('dev', ['concat', 'watch']);
   grunt.registerTask('transpile', ['pipe', 'execute']);
   grunt.registerTask('build', ['eslint:lint', 'pipe', 'shell']);
-  grunt.registerTask('build_and_watch', ['watch']);
+  grunt.registerTask('build_and_watch', ['build', 'watch']);
   grunt.registerTask('doc', ['clean', 'jsdoc']);
   grunt.registerTask('lint', ['eslint:lint',]);
   grunt.registerTask('lint-fix', ['eslint:fix',]);
+  grunt.registerTask('test', ['karma',]);
 };
