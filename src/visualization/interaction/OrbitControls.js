@@ -296,7 +296,7 @@ export class OrbitControls extends THREE.EventDispatcher {
 
         rotateStart.copy(rotateEnd);
         this.showAxes();
-      } else {
+      } else if(event.touches.length >= 2) {
         touchMoveVector[0].set(touchStartPosition[0].x - event.touches[0].pageX,
                                touchStartPosition[0].y - event.touches[0].pageY);
         touchMoveVector[1].set(touchStartPosition[1].x - event.touches[1].pageX,

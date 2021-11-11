@@ -186,7 +186,7 @@ export class Viewer {
       });
     }
     
-    if(!this.mouseHandler){
+    if(!this.highlighter){
       // highlights the receiver of mouse events
       this.highlighter = new Highlighter({
         mouseHandler : this.mouseHandler
@@ -210,7 +210,7 @@ export class Viewer {
       return;
     }
 
-    if(!this.renderer.xr.enabled && this.cameraControls){
+    if(this.cameraControls){
       // update the controls
       this.cameraControls.update();
     }
@@ -226,7 +226,7 @@ export class Viewer {
     this.renderer.clear(true, true, true);
     this.renderer.render(this.scene, this.camera);
     
-    if(!this.renderer.xr.enabled && this.highlighter){
+    if(this.highlighter){
       this.highlighter.renderHighlights(this.scene, this.renderer, this.camera);
     }
 
