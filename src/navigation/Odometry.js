@@ -65,7 +65,7 @@ export class Odometry extends THREE.Object3D {
   };
 
   processMessage(message){
-    if(this.sns.length >= this.keep) {
+    while(this.sns.length >= this.keep) {
         this.sns[0].unsubscribeTf();
         this.rootObject.remove(this.sns[0]);
         this.sns.shift();

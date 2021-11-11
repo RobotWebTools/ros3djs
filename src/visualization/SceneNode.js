@@ -22,7 +22,6 @@ export class SceneNode extends THREE.Object3D {
   constructor(options) {
     super();
     options = options || {};
-    var that = this;
     this.tfClient = options.tfClient;
     this.frameID = options.frameID;
     var object = options.object;
@@ -38,20 +37,20 @@ export class SceneNode extends THREE.Object3D {
     this.updatePose(this.pose);
 
     // save the TF handler so we can remove it later
-    this.tfUpdate = function(msg) {
+    this.tfUpdate = (msg) => {
 
       // apply the transform
-      var tf = new ROSLIB.Transform(msg);
-      var poseTransformed = new ROSLIB.Pose(that.pose);
+      let tf = new ROSLIB.Transform(msg);
+      let poseTransformed = new ROSLIB.Pose(this.pose);
       poseTransformed.applyTransform(tf);
 
       // update the world
-      that.updatePose(poseTransformed);
-      that.visible = true;
+      this.updatePose(poseTransformed);
+      this.visible = true;
     };
 
     // listen for TF updates
-    this.tfClient.subscribe(this.frameID, this.tfUpdate);
+    this.tfClient.subscribe(this.frameID, this.tfUpdate.bind(this));
   };
 
   /**
@@ -67,6 +66,6 @@ export class SceneNode extends THREE.Object3D {
   };
 
   unsubscribeTf() {
-    this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
+    this.tfClient.unsubscribe(this.frameID, this.tfUpdate.bind(this));
   };
 }

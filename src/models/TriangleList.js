@@ -36,30 +36,34 @@ export class TriangleList extends THREE.Object3D {
 
     var geometry = new THREE.BufferGeometry();
     geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-    geometry.computeVertexNormals();
+
 
 
     // set the colors
     var i, j;
-    if (colors.length === vertices.length) {
+    if (colors.length === options.vertices.length ) {
 
       // use per-vertex color
-      for (i = 0; i < vertices.length; i += 3) {
+      for (i = 0; i < options.vertices.length; i += 3) {
         for (j = i * 3; j < i * 3 + 3; i++) {
           vertexColors.push(colors[i].r, colors[i].g, colors[i].b);
         }
       }
-      material.vertexColors = THREE.VertexColors;
+      material.vertexColors = true;
       geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( vertexColors, 3 ) );
 
-    } else if (colors.length === vertices.length / 3) {
+    } else if (colors.length === options.vertices.length / 3) {
 
       // use per-triangle color
-      for (i = 0; i < vertices.length; i += 3) {
+      for (i = 0; i < options.vertices.length; i += 3) {
         const idx = i / 3
-        vertexColors.push(colors[idx].r, colors[idx].g, colors[idx].b);
+        vertexColors.push(colors[idx].r, colors[idx].g, colors[idx].b,
+          colors[idx].r, colors[idx].g, colors[idx].b,
+          colors[idx].r, colors[idx].g, colors[idx].b
+        );
       }
-      material.vertexColors = THREE.FaceColors;
+
+      material.vertexColors = true;
       geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( vertexColors, 3 ) );
 
     } else {
