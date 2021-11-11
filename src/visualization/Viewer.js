@@ -32,7 +32,7 @@ export class Viewer {
    *  * lineTypePanAndZoomFrame - line type for the frame that is displayed when
    *  *                           panning/zooming. Only has effect when
    *  *                           displayPanAndZoomFrame is set to true.
-   *  * vr - true/false
+   *  * xr - true/false
    */
   constructor(options) {
     options = options || {};
@@ -92,7 +92,7 @@ export class Viewer {
     this.highlighter = null
     this.mouseHandler = null
 
-    if(!options.vr){
+    if(!options.xr){
 
       this.disableXR()
 
