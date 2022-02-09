@@ -1,6 +1,8 @@
 const debug = require('debug')
 const path = require('path')
 
+debug.enable('ES6Transpiler:Error')
+
 const colors = {
   GRAY: 0,
   RED: 1,
