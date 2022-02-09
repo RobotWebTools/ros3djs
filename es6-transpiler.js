@@ -1,6 +1,8 @@
 const debug = require('debug')
 const path = require('path')
 
+debug.enable('ES6Transpiler:Error')
+
 const colors = {
   GRAY: 0,
   RED: 1,
@@ -18,7 +20,10 @@ const stringifyObjects = (...args) => args
     : arg)
 
 const logError = debug('ES6Transpiler:Error')
-logError.log = (...args) => console.error(...stringifyObjects(...args))
+logError.log = (...args) => {
+  console.error(...stringifyObjects(...args))
+  throw new Error("Execution stopped because of an error, sea above.")
+}
 logError.color = colors.RED
 
 const logWarning = debug('ES6Transpiler:Warning')
@@ -217,7 +222,7 @@ const transpile = {
   exportedProperties: (filepath) => [
     // from:
     // ROS3D.MARKER_ARROW = 0;
-    /\nROS3D\.(.*)\s*=\s*(.*)/g,
+    /\nROS3D\.(\S*)\s*=\s*(.*)/g,
     // to:
     // export var MARKER_ARROW = 0;
     (match, $1, $2) => {
