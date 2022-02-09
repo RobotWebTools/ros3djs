@@ -50,12 +50,13 @@ ROS3D.MarkerArrayClient.prototype.subscribe = function(){
 
 ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
   arrayMessage.markers.forEach(function(message) {
+    var key = message.ns + message.id;
     if(message.action === 0) {
       var updated = false;
-      if(message.ns + message.id in this.markers) { // "MODIFY"
-        updated = this.markers[message.ns + message.id].children[0].update(message);
+      if(key in this.markers) { // "MODIFY"
+        updated = this.markers[key].children[0].update(message);
         if(!updated) { // "REMOVE"
-          this.removeMarker(message.ns + message.id);
+          this.removeMarker(key);
         }
       }
       if(!updated) { // "ADD"
@@ -63,19 +64,19 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
           message : message,
           path : this.path,
         });
-        this.markers[message.ns + message.id] = new ROS3D.SceneNode({
+        this.markers[key] = new ROS3D.SceneNode({
           frameID : message.header.frame_id,
           tfClient : this.tfClient,
           object : newMarker
         });
-        this.rootObject.add(this.markers[message.ns + message.id]);
+        this.rootObject.add(this.markers[key]);
       }
     }
     else if(message.action === 1) { // "DEPRECATED"
       console.warn('Received marker message with deprecated action identifier "1"');
     }
     else if(message.action === 2) { // "DELETE"
-      this.removeMarker(message.ns + message.id);
+      this.removeMarker(key);
     }
     else if(message.action === 3) { // "DELETE ALL"
       for (var m in this.markers){
