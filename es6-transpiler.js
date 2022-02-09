@@ -222,7 +222,7 @@ const transpile = {
   exportedProperties: (filepath) => [
     // from:
     // ROS3D.MARKER_ARROW = 0;
-    /\nROS3D\.(.*)\s*=\s*(.*)/g,
+    /\nROS3D\.(\S*)\s*=\s*(.*)/g,
     // to:
     // export var MARKER_ARROW = 0;
     (match, $1, $2) => {
