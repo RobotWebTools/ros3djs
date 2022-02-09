@@ -20,7 +20,10 @@ const stringifyObjects = (...args) => args
     : arg)
 
 const logError = debug('ES6Transpiler:Error')
-logError.log = (...args) => console.error(...stringifyObjects(...args))
+logError.log = (...args) => {
+  console.error(...stringifyObjects(...args))
+  throw new Error("Execution stopped because of an error, sea above.")
+}
 logError.color = colors.RED
 
 const logWarning = debug('ES6Transpiler:Warning')
