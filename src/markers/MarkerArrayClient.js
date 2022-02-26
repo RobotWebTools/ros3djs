@@ -94,7 +94,7 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
 
 ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

@@ -39,7 +39,7 @@ ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.MarkerClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

@@ -74,7 +74,7 @@ ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.PointCloud2.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 
