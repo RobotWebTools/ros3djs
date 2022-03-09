@@ -55193,7 +55193,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  unsubscribe() {
 	    if (this.updateTopic) {
-	      this.updateTopic.unsubscribe();
+	      this.updateTopic.unsubscribe(this.processUpdate);
 	    }
 	    if (this.feedbackTopic) {
 	      this.feedbackTopic.unadvertise();
@@ -55445,12 +55445,13 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  processMessage(arrayMessage){
 	    arrayMessage.markers.forEach(function(message) {
+	      var key = message.ns + message.id;
 	      if(message.action === 0) {
 	        var updated = false;
-	        if(message.ns + message.id in this.markers) { // "MODIFY"
-	          updated = this.markers[message.ns + message.id].children[0].update(message);
+	        if(key in this.markers) { // "MODIFY"
+	          updated = this.markers[key].children[0].update(message);
 	          if(!updated) { // "REMOVE"
-	            this.removeMarker(message.ns + message.id);
+	            this.removeMarker(key);
 	          }
 	        }
 	        if(!updated) { // "ADD"
@@ -55458,19 +55459,19 @@ var ROS3D = (function (exports, ROSLIB) {
 	            message : message,
 	            path : this.path,
 	          });
-	          this.markers[message.ns + message.id] = new SceneNode({
+	          this.markers[key] = new SceneNode({
 	            frameID : message.header.frame_id,
 	            tfClient : this.tfClient,
 	            object : newMarker
 	          });
-	          this.rootObject.add(this.markers[message.ns + message.id]);
+	          this.rootObject.add(this.markers[key]);
 	        }
 	      }
 	      else if(message.action === 1) { // "DEPRECATED"
 	        console.warn('Received marker message with deprecated action identifier "1"');
 	      }
 	      else if(message.action === 2) { // "DELETE"
-	        this.removeMarker(message.ns + message.id);
+	        this.removeMarker(key);
 	      }
 	      else if(message.action === 3) { // "DELETE ALL"
 	        for (var m in this.markers){
@@ -55488,7 +55489,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -55549,7 +55550,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -55580,10 +55581,11 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  processMessage(message){
 	    // remove old marker from Three.Object3D children buffer
-	    var oldNode = this.markers[message.ns + message.id];
-	    this.updatedTime[message.ns + message.id] = new Date().getTime();
+	    var key = message.ns + message.id;
+	    var oldNode = this.markers[key];
+	    this.updatedTime[key] = new Date().getTime();
 	    if (oldNode) {
-	      this.removeMarker(message.ns + message.id);
+	      this.removeMarker(key);
 
 	    } else if (this.lifetime) {
 	      this.checkTime(message.ns + message.id);
@@ -55595,12 +55597,12 @@ var ROS3D = (function (exports, ROSLIB) {
 	        path : this.path,
 	      });
 
-	      this.markers[message.ns + message.id] = new SceneNode({
+	      this.markers[key] = new SceneNode({
 	        frameID : message.header.frame_id,
 	        tfClient : this.tfClient,
 	        object : newMarker
 	      });
-	      this.rootObject.add(this.markers[message.ns + message.id]);
+	      this.rootObject.add(this.markers[key]);
 	    }
 
 	    this.emit('change');
@@ -56018,7 +56020,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -56080,7 +56082,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // check if we should unsubscribe
 	    if (!this.continuous) {
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 	}
@@ -56130,6 +56132,34 @@ var ROS3D = (function (exports, ROSLIB) {
 	/**
 	 * @author Peter Sari - sari@photoneo.com
 	 */
+
+	/**
+	 * Toggles voxel visibility
+	 *
+	 *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
+	 *    * `free` - only voxels that are below the occupation threshold are shown
+	 *    * `all` - all allocated voxels are shown
+	 */
+	var OcTreeVoxelRenderMode = {
+	  OCCUPIED: 'occupied',
+	  FREE: 'free',
+	  ALL: 'all',
+	};
+
+	/**
+	 * Coloring modes for each voxel
+	 *
+	 *     * 'solid' - voxels will have a single solid color set by the tree globally
+	 *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
+	 *     * 'color' - voxels will colorized by their
+	 */
+	var OcTreeColorMode = {
+	  SOLID: 'solid',
+	  OCCUPANCY: 'occupancy',
+	  COLOR: 'color'
+	};
+
+	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 	/**
 	 Quick and dirty helper class
@@ -56663,34 +56693,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author Peter Sari - sari@photoneo.com
 	 */
 
-	/**
-	 * Toggles voxel visibility
-	 *
-	 *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
-	 *    * `free` - only voxels that are below the occupation threshold are shown
-	 *    * `all` - all allocated voxels are shown
-	 */
-	var OcTreeVoxelRenderMode = {
-	  OCCUPIED: 'occupied',
-	  FREE: 'free',
-	  ALL: 'all',
-	};
-
-	/**
-	 * Coloring modes for each voxel
-	 *
-	 *     * 'solid' - voxels will have a single solid color set by the tree globally
-	 *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
-	 *     * 'color' - voxels will colorized by their
-	 */
-	var OcTreeColorMode = {
-	  SOLID: 'solid',
-	  OCCUPANCY: 'occupancy',
-	  COLOR: 'color'
-	};
-
-	// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 	class OcTree extends OcTreeBase {
 
 	  /**
@@ -56853,7 +56855,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe() {
 	    if (this.rosTopic) {
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -56881,7 +56883,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this._processMessagePrivate(message);
 
 	    if (!this.continuous) {
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 
 	  };
@@ -57007,7 +57009,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57088,7 +57090,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57170,7 +57172,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57245,7 +57247,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57332,7 +57334,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57413,7 +57415,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57514,7 +57516,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57714,7 +57716,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57806,7 +57808,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -57927,7 +57929,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe();
+	      this.rosTopic.unsubscribe(this.processMessage);
 	    }
 	  };
 
@@ -59353,8 +59355,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	exports.NavSatFix = NavSatFix;
 	exports.OcTree = OcTree;
 	exports.OcTreeClient = OcTreeClient;
-	exports.OcTreeColorMode = OcTreeColorMode;
-	exports.OcTreeVoxelRenderMode = OcTreeVoxelRenderMode;
 	exports.OccupancyGrid = OccupancyGrid;
 	exports.OccupancyGridClient = OccupancyGridClient;
 	exports.Odometry = Odometry;

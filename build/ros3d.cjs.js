@@ -55091,7 +55091,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
  */
 InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
   if (this.updateTopic) {
-    this.updateTopic.unsubscribe();
+    this.updateTopic.unsubscribe(this.processUpdate);
   }
   if (this.feedbackTopic) {
     this.feedbackTopic.unadvertise();
@@ -55316,12 +55316,13 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
     arrayMessage.markers.forEach(function(message) {
+      var key = message.ns + message.id;
       if(message.action === 0) {
         var updated = false;
-        if(message.ns + message.id in this.markers) { // "MODIFY"
-          updated = this.markers[message.ns + message.id].children[0].update(message);
+        if(key in this.markers) { // "MODIFY"
+          updated = this.markers[key].children[0].update(message);
           if(!updated) { // "REMOVE"
-            this.removeMarker(message.ns + message.id);
+            this.removeMarker(key);
           }
         }
         if(!updated) { // "ADD"
@@ -55329,19 +55330,19 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
             message : message,
             path : this.path,
           });
-          this.markers[message.ns + message.id] = new SceneNode({
+          this.markers[key] = new SceneNode({
             frameID : message.header.frame_id,
             tfClient : this.tfClient,
             object : newMarker
           });
-          this.rootObject.add(this.markers[message.ns + message.id]);
+          this.rootObject.add(this.markers[key]);
         }
       }
       else if(message.action === 1) { // "DEPRECATED"
         console.warn('Received marker message with deprecated action identifier "1"');
       }
       else if(message.action === 2) { // "DELETE"
-        this.removeMarker(message.ns + message.id);
+        this.removeMarker(key);
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in this.markers){
@@ -55358,7 +55359,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   MarkerArrayClient.prototype.removeMarker = function removeMarker (key) {
@@ -55405,7 +55406,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   MarkerClient.prototype.constructor = MarkerClient;
   MarkerClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   MarkerClient.prototype.checkTime = function checkTime (name){
@@ -55433,10 +55434,11 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerClient.prototype.processMessage = function processMessage (message){
     // remove old marker from Three.Object3D children buffer
-    var oldNode = this.markers[message.ns + message.id];
-    this.updatedTime[message.ns + message.id] = new Date().getTime();
+    var key = message.ns + message.id;
+    var oldNode = this.markers[key];
+    this.updatedTime[key] = new Date().getTime();
     if (oldNode) {
-      this.removeMarker(message.ns + message.id);
+      this.removeMarker(key);
 
     } else if (this.lifetime) {
       this.checkTime(message.ns + message.id);
@@ -55448,12 +55450,12 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
         path : this.path,
       });
 
-      this.markers[message.ns + message.id] = new SceneNode({
+      this.markers[key] = new SceneNode({
         frameID : message.header.frame_id,
         tfClient : this.tfClient,
         object : newMarker
       });
-      this.rootObject.add(this.markers[message.ns + message.id]);
+      this.rootObject.add(this.markers[key]);
     }
 
     this.emit('change');
@@ -55799,7 +55801,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
   OccupancyGridClient.prototype.constructor = OccupancyGridClient;
   OccupancyGridClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   OccupancyGridClient.prototype.subscribe = function subscribe (){
@@ -55859,7 +55861,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
 
     // check if we should unsubscribe
     if (!this.continuous) {
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
 
@@ -55899,6 +55901,34 @@ OcTreeBaseNode.prototype.hasChildren = function hasChildren () {
 /**
  * @author Peter Sari - sari@photoneo.com
  */
+
+/**
+ * Toggles voxel visibility
+ *
+ *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
+ *    * `free` - only voxels that are below the occupation threshold are shown
+ *    * `all` - all allocated voxels are shown
+ */
+var OcTreeVoxelRenderMode = {
+  OCCUPIED: 'occupied',
+  FREE: 'free',
+  ALL: 'all',
+};
+
+/**
+ * Coloring modes for each voxel
+ *
+ *     * 'solid' - voxels will have a single solid color set by the tree globally
+ *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
+ *     * 'color' - voxels will colorized by their
+ */
+var OcTreeColorMode = {
+  SOLID: 'solid',
+  OCCUPANCY: 'occupancy',
+  COLOR: 'color'
+};
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 /**
  Quick and dirty helper class
@@ -56409,34 +56439,6 @@ OcTreeBase.prototype._buildFaces = function _buildFaces () {
  * @author Peter Sari - sari@photoneo.com
  */
 
-/**
- * Toggles voxel visibility
- *
- *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
- *    * `free` - only voxels that are below the occupation threshold are shown
- *    * `all` - all allocated voxels are shown
- */
-var OcTreeVoxelRenderMode = {
-  OCCUPIED: 'occupied',
-  FREE: 'free',
-  ALL: 'all',
-};
-
-/**
- * Coloring modes for each voxel
- *
- *     * 'solid' - voxels will have a single solid color set by the tree globally
- *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
- *     * 'color' - voxels will colorized by their
- */
-var OcTreeColorMode = {
-  SOLID: 'solid',
-  OCCUPANCY: 'occupancy',
-  COLOR: 'color'
-};
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 var OcTree = /*@__PURE__*/(function (OcTreeBase) {
   function OcTree(options) {
     OcTreeBase.call(this, options);
@@ -56564,7 +56566,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
 
   OcTreeClient.prototype.unsubscribe = function unsubscribe () {
     if (this.rosTopic) {
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   OcTreeClient.prototype.subscribe = function subscribe () {
@@ -56590,7 +56592,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
     this._processMessagePrivate(message);
 
     if (!this.continuous) {
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
 
   };
@@ -56701,7 +56703,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 
   Odometry.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Odometry.prototype.subscribe = function subscribe (){
@@ -56772,7 +56774,7 @@ var Path = /*@__PURE__*/(function (superclass) {
 
   Path.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Path.prototype.subscribe = function subscribe (){
@@ -56843,7 +56845,7 @@ var Point = /*@__PURE__*/(function (superclass) {
 
   Point.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Point.prototype.subscribe = function subscribe (){
@@ -56908,7 +56910,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 
   Polygon.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Polygon.prototype.subscribe = function subscribe (){
@@ -56981,7 +56983,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
 
   Pose.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Pose.prototype.subscribe = function subscribe (){
@@ -57051,7 +57053,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 
   PoseArray.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PoseArray.prototype.subscribe = function subscribe (){
@@ -57142,7 +57144,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 
   PoseWithCovariance.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PoseWithCovariance.prototype.subscribe = function subscribe (){
@@ -57316,7 +57318,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 
   LaserScan.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   LaserScan.prototype.subscribe = function subscribe (){
@@ -57392,7 +57394,7 @@ var NavSatFix = /*@__PURE__*/(function (superclass) {
 
   NavSatFix.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   NavSatFix.prototype.subscribe = function subscribe (){
@@ -57497,7 +57499,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 
   PointCloud2.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PointCloud2.prototype.subscribe = function subscribe (){
@@ -58805,8 +58807,6 @@ exports.MouseHandler = MouseHandler;
 exports.NavSatFix = NavSatFix;
 exports.OcTree = OcTree;
 exports.OcTreeClient = OcTreeClient;
-exports.OcTreeColorMode = OcTreeColorMode;
-exports.OcTreeVoxelRenderMode = OcTreeVoxelRenderMode;
 exports.OccupancyGrid = OccupancyGrid;
 exports.OccupancyGridClient = OccupancyGridClient;
 exports.Odometry = Odometry;
