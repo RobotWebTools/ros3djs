@@ -3,6 +3,34 @@
  */
 
 /**
+ * Toggles voxel visibility
+ *
+ *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
+ *    * `free` - only voxels that are below the occupation threshold are shown
+ *    * `all` - all allocated voxels are shown
+ */
+ROS3D.OcTreeVoxelRenderMode = {
+  OCCUPIED: 'occupied',
+  FREE: 'free',
+  ALL: 'all',
+};
+
+/**
+ * Coloring modes for each voxel
+ *
+ *     * 'solid' - voxels will have a single solid color set by the tree globally
+ *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
+ *     * 'color' - voxels will colorized by their
+ */
+ROS3D.OcTreeColorMode = {
+  SOLID: 'solid',
+  OCCUPANCY: 'occupancy',
+  COLOR: 'color'
+};
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+/**
  Quick and dirty helper class
  to read ArrayBuffer in a streamed data-like fashion with mixed types in it
 */

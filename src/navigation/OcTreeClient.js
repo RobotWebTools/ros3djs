@@ -62,7 +62,7 @@ ROS3D.OcTreeClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.OcTreeClient.prototype.unsubscribe = function () {
   if (this.rosTopic) {
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 
@@ -90,7 +90,7 @@ ROS3D.OcTreeClient.prototype.processMessage = function (message) {
   this._processMessagePrivate(message);
 
   if (!this.continuous) {
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 
 };

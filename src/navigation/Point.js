@@ -35,7 +35,7 @@ ROS3D.Point.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Point.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

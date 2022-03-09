@@ -39,7 +39,7 @@ ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.MarkerClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 
@@ -70,10 +70,11 @@ ROS3D.MarkerClient.prototype.subscribe = function(){
 
 ROS3D.MarkerClient.prototype.processMessage = function(message){
   // remove old marker from Three.Object3D children buffer
-  var oldNode = this.markers[message.ns + message.id];
-  this.updatedTime[message.ns + message.id] = new Date().getTime();
+  var key = message.ns + message.id;
+  var oldNode = this.markers[key];
+  this.updatedTime[key] = new Date().getTime();
   if (oldNode) {
-    this.removeMarker(message.ns + message.id);
+    this.removeMarker(key);
 
   } else if (this.lifetime) {
     this.checkTime(message.ns + message.id);
@@ -85,12 +86,12 @@ ROS3D.MarkerClient.prototype.processMessage = function(message){
       path : this.path,
     });
 
-    this.markers[message.ns + message.id] = new ROS3D.SceneNode({
+    this.markers[key] = new ROS3D.SceneNode({
       frameID : message.header.frame_id,
       tfClient : this.tfClient,
       object : newMarker
     });
-    this.rootObject.add(this.markers[message.ns + message.id]);
+    this.rootObject.add(this.markers[key]);
   }
 
   this.emit('change');

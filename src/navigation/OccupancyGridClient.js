@@ -46,7 +46,7 @@ ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 
@@ -108,6 +108,6 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
 
   // check if we should unsubscribe
   if (!this.continuous) {
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
