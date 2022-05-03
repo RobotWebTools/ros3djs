@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/Arrow2.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/Arrow2.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileOverview
+ * @author Jihoon Lee - lee@magazino.eu
+ */
+
+/**
+ * A Arrow is a THREE object that can be used to display an arrow model using ArrowHelper
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *   * origin (optional) - the origin of the arrow
+ *   * direction (optional) - the direction vector of the arrow
+ *   * length (optional) - the length of the arrow
+ *   * headLength (optional) - the head length of the arrow
+ *   * shaftDiameter (optional) - the shaft diameter of the arrow
+ *   * headDiameter (optional) - the head diameter of the arrow
+ *   * material (optional) - the material to use for this arrow
+ */
+ROS3D.Arrow2 = function(options) {
+  options = options || {};
+  var origin = options.origin || new THREE.Vector3(0, 0, 0);
+  var direction = options.direction || new THREE.Vector3(1, 0, 0);
+  var length = options.length || 1;
+  var headLength = options.headLength || 0.2;
+  var shaftDiameter = options.shaftDiameter || 0.05;
+  var headDiameter = options.headDiameter || 0.1;
+  var material = options.material || new THREE.MeshBasicMaterial();
+
+  THREE.ArrowHelper.call(this, direction, origin, length, 0xff0000);
+
+};
+
+ROS3D.Arrow2.prototype.__proto__ = THREE.ArrowHelper.prototype;
+
+/*
+ * Free memory of elements in this object.
+ */
+ROS3D.Arrow2.prototype.dispose = function() {
+  if (this.line !== undefined) {
+      this.line.material.dispose();
+      this.line.geometry.dispose();
+  }
+  if (this.cone!== undefined) {
+      this.cone.material.dispose();
+      this.cone.geometry.dispose();
+  }
+};
+
+/*
+ROS3D.Arrow2.prototype.setLength = function ( length, headLength, headWidth ) {
+	if ( headLength === undefined ) {
+    headLength = 0.2 * length;
+  }
+	if ( headWidth === undefined ) {
+    headWidth = 0.2 * headLength;
+  }
+
+	this.line.scale.set( 1, Math.max( 0, length), 1 );
+	this.line.updateMatrix();
+
+	this.cone.scale.set( headWidth, headLength, headWidth );
+	this.cone.position.y = length;
+	this.cone.updateMatrix();
+
+};
+*/
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ROS3D.Arrow.html">Arrow</a></li><li><a href="ROS3D.Arrow2.html">Arrow2</a></li><li><a href="ROS3D.Axes.html">Axes</a></li><li><a href="ROS3D.DepthCloud.html">DepthCloud</a></li><li><a href="ROS3D.Grid.html">Grid</a></li><li><a href="ROS3D.Highlighter.html">Highlighter</a></li><li><a href="ROS3D.InteractiveMarker.html">InteractiveMarker</a></li><li><a href="ROS3D.InteractiveMarkerClient.html">InteractiveMarkerClient</a></li><li><a href="ROS3D.InteractiveMarkerControl.html">InteractiveMarkerControl</a></li><li><a href="ROS3D.InteractiveMarkerHandle.html">InteractiveMarkerHandle</a></li><li><a href="ROS3D.InteractiveMarkerMenu.html">InteractiveMarkerMenu</a></li><li><a href="ROS3D.LaserScan.html">LaserScan</a></li><li><a href="ROS3D.Marker.html">Marker</a></li><li><a href="ROS3D.MarkerArrayClient.html">MarkerArrayClient</a></li><li><a href="ROS3D.MarkerClient.html">MarkerClient</a></li><li><a href="ROS3D.MeshResource.html">MeshResource</a></li><li><a href="ROS3D.MouseHandler.html">MouseHandler</a></li><li><a href="ROS3D.NavSatFix.html">NavSatFix</a></li><li><a href="ROS3D.OccupancyGrid.html">OccupancyGrid</a></li><li><a href="ROS3D.OccupancyGridClient.html">OccupancyGridClient</a></li><li><a href="ROS3D.OcTree.html">OcTree</a></li><li><a href="ROS3D.OcTreeBase.html">OcTreeBase</a></li><li><a href="ROS3D.OcTreeClient.html">OcTreeClient</a></li><li><a href="ROS3D.Odometry.html">Odometry</a></li><li><a href="ROS3D.OrbitControls.html">OrbitControls</a></li><li><a href="ROS3D.Path.html">Path</a></li><li><a href="ROS3D.Point.html">Point</a></li><li><a href="ROS3D.PointCloud2.html">PointCloud2</a></li><li><a href="ROS3D.Points.html">Points</a></li><li><a href="ROS3D.Polygon.html">Polygon</a></li><li><a href="ROS3D.Pose.html">Pose</a></li><li><a href="ROS3D.PoseArray.html">PoseArray</a></li><li><a href="ROS3D.PoseWithCovariance.html">PoseWithCovariance</a></li><li><a href="ROS3D.SceneNode.html">SceneNode</a></li><li><a href="ROS3D.TFAxes.html">TFAxes</a></li><li><a href="ROS3D.TriangleList.html">TriangleList</a></li><li><a href="ROS3D.Urdf.html">Urdf</a></li><li><a href="ROS3D.UrdfClient.html">UrdfClient</a></li><li><a href="ROS3D.Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#closestAxisPoint">closestAxisPoint</a></li><li><a href="global.html#decode64">decode64</a></li><li><a href="global.html#findClosestPoint">findClosestPoint</a></li><li><a href="global.html#InStream">InStream</a></li><li><a href="global.html#intersectPlane">intersectPlane</a></li><li><a href="global.html#makeColorMaterial">makeColorMaterial</a></li><li><a href="global.html#REVISION">REVISION</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue May 03 2022 14:58:41 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

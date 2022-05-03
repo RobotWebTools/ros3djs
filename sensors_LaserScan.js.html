@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sensors/LaserScan.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sensors/LaserScan.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileOverview
+ * @author David V. Lu!! - davidvlu@gmail.com
+ */
+
+/**
+ * A LaserScan client that listens to a given topic and displays the points.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *  * ros - the ROSLIB.Ros connection handle
+ *  * topic - the marker topic to listen to (default '/scan')
+ *  * tfClient - the TF client handle to use
+ *  * compression (optional) - message compression (default: 'cbor')
+ *  * rootObject (optional) - the root object to add this marker to use for the points.
+ *  * max_pts (optional) - number of points to draw (default: 10000)
+ *  * pointRatio (optional) - point subsampling ratio (default: 1, no subsampling)
+ *  * messageRatio (optional) - message subsampling ratio (default: 1, no subsampling)
+ *  * material (optional) - a material object or an option to construct a PointsMaterial.
+ */
+ROS3D.LaserScan = function(options) {
+  options = options || {};
+  this.ros = options.ros;
+  this.topicName = options.topic || '/scan';
+  this.compression = options.compression || 'cbor';
+  this.points = new ROS3D.Points(options);
+  this.rosTopic = undefined;
+  this.subscribe();
+
+};
+ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
+
+
+ROS3D.LaserScan.prototype.unsubscribe = function(){
+  if(this.rosTopic){
+    this.rosTopic.unsubscribe(this.processMessage);
+  }
+};
+
+ROS3D.LaserScan.prototype.subscribe = function(){
+  this.unsubscribe();
+
+  // subscribe to the topic
+  this.rosTopic = new ROSLIB.Topic({
+    ros : this.ros,
+    name : this.topicName,
+    compression : this.compression,
+    queue_length : 1,
+    messageType : 'sensor_msgs/LaserScan'
+  });
+  this.rosTopic.subscribe(this.processMessage.bind(this));
+};
+
+ROS3D.LaserScan.prototype.processMessage = function(message){
+  if(!this.points.setup(message.header.frame_id)) {
+      return;
+  }
+  var n = message.ranges.length;
+  var j = 0;
+  for(var i=0;i&lt;n;i+=this.points.pointRatio){
+    var range = message.ranges[i];
+    if(range >= message.range_min &amp;&amp; range &lt;= message.range_max){
+        var angle = message.angle_min + i * message.angle_increment;
+        this.points.positions.array[j++] = range * Math.cos(angle);
+        this.points.positions.array[j++] = range * Math.sin(angle);
+        this.points.positions.array[j++] = 0.0;
+    }
+  }
+  this.points.update(j/3);
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ROS3D.Arrow.html">Arrow</a></li><li><a href="ROS3D.Arrow2.html">Arrow2</a></li><li><a href="ROS3D.Axes.html">Axes</a></li><li><a href="ROS3D.DepthCloud.html">DepthCloud</a></li><li><a href="ROS3D.Grid.html">Grid</a></li><li><a href="ROS3D.Highlighter.html">Highlighter</a></li><li><a href="ROS3D.InteractiveMarker.html">InteractiveMarker</a></li><li><a href="ROS3D.InteractiveMarkerClient.html">InteractiveMarkerClient</a></li><li><a href="ROS3D.InteractiveMarkerControl.html">InteractiveMarkerControl</a></li><li><a href="ROS3D.InteractiveMarkerHandle.html">InteractiveMarkerHandle</a></li><li><a href="ROS3D.InteractiveMarkerMenu.html">InteractiveMarkerMenu</a></li><li><a href="ROS3D.LaserScan.html">LaserScan</a></li><li><a href="ROS3D.Marker.html">Marker</a></li><li><a href="ROS3D.MarkerArrayClient.html">MarkerArrayClient</a></li><li><a href="ROS3D.MarkerClient.html">MarkerClient</a></li><li><a href="ROS3D.MeshResource.html">MeshResource</a></li><li><a href="ROS3D.MouseHandler.html">MouseHandler</a></li><li><a href="ROS3D.NavSatFix.html">NavSatFix</a></li><li><a href="ROS3D.OccupancyGrid.html">OccupancyGrid</a></li><li><a href="ROS3D.OccupancyGridClient.html">OccupancyGridClient</a></li><li><a href="ROS3D.OcTree.html">OcTree</a></li><li><a href="ROS3D.OcTreeBase.html">OcTreeBase</a></li><li><a href="ROS3D.OcTreeClient.html">OcTreeClient</a></li><li><a href="ROS3D.Odometry.html">Odometry</a></li><li><a href="ROS3D.OrbitControls.html">OrbitControls</a></li><li><a href="ROS3D.Path.html">Path</a></li><li><a href="ROS3D.Point.html">Point</a></li><li><a href="ROS3D.PointCloud2.html">PointCloud2</a></li><li><a href="ROS3D.Points.html">Points</a></li><li><a href="ROS3D.Polygon.html">Polygon</a></li><li><a href="ROS3D.Pose.html">Pose</a></li><li><a href="ROS3D.PoseArray.html">PoseArray</a></li><li><a href="ROS3D.PoseWithCovariance.html">PoseWithCovariance</a></li><li><a href="ROS3D.SceneNode.html">SceneNode</a></li><li><a href="ROS3D.TFAxes.html">TFAxes</a></li><li><a href="ROS3D.TriangleList.html">TriangleList</a></li><li><a href="ROS3D.Urdf.html">Urdf</a></li><li><a href="ROS3D.UrdfClient.html">UrdfClient</a></li><li><a href="ROS3D.Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#closestAxisPoint">closestAxisPoint</a></li><li><a href="global.html#decode64">decode64</a></li><li><a href="global.html#findClosestPoint">findClosestPoint</a></li><li><a href="global.html#InStream">InStream</a></li><li><a href="global.html#intersectPlane">intersectPlane</a></li><li><a href="global.html#makeColorMaterial">makeColorMaterial</a></li><li><a href="global.html#REVISION">REVISION</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue May 03 2022 14:58:41 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

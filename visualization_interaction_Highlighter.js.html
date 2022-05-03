@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: visualization/interaction/Highlighter.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: visualization/interaction/Highlighter.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileOverview
+ * @author David Gossow - dgossow@willowgarage.com
+ */
+
+/**
+ * A mouseover highlighter for 3D objects in the scene.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *   * mouseHandler - the handler for the mouseover and mouseout events
+ */
+ROS3D.Highlighter = function(options) {
+  options = options || {};
+  this.mouseHandler = options.mouseHandler;
+  this.hoverObjs = {};
+
+  // bind the mouse events
+  this.mouseHandler.addEventListener('mouseover', this.onMouseOver.bind(this));
+  this.mouseHandler.addEventListener('mouseout', this.onMouseOut.bind(this));
+};
+
+/**
+ * Add the current target of the mouseover to the hover list.
+ *
+ * @param event - the event that contains the target of the mouseover
+ */
+ROS3D.Highlighter.prototype.onMouseOver = function(event) {
+  this.hoverObjs[event.currentTarget.uuid] = event.currentTarget;
+};
+
+/**
+ * Remove the current target of the mouseover from the hover list.
+ *
+ * @param event - the event that contains the target of the mouseout
+ */
+ROS3D.Highlighter.prototype.onMouseOut = function(event) {
+  var uuid = event.currentTarget.uuid;
+  if (uuid in this.hoverObjs)
+  {
+    delete this.hoverObjs[uuid];
+  }
+};
+
+
+/**
+ * Render the highlights for all objects that are currently highlighted.
+ *
+ * This method should be executed after clearing the renderer and
+ * rendering the regular scene.
+ *
+ * @param scene - the current scene, which should contain the highlighted objects (among others)
+ * @param renderer - the renderer used to render the scene.
+ * @param camera - the scene's camera
+ */
+ROS3D.Highlighter.prototype.renderHighlights = function(scene, renderer, camera) {
+
+  // Render highlights by making everything but the highlighted
+  // objects invisible...
+  this.makeEverythingInvisible(scene);
+  this.makeHighlightedVisible(scene);
+
+  // Providing a transparent overrideMaterial...
+  var originalOverrideMaterial = scene.overrideMaterial;
+  scene.overrideMaterial = new THREE.MeshBasicMaterial({
+      fog : false,
+      opacity : 0.5,
+      transparent : true,
+      depthTest : true,
+      depthWrite : false,
+      polygonOffset : true,
+      polygonOffsetUnits : -1,
+      side : THREE.DoubleSide
+  });
+
+  // And then rendering over the regular scene
+  renderer.render(scene, camera);
+
+  // Finally, restore the original overrideMaterial (if any) and
+  // object visibility.
+  scene.overrideMaterial = originalOverrideMaterial;
+  this.restoreVisibility(scene);
+};
+
+
+/**
+ * Traverses the given object and makes every object that's a Mesh,
+ * Line or Sprite invisible. Also saves the previous visibility state
+ * so we can restore it later.
+ *
+ * @param scene - the object to traverse
+ */
+ROS3D.Highlighter.prototype.makeEverythingInvisible = function (scene) {
+  scene.traverse(function(currentObject) {
+    if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+         || currentObject instanceof THREE.Sprite ) {
+      currentObject.previousVisibility = currentObject.visible;
+      currentObject.visible = false;
+    }
+  });
+};
+
+
+/**
+ * Make the objects in the scene that are currently highlighted (and
+ * all of their children!) visible.
+ *
+ * @param scene - the object to traverse
+ */
+ROS3D.Highlighter.prototype.makeHighlightedVisible = function (scene) {
+  var makeVisible = function(currentObject) {
+      if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+           || currentObject instanceof THREE.Sprite ) {
+        currentObject.visible = true;
+      }
+  };
+
+  for (var uuid in this.hoverObjs) {
+    var selectedObject = this.hoverObjs[uuid];
+    // Make each selected object and all of its children visible
+    selectedObject.visible = true;
+    selectedObject.traverse(makeVisible);
+  }
+};
+
+/**
+ * Restore the old visibility state that was saved by
+ * makeEverythinginvisible.
+ *
+ * @param scene - the object to traverse
+ */
+ROS3D.Highlighter.prototype.restoreVisibility = function (scene) {
+  scene.traverse(function(currentObject) {
+    if (currentObject.hasOwnProperty('previousVisibility')) {
+      currentObject.visible = currentObject.previousVisibility;
+    }
+  }.bind(this));
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ROS3D.Arrow.html">Arrow</a></li><li><a href="ROS3D.Arrow2.html">Arrow2</a></li><li><a href="ROS3D.Axes.html">Axes</a></li><li><a href="ROS3D.DepthCloud.html">DepthCloud</a></li><li><a href="ROS3D.Grid.html">Grid</a></li><li><a href="ROS3D.Highlighter.html">Highlighter</a></li><li><a href="ROS3D.InteractiveMarker.html">InteractiveMarker</a></li><li><a href="ROS3D.InteractiveMarkerClient.html">InteractiveMarkerClient</a></li><li><a href="ROS3D.InteractiveMarkerControl.html">InteractiveMarkerControl</a></li><li><a href="ROS3D.InteractiveMarkerHandle.html">InteractiveMarkerHandle</a></li><li><a href="ROS3D.InteractiveMarkerMenu.html">InteractiveMarkerMenu</a></li><li><a href="ROS3D.LaserScan.html">LaserScan</a></li><li><a href="ROS3D.Marker.html">Marker</a></li><li><a href="ROS3D.MarkerArrayClient.html">MarkerArrayClient</a></li><li><a href="ROS3D.MarkerClient.html">MarkerClient</a></li><li><a href="ROS3D.MeshResource.html">MeshResource</a></li><li><a href="ROS3D.MouseHandler.html">MouseHandler</a></li><li><a href="ROS3D.NavSatFix.html">NavSatFix</a></li><li><a href="ROS3D.OccupancyGrid.html">OccupancyGrid</a></li><li><a href="ROS3D.OccupancyGridClient.html">OccupancyGridClient</a></li><li><a href="ROS3D.OcTree.html">OcTree</a></li><li><a href="ROS3D.OcTreeBase.html">OcTreeBase</a></li><li><a href="ROS3D.OcTreeClient.html">OcTreeClient</a></li><li><a href="ROS3D.Odometry.html">Odometry</a></li><li><a href="ROS3D.OrbitControls.html">OrbitControls</a></li><li><a href="ROS3D.Path.html">Path</a></li><li><a href="ROS3D.Point.html">Point</a></li><li><a href="ROS3D.PointCloud2.html">PointCloud2</a></li><li><a href="ROS3D.Points.html">Points</a></li><li><a href="ROS3D.Polygon.html">Polygon</a></li><li><a href="ROS3D.Pose.html">Pose</a></li><li><a href="ROS3D.PoseArray.html">PoseArray</a></li><li><a href="ROS3D.PoseWithCovariance.html">PoseWithCovariance</a></li><li><a href="ROS3D.SceneNode.html">SceneNode</a></li><li><a href="ROS3D.TFAxes.html">TFAxes</a></li><li><a href="ROS3D.TriangleList.html">TriangleList</a></li><li><a href="ROS3D.Urdf.html">Urdf</a></li><li><a href="ROS3D.UrdfClient.html">UrdfClient</a></li><li><a href="ROS3D.Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#closestAxisPoint">closestAxisPoint</a></li><li><a href="global.html#decode64">decode64</a></li><li><a href="global.html#findClosestPoint">findClosestPoint</a></li><li><a href="global.html#InStream">InStream</a></li><li><a href="global.html#intersectPlane">intersectPlane</a></li><li><a href="global.html#makeColorMaterial">makeColorMaterial</a></li><li><a href="global.html#REVISION">REVISION</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue May 03 2022 14:58:41 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

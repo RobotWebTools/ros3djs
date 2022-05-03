@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: navigation/OccupancyGrid.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: navigation/OccupancyGrid.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileOverview
+ * @author Russell Toris - rctoris@wpi.edu
+ */
+
+/**
+ * An OccupancyGrid can convert a ROS occupancy grid message into a THREE object.
+ *
+ * @constructor
+ * @param options - object with following keys:
+ *
+ *   * message - the occupancy grid message
+ *   * color (optional) - color of the visualized grid
+ *   * opacity (optional) - opacity of the visualized grid (0.0 == fully transparent, 1.0 == opaque)
+ */
+ROS3D.OccupancyGrid = function(options) {
+  options = options || {};
+  var message = options.message;
+  var opacity = options.opacity || 1.0;
+  var color = options.color || {r:255,g:255,b:255,a:255};
+
+  // create the geometry
+  var info = message.info;
+  var origin = info.origin;
+  var width = info.width;
+  var height = info.height;
+  var geom = new THREE.PlaneBufferGeometry(width, height);
+
+  // create the color material
+  var imageData = new Uint8Array(width * height * 4);
+  var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBAFormat);
+  texture.flipY = true;
+  texture.minFilter = THREE.NearestFilter;
+  texture.magFilter = THREE.NearestFilter;
+  texture.needsUpdate = true;
+
+  var material = new THREE.MeshBasicMaterial({
+    map : texture,
+    transparent : opacity &lt; 1.0,
+    opacity : opacity
+  });
+  material.side = THREE.DoubleSide;
+
+  // create the mesh
+  THREE.Mesh.call(this, geom, material);
+  // move the map so the corner is at X, Y and correct orientation (informations from message.info)
+
+  // assign options to this for subclasses
+  Object.assign(this, options);
+
+  this.quaternion.copy(new THREE.Quaternion(
+      origin.orientation.x,
+      origin.orientation.y,
+      origin.orientation.z,
+      origin.orientation.w
+  ));
+  this.position.x = (width * info.resolution) / 2 + origin.position.x;
+  this.position.y = (height * info.resolution) / 2 + origin.position.y;
+  this.position.z = origin.position.z;
+  this.scale.x = info.resolution;
+  this.scale.y = info.resolution;
+
+  var data = message.data;
+  // update the texture (after the the super call and this are accessible)
+  this.color = color;
+  this.material = material;
+  this.texture = texture;
+
+  for ( var row = 0; row &lt; height; row++) {
+    for ( var col = 0; col &lt; width; col++) {
+
+      // determine the index into the map data
+      var invRow = (height - row - 1);
+      var mapI = col + (invRow * width);
+      // determine the value
+      var val = this.getValue(mapI, invRow, col, data);
+
+      // determine the color
+      var color = this.getColor(mapI, invRow, col, val);
+
+      // determine the index into the image data array
+      var i = (col + (row * width)) * 4;
+
+      // copy the color
+      imageData.set(color, i);
+    }
+  }
+
+  texture.needsUpdate = true;
+
+};
+
+ROS3D.OccupancyGrid.prototype.dispose = function() {
+  this.material.dispose();
+  this.texture.dispose();
+};
+
+/**
+ * Returns the value for a given grid cell
+ * @param {int} index the current index of the cell
+ * @param {int} row the row of the cell
+ * @param {int} col the column of the cell
+ * @param {object} data the data buffer
+ */
+ROS3D.OccupancyGrid.prototype.getValue = function(index, row, col, data) {
+  return data[index];
+};
+
+/**
+ * Returns a color value given parameters of the position in the grid; the default implementation
+ * scales the default color value by the grid value. Subclasses can extend this functionality
+ * (e.g. lookup a color in a color map).
+ * @param {int} index the current index of the cell
+ * @param {int} row the row of the cell
+ * @param {int} col the column of the cell
+ * @param {float} value the value of the cell
+ * @returns r,g,b,a array of values from 0 to 255 representing the color values for each channel
+ */
+ROS3D.OccupancyGrid.prototype.getColor = function(index, row, col, value) {
+  return [
+    (value * this.color.r) / 255,
+    (value * this.color.g) / 255,
+    (value * this.color.b) / 255,
+    255
+  ];
+};
+
+ROS3D.OccupancyGrid.prototype.__proto__ = THREE.Mesh.prototype;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ROS3D.Arrow.html">Arrow</a></li><li><a href="ROS3D.Arrow2.html">Arrow2</a></li><li><a href="ROS3D.Axes.html">Axes</a></li><li><a href="ROS3D.DepthCloud.html">DepthCloud</a></li><li><a href="ROS3D.Grid.html">Grid</a></li><li><a href="ROS3D.Highlighter.html">Highlighter</a></li><li><a href="ROS3D.InteractiveMarker.html">InteractiveMarker</a></li><li><a href="ROS3D.InteractiveMarkerClient.html">InteractiveMarkerClient</a></li><li><a href="ROS3D.InteractiveMarkerControl.html">InteractiveMarkerControl</a></li><li><a href="ROS3D.InteractiveMarkerHandle.html">InteractiveMarkerHandle</a></li><li><a href="ROS3D.InteractiveMarkerMenu.html">InteractiveMarkerMenu</a></li><li><a href="ROS3D.LaserScan.html">LaserScan</a></li><li><a href="ROS3D.Marker.html">Marker</a></li><li><a href="ROS3D.MarkerArrayClient.html">MarkerArrayClient</a></li><li><a href="ROS3D.MarkerClient.html">MarkerClient</a></li><li><a href="ROS3D.MeshResource.html">MeshResource</a></li><li><a href="ROS3D.MouseHandler.html">MouseHandler</a></li><li><a href="ROS3D.NavSatFix.html">NavSatFix</a></li><li><a href="ROS3D.OccupancyGrid.html">OccupancyGrid</a></li><li><a href="ROS3D.OccupancyGridClient.html">OccupancyGridClient</a></li><li><a href="ROS3D.OcTree.html">OcTree</a></li><li><a href="ROS3D.OcTreeBase.html">OcTreeBase</a></li><li><a href="ROS3D.OcTreeClient.html">OcTreeClient</a></li><li><a href="ROS3D.Odometry.html">Odometry</a></li><li><a href="ROS3D.OrbitControls.html">OrbitControls</a></li><li><a href="ROS3D.Path.html">Path</a></li><li><a href="ROS3D.Point.html">Point</a></li><li><a href="ROS3D.PointCloud2.html">PointCloud2</a></li><li><a href="ROS3D.Points.html">Points</a></li><li><a href="ROS3D.Polygon.html">Polygon</a></li><li><a href="ROS3D.Pose.html">Pose</a></li><li><a href="ROS3D.PoseArray.html">PoseArray</a></li><li><a href="ROS3D.PoseWithCovariance.html">PoseWithCovariance</a></li><li><a href="ROS3D.SceneNode.html">SceneNode</a></li><li><a href="ROS3D.TFAxes.html">TFAxes</a></li><li><a href="ROS3D.TriangleList.html">TriangleList</a></li><li><a href="ROS3D.Urdf.html">Urdf</a></li><li><a href="ROS3D.UrdfClient.html">UrdfClient</a></li><li><a href="ROS3D.Viewer.html">Viewer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#closestAxisPoint">closestAxisPoint</a></li><li><a href="global.html#decode64">decode64</a></li><li><a href="global.html#findClosestPoint">findClosestPoint</a></li><li><a href="global.html#InStream">InStream</a></li><li><a href="global.html#intersectPlane">intersectPlane</a></li><li><a href="global.html#makeColorMaterial">makeColorMaterial</a></li><li><a href="global.html#REVISION">REVISION</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue May 03 2022 14:58:41 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
