@@ -45980,7 +45980,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
-	var REVISION = '1.0.1';
+	var REVISION = '1.1.0';
 
 	// Marker types
 	var MARKER_ARROW = 0;
