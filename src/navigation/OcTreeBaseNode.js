@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Peter Sari - sari@photoneo.com
  */
 

@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
  */

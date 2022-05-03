@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author mrdoob / http://mrdoob.com/
  *
  * @Modified by Jose Rojas from OBJLoader.js@r106

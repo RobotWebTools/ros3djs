@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Xueqiao Xu - xueqiaoxu@gmail.com
  * @author Mr.doob - http://mrdoob.com
