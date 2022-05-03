@@ -45,7 +45,8 @@
     "lint": "grunt lint",
     "lint-fix": "grunt lint-fix",
     "transpile": "DEBUG=* grunt transpile",
-    "test": "grunt test"
+    "test": "grunt test",
+    "publish": "npm run build && npm run test"
   },
   "keywords": [
     "ROS",
