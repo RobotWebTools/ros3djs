@@ -41,9 +41,9 @@
   },
   "scripts": {
     "build": "grunt build",
+    "doc": "grunt doc",
     "lint": "grunt lint",
     "lint-fix": "grunt lint-fix",
-    "doc": "grunt doc",
     "transpile": "DEBUG=* grunt transpile",
     "test": "grunt test"
   },
