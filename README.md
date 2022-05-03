@@ -13,7 +13,8 @@ This project is released as part of the [Robot Web Tools](http://robotwebtools.o
 ### Usage
 Pre-built files can be found in either [ros3d.js](build/ros3d.js) or [ros3d.min.js](build/ros3d.min.js).
 
-Alternatively, you can use the current release via the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/ros3djs/current/ros3d.js)) | ([min](https://static.robotwebtools.org/ros3djs/current/ros3d.min.js))
+
+Alternatively, you can use the current release via the [JsDelivr](https://www.jsdelivr.com/) CDN: ([full](https://cdn.jsdelivr.net/npm/ros3d@1/build/ros3d.js)) | ([min](https://cdn.jsdelivr.net/npm/ros3d@1/build/ros3d.min.js))
 
 ### Dependencies
 ros3djs depends on:
