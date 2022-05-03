@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  * @author David Gossow - dgossow@willowgarage.com
  */

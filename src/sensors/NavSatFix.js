@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
