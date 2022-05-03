@@ -43,6 +43,7 @@
     "build": "grunt build",
     "lint": "grunt lint",
     "lint-fix": "grunt lint-fix",
+    "doc": "grunt doc",
     "transpile": "DEBUG=* grunt transpile",
     "test": "grunt test"
   },
