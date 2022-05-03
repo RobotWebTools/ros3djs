@@ -183,7 +183,7 @@ Object.assign( EventDispatcher.prototype, {
 
 } );
 
-var REVISION$1 = '89';
+var REVISION = '89';
 var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 var CullFaceNone = 0;
 var CullFaceBack = 1;
@@ -21218,7 +21218,7 @@ function WebGLUtils( gl, extensions ) {
 
 function WebGLRenderer( parameters ) {
 
-	console.log( 'THREE.WebGLRenderer', REVISION$1 );
+	console.log( 'THREE.WebGLRenderer', REVISION );
 
 	parameters = parameters || {};
 
@@ -45802,7 +45802,7 @@ var THREE$1 = /*#__PURE__*/Object.freeze({
 	QuadraticBezierCurve: QuadraticBezierCurve,
 	QuadraticBezierCurve3: QuadraticBezierCurve3,
 	SplineCurve: SplineCurve,
-	REVISION: REVISION$1,
+	REVISION: REVISION,
 	MOUSE: MOUSE,
 	CullFaceNone: CullFaceNone,
 	CullFaceBack: CullFaceBack,
@@ -45967,13 +45967,6 @@ var THREE$1 = /*#__PURE__*/Object.freeze({
 
 var THREE = Object.assign({}, THREE$1);
 
-/**
- * @author Russell Toris - rctoris@wpi.edu
- * @author David Gossow - dgossow@willowgarage.com
- */
-
-var REVISION = '1.1.0';
-
 // Marker types
 var MARKER_ARROW = 0;
 var MARKER_CUBE = 1;
@@ -46014,7 +46007,8 @@ var INTERACTIVE_MARKER_FIXED = 1;
 var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
- * Create a THREE material based on the given RGBA values.
+ * @function makeColorMaterial
+ * @description Create a THREE material based on the given RGBA values.
  *
  * @param r - the red value
  * @param g - the green value
@@ -46046,7 +46040,8 @@ var makeColorMaterial = function(r, g, b, a) {
 };
 
 /**
- * Return the intersection between the mouseray and the plane.
+ * @function intersectPlane
+ * @description Return the intersection between the mouseray and the plane.
  *
  * @param mouseRay - the mouse ray
  * @param planeOrigin - the origin of the plane
@@ -46072,7 +46067,8 @@ var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
 };
 
 /**
- * Find the closest point on targetRay to any point on mouseRay. Math taken from
+ * @function findClosestPoint
+ * @description Find the closest point on targetRay to any point on mouseRay. Math taken from
  * http://paulbourke.net/geometry/lineline3d/
  *
  * @param targetRay - the target ray to use
@@ -46102,7 +46098,8 @@ var findClosestPoint = function(targetRay, mouseRay) {
 };
 
 /**
- * Find the closest point between the axis and the mouse.
+ * @function closestAxisPoint
+ * @description Find the closest point between the axis and the mouse.
  *
  * @param axisRay - the ray from the axis
  * @param camera - the camera to project from
@@ -46137,6 +46134,7 @@ var closestAxisPoint = function(axisRay, camera, mousePos) {
 };
 
 /**
+ * @fileOverview
  * @author Julius Kammerl - jkammerl@willowgarage.com
  */
 
@@ -46453,6 +46451,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -46541,6 +46540,7 @@ var Arrow = /*@__PURE__*/(function (superclass) {
 }(THREE.Mesh));
 
 /**
+ * @fileOverview
  * @author aleeper / http://adamleeper.com/
  * @author mrdoob / http://mrdoob.com/
  * @author gero3 / https://github.com/gero3
@@ -46864,6 +46864,7 @@ THREE.STLLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author mrdoob / http://mrdoob.com/
  *
  * @Modified by Jose Rojas from OBJLoader.js@r106
@@ -47657,6 +47658,7 @@ THREE.OBJLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * Loads a Wavefront .mtl file specifying materials
  *
  * @author angelxuanchang
@@ -48236,6 +48238,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author mrdoob / http://mrdoob.com/
  * @author Mugen87 / https://github.com/Mugen87
  *
@@ -51697,6 +51700,7 @@ THREE.ColladaLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author Jose Rojas - jrojas@redlinesolutions.co
  */
 
@@ -51829,6 +51833,7 @@ var MeshLoader = {
  };
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -51868,6 +51873,7 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -51942,6 +51948,7 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -52425,6 +52432,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -52686,6 +52694,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -52860,6 +52869,7 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
 }(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -54832,6 +54842,7 @@ var eventemitter2 = {exports: {}};
 var EventEmitter2 = eventemitter2.exports;
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -55006,6 +55017,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
 }(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -55192,6 +55204,7 @@ InteractiveMarkerClient.prototype.eraseIntMarker = function eraseIntMarker (intM
 };
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -55254,6 +55267,7 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
  */
@@ -55355,6 +55369,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
 }(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -55453,6 +55468,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
 }(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - lee@magazino.eu
  */
 
@@ -55493,6 +55509,7 @@ var Arrow2 = /*@__PURE__*/(function (superclass) {
 }(THREE.ArrowHelper));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -55582,6 +55599,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -55626,6 +55644,7 @@ var Grid = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -55747,6 +55766,7 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
 }(THREE.Mesh));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -55845,6 +55865,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
 }(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author Peter Sari - sari@photoneo.com
  */
 
@@ -55875,6 +55896,7 @@ OcTreeBaseNode.prototype.hasChildren = function hasChildren () {
 };
 
 /**
+ * @fileOverview
  * @author Peter Sari - sari@photoneo.com
  */
 
@@ -56412,6 +56434,7 @@ OcTreeBase.prototype._buildFaces = function _buildFaces () {
 };
 
 /**
+ * @fileOverview
  * @author Peter Sari - sari@photoneo.com
  */
 
@@ -56502,6 +56525,7 @@ var ColorOcTree = /*@__PURE__*/(function (OcTree) {
 }(OcTree));
 
 /**
+ * @fileOverview
  * @author Peter Sari - sari@photoneo.com
  */
 
@@ -56652,6 +56676,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
 }(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -56724,6 +56749,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -56795,6 +56821,7 @@ var Path = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -56860,6 +56887,7 @@ var Point = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -56934,6 +56962,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -57003,6 +57032,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -57095,6 +57125,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -57164,6 +57195,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -57272,6 +57304,7 @@ var Points = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -57332,6 +57365,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
@@ -57414,6 +57448,7 @@ var NavSatFix = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -57537,6 +57572,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoon.lee@kakaobrain.com
  */
 var TFAxes = /*@__PURE__*/(function (superclass) {
@@ -57575,6 +57611,7 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -57699,6 +57736,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
 }(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -57738,6 +57776,7 @@ var UrdfClient = function UrdfClient(options) {
 };
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -57863,6 +57902,7 @@ Highlighter.prototype.restoreVisibility = function restoreVisibility (scene) {
 };
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -58079,6 +58119,7 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
 }(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Xueqiao Xu - xueqiaoxu@gmail.com
  * @author Mr.doob - http://mrdoob.com
@@ -58578,6 +58619,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
 }(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -58730,4 +58772,4 @@ Viewer.prototype.resize = function resize (width, height) {
   this.renderer.setSize(width, height);
 };
 
-export { Arrow, Arrow2, Axes, ColorOcTree, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OcTree, OcTreeClient, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, REVISION, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };
+export { Arrow, Arrow2, Axes, ColorOcTree, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OcTree, OcTreeClient, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };

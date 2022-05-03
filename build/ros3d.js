@@ -202,7 +202,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	} );
 
-	var REVISION$1 = '89';
+	var REVISION = '89';
 	var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 	var CullFaceNone = 0;
 	var CullFaceBack = 1;
@@ -21234,7 +21234,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	function WebGLRenderer( parameters ) {
 
-		console.log( 'THREE.WebGLRenderer', REVISION$1 );
+		console.log( 'THREE.WebGLRenderer', REVISION );
 
 		parameters = parameters || {};
 
@@ -45810,7 +45810,7 @@ var ROS3D = (function (exports, ROSLIB) {
 		QuadraticBezierCurve: QuadraticBezierCurve,
 		QuadraticBezierCurve3: QuadraticBezierCurve3,
 		SplineCurve: SplineCurve,
-		REVISION: REVISION$1,
+		REVISION: REVISION,
 		MOUSE: MOUSE,
 		CullFaceNone: CullFaceNone,
 		CullFaceBack: CullFaceBack,
@@ -45975,13 +45975,6 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	var THREE = Object.assign({}, THREE$1);
 
-	/**
-	 * @author Russell Toris - rctoris@wpi.edu
-	 * @author David Gossow - dgossow@willowgarage.com
-	 */
-
-	var REVISION = '1.1.0';
-
 	// Marker types
 	var MARKER_ARROW = 0;
 	var MARKER_CUBE = 1;
@@ -46022,7 +46015,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 	/**
-	 * Create a THREE material based on the given RGBA values.
+	 * @function makeColorMaterial
+	 * @description Create a THREE material based on the given RGBA values.
 	 *
 	 * @param r - the red value
 	 * @param g - the green value
@@ -46054,7 +46048,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
-	 * Return the intersection between the mouseray and the plane.
+	 * @function intersectPlane
+	 * @description Return the intersection between the mouseray and the plane.
 	 *
 	 * @param mouseRay - the mouse ray
 	 * @param planeOrigin - the origin of the plane
@@ -46080,7 +46075,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
-	 * Find the closest point on targetRay to any point on mouseRay. Math taken from
+	 * @function findClosestPoint
+	 * @description Find the closest point on targetRay to any point on mouseRay. Math taken from
 	 * http://paulbourke.net/geometry/lineline3d/
 	 *
 	 * @param targetRay - the target ray to use
@@ -46110,7 +46106,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
-	 * Find the closest point between the axis and the mouse.
+	 * @function closestAxisPoint
+	 * @description Find the closest point between the axis and the mouse.
 	 *
 	 * @param axisRay - the ray from the axis
 	 * @param camera - the camera to project from
@@ -46145,6 +46142,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
+	 * @fileOverview
 	 * @author Julius Kammerl - jkammerl@willowgarage.com
 	 */
 
@@ -46476,6 +46474,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -46577,6 +46576,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author aleeper / http://adamleeper.com/
 	 * @author mrdoob / http://mrdoob.com/
 	 * @author gero3 / https://github.com/gero3
@@ -46900,6 +46900,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
+	 * @fileOverview
 	 * @author mrdoob / http://mrdoob.com/
 	 *
 	 * @Modified by Jose Rojas from OBJLoader.js@r106
@@ -47693,6 +47694,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
+	 * @fileOverview
 	 * Loads a Wavefront .mtl file specifying materials
 	 *
 	 * @author angelxuanchang
@@ -48272,6 +48274,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
+	 * @fileOverview
 	 * @author mrdoob / http://mrdoob.com/
 	 * @author Mugen87 / https://github.com/Mugen87
 	 *
@@ -51733,6 +51736,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	};
 
 	/**
+	 * @fileOverview
 	 * @author Jose Rojas - jrojas@redlinesolutions.co
 	 */
 
@@ -51865,6 +51869,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	 };
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
@@ -51911,6 +51916,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -51991,6 +51997,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
@@ -52481,6 +52488,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -52750,6 +52758,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -52933,6 +52942,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -54918,6 +54928,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	var EventEmitter2 = eventemitter2.exports;
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -55113,6 +55124,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -55322,6 +55334,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
@@ -55392,6 +55405,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Russell Toris - rctoris@wpi.edu
 	 * @author Nils Berg - berg.nils@gmail.com
 	 */
@@ -55508,6 +55522,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
@@ -55623,6 +55638,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - lee@magazino.eu
 	 */
 
@@ -55692,6 +55708,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -55793,6 +55810,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
@@ -55843,6 +55861,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
@@ -55972,6 +55991,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
 
@@ -56088,6 +56108,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Peter Sari - sari@photoneo.com
 	 */
 
@@ -56130,6 +56151,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Peter Sari - sari@photoneo.com
 	 */
 
@@ -56690,6 +56712,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Peter Sari - sari@photoneo.com
 	 */
 
@@ -56765,6 +56788,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	class ColorOcTree extends OcTree {
 
 	  /**
+	   * @fileOverview
 	   * @author Peter Sari - sari@photoneo.com
 	   */
 	  
@@ -56791,6 +56815,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Peter Sari - sari@photoneo.com
 	 */
 
@@ -56967,6 +56992,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57054,6 +57080,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57135,6 +57162,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57211,6 +57239,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57295,6 +57324,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57378,6 +57408,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57481,6 +57512,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57560,6 +57592,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 * @author Mathieu Bredif - mathieu.bredif@ign.fr
 	 */
@@ -57680,6 +57713,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 */
 
@@ -57754,6 +57788,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Mathieu Bredif - mathieu.bredif@ign.fr
 	 */
 
@@ -57852,6 +57887,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David V. Lu!! - davidvlu@gmail.com
 	 * @author Mathieu Bredif - mathieu.bredif@ign.fr
 	 */
@@ -57991,6 +58027,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - jihoon.lee@kakaobrain.com
 	 */
 	class TFAxes extends THREE.Object3D {
@@ -58043,6 +58080,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
@@ -58176,6 +58214,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 */
@@ -58237,6 +58276,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -58379,6 +58419,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 */
 
@@ -58603,6 +58644,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 * @author Xueqiao Xu - xueqiaoxu@gmail.com
 	 * @author Mr.doob - http://mrdoob.com
@@ -59121,6 +59163,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	}
 
 	/**
+	 * @fileOverview
 	 * @author David Gossow - dgossow@willowgarage.com
 	 * @author Russell Toris - rctoris@wpi.edu
 	 * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -59367,7 +59410,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	exports.Pose = Pose;
 	exports.PoseArray = PoseArray;
 	exports.PoseWithCovariance = PoseWithCovariance;
-	exports.REVISION = REVISION;
 	exports.SceneNode = SceneNode;
 	exports.TFAxes = TFAxes;
 	exports.TriangleList = TriangleList;
