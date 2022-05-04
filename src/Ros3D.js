@@ -6,6 +6,7 @@
 
 var ROS3D = ROS3D || {
   /**
+   * @default
    * @description Library version
    */
   REVISION : '1.1.0'
