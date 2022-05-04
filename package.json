@@ -39,6 +39,9 @@
     "type": "git",
     "url": "https://github.com/RobotWebTools/ros3djs/releases"
   },
+  "bugs": {
+    "url": "https://github.com/RobotWebTools/ros3djs/issues"
+  },
   "scripts": {
     "build": "grunt build",
     "doc": "grunt doc",
