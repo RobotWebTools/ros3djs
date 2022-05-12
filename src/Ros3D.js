@@ -1,10 +1,15 @@
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  * @author David Gossow - dgossow@willowgarage.com
  */
 
 var ROS3D = ROS3D || {
-  REVISION : '1.0.1'
+  /**
+   * @default
+   * @description Library version
+   */
+  REVISION : '1.1.0'
 };
 
 // Marker types
@@ -47,7 +52,8 @@ ROS3D.INTERACTIVE_MARKER_FIXED = 1;
 ROS3D.INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
- * Create a THREE material based on the given RGBA values.
+ * @function makeColorMaterial
+ * @description Create a THREE material based on the given RGBA values.
  *
  * @param r - the red value
  * @param g - the green value
@@ -79,7 +85,8 @@ ROS3D.makeColorMaterial = function(r, g, b, a) {
 };
 
 /**
- * Return the intersection between the mouseray and the plane.
+ * @function intersectPlane
+ * @description Return the intersection between the mouseray and the plane.
  *
  * @param mouseRay - the mouse ray
  * @param planeOrigin - the origin of the plane
@@ -105,7 +112,8 @@ ROS3D.intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
 };
 
 /**
- * Find the closest point on targetRay to any point on mouseRay. Math taken from
+ * @function findClosestPoint
+ * @description Find the closest point on targetRay to any point on mouseRay. Math taken from
  * http://paulbourke.net/geometry/lineline3d/
  *
  * @param targetRay - the target ray to use
@@ -135,7 +143,8 @@ ROS3D.findClosestPoint = function(targetRay, mouseRay) {
 };
 
 /**
- * Find the closest point between the axis and the mouse.
+ * @function closestAxisPoint
+ * @description Find the closest point between the axis and the mouse.
  *
  * @param axisRay - the ray from the axis
  * @param camera - the camera to project from

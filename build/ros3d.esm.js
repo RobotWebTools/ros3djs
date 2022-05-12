@@ -1,4 +1,4 @@
-import { TFClient, Pose, Transform, Topic, Service, ServiceRequest, URDF_MESH, URDF_BOX, URDF_CYLINDER, URDF_SPHERE, Param, UrdfModel } from 'roslib';
+import * as ROSLIB from 'roslib';
 
 // Polyfills
 
@@ -24946,7 +24946,7 @@ PointsMaterial.prototype.copy = function ( source ) {
  * @author alteredq / http://alteredqualia.com/
  */
 
-function Points( geometry, material ) {
+function Points$1( geometry, material ) {
 
 	Object3D.call( this );
 
@@ -24957,9 +24957,9 @@ function Points( geometry, material ) {
 
 }
 
-Points.prototype = Object.assign( Object.create( Object3D.prototype ), {
+Points$1.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
-	constructor: Points,
+	constructor: Points$1,
 
 	isPoints: true,
 
@@ -33097,7 +33097,7 @@ CurvePath.prototype = Object.assign( Object.create( Curve.prototype ), {
  * Creates free form 2d path using series of points, lines or curves.
  **/
 
-function Path( points ) {
+function Path$1( points ) {
 
 	CurvePath.call( this );
 
@@ -33113,9 +33113,9 @@ function Path( points ) {
 
 }
 
-Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
+Path$1.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 
-	constructor: Path,
+	constructor: Path$1,
 
 	setFromPoints: function ( points ) {
 
@@ -33278,7 +33278,7 @@ Path.prototype = Object.assign( Object.create( CurvePath.prototype ), {
 
 function Shape( points ) {
 
-	Path.call( this, points );
+	Path$1.call( this, points );
 
 	this.uuid = _Math.generateUUID();
 
@@ -33288,7 +33288,7 @@ function Shape( points ) {
 
 }
 
-Shape.prototype = Object.assign( Object.create( Path.prototype ), {
+Shape.prototype = Object.assign( Object.create( Path$1.prototype ), {
 
 	constructor: Shape,
 
@@ -33321,7 +33321,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	copy: function ( source ) {
 
-		Path.prototype.copy.call( this, source );
+		Path$1.prototype.copy.call( this, source );
 
 		this.holes = [];
 
@@ -33339,7 +33339,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	toJSON: function () {
 
-		var data = Path.prototype.toJSON.call( this );
+		var data = Path$1.prototype.toJSON.call( this );
 
 		data.uuid = this.uuid;
 		data.holes = [];
@@ -33357,7 +33357,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 
 	fromJSON: function ( json ) {
 
-		Path.prototype.fromJSON.call( this, json );
+		Path$1.prototype.fromJSON.call( this, json );
 
 		this.uuid = json.uuid;
 		this.holes = [];
@@ -33365,7 +33365,7 @@ Shape.prototype = Object.assign( Object.create( Path.prototype ), {
 		for ( var i = 0, l = json.holes.length; i < l; i ++ ) {
 
 			var hole = json.holes[ i ];
-			this.holes.push( new Path().fromJSON( hole ) );
+			this.holes.push( new Path$1().fromJSON( hole ) );
 
 		}
 
@@ -37451,7 +37451,7 @@ Object.assign( ObjectLoader.prototype, {
 				case 'PointCloud':
 				case 'Points':
 
-					object = new Points( getGeometry( data.geometry ), getMaterial( data.material ) );
+					object = new Points$1( getGeometry( data.geometry ), getMaterial( data.material ) );
 
 					break;
 
@@ -37691,7 +37691,7 @@ Object.assign( ShapePath.prototype, {
 
 	moveTo: function ( x, y ) {
 
-		this.currentPath = new Path();
+		this.currentPath = new Path$1();
 		this.subPaths.push( this.currentPath );
 		this.currentPath.moveTo( x, y );
 
@@ -38009,9 +38009,7 @@ Object.assign( Font.prototype, {
 			if ( ! glyph ) { return; }
 
 			var path = new ShapePath();
-
-			var pts = [];
-			var x, y, cpx, cpy, cpx0, cpy0, cpx1, cpy1, cpx2, cpy2, laste;
+			var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2;
 
 			if ( glyph.o ) {
 
@@ -38050,17 +38048,6 @@ Object.assign( Font.prototype, {
 
 							path.quadraticCurveTo( cpx1, cpy1, cpx, cpy );
 
-							laste = pts[ pts.length - 1 ];
-
-							if ( laste ) {
-
-								cpx0 = laste.x;
-								cpy0 = laste.y;
-
-								
-
-							}
-
 							break;
 
 						case 'b': // bezierCurveTo
@@ -38073,17 +38060,6 @@ Object.assign( Font.prototype, {
 							cpy2 = outline[ i ++ ] * scale + offsetY;
 
 							path.bezierCurveTo( cpx1, cpy1, cpx2, cpy2, cpx, cpy );
-
-							laste = pts[ pts.length - 1 ];
-
-							if ( laste ) {
-
-								cpx0 = laste.x;
-								cpy0 = laste.y;
-
-								
-
-							}
 
 							break;
 
@@ -38100,7 +38076,6 @@ Object.assign( Font.prototype, {
 		//
 
 		if ( size === undefined ) { size = 100; }
-		if ( divisions === undefined ) { divisions = 4; }
 
 		var data = this.data;
 
@@ -43991,7 +43966,7 @@ function MultiMaterial( materials ) {
 function PointCloud( geometry, material ) {
 
 	console.warn( 'THREE.PointCloud has been renamed to THREE.Points.' );
-	return new Points( geometry, material );
+	return new Points$1( geometry, material );
 
 }
 
@@ -44005,7 +43980,7 @@ function Particle( material ) {
 function ParticleSystem( geometry, material ) {
 
 	console.warn( 'THREE.ParticleSystem has been renamed to THREE.Points.' );
-	return new Points( geometry, material );
+	return new Points$1( geometry, material );
 
 }
 
@@ -44170,7 +44145,7 @@ Object.assign( CurvePath.prototype, {
 
 //
 
-Object.assign( Path.prototype, {
+Object.assign( Path$1.prototype, {
 
 	fromPoints: function ( points ) {
 
@@ -45601,8 +45576,8 @@ function CanvasRenderer() {
 
 }
 
-
-var THREE = Object.freeze({
+var THREE$1 = /*#__PURE__*/Object.freeze({
+	__proto__: null,
 	WebGLRenderTargetCube: WebGLRenderTargetCube,
 	WebGLRenderTarget: WebGLRenderTarget,
 	WebGLRenderer: WebGLRenderer,
@@ -45623,7 +45598,7 @@ var THREE = Object.freeze({
 	LineSegments: LineSegments,
 	LineLoop: LineLoop,
 	Line: Line,
-	Points: Points,
+	Points: Points$1,
 	Group: Group,
 	VideoTexture: VideoTexture,
 	DataTexture: DataTexture,
@@ -45740,7 +45715,7 @@ var THREE = Object.freeze({
 	ArrowHelper: ArrowHelper,
 	AxesHelper: AxesHelper,
 	Shape: Shape,
-	Path: Path,
+	Path: Path$1,
 	ShapePath: ShapePath,
 	Font: Font,
 	CurvePath: CurvePath,
@@ -45990,7 +45965,7 @@ var THREE = Object.freeze({
 	CanvasRenderer: CanvasRenderer
 });
 
-var THREE$1 = Object.assign({}, THREE)
+var THREE = Object.assign({}, THREE$1);
 
 // Marker types
 var MARKER_ARROW = 0;
@@ -46032,7 +46007,8 @@ var INTERACTIVE_MARKER_FIXED = 1;
 var INTERACTIVE_MARKER_VIEW_FACING = 2;
 
 /**
- * Create a THREE material based on the given RGBA values.
+ * @function makeColorMaterial
+ * @description Create a THREE material based on the given RGBA values.
  *
  * @param r - the red value
  * @param g - the green value
@@ -46041,30 +46017,31 @@ var INTERACTIVE_MARKER_VIEW_FACING = 2;
  * @returns the THREE material
  */
 var makeColorMaterial = function(r, g, b, a) {
-  var color = new THREE$1.Color();
+  var color = new THREE.Color();
   color.setRGB(r, g, b);
   if (a <= 0.99) {
-    return new THREE$1.MeshBasicMaterial({
+    return new THREE.MeshBasicMaterial({
       color : color.getHex(),
       opacity : a + 0.1,
       transparent : true,
       depthWrite : true,
-      blendSrc : THREE$1.SrcAlphaFactor,
-      blendDst : THREE$1.OneMinusSrcAlphaFactor,
-      blendEquation : THREE$1.ReverseSubtractEquation,
-      blending : THREE$1.NormalBlending
+      blendSrc : THREE.SrcAlphaFactor,
+      blendDst : THREE.OneMinusSrcAlphaFactor,
+      blendEquation : THREE.ReverseSubtractEquation,
+      blending : THREE.NormalBlending
     });
   } else {
-    return new THREE$1.MeshPhongMaterial({
+    return new THREE.MeshPhongMaterial({
       color : color.getHex(),
       opacity : a,
-      blending : THREE$1.NormalBlending
+      blending : THREE.NormalBlending
     });
   }
 };
 
 /**
- * Return the intersection between the mouseray and the plane.
+ * @function intersectPlane
+ * @description Return the intersection between the mouseray and the plane.
  *
  * @param mouseRay - the mouse ray
  * @param planeOrigin - the origin of the plane
@@ -46072,8 +46049,8 @@ var makeColorMaterial = function(r, g, b, a) {
  * @returns the intersection point
  */
 var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
-  var vector = new THREE$1.Vector3();
-  var intersectPoint = new THREE$1.Vector3();
+  var vector = new THREE.Vector3();
+  var intersectPoint = new THREE.Vector3();
   vector.subVectors(planeOrigin, mouseRay.origin);
   var dot = mouseRay.direction.dot(planeNormal);
 
@@ -46090,7 +46067,8 @@ var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
 };
 
 /**
- * Find the closest point on targetRay to any point on mouseRay. Math taken from
+ * @function findClosestPoint
+ * @description Find the closest point on targetRay to any point on mouseRay. Math taken from
  * http://paulbourke.net/geometry/lineline3d/
  *
  * @param targetRay - the target ray to use
@@ -46098,7 +46076,7 @@ var intersectPlane = function(mouseRay, planeOrigin, planeNormal) {
  * @param the closest point between the two rays
  */
 var findClosestPoint = function(targetRay, mouseRay) {
-  var v13 = new THREE$1.Vector3();
+  var v13 = new THREE.Vector3();
   v13.subVectors(targetRay.origin, mouseRay.origin);
   var v43 = mouseRay.direction.clone();
   var v21 = targetRay.direction.clone();
@@ -46120,7 +46098,8 @@ var findClosestPoint = function(targetRay, mouseRay) {
 };
 
 /**
- * Find the closest point between the axis and the mouse.
+ * @function closestAxisPoint
+ * @description Find the closest point between the axis and the mouse.
  *
  * @param axisRay - the ray from the axis
  * @param camera - the camera to project from
@@ -46138,23 +46117,24 @@ var closestAxisPoint = function(axisRay, camera, mousePos) {
   var d = o2.clone().sub(o);
 
   // t is the 2d ray param of perpendicular projection of mousePos onto o
-  var tmp = new THREE$1.Vector2();
+  var tmp = new THREE.Vector2();
   // (t = (mousePos - o) * d / (d*d))
   var t = tmp.subVectors(mousePos, o).dot(d) / d.dot(d);
 
   // mp is the final 2d-projected mouse pos (mp = o + d*t)
-  var mp = new THREE$1.Vector2();
+  var mp = new THREE.Vector2();
   mp.addVectors(o, d.clone().multiplyScalar(t));
 
   // go back to 3d by shooting a ray
-  var vector = new THREE$1.Vector3(mp.x, mp.y, 0.5);
+  var vector = new THREE.Vector3(mp.x, mp.y, 0.5);
   vector.unproject(camera);
-  var mpRay = new THREE$1.Ray(camera.position, vector.sub(camera.position).normalize());
+  var mpRay = new THREE.Ray(camera.position, vector.sub(camera.position).normalize());
 
   return findClosestPoint(axisRay, mpRay);
 };
 
 /**
+ * @fileOverview
  * @author Julius Kammerl - jkammerl@willowgarage.com
  */
 
@@ -46377,19 +46357,19 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
   DepthCloud.prototype.initStreamer = function initStreamer () {
 
     if (this.metaLoaded) {
-      this.texture = new THREE$1.Texture(this.video);
-      this.geometry = new THREE$1.Geometry();
+      this.texture = new THREE.Texture(this.video);
+      this.geometry = new THREE.Geometry();
 
       for (var i = 0, l = this.width * this.height; i < l; i++) {
 
-        var vertex = new THREE$1.Vector3();
+        var vertex = new THREE.Vector3();
         vertex.x = (i % this.width);
         vertex.y = Math.floor(i / this.width);
 
         this.geometry.vertices.push(vertex);
       }
 
-      this.material = new THREE$1.ShaderMaterial({
+      this.material = new THREE.ShaderMaterial({
         uniforms : {
           'map' : {
             type : 't',
@@ -46436,7 +46416,7 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
         fragmentShader : this.fragment_shader
       });
 
-      this.mesh = new THREE$1.ParticleSystem(this.geometry, this.material);
+      this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
       this.mesh.position.x = 0;
       this.mesh.position.y = 0;
       this.add(this.mesh);
@@ -46468,35 +46448,36 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
   };
 
   return DepthCloud;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
 var Arrow = /*@__PURE__*/(function (superclass) {
   function Arrow(options) {
     options = options || {};
-    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
-    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
+    var origin = options.origin || new THREE.Vector3(0, 0, 0);
+    var direction = options.direction || new THREE.Vector3(1, 0, 0);
     var length = options.length || 1;
     var headLength = options.headLength || 0.2;
     var shaftDiameter = options.shaftDiameter || 0.05;
     var headDiameter = options.headDiameter || 0.1;
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    var material = options.material || new THREE.MeshBasicMaterial();
 
     var shaftLength = length - headLength;
 
     // create and merge geometry
-    var geometry = new THREE$1.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
+    var geometry = new THREE.CylinderGeometry(shaftDiameter * 0.5, shaftDiameter * 0.5, shaftLength,
         12, 1);
-    var m = new THREE$1.Matrix4();
-    m.setPosition(new THREE$1.Vector3(0, shaftLength * 0.5, 0));
+    var m = new THREE.Matrix4();
+    m.setPosition(new THREE.Vector3(0, shaftLength * 0.5, 0));
     geometry.applyMatrix(m);
 
     // create the head
-    var coneGeometry = new THREE$1.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
-    m.setPosition(new THREE$1.Vector3(0, shaftLength + (headLength * 0.5), 0));
+    var coneGeometry = new THREE.CylinderGeometry(0, headDiameter * 0.5, headLength, 12, 1);
+    m.setPosition(new THREE.Vector3(0, shaftLength + (headLength * 0.5), 0));
     coneGeometry.applyMatrix(m);
 
     // put the arrow together
@@ -46517,14 +46498,14 @@ var Arrow = /*@__PURE__*/(function (superclass) {
    * @param direction - the direction to set this arrow
    */
   Arrow.prototype.setDirection = function setDirection (direction) {
-    var axis = new THREE$1.Vector3();
+    var axis = new THREE.Vector3();
     if(direction.x === 0 && direction.z === 0){
       axis.set(1, 0, 0);
     } else {
       axis.set(0, 1, 0).cross(direction);
     }
-    var radians = Math.acos(new THREE$1.Vector3(0, 1, 0).dot(direction.clone().normalize()));
-    this.matrix = new THREE$1.Matrix4().makeRotationAxis(axis.normalize(), radians);
+    var radians = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction.clone().normalize()));
+    this.matrix = new THREE.Matrix4().makeRotationAxis(axis.normalize(), radians);
     this.rotation.setFromRotationMatrix(this.matrix, this.rotation.order);
   };
   /**
@@ -46556,9 +46537,10 @@ var Arrow = /*@__PURE__*/(function (superclass) {
   };
 
   return Arrow;
-}(THREE$1.Mesh));
+}(THREE.Mesh));
 
 /**
+ * @fileOverview
  * @author aleeper / http://adamleeper.com/
  * @author mrdoob / http://mrdoob.com/
  * @author gero3 / https://github.com/gero3
@@ -46589,21 +46571,21 @@ var Arrow = /*@__PURE__*/(function (superclass) {
  *  var mesh = new THREE.Mesh( geometry, material );
  */
 
-THREE$1.STLLoader = function (manager) {
+THREE.STLLoader = function (manager) {
 
-  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.STLLoader.prototype = {
+THREE.STLLoader.prototype = {
 
-  constructor: THREE$1.STLLoader,
+  constructor: THREE.STLLoader,
 
   load: function (url, onLoad, onProgress, onError) {
 
     var scope = this;
 
-    var loader = new THREE$1.FileLoader(scope.manager);
+    var loader = new THREE.FileLoader(scope.manager);
     loader.setResponseType('arraybuffer');
     loader.load(url, function (text) {
 
@@ -46684,7 +46666,7 @@ THREE$1.STLLoader.prototype = {
       var dataOffset = 84;
       var faceLength = 12 * 4 + 2;
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
 
       var vertices = [];
       var normals = [];
@@ -46738,12 +46720,12 @@ THREE$1.STLLoader.prototype = {
 
       }
 
-      geometry.addAttribute('position', new THREE$1.BufferAttribute(new Float32Array(vertices), 3));
-      geometry.addAttribute('normal', new THREE$1.BufferAttribute(new Float32Array(normals), 3));
+      geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+      geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
 
       if (hasColors) {
 
-        geometry.addAttribute('color', new THREE$1.BufferAttribute(new Float32Array(colors), 3));
+        geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
         geometry.hasColors = true;
         geometry.alpha = alpha;
 
@@ -46755,7 +46737,7 @@ THREE$1.STLLoader.prototype = {
 
     function parseASCII(data) {
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
       var patternFace = /facet([\s\S]*?)endfacet/g;
       var faceCounter = 0;
 
@@ -46766,7 +46748,7 @@ THREE$1.STLLoader.prototype = {
       var vertices = [];
       var normals = [];
 
-      var normal = new THREE$1.Vector3();
+      var normal = new THREE.Vector3();
 
       var result;
 
@@ -46814,8 +46796,8 @@ THREE$1.STLLoader.prototype = {
 
       }
 
-      geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(vertices, 3));
-      geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normals, 3));
+      geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 
       return geometry;
 
@@ -46882,6 +46864,7 @@ THREE$1.STLLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author mrdoob / http://mrdoob.com/
  *
  * @Modified by Jose Rojas from OBJLoader.js@r106
@@ -47244,23 +47227,23 @@ function ParserState() {
 
 }
 
-THREE$1.OBJLoader = function( manager ) {
+THREE.OBJLoader = function( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 	this.materials = null;
 
 };
 
-THREE$1.OBJLoader.prototype = {
+THREE.OBJLoader.prototype = {
 
-	constructor: THREE$1.OBJLoader,
+	constructor: THREE.OBJLoader,
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
 		var scope = this;
 
-		var loader = new THREE$1.FileLoader( scope.manager );
+		var loader = new THREE.FileLoader( scope.manager );
 		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
@@ -47511,7 +47494,7 @@ THREE$1.OBJLoader.prototype = {
 
 		state.finalize();
 
-		var container = new THREE$1.Group();
+		var container = new THREE.Object3D();
 		container.materialLibraries = [].concat( state.materialLibraries );
 
 		for ( var i = 0, l = state.objects.length; i < l; i ++ ) {
@@ -47526,13 +47509,13 @@ THREE$1.OBJLoader.prototype = {
 			// Skip o/g line declarations that did not follow with any faces
 			if ( geometry.vertices.length === 0 ) { continue; }
 
-			var buffergeometry = new THREE$1.BufferGeometry();
+			var buffergeometry = new THREE.BufferGeometry();
 
-			buffergeometry.addAttribute( 'position', new THREE$1.Float32BufferAttribute( geometry.vertices, 3 ) );
+			buffergeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( geometry.vertices, 3 ) );
 
 			if ( geometry.normals.length > 0 ) {
 
-				buffergeometry.addAttribute( 'normal', new THREE$1.Float32BufferAttribute( geometry.normals, 3 ) );
+				buffergeometry.addAttribute( 'normal', new THREE.Float32BufferAttribute( geometry.normals, 3 ) );
 
 			} else {
 
@@ -47543,13 +47526,13 @@ THREE$1.OBJLoader.prototype = {
 			if ( geometry.colors.length > 0 ) {
 
 				hasVertexColors = true;
-				buffergeometry.addAttribute( 'color', new THREE$1.Float32BufferAttribute( geometry.colors, 3 ) );
+				buffergeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( geometry.colors, 3 ) );
 
 			}
 
 			if ( geometry.uvs.length > 0 ) {
 
-				buffergeometry.addAttribute( 'uv', new THREE$1.Float32BufferAttribute( geometry.uvs, 2 ) );
+				buffergeometry.addAttribute( 'uv', new THREE.Float32BufferAttribute( geometry.uvs, 2 ) );
 
 			}
 
@@ -47567,18 +47550,18 @@ THREE$1.OBJLoader.prototype = {
 					material = this.materials.create( sourceMaterial.name );
 
 					// mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
-					if ( isLine && material && ! ( material instanceof THREE$1.LineBasicMaterial ) ) {
+					if ( isLine && material && ! ( material instanceof THREE.LineBasicMaterial ) ) {
 
-						var materialLine = new THREE$1.LineBasicMaterial();
-						THREE$1.Material.prototype.copy.call( materialLine, material );
+						var materialLine = new THREE.LineBasicMaterial();
+						THREE.Material.prototype.copy.call( materialLine, material );
 						materialLine.color.copy( material.color );
 						materialLine.lights = false;
 						material = materialLine;
 
-					} else if ( isPoints && material && ! ( material instanceof THREE$1.PointsMaterial ) ) {
+					} else if ( isPoints && material && ! ( material instanceof THREE.PointsMaterial ) ) {
 
-						var materialPoints = new THREE$1.PointsMaterial( { size: 10, sizeAttenuation: false } );
-						THREE$1.Material.prototype.copy.call( materialPoints, material );
+						var materialPoints = new THREE.PointsMaterial( { size: 10, sizeAttenuation: false } );
+						THREE.Material.prototype.copy.call( materialPoints, material );
 						materialPoints.color.copy( material.color );
 						materialPoints.map = material.map;
 						materialPoints.lights = false;
@@ -47592,15 +47575,15 @@ THREE$1.OBJLoader.prototype = {
 
 					if ( isLine ) {
 
-						material = new THREE$1.LineBasicMaterial();
+						material = new THREE.LineBasicMaterial();
 
 					} else if ( isPoints ) {
 
-						material = new THREE$1.PointsMaterial( { size: 1, sizeAttenuation: false } );
+						material = new THREE.PointsMaterial( { size: 1, sizeAttenuation: false } );
 
 					} else {
 
-						material = new THREE$1.MeshPhongMaterial();
+						material = new THREE.MeshPhongMaterial();
 
 					}
 
@@ -47609,7 +47592,7 @@ THREE$1.OBJLoader.prototype = {
 				}
 
 				material.flatShading = sourceMaterial.smooth ? false : true;
-				material.vertexColors = hasVertexColors ? THREE$1.VertexColors : THREE$1.NoColors;
+				material.vertexColors = hasVertexColors ? THREE.VertexColors : THREE.NoColors;
 
 				createdMaterials.push( material );
 
@@ -47630,15 +47613,15 @@ THREE$1.OBJLoader.prototype = {
 
 				if ( isLine ) {
 
-					mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials );
+					mesh = new THREE.LineSegments( buffergeometry, createdMaterials );
 
 				} else if ( isPoints ) {
 
-					mesh = new THREE$1.Points( buffergeometry, createdMaterials );
+					mesh = new THREE.Points( buffergeometry, createdMaterials );
 
 				} else {
 
-					mesh = new THREE$1.Mesh( buffergeometry, createdMaterials );
+					mesh = new THREE.Mesh( buffergeometry, createdMaterials );
 
 				}
 
@@ -47646,15 +47629,15 @@ THREE$1.OBJLoader.prototype = {
 
 				if ( isLine ) {
 
-					mesh = new THREE$1.LineSegments( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.LineSegments( buffergeometry, createdMaterials[ 0 ] );
 
 				} else if ( isPoints ) {
 
-					mesh = new THREE$1.Points( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.Points( buffergeometry, createdMaterials[ 0 ] );
 
 				} else {
 
-					mesh = new THREE$1.Mesh( buffergeometry, createdMaterials[ 0 ] );
+					mesh = new THREE.Mesh( buffergeometry, createdMaterials[ 0 ] );
 
 				}
 
@@ -47675,20 +47658,21 @@ THREE$1.OBJLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * Loads a Wavefront .mtl file specifying materials
  *
  * @author angelxuanchang
  */
 
-THREE$1.MTLLoader = function ( manager ) {
+THREE.MTLLoader = function ( manager ) {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE$1.DefaultLoadingManager;
+	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.MTLLoader.prototype = {
+THREE.MTLLoader.prototype = {
 
-	constructor: THREE$1.MTLLoader,
+	constructor: THREE.MTLLoader,
 
 	crossOrigin: 'anonymous',
 
@@ -47709,9 +47693,9 @@ THREE$1.MTLLoader.prototype = {
 
 		var scope = this;
 
-		var path = ( this.path === undefined ) ? THREE$1.LoaderUtils.extractUrlBase( url ) : this.path;
+		var path = ( this.path === undefined ) ? THREE.LoaderUtils.extractUrlBase( url ) : this.path;
 
-		var loader = new THREE$1.FileLoader( this.manager );
+		var loader = new THREE.FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.load( url, function ( text ) {
 
@@ -47842,7 +47826,7 @@ THREE$1.MTLLoader.prototype = {
 
 		}
 
-		var materialCreator = new THREE$1.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
+		var materialCreator = new THREE.MTLLoader.MaterialCreator( this.resourcePath || path, this.materialOptions );
 		materialCreator.setCrossOrigin( this.crossOrigin );
 		materialCreator.setManager( this.manager );
 		materialCreator.setMaterials( materialsInfo );
@@ -47867,7 +47851,7 @@ THREE$1.MTLLoader.prototype = {
  * @constructor
  */
 
-THREE$1.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
+THREE.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
 
 	this.baseUrl = baseUrl || '';
 	this.options = options;
@@ -47876,14 +47860,14 @@ THREE$1.MTLLoader.MaterialCreator = function ( baseUrl, options ) {
 	this.materialsArray = [];
 	this.nameLookup = {};
 
-	this.side = ( this.options && this.options.side ) ? this.options.side : THREE$1.FrontSide;
-	this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE$1.RepeatWrapping;
+	this.side = ( this.options && this.options.side ) ? this.options.side : THREE.FrontSide;
+	this.wrap = ( this.options && this.options.wrap ) ? this.options.wrap : THREE.RepeatWrapping;
 
 };
 
-THREE$1.MTLLoader.MaterialCreator.prototype = {
+THREE.MTLLoader.MaterialCreator.prototype = {
 
-	constructor: THREE$1.MTLLoader.MaterialCreator,
+	constructor: THREE.MTLLoader.MaterialCreator,
 
 	crossOrigin: 'anonymous',
 
@@ -47956,10 +47940,6 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 							}
 
 						}
-
-						break;
-
-					default:
 
 						break;
 
@@ -48080,21 +48060,21 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 					// Diffuse color (color under white light) using RGB values
 
-					params.color = new THREE$1.Color().fromArray( value );
+					params.color = new THREE.Color().fromArray( value );
 
 					break;
 
 				case 'ks':
 
 					// Specular color (color when light is reflected from shiny surface) using RGB values
-					params.specular = new THREE$1.Color().fromArray( value );
+					params.specular = new THREE.Color().fromArray( value );
 
 					break;
 
 				case 'ke':
 
 					// Emissive using RGB values
-					params.emissive = new THREE$1.Color().fromArray( value );
+					params.emissive = new THREE.Color().fromArray( value );
 
 					break;
 
@@ -48181,14 +48161,11 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 					break;
 
-				default:
-					break;
-
 			}
 
 		}
 
-		this.materials[ materialName ] = new THREE$1.MeshPhongMaterial( params );
+		this.materials[ materialName ] = new THREE.MeshPhongMaterial( params );
 		return this.materials[ materialName ];
 
 	},
@@ -48197,8 +48174,8 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 
 		var texParams = {
 
-			scale: new THREE$1.Vector2( 1, 1 ),
-			offset: new THREE$1.Vector2( 0, 0 )
+			scale: new THREE.Vector2( 1, 1 ),
+			offset: new THREE.Vector2( 0, 0 )
 
 		 };
 
@@ -48240,12 +48217,12 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 	loadTexture: function ( url, mapping, onLoad, onProgress, onError ) {
 
 		var texture;
-		var loader = THREE$1.Loader.Handlers.get( url );
-		var manager = ( this.manager !== undefined ) ? this.manager : THREE$1.DefaultLoadingManager;
+		var loader = THREE.Loader.Handlers.get( url );
+		var manager = ( this.manager !== undefined ) ? this.manager : THREE.DefaultLoadingManager;
 
 		if ( loader === null ) {
 
-			loader = new THREE$1.TextureLoader( manager );
+			loader = new THREE.TextureLoader( manager );
 
 		}
 
@@ -48261,6 +48238,7 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author mrdoob / http://mrdoob.com/
  * @author Mugen87 / https://github.com/Mugen87
  *
@@ -48272,15 +48250,15 @@ THREE$1.MTLLoader.MaterialCreator.prototype = {
  * It is a fork from ColladerLoader.js in three.js. It follows three.js license.
  */
 
-THREE$1.ColladaLoader = function (manager) {
+THREE.ColladaLoader = function (manager) {
 
-  this.manager = (manager !== undefined) ? manager : THREE$1.DefaultLoadingManager;
+  this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 
 };
 
-THREE$1.ColladaLoader.prototype = {
+THREE.ColladaLoader.prototype = {
 
-  constructor: THREE$1.ColladaLoader,
+  constructor: THREE.ColladaLoader,
 
   crossOrigin: 'Anonymous',
 
@@ -48288,9 +48266,9 @@ THREE$1.ColladaLoader.prototype = {
 
     var scope = this;
 
-    var path = THREE$1.Loader.prototype.extractUrlBase(url);
+    var path = THREE.Loader.prototype.extractUrlBase(url);
 
-    var loader = new THREE$1.FileLoader(scope.manager);
+    var loader = new THREE.FileLoader(scope.manager);
     loader.load(url, function (text) {
 
       onLoad(scope.parse(text, path));
@@ -48752,9 +48730,9 @@ THREE$1.ColladaLoader.prototype = {
 
     }
 
-    var position = new THREE$1.Vector3();
-    var scale = new THREE$1.Vector3();
-    var quaternion = new THREE$1.Quaternion();
+    var position = new THREE.Vector3();
+    var scale = new THREE.Vector3();
+    var quaternion = new THREE.Quaternion();
 
     function createKeyframeTracks(animation, tracks) {
 
@@ -48783,9 +48761,9 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      if (positionData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.position', times, positionData)); }
-      if (quaternionData.length > 0) { tracks.push(new THREE$1.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
-      if (scaleData.length > 0) { tracks.push(new THREE$1.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
+      if (positionData.length > 0) { tracks.push(new THREE.VectorKeyframeTrack(name + '.position', times, positionData)); }
+      if (quaternionData.length > 0) { tracks.push(new THREE.QuaternionKeyframeTrack(name + '.quaternion', times, quaternionData)); }
+      if (scaleData.length > 0) { tracks.push(new THREE.VectorKeyframeTrack(name + '.scale', times, scaleData)); }
 
       return tracks;
 
@@ -48969,7 +48947,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      return new THREE$1.AnimationClip(name, duration, tracks);
+      return new THREE.AnimationClip(name, duration, tracks);
 
     }
 
@@ -49220,14 +49198,14 @@ THREE$1.ColladaLoader.prototype = {
 
       // setup bind matrix
 
-      build.bindMatrix = new THREE$1.Matrix4().fromArray(data.bindShapeMatrix).transpose();
+      build.bindMatrix = new THREE.Matrix4().fromArray(data.bindShapeMatrix).transpose();
 
       // process bones and inverse bind matrix data
 
       for (i = 0, l = jointSource.array.length; i < l; i++) {
 
         var name = jointSource.array[i];
-        var boneInverse = new THREE$1.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
+        var boneInverse = new THREE.Matrix4().fromArray(inverseSource.array, i * inverseSource.stride).transpose();
 
         build.joints.push({ name: name, boneInverse: boneInverse });
 
@@ -49638,15 +49616,15 @@ THREE$1.ColladaLoader.prototype = {
 
         case 'phong':
         case 'blinn':
-          material = new THREE$1.MeshPhongMaterial();
+          material = new THREE.MeshPhongMaterial();
           break;
 
         case 'lambert':
-          material = new THREE$1.MeshLambertMaterial();
+          material = new THREE.MeshLambertMaterial();
           break;
 
         default:
-          material = new THREE$1.MeshBasicMaterial();
+          material = new THREE.MeshBasicMaterial();
           break;
 
       }
@@ -49669,16 +49647,16 @@ THREE$1.ColladaLoader.prototype = {
 
             var technique = extra.technique;
 
-            texture.wrapS = technique.wrapU ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
-            texture.wrapT = technique.wrapV ? THREE$1.RepeatWrapping : THREE$1.ClampToEdgeWrapping;
+            texture.wrapS = technique.wrapU ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+            texture.wrapT = technique.wrapV ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
 
             texture.offset.set(technique.offsetU || 0, technique.offsetV || 0);
             texture.repeat.set(technique.repeatU || 1, technique.repeatV || 1);
 
           } else {
 
-            texture.wrapS = THREE$1.RepeatWrapping;
-            texture.wrapT = THREE$1.RepeatWrapping;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
 
           }
 
@@ -49847,7 +49825,7 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.optics.technique) {
 
         case 'perspective':
-          camera = new THREE$1.PerspectiveCamera(
+          camera = new THREE.PerspectiveCamera(
             data.optics.parameters.yfov,
             data.optics.parameters.aspect_ratio,
             data.optics.parameters.znear,
@@ -49866,7 +49844,7 @@ THREE$1.ColladaLoader.prototype = {
           xmag *= 0.5;
           ymag *= 0.5;
 
-          camera = new THREE$1.OrthographicCamera(
+          camera = new THREE.OrthographicCamera(
             - xmag, xmag, ymag, - ymag, // left, right, top, bottom
             data.optics.parameters.znear,
             data.optics.parameters.zfar
@@ -49874,7 +49852,7 @@ THREE$1.ColladaLoader.prototype = {
           break;
 
         default:
-          camera = new THREE$1.PerspectiveCamera();
+          camera = new THREE.PerspectiveCamera();
           break;
 
       }
@@ -49961,7 +49939,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'color':
             var array = parseFloats(child.textContent);
-            data.color = new THREE$1.Color().fromArray(array);
+            data.color = new THREE.Color().fromArray(array);
             break;
 
           case 'falloff_angle':
@@ -49988,19 +49966,19 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.technique) {
 
         case 'directional':
-          light = new THREE$1.DirectionalLight();
+          light = new THREE.DirectionalLight();
           break;
 
         case 'point':
-          light = new THREE$1.PointLight();
+          light = new THREE.PointLight();
           break;
 
         case 'spot':
-          light = new THREE$1.SpotLight();
+          light = new THREE.SpotLight();
           break;
 
         case 'ambient':
-          light = new THREE$1.AmbientLight();
+          light = new THREE.AmbientLight();
           break;
 
       }
@@ -50224,7 +50202,7 @@ THREE$1.ColladaLoader.prototype = {
       var skinIndex = { array: [], stride: 4 };
       var skinWeight = { array: [], stride: 4 };
 
-      var geometry = new THREE$1.BufferGeometry();
+      var geometry = new THREE.BufferGeometry();
 
       var materialKeys = [];
 
@@ -50338,13 +50316,13 @@ THREE$1.ColladaLoader.prototype = {
 
       // build geometry
 
-      if (position.array.length > 0) { geometry.addAttribute('position', new THREE$1.Float32BufferAttribute(position.array, position.stride)); }
-      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE$1.Float32BufferAttribute(normal.array, normal.stride)); }
-      if (color.array.length > 0) { geometry.addAttribute('color', new THREE$1.Float32BufferAttribute(color.array, color.stride)); }
-      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE$1.Float32BufferAttribute(uv.array, uv.stride)); }
+      if (position.array.length > 0) { geometry.addAttribute('position', new THREE.Float32BufferAttribute(position.array, position.stride)); }
+      if (normal.array.length > 0) { geometry.addAttribute('normal', new THREE.Float32BufferAttribute(normal.array, normal.stride)); }
+      if (color.array.length > 0) { geometry.addAttribute('color', new THREE.Float32BufferAttribute(color.array, color.stride)); }
+      if (uv.array.length > 0) { geometry.addAttribute('uv', new THREE.Float32BufferAttribute(uv.array, uv.stride)); }
 
-      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE$1.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
-      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE$1.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
+      if (skinIndex.array.length > 0) { geometry.addAttribute('skinIndex', new THREE.Float32BufferAttribute(skinIndex.array, skinIndex.stride)); }
+      if (skinWeight.array.length > 0) { geometry.addAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight.array, skinWeight.stride)); }
 
       build.data = geometry;
       build.type = primitives[0].type;
@@ -50536,7 +50514,7 @@ THREE$1.ColladaLoader.prototype = {
       var data = {
         sid: xml.getAttribute('sid'),
         name: xml.getAttribute('name') || '',
-        axis: new THREE$1.Vector3(),
+        axis: new THREE.Vector3(),
         limits: {
           min: 0,
           max: 0
@@ -50667,19 +50645,19 @@ THREE$1.ColladaLoader.prototype = {
       switch (data.type) {
 
         case 'matrix':
-          data.obj = new THREE$1.Matrix4();
+          data.obj = new THREE.Matrix4();
           data.obj.fromArray(array).transpose();
           break;
 
         case 'translate':
-          data.obj = new THREE$1.Vector3();
+          data.obj = new THREE.Vector3();
           data.obj.fromArray(array);
           break;
 
         case 'rotate':
-          data.obj = new THREE$1.Vector3();
+          data.obj = new THREE.Vector3();
           data.obj.fromArray(array);
-          data.angle = THREE$1.Math.degToRad(array[3]);
+          data.angle = THREE.Math.degToRad(array[3]);
           break;
 
       }
@@ -50816,7 +50794,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      var m0 = new THREE$1.Matrix4();
+      var m0 = new THREE.Matrix4();
 
       kinematics = {
 
@@ -50875,7 +50853,7 @@ THREE$1.ColladaLoader.prototype = {
                   switch (joint.type) {
 
                     case 'revolute':
-                      matrix.multiply(m0.makeRotationAxis(axis, THREE$1.Math.degToRad(value)));
+                      matrix.multiply(m0.makeRotationAxis(axis, THREE.Math.degToRad(value)));
                       break;
 
                     case 'prismatic':
@@ -50949,7 +50927,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'matrix':
             var array = parseFloats(child.textContent);
-            var matrix = new THREE$1.Matrix4().fromArray(array).transpose();
+            var matrix = new THREE.Matrix4().fromArray(array).transpose();
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -50960,7 +50938,7 @@ THREE$1.ColladaLoader.prototype = {
           case 'translate':
           case 'scale':
             var array = parseFloats(child.textContent);
-            var vector = new THREE$1.Vector3().fromArray(array);
+            var vector = new THREE.Vector3().fromArray(array);
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -50970,8 +50948,8 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'rotate':
             var array = parseFloats(child.textContent);
-            var vector = new THREE$1.Vector3().fromArray(array);
-            var angle = THREE$1.Math.degToRad(array[3]);
+            var vector = new THREE.Vector3().fromArray(array);
+            var angle = THREE.Math.degToRad(array[3]);
             transforms.push({
               sid: child.getAttribute('sid'),
               type: child.nodeName,
@@ -51010,8 +50988,8 @@ THREE$1.ColladaLoader.prototype = {
 
     }
 
-    var matrix = new THREE$1.Matrix4();
-    var vector = new THREE$1.Vector3();
+    var matrix = new THREE.Matrix4();
+    var vector = new THREE.Vector3();
 
     function parseNode(xml) {
 
@@ -51020,7 +50998,7 @@ THREE$1.ColladaLoader.prototype = {
         type: xml.getAttribute('type'),
         id: xml.getAttribute('id'),
         sid: xml.getAttribute('sid'),
-        matrix: new THREE$1.Matrix4(),
+        matrix: new THREE.Matrix4(),
         nodes: [],
         instanceCameras: [],
         instanceControllers: [],
@@ -51078,7 +51056,7 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'rotate':
             var array = parseFloats(child.textContent);
-            var angle = THREE$1.Math.degToRad(array[3]);
+            var angle = THREE.Math.degToRad(array[3]);
             data.matrix.multiply(matrix.makeRotationAxis(vector.fromArray(array), angle));
             data.transforms[child.getAttribute('sid')] = child.nodeName;
             break;
@@ -51136,9 +51114,6 @@ THREE$1.ColladaLoader.prototype = {
 
           case 'skeleton':
             data.skeletons.push(parseId(child.textContent));
-            break;
-
-          default:
             break;
 
         }
@@ -51219,7 +51194,7 @@ THREE$1.ColladaLoader.prototype = {
 
       }
 
-      return new THREE$1.Skeleton(bones, boneInverses);
+      return new THREE.Skeleton(bones, boneInverses);
 
     }
 
@@ -51256,7 +51231,7 @@ THREE$1.ColladaLoader.prototype = {
             // and weights defined for it. But we still have to add the bone to the sorted bone list in order to
             // ensure a correct animation of the model.
 
-            boneInverse = new THREE$1.Matrix4();
+            boneInverse = new THREE.Matrix4();
 
           }
 
@@ -51384,7 +51359,7 @@ THREE$1.ColladaLoader.prototype = {
 
       } else {
 
-        object = (type === 'JOINT') ? new THREE$1.Bone() : new THREE$1.Group();
+        object = (type === 'JOINT') ? new THREE.Bone() : new THREE.Object3D();
 
         for (var i = 0; i < objects.length; i++) {
 
@@ -51433,11 +51408,11 @@ THREE$1.ColladaLoader.prototype = {
 
           if (type === 'lines' || type === 'linestrips') {
 
-            materials.push(new THREE$1.LineBasicMaterial());
+            materials.push(new THREE.LineBasicMaterial());
 
           } else {
 
-            materials.push(new THREE$1.MeshPhongMaterial());
+            materials.push(new THREE.MeshPhongMaterial());
 
           }
 
@@ -51468,22 +51443,22 @@ THREE$1.ColladaLoader.prototype = {
         switch (type) {
 
           case 'lines':
-            object = new THREE$1.LineSegments(geometry.data, material);
+            object = new THREE.LineSegments(geometry.data, material);
             break;
 
           case 'linestrips':
-            object = new THREE$1.Line(geometry.data, material);
+            object = new THREE.Line(geometry.data, material);
             break;
 
           case 'triangles':
           case 'polylist':
             if (skinning) {
 
-              object = new THREE$1.SkinnedMesh(geometry.data, material);
+              object = new THREE.SkinnedMesh(geometry.data, material);
 
             } else {
 
-              object = new THREE$1.Mesh(geometry.data, material);
+              object = new THREE.Mesh(geometry.data, material);
 
             }
             break;
@@ -51529,7 +51504,7 @@ THREE$1.ColladaLoader.prototype = {
 
     function buildVisualScene(data) {
 
-      var group = new THREE$1.Group();
+      var group = new THREE.Object3D();
       group.name = data.name;
 
       var children = data.children;
@@ -51595,7 +51570,7 @@ THREE$1.ColladaLoader.prototype = {
 
           }
 
-          animations.push(new THREE$1.AnimationClip('default', - 1, tracks));
+          animations.push(new THREE.AnimationClip('default', - 1, tracks));
 
         }
 
@@ -51615,7 +51590,7 @@ THREE$1.ColladaLoader.prototype = {
 
     if (text.length === 0) {
 
-      return { scene: new THREE$1.Scene() };
+      return { scene: new THREE.Scene() };
 
     }
 
@@ -51633,7 +51608,7 @@ THREE$1.ColladaLoader.prototype = {
     console.log('THREE.ColladaLoader: File version', version);
 
     var asset = parseAsset(getElementsByTagName(collada, 'asset')[0]);
-    var textureLoader = new THREE$1.TextureLoader(this.manager);
+    var textureLoader = new THREE.TextureLoader(this.manager);
     textureLoader.setPath(path).setCrossOrigin(this.crossOrigin);
 
     //
@@ -51725,6 +51700,7 @@ THREE$1.ColladaLoader.prototype = {
 };
 
 /**
+ * @fileOverview
  * @author Jose Rojas - jrojas@redlinesolutions.co
  */
 
@@ -51748,7 +51724,7 @@ var MeshLoader = {
    loaders: {
      'dae': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.ColladaLoader();
+       var loader = new THREE.ColladaLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51761,7 +51737,7 @@ var MeshLoader = {
            // add a texture to anything that is missing one
            if(material !== null) {
              collada.scene.traverse(function(child) {
-               if(child instanceof THREE$1.Mesh) {
+               if(child instanceof THREE.Mesh) {
                  if(child.material === undefined) {
                    child.material = material;
                  }
@@ -51777,8 +51753,8 @@ var MeshLoader = {
      },
 
      'obj': function(meshRes, uri, options) {
-       var material = options.material;
-       var loader = new THREE$1.OBJLoader();
+       options.material;
+       var loader = new THREE.OBJLoader(options.loader);
        loader.log = function(message) {
          if (meshRes.warnings) {
            console.warn(message);
@@ -51787,7 +51763,7 @@ var MeshLoader = {
 
        //Reload the mesh again after materials have been loaded
        // @todo: this should be improved so that the file doesn't need to be
-       // reloaded however that would involve more changes within the OBJLoader.       
+       // reloaded however that would involve more changes within the OBJLoader.
        function onMaterialsLoaded(loader, materials) {
          loader.
          setMaterials(materials).
@@ -51805,12 +51781,12 @@ var MeshLoader = {
          uri,
          function OBJFileReady(obj) {
 
-           var baseUri = THREE$1.LoaderUtils.extractUrlBase( uri );
+           var baseUri = THREE.LoaderUtils.extractUrlBase( uri );
 
            if (obj.materialLibraries.length) {
              // load the material libraries
              var materialUri = obj.materialLibraries[0];
-             new THREE$1.MTLLoader().setPath(baseUri).load(
+             new THREE.MTLLoader(options.loader).setPath(baseUri).load(
                materialUri,
                function(materials) {
                   materials.preload();
@@ -51833,17 +51809,17 @@ var MeshLoader = {
 
      'stl': function(meshRes, uri, options) {
        var material = options.material;
-       var loader = new THREE$1.STLLoader();
+       var loader = new THREE.STLLoader(options.loader);
        {
          loader.load(uri,
                      function ( geometry ) {
                        geometry.computeFaceNormals();
                        var mesh;
                        if(material !== null) {
-                         mesh = new THREE$1.Mesh( geometry, material );
+                         mesh = new THREE.Mesh( geometry, material );
                        } else {
-                         mesh = new THREE$1.Mesh( geometry,
-                                                new THREE$1.MeshBasicMaterial( { color: 0x999999 } ) );
+                         mesh = new THREE.Mesh( geometry,
+                                                new THREE.MeshBasicMaterial( { color: 0x999999 } ) );
                        }
                        meshRes.add(mesh);
                      },
@@ -51857,6 +51833,7 @@ var MeshLoader = {
  };
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -51867,7 +51844,7 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var path = options.path || '/';
     var resource = options.resource;
-    var material = options.material || null;
+    options.material || null;
     this.warnings = options.warnings;
 
 
@@ -51893,28 +51870,29 @@ var MeshResource = /*@__PURE__*/(function (superclass) {
   MeshResource.prototype.constructor = MeshResource;
 
   return MeshResource;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
 var TriangleList = /*@__PURE__*/(function (superclass) {
   function TriangleList(options) {
     options = options || {};
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    var material = options.material || new THREE.MeshBasicMaterial();
     var vertices = options.vertices;
     var colors = options.colors;
 
     superclass.call(this);
 
     // set the material to be double sided
-    material.side = THREE$1.DoubleSide;
+    material.side = THREE.DoubleSide;
 
     // construct the geometry
-    var geometry = new THREE$1.Geometry();
+    var geometry = new THREE.Geometry();
     for (i = 0; i < vertices.length; i++) {
-      geometry.vertices.push(new THREE$1.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
+      geometry.vertices.push(new THREE.Vector3(vertices[i].x, vertices[i].y, vertices[i].z));
     }
 
     // set the colors
@@ -51922,27 +51900,27 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
     if (colors.length === vertices.length) {
       // use per-vertex color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceVert = new THREE$1.Face3(i, i + 1, i + 2);
+        var faceVert = new THREE.Face3(i, i + 1, i + 2);
         for (j = i * 3; j < i * 3 + 3; i++) {
-          var color = new THREE$1.Color();
+          var color = new THREE.Color();
           color.setRGB(colors[i].r, colors[i].g, colors[i].b);
           faceVert.vertexColors.push(color);
         }
         geometry.faces.push(faceVert);
       }
-      material.vertexColors = THREE$1.VertexColors;
+      material.vertexColors = THREE.VertexColors;
     } else if (colors.length === vertices.length / 3) {
       // use per-triangle color
       for (i = 0; i < vertices.length; i += 3) {
-        var faceTri = new THREE$1.Face3(i, i + 1, i + 2);
+        var faceTri = new THREE.Face3(i, i + 1, i + 2);
         faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
         geometry.faces.push(faceTri);
       }
-      material.vertexColors = THREE$1.FaceColors;
+      material.vertexColors = THREE.FaceColors;
     } else {
       // use marker color
       for (i = 0; i < vertices.length; i += 3) {
-        var face = new THREE$1.Face3(i, i + 1, i + 2);
+        var face = new THREE.Face3(i, i + 1, i + 2);
         geometry.faces.push(face);
       }
     }
@@ -51951,7 +51929,7 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
     geometry.computeBoundingSphere();
     geometry.computeFaceNormals();
 
-    this.add(new THREE$1.Mesh(geometry, material));
+    this.add(new THREE.Mesh(geometry, material));
   }
 
   if ( superclass ) TriangleList.__proto__ = superclass;
@@ -51967,9 +51945,10 @@ var TriangleList = /*@__PURE__*/(function (superclass) {
   };
 
   return TriangleList;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -52013,8 +51992,8 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // determine the points
         var direction, p1 = null;
         if (message.points.length === 2) {
-          p1 = new THREE$1.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
-          var p2 = new THREE$1.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
+          p1 = new THREE.Vector3(message.points[0].x, message.points[0].y, message.points[0].z);
+          var p2 = new THREE.Vector3(message.points[1].x, message.points[1].y, message.points[1].z);
           direction = p1.clone().negate().add(p2);
           // direction = p2 - p1;
           len = direction.length();
@@ -52039,13 +52018,13 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_CUBE:
         // set the cube dimensions
-        var cubeGeom = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
-        this.add(new THREE$1.Mesh(cubeGeom, colorMaterial));
+        var cubeGeom = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+        this.add(new THREE.Mesh(cubeGeom, colorMaterial));
         break;
       case MARKER_SPHERE:
         // set the sphere dimensions
-        var sphereGeom = new THREE$1.SphereGeometry(0.5);
-        var sphereMesh = new THREE$1.Mesh(sphereGeom, colorMaterial);
+        var sphereGeom = new THREE.SphereGeometry(0.5);
+        var sphereMesh = new THREE.Mesh(sphereGeom, colorMaterial);
         sphereMesh.scale.x = message.scale.x;
         sphereMesh.scale.y = message.scale.y;
         sphereMesh.scale.z = message.scale.z;
@@ -52053,22 +52032,22 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_CYLINDER:
         // set the cylinder dimensions
-        var cylinderGeom = new THREE$1.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
-        var cylinderMesh = new THREE$1.Mesh(cylinderGeom, colorMaterial);
-        cylinderMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
+        var cylinderGeom = new THREE.CylinderGeometry(0.5, 0.5, 1, 16, 1, false);
+        var cylinderMesh = new THREE.Mesh(cylinderGeom, colorMaterial);
+        cylinderMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
         cylinderMesh.scale.set(message.scale.x, message.scale.z, message.scale.y);
         this.add(cylinderMesh);
         break;
       case MARKER_LINE_STRIP:
-        var lineStripGeom = new THREE$1.Geometry();
-        var lineStripMaterial = new THREE$1.LineBasicMaterial({
+        var lineStripGeom = new THREE.Geometry();
+        var lineStripMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var j;
         for ( j = 0; j < message.points.length; j++) {
-          var pt = new THREE$1.Vector3();
+          var pt = new THREE.Vector3();
           pt.x = message.points[j].x;
           pt.y = message.points[j].y;
           pt.z = message.points[j].z;
@@ -52079,7 +52058,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           lineStripMaterial.vertexColors = true;
           for ( j = 0; j < message.points.length; j++) {
-            var clr = new THREE$1.Color();
+            var clr = new THREE.Color();
             clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
             lineStripGeom.colors.push(clr);
           }
@@ -52088,18 +52067,18 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE$1.Line(lineStripGeom, lineStripMaterial));
+        this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
         break;
       case MARKER_LINE_LIST:
-        var lineListGeom = new THREE$1.Geometry();
-        var lineListMaterial = new THREE$1.LineBasicMaterial({
+        var lineListGeom = new THREE.Geometry();
+        var lineListMaterial = new THREE.LineBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var k;
         for ( k = 0; k < message.points.length; k++) {
-          var v = new THREE$1.Vector3();
+          var v = new THREE.Vector3();
           v.x = message.points[k].x;
           v.y = message.points[k].y;
           v.z = message.points[k].z;
@@ -52110,7 +52089,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           lineListMaterial.vertexColors = true;
           for ( k = 0; k < message.points.length; k++) {
-            var c = new THREE$1.Color();
+            var c = new THREE.Color();
             c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
             lineListGeom.colors.push(c);
           }
@@ -52119,11 +52098,11 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE$1.Line(lineListGeom, lineListMaterial,THREE$1.LinePieces));
+        this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
         break;
       case MARKER_CUBE_LIST:
         // holds the main object
-        var object = new THREE$1.Object3D();
+        var object = new THREE.Object3D();
 
         // check if custom colors should be used
         var numPoints = message.points.length;
@@ -52134,7 +52113,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // add the points
         var p, cube, curColor, newMesh;
         for (p = 0; p < numPoints; p+=stepSize) {
-          cube = new THREE$1.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
+          cube = new THREE.BoxGeometry(message.scale.x, message.scale.y, message.scale.z);
 
           // check the color
           if(createColors) {
@@ -52143,7 +52122,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
             curColor = colorMaterial;
           }
 
-          newMesh = new THREE$1.Mesh(cube, curColor);
+          newMesh = new THREE.Mesh(cube, curColor);
           newMesh.position.x = message.points[p].x;
           newMesh.position.y = message.points[p].y;
           newMesh.position.z = message.points[p].z;
@@ -52154,7 +52133,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_SPHERE_LIST:
         // holds the main object
-        var sphereObject = new THREE$1.Object3D();
+        var sphereObject = new THREE.Object3D();
 
         // check if custom colors should be used
         var numSpherePoints = message.points.length;
@@ -52165,7 +52144,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         // add the points
         var q, sphere, curSphereColor, newSphereMesh;
         for (q = 0; q < numSpherePoints; q+=sphereStepSize) {
-          sphere = new THREE$1.SphereGeometry(0.5, 8, 8);
+          sphere = new THREE.SphereGeometry(0.5, 8, 8);
 
           // check the color
           if(createSphereColors) {
@@ -52174,7 +52153,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
             curSphereColor = colorMaterial;
           }
 
-          newSphereMesh = new THREE$1.Mesh(sphere, curSphereColor);
+          newSphereMesh = new THREE.Mesh(sphere, curSphereColor);
           newSphereMesh.scale.x = message.scale.x;
           newSphereMesh.scale.y = message.scale.y;
           newSphereMesh.scale.z = message.scale.z;
@@ -52187,15 +52166,15 @@ var Marker = /*@__PURE__*/(function (superclass) {
         break;
       case MARKER_POINTS:
         // for now, use a particle system for the lists
-        var geometry = new THREE$1.Geometry();
-        var material = new THREE$1.ParticleBasicMaterial({
+        var geometry = new THREE.Geometry();
+        var material = new THREE.ParticleBasicMaterial({
           size : message.scale.x
         });
 
         // add the points
         var i;
         for ( i = 0; i < message.points.length; i++) {
-          var vertex = new THREE$1.Vector3();
+          var vertex = new THREE.Vector3();
           vertex.x = message.points[i].x;
           vertex.y = message.points[i].y;
           vertex.z = message.points[i].z;
@@ -52206,7 +52185,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         if (message.colors.length === message.points.length) {
           material.vertexColors = true;
           for ( i = 0; i < message.points.length; i++) {
-            var color = new THREE$1.Color();
+            var color = new THREE.Color();
             color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
             geometry.colors.push(color);
           }
@@ -52215,7 +52194,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the particle system
-        this.add(new THREE$1.ParticleSystem(geometry, material));
+        this.add(new THREE.ParticleSystem(geometry, material));
         break;
       case MARKER_TEXT_VIEW_FACING:
         // only work on non-empty text
@@ -52248,14 +52227,14 @@ var Marker = /*@__PURE__*/(function (superclass) {
           context.textBaseline = 'middle';
           context.fillText( message.text, 0, canvas.height/2);
 
-          var texture = new THREE$1.Texture(canvas);
+          var texture = new THREE.Texture(canvas);
           texture.needsUpdate = true;
 
-          var spriteMaterial = new THREE$1.SpriteMaterial({
+          var spriteMaterial = new THREE.SpriteMaterial({
             map: texture,
             // NOTE: This is needed for THREE.js r61, unused in r70
             useScreenCoordinates: false });
-          var sprite = new THREE$1.Sprite( spriteMaterial );
+          var sprite = new THREE.Sprite( spriteMaterial );
           var textSize = message.scale.x;
           sprite.scale.set(textWidth / canvas.height * textSize, textSize, 1);
 
@@ -52346,7 +52325,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         case MARKER_TRIANGLE_LIST:
         case MARKER_TEXT_VIEW_FACING:
             this.traverse (function (child){
-                if (child instanceof THREE$1.Mesh) {
+                if (child instanceof THREE.Mesh) {
                     child.material = colorMaterial;
                 }
             });
@@ -52358,7 +52337,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
                 meshColorMaterial = this.colorMaterial;
             }
             this.traverse (function (child){
-                if (child instanceof THREE$1.Mesh) {
+                if (child instanceof THREE.Mesh) {
                     child.material = meshColorMaterial;
                 }
             });
@@ -52412,8 +52391,6 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_TRIANGLE_LIST:
           // TODO: Check if geometry changed
           return false;
-      default:
-          break;
     }
 
     return true;
@@ -52452,9 +52429,10 @@ var Marker = /*@__PURE__*/(function (superclass) {
   };
 
   return Marker;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -52473,20 +52451,20 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
     this.path = options.path || '/';
     this.loader = options.loader;
     this.dragging = false;
-    this.startMousePos = new THREE$1.Vector2();
+    this.startMousePos = new THREE.Vector2();
     this.isShift = false;
 
 
     // orientation for the control
-    var controlOri = new THREE$1.Quaternion(message.orientation.x, message.orientation.y,
+    var controlOri = new THREE.Quaternion(message.orientation.x, message.orientation.y,
         message.orientation.z, message.orientation.w);
     controlOri.normalize();
 
     // transform x axis into local frame
-    var controlAxis = new THREE$1.Vector3(1, 0, 0);
+    var controlAxis = new THREE.Vector3(1, 0, 0);
     controlAxis.applyQuaternion(controlOri);
 
-    this.currentControlOri = new THREE$1.Quaternion();
+    this.currentControlOri = new THREE.Quaternion();
 
     // determine mouse interaction
     switch (message.interaction_mode) {
@@ -52508,8 +52486,6 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         break;
       case INTERACTIVE_MARKER_BUTTON:
         this.addEventListener('click', this.parent.buttonClick.bind(this.parent, this));
-        break;
-      default:
         break;
     }
 
@@ -52578,7 +52554,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
     }
 
     // rotation behavior
-    var rotInv = new THREE$1.Quaternion();
+    var rotInv = new THREE.Quaternion();
     var posInv = this.parent.position.clone().multiplyScalar(-1);
     switch (message.orientation_mode) {
       case INTERACTIVE_MARKER_INHERIT:
@@ -52595,7 +52571,7 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
 
     // temporary TFClient to get transformations from InteractiveMarker
     // frame to potential child Marker frames
-    var localTfClient = new TFClient({
+    var localTfClient = new ROSLIB.TFClient({
       ros : handle.tfClient.ros,
       fixedFrame : handle.message.header.frame_id,
       serverName : handle.tfClient.serverName
@@ -52613,12 +52589,12 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         // if transformMsg isn't null, this was called by TFClient
         if (transformMsg !== null) {
           // get the current pose as a ROSLIB.Pose...
-          var newPose = new Pose({
+          var newPose = new ROSLIB.Pose({
             position : markerHelper.position,
             orientation : markerHelper.quaternion
           });
           // so we can apply the transform provided by the TFClient
-          newPose.applyTransform(new Transform(transformMsg));
+          newPose.applyTransform(new ROSLIB.Transform(transformMsg));
 
           // get transform between parent marker's location and its frame
           // apply it to sub-marker position to get sub-marker position
@@ -52631,8 +52607,8 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
           transformMarker.position.add(posInv);
           transformMarker.position.applyQuaternion(rotInv);
           transformMarker.quaternion.multiplyQuaternions(rotInv, transformMarker.quaternion);
-          var translation = new THREE$1.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
-          var transform = new Transform({
+          var translation = new THREE.Vector3(transformMarker.position.x, transformMarker.position.y, transformMarker.position.z);
+          var transform = new ROSLIB.Transform({
             translation : translation,
             orientation : transformMarker.quaternion
           });
@@ -52685,14 +52661,14 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
         break;
       case INTERACTIVE_MARKER_VIEW_FACING:
         that.camera.updateMatrixWorld();
-        var cameraRot = new THREE$1.Matrix4().extractRotation(that.camera.matrixWorld);
+        var cameraRot = new THREE.Matrix4().extractRotation(that.camera.matrixWorld);
 
-        var ros2Gl = new THREE$1.Matrix4();
+        var ros2Gl = new THREE.Matrix4();
         var r90 = Math.PI * 0.5;
-        var rv = new THREE$1.Euler(-r90, 0, r90);
+        var rv = new THREE.Euler(-r90, 0, r90);
         ros2Gl.makeRotationFromEuler(rv);
 
-        var worldToLocal = new THREE$1.Matrix4();
+        var worldToLocal = new THREE.Matrix4();
         worldToLocal.getInverse(that.parent.matrixWorld);
 
         cameraRot.multiplyMatrices(cameraRot, ros2Gl);
@@ -52715,9 +52691,10 @@ var InteractiveMarkerControl = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarkerControl;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -52728,7 +52705,7 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var menuEntries = options.menuEntries;
     var className = options.className || 'default-interactive-marker-menu';
-    var entryClassName = options.entryClassName || 'default-interactive-marker-menu-entry';
+    options.entryClassName || 'default-interactive-marker-menu-entry';
     var overlayClassName = options.overlayClassName || 'default-interactive-marker-overlay';
     var menuFontSize = options.menuFontSize || '0.8em';
 
@@ -52889,9 +52866,10 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarkerMenu;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -52915,10 +52893,10 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
 
     // information on where the drag started
     this.dragStart = {
-      position : new THREE$1.Vector3(),
-      orientation : new THREE$1.Quaternion(),
-      positionWorld : new THREE$1.Vector3(),
-      orientationWorld : new THREE$1.Quaternion(),
+      position : new THREE.Vector3(),
+      orientation : new THREE.Quaternion(),
+      positionWorld : new THREE.Vector3(),
+      orientationWorld : new THREE.Quaternion(),
       event3d : {}
     };
 
@@ -52977,13 +52955,13 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var originWorld = this.dragStart.event3d.intersection.point;
       var axisWorld = axis.clone().applyQuaternion(this.dragStart.orientationWorld.clone());
 
-      var axisRay = new THREE$1.Ray(originWorld, axisWorld);
+      var axisRay = new THREE.Ray(originWorld, axisWorld);
 
       // find closest point to mouse on axis
       var t = closestAxisPoint(axisRay, event3d.camera, event3d.mousePos);
 
       // offset from drag start position
-      var p = new THREE$1.Vector3();
+      var p = new THREE.Vector3();
       p.addVectors(this.dragStart.position, axis.clone().applyQuaternion(this.dragStart.orientation)
           .multiplyScalar(t));
       this.setPosition(control, p);
@@ -53004,36 +52982,24 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
     // by default, move in a plane
     if (this.dragging) {
 
-      if(control.isShift){
-        // this doesn't work
-        // // use the camera position and the marker position to determine the axis
-        // var newAxis = control.camera.position.clone();
-        // newAxis.sub(this.position);
-        // // now mimic same steps constructor uses to create origAxis
-        // var controlOri = new THREE.Quaternion(newAxis.x, newAxis.y,
-        //     newAxis.z, 1);
-        // controlOri.normalize();
-        // var controlAxis = new THREE.Vector3(1, 0, 0);
-        // controlAxis.applyQuaternion(controlOri);
-        // origAxis = controlAxis;
-      }else{
+      if(control.isShift);else {
         // we want to use the origin plane that is closest to the camera
         var cameraVector = control.camera.getWorldDirection();
         var x = Math.abs(cameraVector.x);
         var y = Math.abs(cameraVector.y);
         var z = Math.abs(cameraVector.z);
-        var controlOri = new THREE$1.Quaternion(1, 0, 0, 1);
+        var controlOri = new THREE.Quaternion(1, 0, 0, 1);
         if(y > x && y > z){
           // orientation for the control
-          controlOri = new THREE$1.Quaternion(0, 0, 1, 1);
+          controlOri = new THREE.Quaternion(0, 0, 1, 1);
         }else if(z > x && z > y){
           // orientation for the control
-          controlOri = new THREE$1.Quaternion(0, 1, 0, 1);
+          controlOri = new THREE.Quaternion(0, 1, 0, 1);
         }
         controlOri.normalize();
 
         // transform x axis into local frame
-        origNormal = new THREE$1.Vector3(1, 0, 0);
+        origNormal = new THREE.Vector3(1, 0, 0);
         origNormal.applyQuaternion(controlOri);
         this.movePlane(control, origNormal, event3d);
       }
@@ -53058,7 +53024,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
       // offset from drag start position
-      var p = new THREE$1.Vector3();
+      var p = new THREE.Vector3();
       p.subVectors(intersection, originWorld);
       p.add(this.dragStart.positionWorld);
       this.setPosition(control, p);
@@ -53079,7 +53045,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var currentControlOri = control.currentControlOri;
       var orientation = currentControlOri.clone().multiply(origOrientation.clone());
 
-      var normal = (new THREE$1.Vector3(1, 0, 0)).applyQuaternion(orientation);
+      var normal = (new THREE.Vector3(1, 0, 0)).applyQuaternion(orientation);
 
       // get plane params in world coords
       var originWorld = this.dragStart.event3d.intersection.point;
@@ -53089,7 +53055,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var intersection = intersectPlane(event3d.mouseRay, originWorld, normalWorld);
 
       // offset local origin to lie on intersection plane
-      var normalRay = new THREE$1.Ray(this.dragStart.positionWorld, normalWorld);
+      var normalRay = new THREE.Ray(this.dragStart.positionWorld, normalWorld);
       var rotOrigin = intersectPlane(normalRay, originWorld, normalWorld);
 
       // rotates from world to plane coords
@@ -53109,7 +53075,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       var a2 = Math.atan2(origIntersection.y, origIntersection.z);
       var a = a2 - a1;
 
-      var rot = new THREE$1.Quaternion();
+      var rot = new THREE.Quaternion();
       rot.setFromAxisAngle(normal, a);
 
       // rotate
@@ -53144,7 +53110,7 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
       event3d.stopPropagation();
       this.dragging = true;
       this.updateMatrixWorld(true);
-      var scale = new THREE$1.Vector3();
+      var scale = new THREE.Vector3();
       this.matrixWorld
           .decompose(this.dragStart.positionWorld, this.dragStart.orientationWorld, scale);
       this.dragStart.position = this.position.clone();
@@ -53235,785 +53201,1648 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   };
 
   return InteractiveMarker;
-}(THREE$1.Object3D));
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var eventemitter2 = createCommonjsModule(function (module, exports) {
-!function(undefined) {
-
-  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
-    return Object.prototype.toString.call(obj) === "[object Array]";
-  };
-  var defaultMaxListeners = 10;
-
-  function init() {
-    this._events = {};
-    if (this._conf) {
-      configure.call(this, this._conf);
-    }
-  }
-
-  function configure(conf) {
-    if (conf) {
-      this._conf = conf;
-
-      conf.delimiter && (this.delimiter = conf.delimiter);
-      this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
-
-      conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
-      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
-
-      if (this.wildcard) {
-        this.listenerTree = {};
-      }
-    } else {
-      this._maxListeners = defaultMaxListeners;
-    }
-  }
-
-  function logPossibleMemoryLeak(count, eventName) {
-    var errorMsg = '(node) warning: possible EventEmitter memory ' +
-        'leak detected. ' + count + ' listeners added. ' +
-        'Use emitter.setMaxListeners() to increase limit.';
-
-    if(this.verboseMemoryLeak){
-      errorMsg += ' Event name: ' + eventName + '.';
-    }
-
-    if(typeof process !== 'undefined' && process.emitWarning){
-      var e = new Error(errorMsg);
-      e.name = 'MaxListenersExceededWarning';
-      e.emitter = this;
-      e.count = count;
-      process.emitWarning(e);
-    } else {
-      console.error(errorMsg);
-
-      if (console.trace){
-        console.trace();
-      }
-    }
-  }
-
-  function EventEmitter(conf) {
-    this._events = {};
-    this.newListener = false;
-    this.verboseMemoryLeak = false;
-    configure.call(this, conf);
-  }
-  EventEmitter.EventEmitter2 = EventEmitter; // backwards compatibility for exporting EventEmitter property
-
-  //
-  // Attention, function return type now is array, always !
-  // It has zero elements if no any matches found and one or more
-  // elements (leafs) if there are matches
-  //
-  function searchListenerTree(handlers, type, tree, i) {
-    if (!tree) {
-      return [];
-    }
-    var listeners=[], leaf, len, branch, xTree, xxTree, isolatedBranch, endReached,
-        typeLength = type.length, currentType = type[i], nextType = type[i+1];
-    if (i === typeLength && tree._listeners) {
-      //
-      // If at the end of the event(s) list and the tree has listeners
-      // invoke those listeners.
-      //
-      if (typeof tree._listeners === 'function') {
-        handlers && handlers.push(tree._listeners);
-        return [tree];
-      } else {
-        for (leaf = 0, len = tree._listeners.length; leaf < len; leaf++) {
-          handlers && handlers.push(tree._listeners[leaf]);
-        }
-        return [tree];
-      }
-    }
-
-    if ((currentType === '*' || currentType === '**') || tree[currentType]) {
-      //
-      // If the event emitted is '*' at this part
-      // or there is a concrete match at this patch
-      //
-      if (currentType === '*') {
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+1));
-          }
-        }
-        return listeners;
-      } else if(currentType === '**') {
-        endReached = (i+1 === typeLength || (i+2 === typeLength && nextType === '*'));
-        if(endReached && tree._listeners) {
-          // The next element has a _listeners, add it to the handlers.
-          listeners = listeners.concat(searchListenerTree(handlers, type, tree, typeLength));
-        }
-
-        for (branch in tree) {
-          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
-            if(branch === '*' || branch === '**') {
-              if(tree[branch]._listeners && !endReached) {
-                listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], typeLength));
-              }
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            } else if(branch === nextType) {
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+2));
-            } else {
-              // No match on this one, shift into the tree but not in the type array.
-              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
-            }
-          }
-        }
-        return listeners;
-      }
-
-      listeners = listeners.concat(searchListenerTree(handlers, type, tree[currentType], i+1));
-    }
-
-    xTree = tree['*'];
-    if (xTree) {
-      //
-      // If the listener tree will allow any match for this part,
-      // then recursively explore all branches of the tree
-      //
-      searchListenerTree(handlers, type, xTree, i+1);
-    }
-
-    xxTree = tree['**'];
-    if(xxTree) {
-      if(i < typeLength) {
-        if(xxTree._listeners) {
-          // If we have a listener on a '**', it will catch all, so add its handler.
-          searchListenerTree(handlers, type, xxTree, typeLength);
-        }
-
-        // Build arrays of matching next branches and others.
-        for(branch in xxTree) {
-          if(branch !== '_listeners' && xxTree.hasOwnProperty(branch)) {
-            if(branch === nextType) {
-              // We know the next element will match, so jump twice.
-              searchListenerTree(handlers, type, xxTree[branch], i+2);
-            } else if(branch === currentType) {
-              // Current node matches, move into the tree.
-              searchListenerTree(handlers, type, xxTree[branch], i+1);
-            } else {
-              isolatedBranch = {};
-              isolatedBranch[branch] = xxTree[branch];
-              searchListenerTree(handlers, type, { '**': isolatedBranch }, i+1);
-            }
-          }
-        }
-      } else if(xxTree._listeners) {
-        // We have reached the end and still on a '**'
-        searchListenerTree(handlers, type, xxTree, typeLength);
-      } else if(xxTree['*'] && xxTree['*']._listeners) {
-        searchListenerTree(handlers, type, xxTree['*'], typeLength);
-      }
-    }
-
-    return listeners;
-  }
-
-  function growListenerTree(type, listener) {
-
-    type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-
-    //
-    // Looks for two consecutive '**', if so, don't add the event at all.
-    //
-    for(var i = 0, len = type.length; i+1 < len; i++) {
-      if(type[i] === '**' && type[i+1] === '**') {
-        return;
-      }
-    }
-
-    var tree = this.listenerTree;
-    var name = type.shift();
-
-    while (name !== undefined) {
-
-      if (!tree[name]) {
-        tree[name] = {};
-      }
-
-      tree = tree[name];
-
-      if (type.length === 0) {
-
-        if (!tree._listeners) {
-          tree._listeners = listener;
-        }
-        else {
-          if (typeof tree._listeners === 'function') {
-            tree._listeners = [tree._listeners];
-          }
-
-          tree._listeners.push(listener);
-
-          if (
-            !tree._listeners.warned &&
-            this._maxListeners > 0 &&
-            tree._listeners.length > this._maxListeners
-          ) {
-            tree._listeners.warned = true;
-            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
-          }
-        }
-        return true;
-      }
-      name = type.shift();
-    }
-    return true;
-  }
-
-  // By default EventEmitters will print a warning if more than
-  // 10 listeners are added to it. This is a useful default which
-  // helps finding memory leaks.
-  //
-  // Obviously not all Emitters should be limited to 10. This function allows
-  // that to be increased. Set to zero for unlimited.
-
-  EventEmitter.prototype.delimiter = '.';
-
-  EventEmitter.prototype.setMaxListeners = function(n) {
-    if (n !== undefined) {
-      this._maxListeners = n;
-      if (!this._conf) { this._conf = {}; }
-      this._conf.maxListeners = n;
-    }
-  };
-
-  EventEmitter.prototype.event = '';
-
-
-  EventEmitter.prototype.once = function(event, fn) {
-    return this._once(event, fn, false);
-  };
-
-  EventEmitter.prototype.prependOnceListener = function(event, fn) {
-    return this._once(event, fn, true);
-  };
-
-  EventEmitter.prototype._once = function(event, fn, prepend) {
-    this._many(event, 1, fn, prepend);
-    return this;
-  };
-
-  EventEmitter.prototype.many = function(event, ttl, fn) {
-    return this._many(event, ttl, fn, false);
-  };
-
-  EventEmitter.prototype.prependMany = function(event, ttl, fn) {
-    return this._many(event, ttl, fn, true);
-  };
-
-  EventEmitter.prototype._many = function(event, ttl, fn, prepend) {
-    var self = this;
-
-    if (typeof fn !== 'function') {
-      throw new Error('many only accepts instances of Function');
-    }
-
-    function listener() {
-      if (--ttl === 0) {
-        self.off(event, listener);
-      }
-      return fn.apply(this, arguments);
-    }
-
-    listener._origin = fn;
-
-    this._on(event, listener, prepend);
-
-    return self;
-  };
-
-  EventEmitter.prototype.emit = function() {
-    var arguments$1 = arguments;
-
-
-    this._events || init.call(this);
-
-    var type = arguments[0];
-
-    if (type === 'newListener' && !this.newListener) {
-      if (!this._events.newListener) {
-        return false;
-      }
-    }
-
-    var al = arguments.length;
-    var args,l,i,j;
-    var handler;
-
-    if (this._all && this._all.length) {
-      handler = this._all.slice();
-      if (al > 3) {
-        args = new Array(al);
-        for (j = 0; j < al; j++) { args[j] = arguments$1[j]; }
-      }
-
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler[i].call(this, type);
-          break;
-        case 2:
-          handler[i].call(this, type, arguments$1[1]);
-          break;
-        case 3:
-          handler[i].call(this, type, arguments$1[1], arguments$1[2]);
-          break;
-        default:
-          handler[i].apply(this, args);
-        }
-      }
-    }
-
-    if (this.wildcard) {
-      handler = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
-    } else {
-      handler = this._events[type];
-      if (typeof handler === 'function') {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler.call(this);
-          break;
-        case 2:
-          handler.call(this, arguments[1]);
-          break;
-        case 3:
-          handler.call(this, arguments[1], arguments[2]);
-          break;
-        default:
-          args = new Array(al - 1);
-          for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-          handler.apply(this, args);
-        }
-        return true;
-      } else if (handler) {
-        // need to make copy of handlers because list can change in the middle
-        // of emit call
-        handler = handler.slice();
-      }
-    }
-
-    if (handler && handler.length) {
-      if (al > 3) {
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-      }
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          handler[i].call(this);
-          break;
-        case 2:
-          handler[i].call(this, arguments$1[1]);
-          break;
-        case 3:
-          handler[i].call(this, arguments$1[1], arguments$1[2]);
-          break;
-        default:
-          handler[i].apply(this, args);
-        }
-      }
-      return true;
-    } else if (!this._all && type === 'error') {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-
-    return !!this._all;
-  };
-
-  EventEmitter.prototype.emitAsync = function() {
-    var arguments$1 = arguments;
-
-
-    this._events || init.call(this);
-
-    var type = arguments[0];
-
-    if (type === 'newListener' && !this.newListener) {
-        if (!this._events.newListener) { return Promise.resolve([false]); }
-    }
-
-    var promises= [];
-
-    var al = arguments.length;
-    var args,l,i,j;
-    var handler;
-
-    if (this._all) {
-      if (al > 3) {
-        args = new Array(al);
-        for (j = 1; j < al; j++) { args[j] = arguments$1[j]; }
-      }
-      for (i = 0, l = this._all.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          promises.push(this._all[i].call(this, type));
-          break;
-        case 2:
-          promises.push(this._all[i].call(this, type, arguments$1[1]));
-          break;
-        case 3:
-          promises.push(this._all[i].call(this, type, arguments$1[1], arguments$1[2]));
-          break;
-        default:
-          promises.push(this._all[i].apply(this, args));
-        }
-      }
-    }
-
-    if (this.wildcard) {
-      handler = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
-    } else {
-      handler = this._events[type];
-    }
-
-    if (typeof handler === 'function') {
-      this.event = type;
-      switch (al) {
-      case 1:
-        promises.push(handler.call(this));
-        break;
-      case 2:
-        promises.push(handler.call(this, arguments[1]));
-        break;
-      case 3:
-        promises.push(handler.call(this, arguments[1], arguments[2]));
-        break;
-      default:
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-        promises.push(handler.apply(this, args));
-      }
-    } else if (handler && handler.length) {
-      handler = handler.slice();
-      if (al > 3) {
-        args = new Array(al - 1);
-        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
-      }
-      for (i = 0, l = handler.length; i < l; i++) {
-        this.event = type;
-        switch (al) {
-        case 1:
-          promises.push(handler[i].call(this));
-          break;
-        case 2:
-          promises.push(handler[i].call(this, arguments$1[1]));
-          break;
-        case 3:
-          promises.push(handler[i].call(this, arguments$1[1], arguments$1[2]));
-          break;
-        default:
-          promises.push(handler[i].apply(this, args));
-        }
-      }
-    } else if (!this._all && type === 'error') {
-      if (arguments[1] instanceof Error) {
-        return Promise.reject(arguments[1]); // Unhandled 'error' event
-      } else {
-        return Promise.reject("Uncaught, unspecified 'error' event.");
-      }
-    }
-
-    return Promise.all(promises);
-  };
-
-  EventEmitter.prototype.on = function(type, listener) {
-    return this._on(type, listener, false);
-  };
-
-  EventEmitter.prototype.prependListener = function(type, listener) {
-    return this._on(type, listener, true);
-  };
-
-  EventEmitter.prototype.onAny = function(fn) {
-    return this._onAny(fn, false);
-  };
-
-  EventEmitter.prototype.prependAny = function(fn) {
-    return this._onAny(fn, true);
-  };
-
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-  EventEmitter.prototype._onAny = function(fn, prepend){
-    if (typeof fn !== 'function') {
-      throw new Error('onAny only accepts instances of Function');
-    }
-
-    if (!this._all) {
-      this._all = [];
-    }
-
-    // Add the function to the event listener collection.
-    if(prepend){
-      this._all.unshift(fn);
-    }else{
-      this._all.push(fn);
-    }
-
-    return this;
-  };
-
-  EventEmitter.prototype._on = function(type, listener, prepend) {
-    if (typeof type === 'function') {
-      this._onAny(type, listener);
-      return this;
-    }
-
-    if (typeof listener !== 'function') {
-      throw new Error('on only accepts instances of Function');
-    }
-    this._events || init.call(this);
-
-    // To avoid recursion in the case that type == "newListeners"! Before
-    // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
-
-    if (this.wildcard) {
-      growListenerTree.call(this, type, listener);
-      return this;
-    }
-
-    if (!this._events[type]) {
-      // Optimize the case of one listener. Don't need the extra array object.
-      this._events[type] = listener;
-    }
-    else {
-      if (typeof this._events[type] === 'function') {
-        // Change to array.
-        this._events[type] = [this._events[type]];
-      }
-
-      // If we've already got an array, just add
-      if(prepend){
-        this._events[type].unshift(listener);
-      }else{
-        this._events[type].push(listener);
-      }
-
-      // Check for listener leak
-      if (
-        !this._events[type].warned &&
-        this._maxListeners > 0 &&
-        this._events[type].length > this._maxListeners
-      ) {
-        this._events[type].warned = true;
-        logPossibleMemoryLeak.call(this, this._events[type].length, type);
-      }
-    }
-
-    return this;
-  };
-
-  EventEmitter.prototype.off = function(type, listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('removeListener only takes instances of Function');
-    }
-
-    var handlers,leafs=[];
-
-    if(this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-    }
-    else {
-      // does not use listeners(), so no side effect of creating _events[type]
-      if (!this._events[type]) { return this; }
-      handlers = this._events[type];
-      leafs.push({_listeners:handlers});
-    }
-
-    for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-      var leaf = leafs[iLeaf];
-      handlers = leaf._listeners;
-      if (isArray(handlers)) {
-
-        var position = -1;
-
-        for (var i = 0, length = handlers.length; i < length; i++) {
-          if (handlers[i] === listener ||
-            (handlers[i].listener && handlers[i].listener === listener) ||
-            (handlers[i]._origin && handlers[i]._origin === listener)) {
-            position = i;
-            break;
-          }
-        }
-
-        if (position < 0) {
-          continue;
-        }
-
-        if(this.wildcard) {
-          leaf._listeners.splice(position, 1);
-        }
-        else {
-          this._events[type].splice(position, 1);
-        }
-
-        if (handlers.length === 0) {
-          if(this.wildcard) {
-            delete leaf._listeners;
-          }
-          else {
-            delete this._events[type];
-          }
-        }
-
-        this.emit("removeListener", type, listener);
-
-        return this;
-      }
-      else if (handlers === listener ||
-        (handlers.listener && handlers.listener === listener) ||
-        (handlers._origin && handlers._origin === listener)) {
-        if(this.wildcard) {
-          delete leaf._listeners;
-        }
-        else {
-          delete this._events[type];
-        }
-
-        this.emit("removeListener", type, listener);
-      }
-    }
-
-    function recursivelyGarbageCollect(root) {
-      if (root === undefined) {
-        return;
-      }
-      var keys = Object.keys(root);
-      for (var i in keys) {
-        var key = keys[i];
-        var obj = root[key];
-        if ((obj instanceof Function) || (typeof obj !== "object") || (obj === null))
-          { continue; }
-        if (Object.keys(obj).length > 0) {
-          recursivelyGarbageCollect(root[key]);
-        }
-        if (Object.keys(obj).length === 0) {
-          delete root[key];
-        }
-      }
-    }
-    recursivelyGarbageCollect(this.listenerTree);
-
-    return this;
-  };
-
-  EventEmitter.prototype.offAny = function(fn) {
-    var i = 0, l = 0, fns;
-    if (fn && this._all && this._all.length > 0) {
-      fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++) {
-        if(fn === fns[i]) {
-          fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
-          return this;
-        }
-      }
-    } else {
-      fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++)
-        { this.emit("removeListenerAny", fns[i]); }
-      this._all = [];
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
-
-  EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
-      !this._events || init.call(this);
-      return this;
-    }
-
-    if (this.wildcard) {
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      var leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
-
-      for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
-        var leaf = leafs[iLeaf];
-        leaf._listeners = null;
-      }
-    }
-    else if (this._events) {
-      this._events[type] = null;
-    }
-    return this;
-  };
-
-  EventEmitter.prototype.listeners = function(type) {
-    if (this.wildcard) {
-      var handlers = [];
-      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
-      searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
-      return handlers;
-    }
-
-    this._events || init.call(this);
-
-    if (!this._events[type]) { this._events[type] = []; }
-    if (!isArray(this._events[type])) {
-      this._events[type] = [this._events[type]];
-    }
-    return this._events[type];
-  };
-
-  EventEmitter.prototype.eventNames = function(){
-    return Object.keys(this._events);
-  };
-
-  EventEmitter.prototype.listenerCount = function(type) {
-    return this.listeners(type).length;
-  };
-
-  EventEmitter.prototype.listenersAny = function() {
-
-    if(this._all) {
-      return this._all;
-    }
-    else {
-      return [];
-    }
-
-  };
-
-  if (typeof undefined === 'function' && undefined.amd) {
-     // AMD. Register as an anonymous module.
-    undefined(function() {
-      return EventEmitter;
-    });
-  } else {
-    // CommonJS
-    module.exports = EventEmitter;
-  }
-}();
-});
+}(THREE.Object3D));
+
+var eventemitter2 = {exports: {}};
+
+/*!
+ * EventEmitter2
+ * https://github.com/hij1nx/EventEmitter2
+ *
+ * Copyright (c) 2013 hij1nx
+ * Licensed under the MIT license.
+ */
+
+(function (module, exports) {
+!function(undefined$1) {
+	  var hasOwnProperty= Object.hasOwnProperty;
+	  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
+	    return Object.prototype.toString.call(obj) === "[object Array]";
+	  };
+	  var defaultMaxListeners = 10;
+	  var nextTickSupported= typeof process=='object' && typeof process.nextTick=='function';
+	  var symbolsSupported= typeof Symbol==='function';
+	  var reflectSupported= typeof Reflect === 'object';
+	  var setImmediateSupported= typeof setImmediate === 'function';
+	  var _setImmediate= setImmediateSupported ? setImmediate : setTimeout;
+	  var ownKeys= symbolsSupported? (reflectSupported && typeof Reflect.ownKeys==='function'? Reflect.ownKeys : function(obj){
+	    var arr= Object.getOwnPropertyNames(obj);
+	    arr.push.apply(arr, Object.getOwnPropertySymbols(obj));
+	    return arr;
+	  }) : Object.keys;
+
+	  function init() {
+	    this._events = {};
+	    if (this._conf) {
+	      configure.call(this, this._conf);
+	    }
+	  }
+
+	  function configure(conf) {
+	    if (conf) {
+	      this._conf = conf;
+
+	      conf.delimiter && (this.delimiter = conf.delimiter);
+
+	      if(conf.maxListeners!==undefined$1){
+	          this._maxListeners= conf.maxListeners;
+	      }
+
+	      conf.wildcard && (this.wildcard = conf.wildcard);
+	      conf.newListener && (this._newListener = conf.newListener);
+	      conf.removeListener && (this._removeListener = conf.removeListener);
+	      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
+	      conf.ignoreErrors && (this.ignoreErrors = conf.ignoreErrors);
+
+	      if (this.wildcard) {
+	        this.listenerTree = {};
+	      }
+	    }
+	  }
+
+	  function logPossibleMemoryLeak(count, eventName) {
+	    var errorMsg = '(node) warning: possible EventEmitter memory ' +
+	        'leak detected. ' + count + ' listeners added. ' +
+	        'Use emitter.setMaxListeners() to increase limit.';
+
+	    if(this.verboseMemoryLeak){
+	      errorMsg += ' Event name: ' + eventName + '.';
+	    }
+
+	    if(typeof process !== 'undefined' && process.emitWarning){
+	      var e = new Error(errorMsg);
+	      e.name = 'MaxListenersExceededWarning';
+	      e.emitter = this;
+	      e.count = count;
+	      process.emitWarning(e);
+	    } else {
+	      console.error(errorMsg);
+
+	      if (console.trace){
+	        console.trace();
+	      }
+	    }
+	  }
+
+	  var toArray = function (a, b, c) {
+	    var arguments$1 = arguments;
+
+	    var n = arguments.length;
+	    switch (n) {
+	      case 0:
+	        return [];
+	      case 1:
+	        return [a];
+	      case 2:
+	        return [a, b];
+	      case 3:
+	        return [a, b, c];
+	      default:
+	        var arr = new Array(n);
+	        while (n--) {
+	          arr[n] = arguments$1[n];
+	        }
+	        return arr;
+	    }
+	  };
+
+	  function toObject(keys, values) {
+	    var obj = {};
+	    var key;
+	    var len = keys.length;
+	    var valuesCount = values ? value.length : 0;
+	    for (var i = 0; i < len; i++) {
+	      key = keys[i];
+	      obj[key] = i < valuesCount ? values[i] : undefined$1;
+	    }
+	    return obj;
+	  }
+
+	  function TargetObserver(emitter, target, options) {
+	    this._emitter = emitter;
+	    this._target = target;
+	    this._listeners = {};
+	    this._listenersCount = 0;
+
+	    var on, off;
+
+	    if (options.on || options.off) {
+	      on = options.on;
+	      off = options.off;
+	    }
+
+	    if (target.addEventListener) {
+	      on = target.addEventListener;
+	      off = target.removeEventListener;
+	    } else if (target.addListener) {
+	      on = target.addListener;
+	      off = target.removeListener;
+	    } else if (target.on) {
+	      on = target.on;
+	      off = target.off;
+	    }
+
+	    if (!on && !off) {
+	      throw Error('target does not implement any known event API');
+	    }
+
+	    if (typeof on !== 'function') {
+	      throw TypeError('on method must be a function');
+	    }
+
+	    if (typeof off !== 'function') {
+	      throw TypeError('off method must be a function');
+	    }
+
+	    this._on = on;
+	    this._off = off;
+
+	    var _observers= emitter._observers;
+	    if(_observers){
+	      _observers.push(this);
+	    }else {
+	      emitter._observers= [this];
+	    }
+	  }
+
+	  Object.assign(TargetObserver.prototype, {
+	    subscribe: function(event, localEvent, reducer){
+	      var observer= this;
+	      var target= this._target;
+	      var emitter= this._emitter;
+	      var listeners= this._listeners;
+	      var handler= function(){
+	        var args= toArray.apply(null, arguments);
+	        var eventObj= {
+	          data: args,
+	          name: localEvent,
+	          original: event
+	        };
+	        if(reducer){
+	          var result= reducer.call(target, eventObj);
+	          if(result!==false){
+	            emitter.emit.apply(emitter, [eventObj.name].concat(args));
+	          }
+	          return;
+	        }
+	        emitter.emit.apply(emitter, [localEvent].concat(args));
+	      };
+
+
+	      if(listeners[event]){
+	        throw Error('Event \'' + event + '\' is already listening');
+	      }
+
+	      this._listenersCount++;
+
+	      if(emitter._newListener && emitter._removeListener && !observer._onNewListener){
+
+	        this._onNewListener = function (_event) {
+	          if (_event === localEvent && listeners[event] === null) {
+	            listeners[event] = handler;
+	            observer._on.call(target, event, handler);
+	          }
+	        };
+
+	        emitter.on('newListener', this._onNewListener);
+
+	        this._onRemoveListener= function(_event){
+	          if(_event === localEvent && !emitter.hasListeners(_event) && listeners[event]){
+	            listeners[event]= null;
+	            observer._off.call(target, event, handler);
+	          }
+	        };
+
+	        listeners[event]= null;
+
+	        emitter.on('removeListener', this._onRemoveListener);
+	      }else {
+	        listeners[event]= handler;
+	        observer._on.call(target, event, handler);
+	      }
+	    },
+
+	    unsubscribe: function(event){
+	      var observer= this;
+	      var listeners= this._listeners;
+	      var emitter= this._emitter;
+	      var handler;
+	      var events;
+	      var off= this._off;
+	      var target= this._target;
+	      var i;
+
+	      if(event && typeof event!=='string'){
+	        throw TypeError('event must be a string');
+	      }
+
+	      function clearRefs(){
+	        if(observer._onNewListener){
+	          emitter.off('newListener', observer._onNewListener);
+	          emitter.off('removeListener', observer._onRemoveListener);
+	          observer._onNewListener= null;
+	          observer._onRemoveListener= null;
+	        }
+	        var index= findTargetIndex.call(emitter, observer);
+	        emitter._observers.splice(index, 1);
+	      }
+
+	      if(event){
+	        handler= listeners[event];
+	        if(!handler) { return; }
+	        off.call(target, event, handler);
+	        delete listeners[event];
+	        if(!--this._listenersCount){
+	          clearRefs();
+	        }
+	      }else {
+	        events= ownKeys(listeners);
+	        i= events.length;
+	        while(i-->0){
+	          event= events[i];
+	          off.call(target, event, listeners[event]);
+	        }
+	        this._listeners= {};
+	        this._listenersCount= 0;
+	        clearRefs();
+	      }
+	    }
+	  });
+
+	  function resolveOptions(options, schema, reducers, allowUnknown) {
+	    var computedOptions = Object.assign({}, schema);
+
+	    if (!options) { return computedOptions; }
+
+	    if (typeof options !== 'object') {
+	      throw TypeError('options must be an object')
+	    }
+
+	    var keys = Object.keys(options);
+	    var length = keys.length;
+	    var option, value;
+	    var reducer;
+
+	    function reject(reason) {
+	      throw Error('Invalid "' + option + '" option value' + (reason ? '. Reason: ' + reason : ''))
+	    }
+
+	    for (var i = 0; i < length; i++) {
+	      option = keys[i];
+	      if (!allowUnknown && !hasOwnProperty.call(schema, option)) {
+	        throw Error('Unknown "' + option + '" option');
+	      }
+	      value = options[option];
+	      if (value !== undefined$1) {
+	        reducer = reducers[option];
+	        computedOptions[option] = reducer ? reducer(value, reject) : value;
+	      }
+	    }
+	    return computedOptions;
+	  }
+
+	  function constructorReducer(value, reject) {
+	    if (typeof value !== 'function' || !value.hasOwnProperty('prototype')) {
+	      reject('value must be a constructor');
+	    }
+	    return value;
+	  }
+
+	  function makeTypeReducer(types) {
+	    var message= 'value must be type of ' + types.join('|');
+	    var len= types.length;
+	    var firstType= types[0];
+	    var secondType= types[1];
+
+	    if (len === 1) {
+	      return function (v, reject) {
+	        if (typeof v === firstType) {
+	          return v;
+	        }
+	        reject(message);
+	      }
+	    }
+
+	    if (len === 2) {
+	      return function (v, reject) {
+	        var kind= typeof v;
+	        if (kind === firstType || kind === secondType) { return v; }
+	        reject(message);
+	      }
+	    }
+
+	    return function (v, reject) {
+	      var kind = typeof v;
+	      var i = len;
+	      while (i-- > 0) {
+	        if (kind === types[i]) { return v; }
+	      }
+	      reject(message);
+	    }
+	  }
+
+	  var functionReducer= makeTypeReducer(['function']);
+
+	  var objectFunctionReducer= makeTypeReducer(['object', 'function']);
+
+	  function makeCancelablePromise(Promise, executor, options) {
+	    var isCancelable;
+	    var callbacks;
+	    var timer= 0;
+	    var subscriptionClosed;
+
+	    var promise = new Promise(function (resolve, reject, onCancel) {
+	      options= resolveOptions(options, {
+	        timeout: 0,
+	        overload: false
+	      }, {
+	        timeout: function(value, reject){
+	          value*= 1;
+	          if (typeof value !== 'number' || value < 0 || !Number.isFinite(value)) {
+	            reject('timeout must be a positive number');
+	          }
+	          return value;
+	        }
+	      });
+
+	      isCancelable = !options.overload && typeof Promise.prototype.cancel === 'function' && typeof onCancel === 'function';
+
+	      function cleanup() {
+	        if (callbacks) {
+	          callbacks = null;
+	        }
+	        if (timer) {
+	          clearTimeout(timer);
+	          timer = 0;
+	        }
+	      }
+
+	      var _resolve= function(value){
+	        cleanup();
+	        resolve(value);
+	      };
+
+	      var _reject= function(err){
+	        cleanup();
+	        reject(err);
+	      };
+
+	      if (isCancelable) {
+	        executor(_resolve, _reject, onCancel);
+	      } else {
+	        callbacks = [function(reason){
+	          _reject(reason || Error('canceled'));
+	        }];
+	        executor(_resolve, _reject, function (cb) {
+	          if (subscriptionClosed) {
+	            throw Error('Unable to subscribe on cancel event asynchronously')
+	          }
+	          if (typeof cb !== 'function') {
+	            throw TypeError('onCancel callback must be a function');
+	          }
+	          callbacks.push(cb);
+	        });
+	        subscriptionClosed= true;
+	      }
+
+	      if (options.timeout > 0) {
+	        timer= setTimeout(function(){
+	          var reason= Error('timeout');
+	          reason.code = 'ETIMEDOUT';
+	          timer= 0;
+	          promise.cancel(reason);
+	          reject(reason);
+	        }, options.timeout);
+	      }
+	    });
+
+	    if (!isCancelable) {
+	      promise.cancel = function (reason) {
+	        if (!callbacks) {
+	          return;
+	        }
+	        var length = callbacks.length;
+	        for (var i = 1; i < length; i++) {
+	          callbacks[i](reason);
+	        }
+	        // internal callback to reject the promise
+	        callbacks[0](reason);
+	        callbacks = null;
+	      };
+	    }
+
+	    return promise;
+	  }
+
+	  function findTargetIndex(observer) {
+	    var observers = this._observers;
+	    if(!observers){
+	      return -1;
+	    }
+	    var len = observers.length;
+	    for (var i = 0; i < len; i++) {
+	      if (observers[i]._target === observer) { return i; }
+	    }
+	    return -1;
+	  }
+
+	  // Attention, function return type now is array, always !
+	  // It has zero elements if no any matches found and one or more
+	  // elements (leafs) if there are matches
+	  //
+	  function searchListenerTree(handlers, type, tree, i, typeLength) {
+	    if (!tree) {
+	      return null;
+	    }
+
+	    if (i === 0) {
+	      var kind = typeof type;
+	      if (kind === 'string') {
+	        var ns, n, l = 0, j = 0, delimiter = this.delimiter, dl = delimiter.length;
+	        if ((n = type.indexOf(delimiter)) !== -1) {
+	          ns = new Array(5);
+	          do {
+	            ns[l++] = type.slice(j, n);
+	            j = n + dl;
+	          } while ((n = type.indexOf(delimiter, j)) !== -1);
+
+	          ns[l++] = type.slice(j);
+	          type = ns;
+	          typeLength = l;
+	        } else {
+	          type = [type];
+	          typeLength = 1;
+	        }
+	      } else if (kind === 'object') {
+	        typeLength = type.length;
+	      } else {
+	        type = [type];
+	        typeLength = 1;
+	      }
+	    }
+
+	    var listeners= null, branch, xTree, xxTree, isolatedBranch, endReached, currentType = type[i],
+	        nextType = type[i + 1], branches, _listeners;
+
+	    if (i === typeLength) {
+	      //
+	      // If at the end of the event(s) list and the tree has listeners
+	      // invoke those listeners.
+	      //
+
+	      if(tree._listeners) {
+	        if (typeof tree._listeners === 'function') {
+	          handlers && handlers.push(tree._listeners);
+	          listeners = [tree];
+	        } else {
+	          handlers && handlers.push.apply(handlers, tree._listeners);
+	          listeners = [tree];
+	        }
+	      }
+	    } else {
+
+	      if (currentType === '*') {
+	        //
+	        // If the event emitted is '*' at this part
+	        // or there is a concrete match at this patch
+	        //
+	        branches = ownKeys(tree);
+	        n = branches.length;
+	        while (n-- > 0) {
+	          branch = branches[n];
+	          if (branch !== '_listeners') {
+	            _listeners = searchListenerTree(handlers, type, tree[branch], i + 1, typeLength);
+	            if (_listeners) {
+	              if (listeners) {
+	                listeners.push.apply(listeners, _listeners);
+	              } else {
+	                listeners = _listeners;
+	              }
+	            }
+	          }
+	        }
+	        return listeners;
+	      } else if (currentType === '**') {
+	        endReached = (i + 1 === typeLength || (i + 2 === typeLength && nextType === '*'));
+	        if (endReached && tree._listeners) {
+	          // The next element has a _listeners, add it to the handlers.
+	          listeners = searchListenerTree(handlers, type, tree, typeLength, typeLength);
+	        }
+
+	        branches = ownKeys(tree);
+	        n = branches.length;
+	        while (n-- > 0) {
+	          branch = branches[n];
+	          if (branch !== '_listeners') {
+	            if (branch === '*' || branch === '**') {
+	              if (tree[branch]._listeners && !endReached) {
+	                _listeners = searchListenerTree(handlers, type, tree[branch], typeLength, typeLength);
+	                if (_listeners) {
+	                  if (listeners) {
+	                    listeners.push.apply(listeners, _listeners);
+	                  } else {
+	                    listeners = _listeners;
+	                  }
+	                }
+	              }
+	              _listeners = searchListenerTree(handlers, type, tree[branch], i, typeLength);
+	            } else if (branch === nextType) {
+	              _listeners = searchListenerTree(handlers, type, tree[branch], i + 2, typeLength);
+	            } else {
+	              // No match on this one, shift into the tree but not in the type array.
+	              _listeners = searchListenerTree(handlers, type, tree[branch], i, typeLength);
+	            }
+	            if (_listeners) {
+	              if (listeners) {
+	                listeners.push.apply(listeners, _listeners);
+	              } else {
+	                listeners = _listeners;
+	              }
+	            }
+	          }
+	        }
+	        return listeners;
+	      } else if (tree[currentType]) {
+	        listeners = searchListenerTree(handlers, type, tree[currentType], i + 1, typeLength);
+	      }
+	    }
+
+	      xTree = tree['*'];
+	    if (xTree) {
+	      //
+	      // If the listener tree will allow any match for this part,
+	      // then recursively explore all branches of the tree
+	      //
+	      searchListenerTree(handlers, type, xTree, i + 1, typeLength);
+	    }
+
+	    xxTree = tree['**'];
+	    if (xxTree) {
+	      if (i < typeLength) {
+	        if (xxTree._listeners) {
+	          // If we have a listener on a '**', it will catch all, so add its handler.
+	          searchListenerTree(handlers, type, xxTree, typeLength, typeLength);
+	        }
+
+	        // Build arrays of matching next branches and others.
+	        branches= ownKeys(xxTree);
+	        n= branches.length;
+	        while(n-->0){
+	          branch= branches[n];
+	          if (branch !== '_listeners') {
+	            if (branch === nextType) {
+	              // We know the next element will match, so jump twice.
+	              searchListenerTree(handlers, type, xxTree[branch], i + 2, typeLength);
+	            } else if (branch === currentType) {
+	              // Current node matches, move into the tree.
+	              searchListenerTree(handlers, type, xxTree[branch], i + 1, typeLength);
+	            } else {
+	              isolatedBranch = {};
+	              isolatedBranch[branch] = xxTree[branch];
+	              searchListenerTree(handlers, type, {'**': isolatedBranch}, i + 1, typeLength);
+	            }
+	          }
+	        }
+	      } else if (xxTree._listeners) {
+	        // We have reached the end and still on a '**'
+	        searchListenerTree(handlers, type, xxTree, typeLength, typeLength);
+	      } else if (xxTree['*'] && xxTree['*']._listeners) {
+	        searchListenerTree(handlers, type, xxTree['*'], typeLength, typeLength);
+	      }
+	    }
+
+	    return listeners;
+	  }
+
+	  function growListenerTree(type, listener, prepend) {
+	    var len = 0, j = 0, i, delimiter = this.delimiter, dl= delimiter.length, ns;
+
+	    if(typeof type==='string') {
+	      if ((i = type.indexOf(delimiter)) !== -1) {
+	        ns = new Array(5);
+	        do {
+	          ns[len++] = type.slice(j, i);
+	          j = i + dl;
+	        } while ((i = type.indexOf(delimiter, j)) !== -1);
+
+	        ns[len++] = type.slice(j);
+	      }else {
+	        ns= [type];
+	        len= 1;
+	      }
+	    }else {
+	      ns= type;
+	      len= type.length;
+	    }
+
+	    //
+	    // Looks for two consecutive '**', if so, don't add the event at all.
+	    //
+	    if (len > 1) {
+	      for (i = 0; i + 1 < len; i++) {
+	        if (ns[i] === '**' && ns[i + 1] === '**') {
+	          return;
+	        }
+	      }
+	    }
+
+
+
+	    var tree = this.listenerTree, name;
+
+	    for (i = 0; i < len; i++) {
+	      name = ns[i];
+
+	      tree = tree[name] || (tree[name] = {});
+
+	      if (i === len - 1) {
+	        if (!tree._listeners) {
+	          tree._listeners = listener;
+	        } else {
+	          if (typeof tree._listeners === 'function') {
+	            tree._listeners = [tree._listeners];
+	          }
+
+	          if (prepend) {
+	            tree._listeners.unshift(listener);
+	          } else {
+	            tree._listeners.push(listener);
+	          }
+
+	          if (
+	              !tree._listeners.warned &&
+	              this._maxListeners > 0 &&
+	              tree._listeners.length > this._maxListeners
+	          ) {
+	            tree._listeners.warned = true;
+	            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
+	          }
+	        }
+	        return true;
+	      }
+	    }
+
+	    return true;
+	  }
+
+	  function collectTreeEvents(tree, events, root, asArray){
+	     var branches= ownKeys(tree);
+	     var i= branches.length;
+	     var branch, branchName, path;
+	     var hasListeners= tree['_listeners'];
+	     var isArrayPath;
+
+	     while(i-->0){
+	         branchName= branches[i];
+
+	         branch= tree[branchName];
+
+	         if(branchName==='_listeners'){
+	             path= root;
+	         }else {
+	             path = root ? root.concat(branchName) : [branchName];
+	         }
+
+	         isArrayPath= asArray || typeof branchName==='symbol';
+
+	         hasListeners && events.push(isArrayPath? path : path.join(this.delimiter));
+
+	         if(typeof branch==='object'){
+	             collectTreeEvents.call(this, branch, events, path, isArrayPath);
+	         }
+	     }
+
+	     return events;
+	  }
+
+	  function recursivelyGarbageCollect(root) {
+	    var keys = ownKeys(root);
+	    var i= keys.length;
+	    var obj, key, flag;
+	    while(i-->0){
+	      key = keys[i];
+	      obj = root[key];
+
+	      if(obj){
+	          flag= true;
+	          if(key !== '_listeners' && !recursivelyGarbageCollect(obj)){
+	             delete root[key];
+	          }
+	      }
+	    }
+
+	    return flag;
+	  }
+
+	  function Listener(emitter, event, listener){
+	    this.emitter= emitter;
+	    this.event= event;
+	    this.listener= listener;
+	  }
+
+	  Listener.prototype.off= function(){
+	    this.emitter.off(this.event, this.listener);
+	    return this;
+	  };
+
+	  function setupListener(event, listener, options){
+	      if (options === true) {
+	        promisify = true;
+	      } else if (options === false) {
+	        async = true;
+	      } else {
+	        if (!options || typeof options !== 'object') {
+	          throw TypeError('options should be an object or true');
+	        }
+	        var async = options.async;
+	        var promisify = options.promisify;
+	        var nextTick = options.nextTick;
+	        var objectify = options.objectify;
+	      }
+
+	      if (async || nextTick || promisify) {
+	        var _listener = listener;
+	        var _origin = listener._origin || listener;
+
+	        if (nextTick && !nextTickSupported) {
+	          throw Error('process.nextTick is not supported');
+	        }
+
+	        if (promisify === undefined$1) {
+	          promisify = listener.constructor.name === 'AsyncFunction';
+	        }
+
+	        listener = function () {
+	          var args = arguments;
+	          var context = this;
+	          var event = this.event;
+
+	          return promisify ? (nextTick ? Promise.resolve() : new Promise(function (resolve) {
+	            _setImmediate(resolve);
+	          }).then(function () {
+	            context.event = event;
+	            return _listener.apply(context, args)
+	          })) : (nextTick ? process.nextTick : _setImmediate)(function () {
+	            context.event = event;
+	            _listener.apply(context, args);
+	          });
+	        };
+
+	        listener._async = true;
+	        listener._origin = _origin;
+	      }
+
+	    return [listener, objectify? new Listener(this, event, listener): this];
+	  }
+
+	  function EventEmitter(conf) {
+	    this._events = {};
+	    this._newListener = false;
+	    this._removeListener = false;
+	    this.verboseMemoryLeak = false;
+	    configure.call(this, conf);
+	  }
+
+	  EventEmitter.EventEmitter2 = EventEmitter; // backwards compatibility for exporting EventEmitter property
+
+	  EventEmitter.prototype.listenTo= function(target, events, options){
+	    if(typeof target!=='object'){
+	      throw TypeError('target musts be an object');
+	    }
+
+	    var emitter= this;
+
+	    options = resolveOptions(options, {
+	      on: undefined$1,
+	      off: undefined$1,
+	      reducers: undefined$1
+	    }, {
+	      on: functionReducer,
+	      off: functionReducer,
+	      reducers: objectFunctionReducer
+	    });
+
+	    function listen(events){
+	      if(typeof events!=='object'){
+	        throw TypeError('events must be an object');
+	      }
+
+	      var reducers= options.reducers;
+	      var index= findTargetIndex.call(emitter, target);
+	      var observer;
+
+	      if(index===-1){
+	        observer= new TargetObserver(emitter, target, options);
+	      }else {
+	        observer= emitter._observers[index];
+	      }
+
+	      var keys= ownKeys(events);
+	      var len= keys.length;
+	      var event;
+	      var isSingleReducer= typeof reducers==='function';
+
+	      for(var i=0; i<len; i++){
+	        event= keys[i];
+	        observer.subscribe(
+	            event,
+	            events[event] || event,
+	            isSingleReducer ? reducers : reducers && reducers[event]
+	        );
+	      }
+	    }
+
+	    isArray(events)?
+	        listen(toObject(events)) :
+	        (typeof events==='string'? listen(toObject(events.split(/\s+/))): listen(events));
+
+	    return this;
+	  };
+
+	  EventEmitter.prototype.stopListeningTo = function (target, event) {
+	    var observers = this._observers;
+
+	    if(!observers){
+	      return false;
+	    }
+
+	    var i = observers.length;
+	    var observer;
+	    var matched= false;
+
+	    if(target && typeof target!=='object'){
+	      throw TypeError('target should be an object');
+	    }
+
+	    while (i-- > 0) {
+	      observer = observers[i];
+	      if (!target || observer._target === target) {
+	        observer.unsubscribe(event);
+	        matched= true;
+	      }
+	    }
+
+	    return matched;
+	  };
+
+	  // By default EventEmitters will print a warning if more than
+	  // 10 listeners are added to it. This is a useful default which
+	  // helps finding memory leaks.
+	  //
+	  // Obviously not all Emitters should be limited to 10. This function allows
+	  // that to be increased. Set to zero for unlimited.
+
+	  EventEmitter.prototype.delimiter = '.';
+
+	  EventEmitter.prototype.setMaxListeners = function(n) {
+	    if (n !== undefined$1) {
+	      this._maxListeners = n;
+	      if (!this._conf) { this._conf = {}; }
+	      this._conf.maxListeners = n;
+	    }
+	  };
+
+	  EventEmitter.prototype.getMaxListeners = function() {
+	    return this._maxListeners;
+	  };
+
+	  EventEmitter.prototype.event = '';
+
+	  EventEmitter.prototype.once = function(event, fn, options) {
+	    return this._once(event, fn, false, options);
+	  };
+
+	  EventEmitter.prototype.prependOnceListener = function(event, fn, options) {
+	    return this._once(event, fn, true, options);
+	  };
+
+	  EventEmitter.prototype._once = function(event, fn, prepend, options) {
+	    return this._many(event, 1, fn, prepend, options);
+	  };
+
+	  EventEmitter.prototype.many = function(event, ttl, fn, options) {
+	    return this._many(event, ttl, fn, false, options);
+	  };
+
+	  EventEmitter.prototype.prependMany = function(event, ttl, fn, options) {
+	    return this._many(event, ttl, fn, true, options);
+	  };
+
+	  EventEmitter.prototype._many = function(event, ttl, fn, prepend, options) {
+	    var self = this;
+
+	    if (typeof fn !== 'function') {
+	      throw new Error('many only accepts instances of Function');
+	    }
+
+	    function listener() {
+	      if (--ttl === 0) {
+	        self.off(event, listener);
+	      }
+	      return fn.apply(this, arguments);
+	    }
+
+	    listener._origin = fn;
+
+	    return this._on(event, listener, prepend, options);
+	  };
+
+	  EventEmitter.prototype.emit = function() {
+	    var arguments$1 = arguments;
+
+	    if (!this._events && !this._all) {
+	      return false;
+	    }
+
+	    this._events || init.call(this);
+
+	    var type = arguments[0], ns, wildcard= this.wildcard;
+	    var args,l,i,j, containsSymbol;
+
+	    if (type === 'newListener' && !this._newListener) {
+	      if (!this._events.newListener) {
+	        return false;
+	      }
+	    }
+
+	    if (wildcard) {
+	      ns= type;
+	      if(type!=='newListener' && type!=='removeListener'){
+	        if (typeof type === 'object') {
+	          l = type.length;
+	          if (symbolsSupported) {
+	            for (i = 0; i < l; i++) {
+	              if (typeof type[i] === 'symbol') {
+	                containsSymbol = true;
+	                break;
+	              }
+	            }
+	          }
+	          if (!containsSymbol) {
+	            type = type.join(this.delimiter);
+	          }
+	        }
+	      }
+	    }
+
+	    var al = arguments.length;
+	    var handler;
+
+	    if (this._all && this._all.length) {
+	      handler = this._all.slice();
+
+	      for (i = 0, l = handler.length; i < l; i++) {
+	        this.event = type;
+	        switch (al) {
+	        case 1:
+	          handler[i].call(this, type);
+	          break;
+	        case 2:
+	          handler[i].call(this, type, arguments$1[1]);
+	          break;
+	        case 3:
+	          handler[i].call(this, type, arguments$1[1], arguments$1[2]);
+	          break;
+	        default:
+	          handler[i].apply(this, arguments$1);
+	        }
+	      }
+	    }
+
+	    if (wildcard) {
+	      handler = [];
+	      searchListenerTree.call(this, handler, ns, this.listenerTree, 0, l);
+	    } else {
+	      handler = this._events[type];
+	      if (typeof handler === 'function') {
+	        this.event = type;
+	        switch (al) {
+	        case 1:
+	          handler.call(this);
+	          break;
+	        case 2:
+	          handler.call(this, arguments[1]);
+	          break;
+	        case 3:
+	          handler.call(this, arguments[1], arguments[2]);
+	          break;
+	        default:
+	          args = new Array(al - 1);
+	          for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
+	          handler.apply(this, args);
+	        }
+	        return true;
+	      } else if (handler) {
+	        // need to make copy of handlers because list can change in the middle
+	        // of emit call
+	        handler = handler.slice();
+	      }
+	    }
+
+	    if (handler && handler.length) {
+	      if (al > 3) {
+	        args = new Array(al - 1);
+	        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
+	      }
+	      for (i = 0, l = handler.length; i < l; i++) {
+	        this.event = type;
+	        switch (al) {
+	        case 1:
+	          handler[i].call(this);
+	          break;
+	        case 2:
+	          handler[i].call(this, arguments$1[1]);
+	          break;
+	        case 3:
+	          handler[i].call(this, arguments$1[1], arguments$1[2]);
+	          break;
+	        default:
+	          handler[i].apply(this, args);
+	        }
+	      }
+	      return true;
+	    } else if (!this.ignoreErrors && !this._all && type === 'error') {
+	      if (arguments[1] instanceof Error) {
+	        throw arguments[1]; // Unhandled 'error' event
+	      } else {
+	        throw new Error("Uncaught, unspecified 'error' event.");
+	      }
+	    }
+
+	    return !!this._all;
+	  };
+
+	  EventEmitter.prototype.emitAsync = function() {
+	    var arguments$1 = arguments;
+
+	    if (!this._events && !this._all) {
+	      return false;
+	    }
+
+	    this._events || init.call(this);
+
+	    var type = arguments[0], wildcard= this.wildcard, ns, containsSymbol;
+	    var args,l,i,j;
+
+	    if (type === 'newListener' && !this._newListener) {
+	        if (!this._events.newListener) { return Promise.resolve([false]); }
+	    }
+
+	    if (wildcard) {
+	      ns= type;
+	      if(type!=='newListener' && type!=='removeListener'){
+	        if (typeof type === 'object') {
+	          l = type.length;
+	          if (symbolsSupported) {
+	            for (i = 0; i < l; i++) {
+	              if (typeof type[i] === 'symbol') {
+	                containsSymbol = true;
+	                break;
+	              }
+	            }
+	          }
+	          if (!containsSymbol) {
+	            type = type.join(this.delimiter);
+	          }
+	        }
+	      }
+	    }
+
+	    var promises= [];
+
+	    var al = arguments.length;
+	    var handler;
+
+	    if (this._all) {
+	      for (i = 0, l = this._all.length; i < l; i++) {
+	        this.event = type;
+	        switch (al) {
+	        case 1:
+	          promises.push(this._all[i].call(this, type));
+	          break;
+	        case 2:
+	          promises.push(this._all[i].call(this, type, arguments$1[1]));
+	          break;
+	        case 3:
+	          promises.push(this._all[i].call(this, type, arguments$1[1], arguments$1[2]));
+	          break;
+	        default:
+	          promises.push(this._all[i].apply(this, arguments$1));
+	        }
+	      }
+	    }
+
+	    if (wildcard) {
+	      handler = [];
+	      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
+	    } else {
+	      handler = this._events[type];
+	    }
+
+	    if (typeof handler === 'function') {
+	      this.event = type;
+	      switch (al) {
+	      case 1:
+	        promises.push(handler.call(this));
+	        break;
+	      case 2:
+	        promises.push(handler.call(this, arguments[1]));
+	        break;
+	      case 3:
+	        promises.push(handler.call(this, arguments[1], arguments[2]));
+	        break;
+	      default:
+	        args = new Array(al - 1);
+	        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
+	        promises.push(handler.apply(this, args));
+	      }
+	    } else if (handler && handler.length) {
+	      handler = handler.slice();
+	      if (al > 3) {
+	        args = new Array(al - 1);
+	        for (j = 1; j < al; j++) { args[j - 1] = arguments$1[j]; }
+	      }
+	      for (i = 0, l = handler.length; i < l; i++) {
+	        this.event = type;
+	        switch (al) {
+	        case 1:
+	          promises.push(handler[i].call(this));
+	          break;
+	        case 2:
+	          promises.push(handler[i].call(this, arguments$1[1]));
+	          break;
+	        case 3:
+	          promises.push(handler[i].call(this, arguments$1[1], arguments$1[2]));
+	          break;
+	        default:
+	          promises.push(handler[i].apply(this, args));
+	        }
+	      }
+	    } else if (!this.ignoreErrors && !this._all && type === 'error') {
+	      if (arguments[1] instanceof Error) {
+	        return Promise.reject(arguments[1]); // Unhandled 'error' event
+	      } else {
+	        return Promise.reject("Uncaught, unspecified 'error' event.");
+	      }
+	    }
+
+	    return Promise.all(promises);
+	  };
+
+	  EventEmitter.prototype.on = function(type, listener, options) {
+	    return this._on(type, listener, false, options);
+	  };
+
+	  EventEmitter.prototype.prependListener = function(type, listener, options) {
+	    return this._on(type, listener, true, options);
+	  };
+
+	  EventEmitter.prototype.onAny = function(fn) {
+	    return this._onAny(fn, false);
+	  };
+
+	  EventEmitter.prototype.prependAny = function(fn) {
+	    return this._onAny(fn, true);
+	  };
+
+	  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+	  EventEmitter.prototype._onAny = function(fn, prepend){
+	    if (typeof fn !== 'function') {
+	      throw new Error('onAny only accepts instances of Function');
+	    }
+
+	    if (!this._all) {
+	      this._all = [];
+	    }
+
+	    // Add the function to the event listener collection.
+	    if(prepend){
+	      this._all.unshift(fn);
+	    }else {
+	      this._all.push(fn);
+	    }
+
+	    return this;
+	  };
+
+	  EventEmitter.prototype._on = function(type, listener, prepend, options) {
+	    if (typeof type === 'function') {
+	      this._onAny(type, listener);
+	      return this;
+	    }
+
+	    if (typeof listener !== 'function') {
+	      throw new Error('on only accepts instances of Function');
+	    }
+	    this._events || init.call(this);
+
+	    var returnValue= this, temp;
+
+	    if (options !== undefined$1) {
+	      temp = setupListener.call(this, type, listener, options);
+	      listener = temp[0];
+	      returnValue = temp[1];
+	    }
+
+	    // To avoid recursion in the case that type == "newListeners"! Before
+	    // adding it to the listeners, first emit "newListeners".
+	    if (this._newListener) {
+	      this.emit('newListener', type, listener);
+	    }
+
+	    if (this.wildcard) {
+	      growListenerTree.call(this, type, listener, prepend);
+	      return returnValue;
+	    }
+
+	    if (!this._events[type]) {
+	      // Optimize the case of one listener. Don't need the extra array object.
+	      this._events[type] = listener;
+	    } else {
+	      if (typeof this._events[type] === 'function') {
+	        // Change to array.
+	        this._events[type] = [this._events[type]];
+	      }
+
+	      // If we've already got an array, just add
+	      if(prepend){
+	        this._events[type].unshift(listener);
+	      }else {
+	        this._events[type].push(listener);
+	      }
+
+	      // Check for listener leak
+	      if (
+	        !this._events[type].warned &&
+	        this._maxListeners > 0 &&
+	        this._events[type].length > this._maxListeners
+	      ) {
+	        this._events[type].warned = true;
+	        logPossibleMemoryLeak.call(this, this._events[type].length, type);
+	      }
+	    }
+
+	    return returnValue;
+	  };
+
+	  EventEmitter.prototype.off = function(type, listener) {
+	    if (typeof listener !== 'function') {
+	      throw new Error('removeListener only takes instances of Function');
+	    }
+
+	    var handlers,leafs=[];
+
+	    if(this.wildcard) {
+	      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+	      leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
+	      if(!leafs) { return this; }
+	    } else {
+	      // does not use listeners(), so no side effect of creating _events[type]
+	      if (!this._events[type]) { return this; }
+	      handlers = this._events[type];
+	      leafs.push({_listeners:handlers});
+	    }
+
+	    for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
+	      var leaf = leafs[iLeaf];
+	      handlers = leaf._listeners;
+	      if (isArray(handlers)) {
+
+	        var position = -1;
+
+	        for (var i = 0, length = handlers.length; i < length; i++) {
+	          if (handlers[i] === listener ||
+	            (handlers[i].listener && handlers[i].listener === listener) ||
+	            (handlers[i]._origin && handlers[i]._origin === listener)) {
+	            position = i;
+	            break;
+	          }
+	        }
+
+	        if (position < 0) {
+	          continue;
+	        }
+
+	        if(this.wildcard) {
+	          leaf._listeners.splice(position, 1);
+	        }
+	        else {
+	          this._events[type].splice(position, 1);
+	        }
+
+	        if (handlers.length === 0) {
+	          if(this.wildcard) {
+	            delete leaf._listeners;
+	          }
+	          else {
+	            delete this._events[type];
+	          }
+	        }
+	        if (this._removeListener)
+	          { this.emit("removeListener", type, listener); }
+
+	        return this;
+	      }
+	      else if (handlers === listener ||
+	        (handlers.listener && handlers.listener === listener) ||
+	        (handlers._origin && handlers._origin === listener)) {
+	        if(this.wildcard) {
+	          delete leaf._listeners;
+	        }
+	        else {
+	          delete this._events[type];
+	        }
+	        if (this._removeListener)
+	          { this.emit("removeListener", type, listener); }
+	      }
+	    }
+
+	    this.listenerTree && recursivelyGarbageCollect(this.listenerTree);
+
+	    return this;
+	  };
+
+	  EventEmitter.prototype.offAny = function(fn) {
+	    var i = 0, l = 0, fns;
+	    if (fn && this._all && this._all.length > 0) {
+	      fns = this._all;
+	      for(i = 0, l = fns.length; i < l; i++) {
+	        if(fn === fns[i]) {
+	          fns.splice(i, 1);
+	          if (this._removeListener)
+	            { this.emit("removeListenerAny", fn); }
+	          return this;
+	        }
+	      }
+	    } else {
+	      fns = this._all;
+	      if (this._removeListener) {
+	        for(i = 0, l = fns.length; i < l; i++)
+	          { this.emit("removeListenerAny", fns[i]); }
+	      }
+	      this._all = [];
+	    }
+	    return this;
+	  };
+
+	  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
+
+	  EventEmitter.prototype.removeAllListeners = function (type) {
+	    if (type === undefined$1) {
+	      !this._events || init.call(this);
+	      return this;
+	    }
+
+	    if (this.wildcard) {
+	      var leafs = searchListenerTree.call(this, null, type, this.listenerTree, 0), leaf, i;
+	      if (!leafs) { return this; }
+	      for (i = 0; i < leafs.length; i++) {
+	        leaf = leafs[i];
+	        leaf._listeners = null;
+	      }
+	      this.listenerTree && recursivelyGarbageCollect(this.listenerTree);
+	    } else if (this._events) {
+	      this._events[type] = null;
+	    }
+	    return this;
+	  };
+
+	  EventEmitter.prototype.listeners = function (type) {
+	    var _events = this._events;
+	    var keys, listeners, allListeners;
+	    var i;
+	    var listenerTree;
+
+	    if (type === undefined$1) {
+	      if (this.wildcard) {
+	        throw Error('event name required for wildcard emitter');
+	      }
+
+	      if (!_events) {
+	        return [];
+	      }
+
+	      keys = ownKeys(_events);
+	      i = keys.length;
+	      allListeners = [];
+	      while (i-- > 0) {
+	        listeners = _events[keys[i]];
+	        if (typeof listeners === 'function') {
+	          allListeners.push(listeners);
+	        } else {
+	          allListeners.push.apply(allListeners, listeners);
+	        }
+	      }
+	      return allListeners;
+	    } else {
+	      if (this.wildcard) {
+	        listenerTree= this.listenerTree;
+	        if(!listenerTree) { return []; }
+	        var handlers = [];
+	        var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+	        searchListenerTree.call(this, handlers, ns, listenerTree, 0);
+	        return handlers;
+	      }
+
+	      if (!_events) {
+	        return [];
+	      }
+
+	      listeners = _events[type];
+
+	      if (!listeners) {
+	        return [];
+	      }
+	      return typeof listeners === 'function' ? [listeners] : listeners;
+	    }
+	  };
+
+	  EventEmitter.prototype.eventNames = function(nsAsArray){
+	    var _events= this._events;
+	    return this.wildcard? collectTreeEvents.call(this, this.listenerTree, [], null, nsAsArray) : (_events? ownKeys(_events) : []);
+	  };
+
+	  EventEmitter.prototype.listenerCount = function(type) {
+	    return this.listeners(type).length;
+	  };
+
+	  EventEmitter.prototype.hasListeners = function (type) {
+	    if (this.wildcard) {
+	      var handlers = [];
+	      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+	      searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
+	      return handlers.length > 0;
+	    }
+
+	    var _events = this._events;
+	    var _all = this._all;
+
+	    return !!(_all && _all.length || _events && (type === undefined$1 ? ownKeys(_events).length : _events[type]));
+	  };
+
+	  EventEmitter.prototype.listenersAny = function() {
+
+	    if(this._all) {
+	      return this._all;
+	    }
+	    else {
+	      return [];
+	    }
+
+	  };
+
+	  EventEmitter.prototype.waitFor = function (event, options) {
+	    var self = this;
+	    var type = typeof options;
+	    if (type === 'number') {
+	      options = {timeout: options};
+	    } else if (type === 'function') {
+	      options = {filter: options};
+	    }
+
+	    options= resolveOptions(options, {
+	      timeout: 0,
+	      filter: undefined$1,
+	      handleError: false,
+	      Promise: Promise,
+	      overload: false
+	    }, {
+	      filter: functionReducer,
+	      Promise: constructorReducer
+	    });
+
+	    return makeCancelablePromise(options.Promise, function (resolve, reject, onCancel) {
+	      function listener() {
+	        var filter= options.filter;
+	        if (filter && !filter.apply(self, arguments)) {
+	          return;
+	        }
+	        self.off(event, listener);
+	        if (options.handleError) {
+	          var err = arguments[0];
+	          err ? reject(err) : resolve(toArray.apply(null, arguments).slice(1));
+	        } else {
+	          resolve(toArray.apply(null, arguments));
+	        }
+	      }
+
+	      onCancel(function(){
+	        self.off(event, listener);
+	      });
+
+	      self._on(event, listener, false);
+	    }, {
+	      timeout: options.timeout,
+	      overload: options.overload
+	    })
+	  };
+
+	  function once(emitter, name, options) {
+	    options= resolveOptions(options, {
+	      Promise: Promise,
+	      timeout: 0,
+	      overload: false
+	    }, {
+	      Promise: constructorReducer
+	    });
+
+	    var _Promise= options.Promise;
+
+	    return makeCancelablePromise(_Promise, function(resolve, reject, onCancel){
+	      var handler;
+	      if (typeof emitter.addEventListener === 'function') {
+	        handler=  function () {
+	          resolve(toArray.apply(null, arguments));
+	        };
+
+	        onCancel(function(){
+	          emitter.removeEventListener(name, handler);
+	        });
+
+	        emitter.addEventListener(
+	            name,
+	            handler,
+	            {once: true}
+	        );
+	        return;
+	      }
+
+	      var eventListener = function(){
+	        errorListener && emitter.removeListener('error', errorListener);
+	        resolve(toArray.apply(null, arguments));
+	      };
+
+	      var errorListener;
+
+	      if (name !== 'error') {
+	        errorListener = function (err){
+	          emitter.removeListener(name, eventListener);
+	          reject(err);
+	        };
+
+	        emitter.once('error', errorListener);
+	      }
+
+	      onCancel(function(){
+	        errorListener && emitter.removeListener('error', errorListener);
+	        emitter.removeListener(name, eventListener);
+	      });
+
+	      emitter.once(name, eventListener);
+	    }, {
+	      timeout: options.timeout,
+	      overload: options.overload
+	    });
+	  }
+
+	  var prototype= EventEmitter.prototype;
+
+	  Object.defineProperties(EventEmitter, {
+	    defaultMaxListeners: {
+	      get: function () {
+	        return prototype._maxListeners;
+	      },
+	      set: function (n) {
+	        if (typeof n !== 'number' || n < 0 || Number.isNaN(n)) {
+	          throw TypeError('n must be a non-negative number')
+	        }
+	        prototype._maxListeners = n;
+	      },
+	      enumerable: true
+	    },
+	    once: {
+	      value: once,
+	      writable: true,
+	      configurable: true
+	    }
+	  });
+
+	  Object.defineProperties(prototype, {
+	      _maxListeners: {
+	          value: defaultMaxListeners,
+	          writable: true,
+	          configurable: true
+	      },
+	      _observers: {value: null, writable: true, configurable: true}
+	  });
+
+	  if (typeof undefined$1 === 'function' && undefined$1.amd) {
+	     // AMD. Register as an anonymous module.
+	    undefined$1(function() {
+	      return EventEmitter;
+	    });
+	  } else {
+	    // CommonJS
+	    module.exports = EventEmitter;
+	  }
+	}();
+} (eventemitter2));
+
+var EventEmitter2 = eventemitter2.exports;
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -54031,8 +54860,8 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
     this.menuEntries = this.message.menu_entries;
     this.dragging = false;
     this.timeoutHandle = null;
-    this.tfTransform = new Transform();
-    this.pose = new Pose();
+    this.tfTransform = new ROSLIB.Transform();
+    this.pose = new ROSLIB.Pose();
 
     this.setPoseFromClientBound = this.setPoseFromClient.bind(this);
     this.onMouseDownBound = this.onMouseDown.bind(this);
@@ -54064,7 +54893,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * Emit the new pose that has come from the server.
    */
   InteractiveMarkerHandle.prototype.emitServerPoseUpdate = function emitServerPoseUpdate () {
-    var poseTransformed = new Pose(this.pose);
+    var poseTransformed = new ROSLIB.Pose(this.pose);
     poseTransformed.applyTransform(this.tfTransform);
     this.emit('pose', poseTransformed);
   };
@@ -54074,7 +54903,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * @param poseMsg - the pose given by the server
    */
   InteractiveMarkerHandle.prototype.setPoseFromServer = function setPoseFromServer (poseMsg) {
-    this.pose = new Pose(poseMsg);
+    this.pose = new ROSLIB.Pose(poseMsg);
     this.emitServerPoseUpdate();
   };
   /**
@@ -54083,7 +54912,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    * @param transformMsg - the TF given by the server
    */
   InteractiveMarkerHandle.prototype.tfUpdate = function tfUpdate (transformMsg) {
-    this.tfTransform = new Transform(transformMsg);
+    this.tfTransform = new ROSLIB.Transform(transformMsg);
     this.emitServerPoseUpdate();
   };
   /**
@@ -54093,7 +54922,7 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
    */
   InteractiveMarkerHandle.prototype.setPoseFromClient = function setPoseFromClient (event) {
     // apply the transform
-    this.pose = new Pose(event);
+    this.pose = new ROSLIB.Pose(event);
     var inv = this.tfTransform.clone();
     inv.rotation.invert();
     inv.translation.multiplyQuaternion(inv.rotation);
@@ -54185,9 +55014,10 @@ var InteractiveMarkerHandle = /*@__PURE__*/(function (EventEmitter2) {
   };
 
   return InteractiveMarkerHandle;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -54198,7 +55028,7 @@ var InteractiveMarkerClient = function InteractiveMarkerClient(options) {
   this.topicName = options.topic;
   this.path = options.path || '/';
   this.camera = options.camera;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.rootObject = options.rootObject || new THREE.Object3D();
   this.loader = options.loader;
   this.menuFontSize = options.menuFontSize || '0.8em';
 
@@ -54220,7 +55050,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   // unsubscribe to the other topics
   this.unsubscribe();
 
-  this.updateTopic = new Topic({
+  this.updateTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : topic + '/tunneled/update',
     messageType : 'visualization_msgs/InteractiveMarkerUpdate',
@@ -54228,7 +55058,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   });
   this.updateTopic.subscribe(this.processUpdate.bind(this));
 
-  this.feedbackTopic = new Topic({
+  this.feedbackTopic = new ROSLIB.Topic({
     ros : this.ros,
     name : topic + '/feedback',
     messageType : 'visualization_msgs/InteractiveMarkerFeedback',
@@ -54236,12 +55066,12 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
   });
   this.feedbackTopic.advertise();
 
-  this.initService = new Service({
+  this.initService = new ROSLIB.Service({
     ros : this.ros,
     name : topic + '/tunneled/get_init',
     serviceType : 'demo_interactive_markers/GetInit'
   });
-  var request = new ServiceRequest({});
+  var request = new ROSLIB.ServiceRequest({});
   this.initService.callService(request, this.processInit.bind(this));
 };
 /**
@@ -54249,7 +55079,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
  */
 InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
   if (this.updateTopic) {
-    this.updateTopic.unsubscribe();
+    this.updateTopic.unsubscribe(this.processUpdate);
   }
   if (this.feedbackTopic) {
     this.feedbackTopic.unadvertise();
@@ -54374,6 +55204,7 @@ InteractiveMarkerClient.prototype.eraseIntMarker = function eraseIntMarker (intM
 };
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -54386,7 +55217,7 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.frameID = options.frameID;
     var object = options.object;
-    this.pose = options.pose || new Pose();
+    this.pose = options.pose || new ROSLIB.Pose();
 
     // Do not render this object until we receive a TF update
     this.visible = false;
@@ -54401,8 +55232,8 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.tfUpdate = function(msg) {
 
       // apply the transform
-      var tf = new Transform(msg);
-      var poseTransformed = new Pose(that.pose);
+      var tf = new ROSLIB.Transform(msg);
+      var poseTransformed = new ROSLIB.Pose(that.pose);
       poseTransformed.applyTransform(tf);
 
       // update the world
@@ -54433,9 +55264,10 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
   };
 
   return SceneNode;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  * @author Nils Berg - berg.nils@gmail.com
  */
@@ -54447,7 +55279,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.ros = options.ros;
     this.topicName = options.topic;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.path = options.path || '/';
 
     // Markers that are displayed (Map ns+id--Marker)
@@ -54464,7 +55296,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.unsubscribe();
 
     // subscribe to MarkerArray topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/MarkerArray',
@@ -54474,13 +55306,13 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
     arrayMessage.markers.forEach(function(message) {
+      var key = message.ns + message.id;
       if(message.action === 0) {
         var updated = false;
-        if(message.ns + message.id in this.markers) { // "MODIFY"
-          updated = this.markers[message.ns + message.id].children[0].update(message);
+        if(key in this.markers) { // "MODIFY"
+          updated = this.markers[key].children[0].update(message);
           if(!updated) { // "REMOVE"
-            this.markers[message.ns + message.id].unsubscribeTf();
-            this.rootObject.remove(this.markers[message.ns + message.id]);
+            this.removeMarker(key);
           }
         }
         if(!updated) { // "ADD"
@@ -54488,26 +55320,23 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
             message : message,
             path : this.path,
           });
-          this.markers[message.ns + message.id] = new SceneNode({
+          this.markers[key] = new SceneNode({
             frameID : message.header.frame_id,
             tfClient : this.tfClient,
             object : newMarker
           });
-          this.rootObject.add(this.markers[message.ns + message.id]);
+          this.rootObject.add(this.markers[key]);
         }
       }
       else if(message.action === 1) { // "DEPRECATED"
         console.warn('Received marker message with deprecated action identifier "1"');
       }
       else if(message.action === 2) { // "DELETE"
-        this.markers[message.ns + message.id].unsubscribeTf();
-        this.rootObject.remove(this.markers[message.ns + message.id]);
-        delete this.markers[message.ns + message.id];
+        this.removeMarker(key);
       }
       else if(message.action === 3) { // "DELETE ALL"
         for (var m in this.markers){
-          this.markers[m].unsubscribeTf();
-          this.rootObject.remove(this.markers[m]);
+          this.removeMarker(m);
         }
         this.markers = {};
       }
@@ -54520,14 +55349,27 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
+  };
+  MarkerArrayClient.prototype.removeMarker = function removeMarker (key) {
+    var oldNode = this.markers[key];
+    if(!oldNode) {
+      return;
+    }
+    oldNode.unsubscribeTf();
+    this.rootObject.remove(oldNode);
+    oldNode.children.forEach(function (child) {
+      child.dispose();
+    });
+    delete(this.markers[key]);
   };
 
   return MarkerArrayClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -54538,7 +55380,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.ros = options.ros;
     this.topicName = options.topic;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.path = options.path || '/';
     this.lifetime = options.lifetime || 0;
 
@@ -54555,15 +55397,13 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   MarkerClient.prototype.constructor = MarkerClient;
   MarkerClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   MarkerClient.prototype.checkTime = function checkTime (name){
       var curTime = new Date().getTime();
       if (curTime - this.updatedTime[name] > this.lifetime) {
-          var oldNode = this.markers[name];
-          oldNode.unsubscribeTf();
-          this.rootObject.remove(oldNode);
+          this.removeMarker(name);
           this.emit('change');
       } else {
           var that = this;
@@ -54575,7 +55415,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'visualization_msgs/Marker',
@@ -54585,11 +55425,12 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerClient.prototype.processMessage = function processMessage (message){
     // remove old marker from Three.Object3D children buffer
-    var oldNode = this.markers[message.ns + message.id];
-    this.updatedTime[message.ns + message.id] = new Date().getTime();
+    var key = message.ns + message.id;
+    var oldNode = this.markers[key];
+    this.updatedTime[key] = new Date().getTime();
     if (oldNode) {
-      oldNode.unsubscribeTf();
-      this.rootObject.remove(oldNode);
+      this.removeMarker(key);
+
     } else if (this.lifetime) {
       this.checkTime(message.ns + message.id);
     }
@@ -54600,34 +55441,47 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
         path : this.path,
       });
 
-      this.markers[message.ns + message.id] = new SceneNode({
+      this.markers[key] = new SceneNode({
         frameID : message.header.frame_id,
         tfClient : this.tfClient,
         object : newMarker
       });
-      this.rootObject.add(this.markers[message.ns + message.id]);
+      this.rootObject.add(this.markers[key]);
     }
 
     this.emit('change');
   };
+  MarkerClient.prototype.removeMarker = function removeMarker (key) {
+    var oldNode = this.markers[key];
+    if(!oldNode) {
+      return;
+    }
+    oldNode.unsubscribeTf();
+    this.rootObject.remove(oldNode);
+    oldNode.children.forEach(function (child) {
+      child.dispose();
+    });
+    delete(this.markers[key]);
+  };
 
   return MarkerClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - lee@magazino.eu
  */
 
 var Arrow2 = /*@__PURE__*/(function (superclass) {
   function Arrow2(options) {
     options = options || {};
-    var origin = options.origin || new THREE$1.Vector3(0, 0, 0);
-    var direction = options.direction || new THREE$1.Vector3(1, 0, 0);
+    var origin = options.origin || new THREE.Vector3(0, 0, 0);
+    var direction = options.direction || new THREE.Vector3(1, 0, 0);
     var length = options.length || 1;
-    var headLength = options.headLength || 0.2;
-    var shaftDiameter = options.shaftDiameter || 0.05;
-    var headDiameter = options.headDiameter || 0.1;
-    var material = options.material || new THREE$1.MeshBasicMaterial();
+    options.headLength || 0.2;
+    options.shaftDiameter || 0.05;
+    options.headDiameter || 0.1;
+    options.material || new THREE.MeshBasicMaterial();
 
     superclass.call(this, direction, origin, length, 0xff0000);
 
@@ -54652,9 +55506,10 @@ var Arrow2 = /*@__PURE__*/(function (superclass) {
   };
 
   return Arrow2;
-}(THREE$1.ArrowHelper));
+}(THREE.ArrowHelper));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -54674,8 +55529,8 @@ var Axes = /*@__PURE__*/(function (superclass) {
     this.scale.set(scaleArg, scaleArg, scaleArg);
 
     // create the cylinders for the objects
-    this.lineGeom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
-    this.headGeom = new THREE$1.CylinderGeometry(0, headRadius, headLength);
+    this.lineGeom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, 1.0 - headLength);
+    this.headGeom = new THREE.CylinderGeometry(0, headRadius, headLength);
 
     /**
      * Adds an axis marker to this axes object.
@@ -54684,20 +55539,20 @@ var Axes = /*@__PURE__*/(function (superclass) {
      */
     function addAxis(axis) {
       // set the color of the axis
-      var color = new THREE$1.Color();
+      var color = new THREE.Color();
       color.setRGB(axis.x, axis.y, axis.z);
-      var material = new THREE$1.MeshBasicMaterial({
+      var material = new THREE.MeshBasicMaterial({
         color : color.getHex()
       });
 
       // setup the rotation information
-      var rotAxis = new THREE$1.Vector3();
-      rotAxis.crossVectors(axis, new THREE$1.Vector3(0, -1, 0));
-      var rot = new THREE$1.Quaternion();
+      var rotAxis = new THREE.Vector3();
+      rotAxis.crossVectors(axis, new THREE.Vector3(0, -1, 0));
+      var rot = new THREE.Quaternion();
       rot.setFromAxisAngle(rotAxis, 0.5 * Math.PI);
 
       // create the arrow
-      var arrow = new THREE$1.Mesh(that.headGeom, material);
+      var arrow = new THREE.Mesh(that.headGeom, material);
       arrow.position.copy(axis);
       arrow.position.multiplyScalar(0.95);
       arrow.quaternion.copy(rot);
@@ -54709,8 +55564,8 @@ var Axes = /*@__PURE__*/(function (superclass) {
       if (lineType === 'dashed') {
         var l = lineDashLength;
         for (var i = 0; (l / 2 + 3 * l * i + l / 2) <= 1; ++i) {
-          var geom = new THREE$1.CylinderGeometry(shaftRadius, shaftRadius, l);
-          line = new THREE$1.Mesh(geom, material);
+          var geom = new THREE.CylinderGeometry(shaftRadius, shaftRadius, l);
+          line = new THREE.Mesh(geom, material);
           line.position.copy(axis);
           // Make spacing between dashes equal to 1.5 times the dash length.
           line.position.multiplyScalar(l / 2 + 3 * l * i);
@@ -54719,7 +55574,7 @@ var Axes = /*@__PURE__*/(function (superclass) {
           that.add(line);
         }
       } else if (lineType === 'full') {
-        line = new THREE$1.Mesh(that.lineGeom, material);
+        line = new THREE.Mesh(that.lineGeom, material);
         line.position.copy(axis);
         line.position.multiplyScalar(0.45);
         line.quaternion.copy(rot);
@@ -54731,9 +55586,9 @@ var Axes = /*@__PURE__*/(function (superclass) {
     }
 
     // add the three markers to the axes
-    addAxis(new THREE$1.Vector3(1, 0, 0));
-    addAxis(new THREE$1.Vector3(0, 1, 0));
-    addAxis(new THREE$1.Vector3(0, 0, 1));
+    addAxis(new THREE.Vector3(1, 0, 0));
+    addAxis(new THREE.Vector3(0, 1, 0));
+    addAxis(new THREE.Vector3(0, 0, 1));
   }
 
   if ( superclass ) Axes.__proto__ = superclass;
@@ -54741,9 +55596,10 @@ var Axes = /*@__PURE__*/(function (superclass) {
   Axes.prototype.constructor = Axes;
 
   return Axes;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -54757,7 +55613,7 @@ var Grid = /*@__PURE__*/(function (superclass) {
 
     superclass.call(this);
 
-    var material = new THREE$1.LineBasicMaterial({
+    var material = new THREE.LineBasicMaterial({
       color: color,
       linewidth: lineWidth
     });
@@ -54765,18 +55621,18 @@ var Grid = /*@__PURE__*/(function (superclass) {
     for (var i = 0; i <= num_cells; ++i) {
       var edge = cellSize * num_cells / 2;
       var position = edge - (i * cellSize);
-      var geometryH = new THREE$1.Geometry();
+      var geometryH = new THREE.Geometry();
       geometryH.vertices.push(
-        new THREE$1.Vector3( -edge, position, 0 ),
-        new THREE$1.Vector3( edge, position, 0 )
+        new THREE.Vector3( -edge, position, 0 ),
+        new THREE.Vector3( edge, position, 0 )
       );
-      var geometryV = new THREE$1.Geometry();
+      var geometryV = new THREE.Geometry();
       geometryV.vertices.push(
-        new THREE$1.Vector3( position, -edge, 0 ),
-        new THREE$1.Vector3( position, edge, 0 )
+        new THREE.Vector3( position, -edge, 0 ),
+        new THREE.Vector3( position, edge, 0 )
       );
-      this.add(new THREE$1.Line(geometryH, material));
-      this.add(new THREE$1.Line(geometryV, material));
+      this.add(new THREE.Line(geometryH, material));
+      this.add(new THREE.Line(geometryV, material));
     }
   }
 
@@ -54785,9 +55641,10 @@ var Grid = /*@__PURE__*/(function (superclass) {
   Grid.prototype.constructor = Grid;
 
   return Grid;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -54795,79 +55652,121 @@ var OccupancyGrid = /*@__PURE__*/(function (superclass) {
   function OccupancyGrid(options) {
     options = options || {};
     var message = options.message;
-    var color = options.color || {r:255,g:255,b:255};
     var opacity = options.opacity || 1.0;
+    var color = options.color || {r:255,g:255,b:255,a:255};
 
     // create the geometry
-    var width = message.info.width;
-    var height = message.info.height;
-    var geom = new THREE$1.PlaneBufferGeometry(width, height);
+    var info = message.info;
+    var origin = info.origin;
+    var width = info.width;
+    var height = info.height;
+    var geom = new THREE.PlaneBufferGeometry(width, height);
 
     // create the color material
-    var imageData = new Uint8Array(width * height * 3);
-    for ( var row = 0; row < height; row++) {
-      for ( var col = 0; col < width; col++) {
-        // determine the index into the map data
-        var mapI = col + ((height - row - 1) * width);
-        // determine the value
-        var data = message.data[mapI];
-        var val;
-        if (data === 100) {
-          val = 0;
-        } else if (data === 0) {
-          val = 255;
-        } else {
-          val = 127;
-        }
-
-        // determine the index into the image data array
-        var i = (col + (row * width)) * 3;
-        // r
-        imageData[i] = (val * color.r) / 255;
-        // g
-        imageData[++i] = (val * color.g) / 255;
-        // b
-        imageData[++i] = (val * color.b) / 255;
-      }
-    }
-
-    var texture = new THREE$1.DataTexture(imageData, width, height, THREE$1.RGBFormat);
+    var imageData = new Uint8Array(width * height * 4);
+    var texture = new THREE.DataTexture(imageData, width, height, THREE.RGBAFormat);
     texture.flipY = true;
-    texture.minFilter = THREE$1.LinearFilter;
-    texture.magFilter = THREE$1.LinearFilter;
+    texture.minFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.NearestFilter;
     texture.needsUpdate = true;
 
-    var material = new THREE$1.MeshBasicMaterial({
+    var material = new THREE.MeshBasicMaterial({
       map : texture,
       transparent : opacity < 1.0,
       opacity : opacity
     });
-    material.side = THREE$1.DoubleSide;
+    material.side = THREE.DoubleSide;
 
     // create the mesh
     superclass.call(this, geom, material);
     // move the map so the corner is at X, Y and correct orientation (informations from message.info)
-    this.quaternion.copy(new THREE$1.Quaternion(
-        message.info.origin.orientation.x,
-        message.info.origin.orientation.y,
-        message.info.origin.orientation.z,
-        message.info.origin.orientation.w
+
+    // assign options to this for subclasses
+    Object.assign(this, options);
+
+    this.quaternion.copy(new THREE.Quaternion(
+        origin.orientation.x,
+        origin.orientation.y,
+        origin.orientation.z,
+        origin.orientation.w
     ));
-    this.position.x = (width * message.info.resolution) / 2 + message.info.origin.position.x;
-    this.position.y = (height * message.info.resolution) / 2 + message.info.origin.position.y;
-    this.position.z = message.info.origin.position.z;
-    this.scale.x = message.info.resolution;
-    this.scale.y = message.info.resolution;
+    this.position.x = (width * info.resolution) / 2 + origin.position.x;
+    this.position.y = (height * info.resolution) / 2 + origin.position.y;
+    this.position.z = origin.position.z;
+    this.scale.x = info.resolution;
+    this.scale.y = info.resolution;
+
+    var data = message.data;
+    // update the texture (after the the super call and this are accessible)
+    this.color = color;
+    this.material = material;
+    this.texture = texture;
+
+    for ( var row = 0; row < height; row++) {
+      for ( var col = 0; col < width; col++) {
+
+        // determine the index into the map data
+        var invRow = (height - row - 1);
+        var mapI = col + (invRow * width);
+        // determine the value
+        var val = this.getValue(mapI, invRow, col, data);
+
+        // determine the color
+        var color = this.getColor(mapI, invRow, col, val);
+
+        // determine the index into the image data array
+        var i = (col + (row * width)) * 4;
+
+        // copy the color
+        imageData.set(color, i);
+      }
+    }
+
+    texture.needsUpdate = true;
+
   }
 
   if ( superclass ) OccupancyGrid.__proto__ = superclass;
   OccupancyGrid.prototype = Object.create( superclass && superclass.prototype );
   OccupancyGrid.prototype.constructor = OccupancyGrid;
+  OccupancyGrid.prototype.dispose = function dispose () {
+    this.material.dispose();
+    this.texture.dispose();
+  };
+  /**
+   * Returns the value for a given grid cell
+   * @param {int} index the current index of the cell
+   * @param {int} row the row of the cell
+   * @param {int} col the column of the cell
+   * @param {object} data the data buffer
+   */
+  OccupancyGrid.prototype.getValue = function getValue (index, row, col, data) {
+    return data[index];
+  };
+  /**
+   * Returns a color value given parameters of the position in the grid; the default implementation
+   * scales the default color value by the grid value. Subclasses can extend this functionality
+   * (e.g. lookup a color in a color map).
+   * @param {int} index the current index of the cell
+   * @param {int} row the row of the cell
+   * @param {int} col the column of the cell
+   * @param {float} value the value of the cell
+   * @returns r,g,b,a array of values from 0 to 255 representing the color values for each channel
+   */
+  OccupancyGrid.prototype.getColor = function getColor (index, row, col, value) {
+    return [
+      (value * this.color.r) / 255,
+      (value * this.color.g) / 255,
+      (value * this.color.b) / 255,
+      255
+    ];
+  };
 
   return OccupancyGrid;
-}(THREE$1.Mesh));
+}(THREE.Mesh));
 
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -54880,8 +55779,8 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     this.compression = options.compression || 'cbor';
     this.continuous = options.continuous;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
-    this.offsetPose = options.offsetPose || new Pose();
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.offsetPose = options.offsetPose || new ROSLIB.Pose();
     this.color = options.color || {r:255,g:255,b:255};
     this.opacity = options.opacity || 1.0;
 
@@ -54898,31 +55797,35 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
   OccupancyGridClient.prototype.constructor = OccupancyGridClient;
   OccupancyGridClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   OccupancyGridClient.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'nav_msgs/OccupancyGrid',
       queue_length : 1,
       compression : this.compression
     });
+    this.sceneNode = null;
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
   OccupancyGridClient.prototype.processMessage = function processMessage (message){
     // check for an old map
     if (this.currentGrid) {
       // check if it there is a tf client
-      if (this.currentGrid.tfClient) {
+      if (this.tfClient) {
         // grid is of type ROS3D.SceneNode
-        this.currentGrid.unsubscribeTf();
+        this.sceneNode.unsubscribeTf();
+        this.sceneNode.remove(this.currentGrid);
+      } else {
+        this.rootObject.remove(this.currentGrid);
       }
-      this.rootObject.remove(this.currentGrid);
+      this.currentGrid.dispose();
     }
 
     var newGrid = new OccupancyGrid({
@@ -54934,30 +55837,846 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
     // check if we care about the scene
     if (this.tfClient) {
       this.currentGrid = newGrid;
-      this.sceneNode = new SceneNode({
-        frameID : message.header.frame_id,
-        tfClient : this.tfClient,
-        object : newGrid,
-        pose : this.offsetPose
-      });
+      if (this.sceneNode === null) {
+        this.sceneNode = new SceneNode({
+          frameID : message.header.frame_id,
+          tfClient : this.tfClient,
+          object : newGrid,
+          pose : this.offsetPose
+        });
+        this.rootObject.add(this.sceneNode);
+      } else {
+        this.sceneNode.add(this.currentGrid);
+      }
     } else {
       this.sceneNode = this.currentGrid = newGrid;
+      this.rootObject.add(this.currentGrid);
     }
-
-    this.rootObject.add(this.sceneNode);
 
     this.emit('change');
 
     // check if we should unsubscribe
     if (!this.continuous) {
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
 
   return OccupancyGridClient;
-}(eventemitter2));
+}(EventEmitter2));
 
 /**
+ * @fileOverview
+ * @author Peter Sari - sari@photoneo.com
+ */
+
+var OcTreeBaseNode = function OcTreeBaseNode() {
+  this._children = [null, null, null, null, null, null, null, null];
+  this.value = null;
+};
+OcTreeBaseNode.prototype.createChildNodeAt = function createChildNodeAt (newNode, index) {
+  this._children[index % 8] = newNode;
+};
+OcTreeBaseNode.prototype.hasChildAt = function hasChildAt (index) {
+  return this._children[index % 8] !== null;
+};
+OcTreeBaseNode.prototype.getChildAt = function getChildAt (index) {
+  return this._children[index % 8];
+};
+OcTreeBaseNode.prototype.isLeafNode = function isLeafNode () {
+  for (var i = 0; i < 8; ++i) {
+    if (this._children[i] !== null) { return false; }
+  }
+  return true;
+};
+OcTreeBaseNode.prototype.hasChildren = function hasChildren () {
+  for (var i = 0; i < 8; ++i) {
+    if (this._children[i] !== null) { return true; }
+  }
+  return false;
+};
+
+/**
+ * @fileOverview
+ * @author Peter Sari - sari@photoneo.com
+ */
+
+/**
+ * Toggles voxel visibility
+ *
+ *    * `occupied` - only voxels that are above or equal to the occupation threshold are shown
+ *    * `free` - only voxels that are below the occupation threshold are shown
+ *    * `all` - all allocated voxels are shown
+ */
+var OcTreeVoxelRenderMode = {
+  OCCUPIED: 'occupied',
+  FREE: 'free',
+  ALL: 'all',
+};
+
+/**
+ * Coloring modes for each voxel
+ *
+ *     * 'solid' - voxels will have a single solid color set by the tree globally
+ *     * 'occupancy' - voxels are false colored by their occupancy value. Fall back for `solid` if not available.
+ *     * 'color' - voxels will colorized by their
+ */
+var OcTreeColorMode = {
+  SOLID: 'solid',
+  OCCUPANCY: 'occupancy',
+  COLOR: 'color'
+};
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+/**
+ Quick and dirty helper class
+ to read ArrayBuffer in a streamed data-like fashion with mixed types in it
+*/
+function InStream(data, isLittleEndian) {
+  var this$1$1 = this;
+
+  this.buffer = data.buffer;
+  this.length = data.length;
+  this.isLittleEndian = (typeof isLittleEndian !== 'undefined') ? !!isLittleEndian : true;
+  this._dataView = new DataView(this.buffer);
+  this._cursor = 0;
+
+  // Creates a set of wrapper functions for DataView
+  // also flattens all dependencies
+  [
+    { kind: 'Int8', width: 1 },
+    { kind: 'Uint8', width: 1 },
+    { kind: 'Int16', width: 2 },
+    { kind: 'Uint16', width: 2 },
+    { kind: 'Int32', width: 4 },
+    { kind: 'Uint32', width: 4 },
+    { kind: 'BigInt64', width: 8 },
+    { kind: 'BigUint64', width: 8 },
+    { kind: 'Float32', width: 4 },
+    { kind: 'Float64', width: 8 } ]
+    .forEach(function (wrap) {
+      var interfaceFunction = 'read' + wrap.kind;
+      var wrappedFunction = 'get' + wrap.kind;       // Function name which going to be wrapped from DataView
+
+      this$1$1[interfaceFunction] = function () {
+        if (this$1$1._cursor + wrap.width > this$1$1.length) { throw new Error('Cannot read data stream. Overflow. Len=' + this$1$1.length + ' crsr=' + this$1$1._cursor); }
+        var returningValue = this$1$1._dataView[wrappedFunction](this$1$1._cursor, this$1$1.isLittleEndian);
+        this$1$1._cursor += wrap.width;
+        return returningValue;
+      };
+    });
+
+  Object.defineProperty(this, 'isEnd', { get: function () { return this$1$1.cursor >= this$1$1.data.length; } });
+  return this;
+}
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+var OcTreeBase = function OcTreeBase(options) {
+
+  this.resolution = (typeof options.resolution !== 'undefined') ? options.resolution : 1.;
+  this.color = new THREE.Color((typeof options.color !== 'undefined') ? options.color : 'green');
+  this.opacity = (typeof options.opacity !== 'undefined') ? options.opacity : 1.;
+
+  this.voxelRenderMode = (typeof options.voxelRenderMode !== 'undefined') ? options.voxelRenderMode : OcTreeVoxelRenderMode.OCCUPIED;
+
+  this._rootNode = null;
+  this._treeDepth = 16;
+  this._treeMaxKeyVal = 32768;
+
+  this._BINARY_UNALLOCATED = 0;
+  this._BINARY_LEAF_FREE = 1;
+  this._BINARY_LEAF_OCCUPIED = 2;
+  this._BINARY_HAS_CHILDREN = 3;
+
+  this._BINARY_CHILD_BUILD_TABLE = {};
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_FREE] = function (child) {
+    child.value = this._defaultFreeValue;
+  };
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_LEAF_OCCUPIED] = function (child) {
+    child.value = this._defaultOccupiedValue;
+  };
+
+  this._BINARY_CHILD_BUILD_TABLE[this._BINARY_HAS_CHILDREN] = function (child) {
+    child.value = null;
+  };
+
+  /**
+   * Table which we are building the geometry data from.
+   */
+  this._FACES = [
+    { // 0. left (x=0)
+      normal: [-1, 0, 0 ],
+      vertices: [
+        [0, 1, 0],
+        [0, 0, 0],
+        [0, 1, 1],
+        [0, 0, 1] ],
+      childIndex: [
+        1,
+        3,
+        5,
+        7
+      ]
+    },
+    { // 1. right (x=1)
+      normal: [1, 0, 0 ],
+      vertices: [
+        [1, 1, 1],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 0, 0] ],
+
+      childIndex: [
+        0,
+        2,
+        4,
+        6
+      ]
+    },
+    { // 2. bottom (y=0)
+      normal: [0, -1, 0 ],
+      vertices: [
+        [1, 0, 1],
+        [0, 0, 1],
+        [1, 0, 0],
+        [0, 0, 0] ],
+      childIndex: [
+        2,
+        3,
+        6,
+        7
+      ]
+    },
+    { // 3. top (y=1)
+      normal: [0, 1, 0 ],
+      vertices: [
+        [0, 1, 1],
+        [1, 1, 1],
+        [0, 1, 0],
+        [1, 1, 0] ],
+      childIndex: [
+        0,
+        1,
+        4,
+        5
+      ]
+    },
+    { // 4. back (z=0)
+      normal: [0, 0, -1 ],
+      vertices: [
+        [1, 0, 0],
+        [0, 0, 0],
+        [1, 1, 0],
+        [0, 1, 0] ],
+      childIndex: [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    { // 5.front (z=1)
+      normal: [0, 0, 1 ],
+      vertices: [
+        [0, 0, 1],
+        [1, 0, 1],
+        [0, 1, 1],
+        [1, 1, 1] ],
+      childIndex: [
+        0,
+        1,
+        2,
+        3
+      ]
+    } ];
+
+  // Table of voxel size for each level of the tree
+  this.nodeSizeTable = new Array(this._treeDepth);
+  var _val = this.resolution;
+  for (var i = this._treeDepth - 1; i >= 0; --i) {
+    this.nodeSizeTable[i] = _val;
+    _val = 2. * _val;
+  }
+
+  this._defaultOccupiedValue = true;
+  this._defaultFreeValue = false;
+
+  this.object = null;
+};
+
+/*
+ * Finds a key in a given depth. Search is performed on the lowest level by default.
+ * @return the node at given position, null if not found
+ */
+OcTreeBase.prototype.searchAtDepth = function searchAtDepth (key, depth) {
+  depth = (typeof depth !== 'undefined') ? (depth > 0 ? depth : this._treeDepth) : this._treeDepth;
+
+  var keyAtDepth = this._adjustKeyAtDepth(key, depth);
+  var diff = this._treeDepth - depth;
+  var currentNode = this._rootNode;
+
+  // follow nodes down to requested level (for diff = 0 it's the last level)
+  // Return the closest node, or null if not any
+
+  for (var i = (this._treeDepth - 1); i >= diff; --i) {
+    var pos = this._computeChildIdx(keyAtDepth, i);
+    if (currentNode.hasChildAt(pos)) {
+      currentNode = currentNode.getChildAt(pos);
+    } else {
+      // we expected a child but did not get it
+      // is the current node a leaf already?
+      if (!currentNode.hasChildren()) { return currentNode; }
+      // it is not, search failed
+      return null;
+    }
+  }
+
+  return currentNode;
+
+};
+/**
+ *
+ */
+OcTreeBase.prototype._computeCoordFromKey = function _computeCoordFromKey (key) {
+    var this$1$1 = this;
+
+  return key.map(function (keyVal) { return this$1$1.resolution * (keyVal - this$1$1._treeMaxKeyVal); });
+};
+OcTreeBase.prototype._computeChildIdx = function _computeChildIdx (key, depth) {
+  var pos = 0;
+  if (key[0] & (1 << depth)) { pos += 1; }
+  if (key[1] & (1 << depth)) { pos += 2; }
+  if (key[2] & (1 << depth)) { pos += 4; }
+
+  return pos;
+};
+OcTreeBase.prototype._computeKeyFromChildIdx = function _computeKeyFromChildIdx (index, offset, depth) {
+  var diff = this._treeDepth - depth - 1;
+
+  return [
+    offset[0] + (!!(index & 1) << diff),
+    offset[1] + (!!(index & 2) << diff),
+    offset[2] + (!!(index & 4) << diff) ];
+
+};
+OcTreeBase.prototype._adjustKeyAtDepth = function _adjustKeyAtDepth (key, depth) {
+    var this$1$1 = this;
+
+  // generate appropriate key_at_depth for queried depth
+  var diff = this._treeDepth - depth;
+  if (diff === 0) { return key; }
+
+  return key.map(function (keyVal) { return (((keyVal - this$1$1._treeMaxKeyVal) >> diff) << diff) + (1 << (diff - 1)) + this$1$1._treeMaxKeyVal; });
+};
+OcTreeBase.prototype._newNode = function _newNode () { return new OcTreeBaseNode(); };
+/*
+ * Reads and builds a tree which was represented in a binary form from a message
+ * Binary form only contains the tree structure to be allocated, all the data of voxels are stripped,
+ * occupation is represented as a binary value.
+ * Each node is represented as a 2-bit value which makes up the 8 child nodes of the parent (16 bits in total)
+ * starting with the root node.
+ */
+
+OcTreeBase.prototype.readBinary = function readBinary (data) {
+  if (this._rootNode !== null) {
+    delete this._rootNode;
+  }
+  this._rootNode = this._newNode();
+
+  var dataStream = new InStream(data, true);
+
+  var stack = new Array();
+  stack.push(this._rootNode);
+
+  while (stack.length > 0) {
+    var node = stack.pop();
+
+    // 2 bits per children, 16 bit total
+    var childAllocationMap = dataStream.readUint16();
+
+    // Insert all children and leaves
+    var index = 8;
+    while (index !== 0) {
+      --index;
+      var allocation = (childAllocationMap & (3 << (2 * index))) >> (2 * index);
+
+      if (allocation !== this._BINARY_UNALLOCATED) {
+        var child = this._newNode();
+
+        var fn = this._BINARY_CHILD_BUILD_TABLE[allocation].bind(this);
+        fn(child);
+
+        node.createChildNodeAt(child, index);
+        if (allocation === this._BINARY_HAS_CHILDREN) { stack.push(child); }
+      }
+    }
+  }
+
+};
+/**
+ * Reads a full tree (with node data) from a message.
+ * A pacjet starts with the node data, followed by the allocation map of their children.
+ * Each type of tree has different data structure @see ROS3DJS.OcTreeBase._readNodeData
+ */
+OcTreeBase.prototype.read = function read (data) {
+  if (this._rootNode !== null) {
+    delete this._rootNode;
+  }
+
+  this._rootNode = this._newNode();
+
+  var dataStream = new InStream(data, true);
+
+  var stack = new Array();
+  stack.push(this._rootNode);
+
+  while (stack.length > 0) {
+    var node = stack.pop();
+
+    // Data comes first
+    this._readNodeData(dataStream, node);
+
+    var childAllocationMap = dataStream.readUint8();
+
+    // Insert all children and leaves
+    var index = 8;
+    while (index !== 0) {
+      --index;
+      var hasChild = childAllocationMap & (1 << index);
+      if (hasChild) {
+        var child = this._newNode();
+        child.value = null;
+        node.createChildNodeAt(child, index);
+        stack.push(child);
+      }
+    }
+  }
+
+};
+/**
+ * Abstract function; Reads and sets data of a node
+ */
+OcTreeBase.prototype._readNodeData = function _readNodeData (dataStream, node) {
+  // This needs to be implemented by specialized tree
+  console.error('Not implemented');
+};
+/**
+* Builds up THREE.js geometry from tree data.
+*/
+OcTreeBase.prototype.buildGeometry = function buildGeometry () {
+  console.assert(this._rootNode !== null, 'No tree data');
+  var ref = this._buildFaces();
+    var vertices = ref.vertices;
+    var normals = ref.normals;
+    var colors = ref.colors;
+    var indices = ref.indices;
+
+  var geometry = new THREE.BufferGeometry();
+
+  var material = new THREE.MeshBasicMaterial({
+    color: 'white',
+    flatShading: true,
+    vertexColors: THREE.VertexColors,
+    transparent: this.opacity < 1.0,
+    opacity: this.opacity
+  });
+
+  geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+  geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+  geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+
+  geometry.setIndex(indices);
+
+  var mesh = new THREE.Mesh(geometry, material);
+  this.object = new THREE.Object3D();
+  this.object.add(mesh);
+};
+OcTreeBase.prototype._traverseLeaves = function _traverseLeaves (callback) {
+  var stack = new Array();
+  stack.push({ node: this._rootNode, depth: 0, key: [0, 0, 0] });
+
+  while (stack.length > 0) {
+    var current = stack.pop();
+    if (current.node.isLeafNode()) {
+      callback(current.node, current.key, current.depth - 1);
+    } else {
+      for (var index = 0; index < 8; ++index) {
+        if (current.node.hasChildAt(index)) {
+          var key = this._computeKeyFromChildIdx(index, current.key, current.depth);
+          stack.push({
+            node: current.node.getChildAt(index),
+            depth: current.depth + 1,
+            key: key
+          });
+        }
+      }
+    }
+  }
+};
+/**
+ * Abstract function; to implement different coloring schemes
+ */
+OcTreeBase.prototype._obtainColor = function _obtainColor (node) {
+  return this.color;
+};
+OcTreeBase.prototype._checkOccupied = function _checkOccupied (node) {
+  return node.value !== false;
+};
+OcTreeBase.prototype._buildFaces = function _buildFaces () {
+    var this$1$1 = this;
+
+  var geometry = {
+    vertices: [],
+    indices: [],
+    normals: [],
+    colors: [],
+
+    _insertFace: function (face, pos, size, color) {
+        var ref, ref$1;
+
+      var indexCount = this.vertices.length / 3;
+
+      face.vertices.forEach(function(vertex) {
+        this.vertices.push(
+          pos[0] + vertex[0] * size,
+          pos[1] + vertex[1] * size,
+          pos[2] + vertex[2] * size
+        );
+      });
+
+      var colorArr = [color.r, color.g, color.b];
+
+      (ref = this.colors).push.apply(ref, colorArr.concat( colorArr, colorArr, colorArr ));
+      (ref$1 = this.normals).push.apply(ref$1, ( face.normal ).concat( face.normal, face.normal, face.normal ));
+
+      this.indices.push(
+        indexCount, indexCount + 1, indexCount + 2,
+        indexCount + 2, indexCount + 1, indexCount + 3
+      );
+    },
+
+    _checkNeighborsTouchingFace: function (face, neighborNode, voxelRenderMode) {
+      // Finds if there's not a node at a given position, aka a 'hole'
+      var stack = new Array();
+      stack.push(neighborNode);
+      var loop = function () {
+        var node = stack.pop();
+        if (node.hasChildren()) {
+          face.childIndex.forEach(function(childIndex) {
+            if (node.hasChildAt(childIndex)) {
+              var child = node.getChildAt(childIndex);
+
+              // filter occupancy
+              var isOccupied = this._checkOccupied(node);
+              var isNeedsToRender = (isOccupied && voxelRenderMode === ROS3D.OcTreeVoxelRenderMode.OCCUPIED) || (!isOccupied && voxelRenderMode === OcTreeVoxelRenderMode.FREE);
+
+              if (isNeedsToRender) { stack.push(child); }
+            }
+            else {
+              return true;
+            }
+          });
+        }
+      };
+
+        while (stack.length !== 0) loop();
+      return false;
+    }
+
+  };
+
+  this._traverseLeaves(function (node, key, depth) {
+    var pos = this$1$1._computeCoordFromKey(key);
+    var size = this$1$1.nodeSizeTable[depth];
+    var diff = this$1$1._treeDepth - depth;
+
+    var isOccupied = this$1$1._checkOccupied(node);
+
+    // By default it will show ALL
+    // Hide free voxels if set
+    if (!isOccupied && this$1$1.voxelRenderMode === OcTreeVoxelRenderMode.OCCUPIED) { return; }
+
+    // Hide occuped voxels if set.
+    if (isOccupied && this$1$1.voxelRenderMode === OcTreeVoxelRenderMode.FREE) { return; }
+
+    this$1$1._FACES.forEach(function(face) {
+      // Add geometry where there is no neighbor voxel
+      var neighborKey = [
+        key[0] + face.normal[0] * diff * diff,
+        key[1] + face.normal[1] * diff * diff,
+        key[2] + face.normal[2] * diff * diff ];
+      var neighborNode = this.searchAtDepth(neighborKey);
+      if (neighborNode === null) {
+        // 1. Simply add geometry where there is no neighbors
+        geometry._insertFace(face, pos, size, this._obtainColor(node));
+      } else if (depth < this._treeDepth) {
+        // 2. Special case, when a node (voxel) is not on the lowest level
+        // of the tree, but also need to add a geometry, because might
+        // not be "fully covered" by neighboring voxels on the lowest level
+
+        if (geometry._checkNeighborsTouchingFace(face, neighborNode, this.voxelRenderMode)) ;
+      }
+
+    });
+
+  });
+
+  // return geometry;
+  return {
+    vertices: geometry.vertices,
+    normals: geometry.normals,
+    colors: geometry.colors,
+    indices: geometry.indices
+  };
+
+};
+
+/**
+ * @fileOverview
+ * @author Peter Sari - sari@photoneo.com
+ */
+
+var OcTree = /*@__PURE__*/(function (OcTreeBase) {
+  function OcTree(options) {
+    OcTreeBase.call(this, options);
+
+    this._defaultOccupiedValue = 1.;
+    this._defaultFreeValue = -1.;
+
+    this.occupancyThreshold = (typeof options.occupancyThreshold !== 'undefined') ? options.occupancyThreshold : 0.0000001;
+
+    this.useFlatColoring = (typeof options.colorMode !== 'undefined') && options.colorMode === OcTreeColorMode.SOLID;
+
+    this.palette = (typeof options.palette !== 'undefined') ? options.palette.map(function (color) { return new THREE.Color(color); }) :
+      [
+        { r: 0, g: 0, b: 128, }, // dark blue (low)
+        { r: 0, g: 255, b: 0, }, // green
+        { r: 255, g: 255, b: 0, }, // yellow (mid)
+        { r: 255, g: 128, b: 0, }, // orange
+        { r: 255, g: 0, b: 0, } // red (high)
+      ];
+
+    this.paletteScale = (typeof options.paletteScale !== 'undefined') ? options.paletteScale : 1.;
+  }
+
+  if ( OcTreeBase ) OcTree.__proto__ = OcTreeBase;
+  OcTree.prototype = Object.create( OcTreeBase && OcTreeBase.prototype );
+  OcTree.prototype.constructor = OcTree;
+
+  OcTree.prototype._readNodeData = function _readNodeData (dataStream, node) {
+    node.value = dataStream.readFloat32();
+  };
+  OcTree.prototype._obtainColor = function _obtainColor (node) {
+    if (this.useFlatColoring) {
+      return this.color;
+    }
+
+    // Use a simple sigmoid curve to fit values from -inf..inf into 0..1 range
+    var value = 1. / (1. + Math.exp(-node.value * this.paletteScale)) * this.palette.length; // Normalize
+
+    var intVal = Math.trunc(value);
+    var fracVal = value - intVal;
+
+    if (intVal < 0) { return this.palette[0]; }
+    if (intVal >= this.palette.length - 1) { return this.palette[this.palette.length - 1]; }
+
+    // Simple lerp
+    return {
+      r: fracVal * this.palette[intVal].r + (1. - fracVal) * this.palette[intVal + 1].r,
+      g: fracVal * this.palette[intVal].g + (1. - fracVal) * this.palette[intVal + 1].g,
+      b: fracVal * this.palette[intVal].b + (1. - fracVal) * this.palette[intVal + 1].b,
+    };
+
+  };
+  OcTree.prototype._checkOccupied = function _checkOccupied (node) {
+    return node.value >= this.occupancyThreshold;
+  };
+
+  return OcTree;
+}(OcTreeBase));
+
+var ColorOcTree = /*@__PURE__*/(function (OcTree) {
+  function ColorOcTree(options) {
+    OcTree.call(this, options);
+    this.useOwnColor = (typeof options.palette !== 'undefined') && options.colorMode === OcTreeColorMode.COLOR;
+  }
+
+  if ( OcTree ) ColorOcTree.__proto__ = OcTree;
+  ColorOcTree.prototype = Object.create( OcTree && OcTree.prototype );
+  ColorOcTree.prototype.constructor = ColorOcTree;
+
+  ColorOcTree.prototype._readNodeData = function _readNodeData (dataStream, node) {
+    node.value = dataStream.readFloat32(); // occupancy
+    node.color = {
+      r: dataStream.readUint8(), // red
+      g: dataStream.readUint8(), // green
+      b: dataStream.readUint8(), // blue
+    };
+
+  };
+  ColorOcTree.prototype._obtainColor = function _obtainColor (node) {
+    if (!this.useOwnColor) { return OcTree.prototype._obtainColor.call(this, node); }
+    return node.color;
+  };
+
+  return ColorOcTree;
+}(OcTree));
+
+/**
+ * @fileOverview
+ * @author Peter Sari - sari@photoneo.com
+ */
+
+var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
+  function OcTreeClient(options) {
+    EventEmitter2.call(this);
+    options = options || {};
+    this.ros = options.ros;
+    this.topicName = options.topic || '/octomap';
+    this.compression = options.compression || 'cbor';
+    this.continuous = options.continuous;
+    this.tfClient = options.tfClient;
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.offsetPose = options.offsetPose || new ROSLIB.Pose();
+
+    // Options passed to converter
+    this.options = {};
+
+    // Append only when it was set, otherwise defaults are provided by the underlying layer
+    if (typeof options.color !== 'undefined') { this.options['color'] = options.color; }
+    if (typeof options.opacity !== 'undefined') { this.options['opacity'] = options.opacity; }
+    if (typeof options.colorMode !== 'undefined') { this.options['colorMode'] = options.colorMode; }
+    if (typeof options.palette !== 'undefined') { this.options['palette'] = options.palette; }
+    if (typeof options.paletteScale !== 'undefined') { this.options['paletteScale'] = options.palette; }
+    if (typeof options.voxelRenderMode !== 'undefined') { this.options['voxelRenderMode'] = options.voxelRenderMode; }
+
+    // current grid that is displayed
+    this.currentMap = null;
+
+    // subscribe to the topic
+    this.rosTopic = undefined;
+    this.subscribe();
+  }
+
+  if ( EventEmitter2 ) OcTreeClient.__proto__ = EventEmitter2;
+  OcTreeClient.prototype = Object.create( EventEmitter2 && EventEmitter2.prototype );
+  OcTreeClient.prototype.constructor = OcTreeClient;
+
+  OcTreeClient.prototype.unsubscribe = function unsubscribe () {
+    if (this.rosTopic) {
+      this.rosTopic.unsubscribe(this.processMessage);
+    }
+  };
+  OcTreeClient.prototype.subscribe = function subscribe () {
+    this.unsubscribe();
+    // subscribe to the topic
+    this.rosTopic = new ROSLIB.Topic({
+      ros: this.ros,
+      name: this.topicName,
+      messageType: 'octomap_msgs/Octomap',
+      queue_length: 1,
+      compression: this.compression
+    });
+    this.rosTopic.subscribe(this.processMessage.bind(this));
+  };
+  OcTreeClient.prototype.processMessage = function processMessage (message) {
+    // check for an old map
+    if (this.currentMap) {
+      if (this.currentMap.tfClient) {
+        this.currentMap.unsubscribeTf();
+      }
+    }
+
+    this._processMessagePrivate(message);
+
+    if (!this.continuous) {
+      this.rosTopic.unsubscribe(this.processMessage);
+    }
+
+  };
+
+  OcTreeClient.prototype._loadOcTree = function _loadOcTree (message) {
+
+    return new Promise(
+      function (resolve, reject) {
+
+        // 1. Create the corresponding octree object from message
+        var options = Object.assign({
+          resolution: message.resolution,
+        }, this.options);
+
+        var newOcTree = null;
+        {
+          if (message.binary) {
+            newOcTree = new OcTreeBase(
+              options
+            );
+            newOcTree.readBinary(message.data);
+          } else {
+
+            var ctorTable = {
+              'OcTree': OcTree,
+              'ColorOcTree': ColorOcTree,
+            };
+
+            if (message.id in ctorTable) {
+              console.log(message.id, ctorTable);
+
+              newOcTree = new ctorTable[message.id](
+                options
+              );
+
+              newOcTree.read(message.data);
+            }
+
+          }
+        }
+
+
+        {
+          newOcTree.buildGeometry();
+        }
+
+        resolve(newOcTree);
+      }.bind(this));
+
+  };
+  OcTreeClient.prototype._processMessagePrivate = function _processMessagePrivate (message) {
+    var promise = this._loadOcTree(message);
+
+    promise.then(
+      // 3. Replace geometry
+      function (newOcTree) {
+        // check if we care about the scene
+        var oldNode = this.sceneNode;
+        if (this.tfClient) {
+          this.currentMap = newOcTree;
+          this.sceneNode = new SceneNode({
+            frameID: message.header.frame_id,
+            tfClient: this.tfClient,
+            object: newOcTree.object,
+            pose: this.offsetPose
+          });
+        } else {
+          this.sceneNode = newOcTree.object;
+          this.currentMap = newOcTree;
+        }
+
+        this.rootObject.remove(oldNode);
+        this.rootObject.add(this.sceneNode);
+
+        this.emit('change');
+      }.bind(this)
+    );
+  };
+
+  return OcTreeClient;
+}(EventEmitter2));
+
+/**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -54970,7 +56689,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
     this.length = options.length || 1.0;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.keep = options.keep || 1;
 
     this.sns = [];
@@ -54985,14 +56704,14 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 
   Odometry.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Odometry.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       queue_length : 1,
@@ -55007,14 +56726,14 @@ var Odometry = /*@__PURE__*/(function (superclass) {
         this.sns.shift();
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
                                              message.pose.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
                                    message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sns.push(new SceneNode({
@@ -55027,13 +56746,14 @@ var Odometry = /*@__PURE__*/(function (superclass) {
   };
 
   return Odometry;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Path$1 = /*@__PURE__*/(function (superclass) {
+var Path = /*@__PURE__*/(function (superclass) {
   function Path(options) {
     superclass.call(this);
     options = options || {};
@@ -55041,7 +56761,7 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/path';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
     this.line = null;
@@ -55056,14 +56776,14 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
 
   Path.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Path.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55077,16 +56797,16 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var lineGeometry = new THREE$1.Geometry();
+    var lineGeometry = new THREE.Geometry();
     for(var i=0; i<message.poses.length;i++){
-        var v3 = new THREE$1.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
+        var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
                                     message.poses[i].pose.position.z);
         lineGeometry.vertices.push(v3);
     }
 
     lineGeometry.computeLineDistances();
-    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-    var line = new THREE$1.Line( lineGeometry, lineMaterial );
+    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+    var line = new THREE.Line( lineGeometry, lineMaterial );
 
     this.sn = new SceneNode({
         frameID : message.header.frame_id,
@@ -55098,9 +56818,10 @@ var Path$1 = /*@__PURE__*/(function (superclass) {
   };
 
   return Path;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -55112,7 +56833,7 @@ var Point = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/point';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.radius = options.radius || 0.2;
 
     this.sn = null;
@@ -55127,14 +56848,14 @@ var Point = /*@__PURE__*/(function (superclass) {
 
   Point.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Point.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55148,9 +56869,9 @@ var Point = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var sphereGeometry = new THREE$1.SphereGeometry( this.radius );
-    var sphereMaterial = new THREE$1.MeshBasicMaterial( {color: this.color} );
-    var sphere = new THREE$1.Mesh(sphereGeometry, sphereMaterial);
+    var sphereGeometry = new THREE.SphereGeometry( this.radius );
+    var sphereMaterial = new THREE.MeshBasicMaterial( {color: this.color} );
+    var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.position.set(message.point.x, message.point.y, message.point.z);
 
     this.sn = new SceneNode({
@@ -55163,9 +56884,10 @@ var Point = /*@__PURE__*/(function (superclass) {
   };
 
   return Point;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -55177,7 +56899,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/path';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
     this.line = null;
@@ -55192,14 +56914,14 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 
   Polygon.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   Polygon.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55213,19 +56935,19 @@ var Polygon = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var lineGeometry = new THREE$1.Geometry();
+    var lineGeometry = new THREE.Geometry();
     var v3;
     for(var i=0; i<message.polygon.points.length;i++){
-        v3 = new THREE$1.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
+        v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,
                                 message.polygon.points[i].z);
         lineGeometry.vertices.push(v3);
     }
-    v3 = new THREE$1.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
+    v3 = new THREE.Vector3( message.polygon.points[0].x, message.polygon.points[0].y,
                             message.polygon.points[0].z);
     lineGeometry.vertices.push(v3);
     lineGeometry.computeLineDistances();
-    var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-    var line = new THREE$1.Line( lineGeometry, lineMaterial );
+    var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+    var line = new THREE.Line( lineGeometry, lineMaterial );
 
     this.sn = new SceneNode({
         frameID : message.header.frame_id,
@@ -55237,21 +56959,22 @@ var Polygon = /*@__PURE__*/(function (superclass) {
   };
 
   return Polygon;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
-var Pose$1 = /*@__PURE__*/(function (superclass) {
-  function Pose$$1(options) {
+var Pose = /*@__PURE__*/(function (superclass) {
+  function Pose(options) {
     superclass.call(this);
     this.options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/pose';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -55259,20 +56982,20 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
     this.subscribe();
   }
 
-  if ( superclass ) Pose$$1.__proto__ = superclass;
-  Pose$$1.prototype = Object.create( superclass && superclass.prototype );
-  Pose$$1.prototype.constructor = Pose$$1;
+  if ( superclass ) Pose.__proto__ = superclass;
+  Pose.prototype = Object.create( superclass && superclass.prototype );
+  Pose.prototype.constructor = Pose;
 
-  Pose$$1.prototype.unsubscribe = function unsubscribe (){
+  Pose.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
-  Pose$$1.prototype.subscribe = function subscribe (){
+  Pose.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55280,20 +57003,20 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
     });
     this.rosTopic.subscribe(this.processMessage.bind(this));
   };
-  Pose$$1.prototype.processMessage = function processMessage (message){
+  Pose.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
         this.sn.unsubscribeTf();
         this.rootObject.remove(this.sn);
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.position.x, message.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.position.x, message.pose.position.y,
                                              message.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.orientation.x, message.pose.orientation.y,
                                    message.pose.orientation.z, message.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sn = new SceneNode({
@@ -55305,10 +57028,11 @@ var Pose$1 = /*@__PURE__*/(function (superclass) {
     this.rootObject.add(this.sn);
   };
 
-  return Pose$$1;
-}(THREE$1.Object3D));
+  return Pose;
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -55321,7 +57045,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
     this.length = options.length || 1.0;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -55335,14 +57059,14 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 
   PoseArray.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PoseArray.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
        ros : this.ros,
        name : this.topicName,
        queue_length : 1,
@@ -55356,22 +57080,22 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    var group = new THREE$1.Object3D();
+    var group = new THREE.Object3D();
     var line;
 
     for(var i=0;i<message.poses.length;i++){
-        var lineGeometry = new THREE$1.Geometry();
+        var lineGeometry = new THREE.Geometry();
 
-        var v3 = new THREE$1.Vector3( message.poses[i].position.x, message.poses[i].position.y,
+        var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
                                     message.poses[i].position.z);
         lineGeometry.vertices.push(v3);
 
-        var rot = new THREE$1.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
+        var rot = new THREE.Quaternion(message.poses[i].orientation.x, message.poses[i].orientation.y,
                                        message.poses[i].orientation.z, message.poses[i].orientation.w);
 
-        var tip = new THREE$1.Vector3(this.length,0,0);
-        var side1 = new THREE$1.Vector3(this.length*0.8, this.length*0.2, 0);
-        var side2 = new THREE$1.Vector3(this.length*0.8, -this.length*0.2, 0);
+        var tip = new THREE.Vector3(this.length,0,0);
+        var side1 = new THREE.Vector3(this.length*0.8, this.length*0.2, 0);
+        var side2 = new THREE.Vector3(this.length*0.8, -this.length*0.2, 0);
         tip.applyQuaternion(rot);
         side1.applyQuaternion(rot);
         side2.applyQuaternion(rot);
@@ -55382,8 +57106,8 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
         lineGeometry.vertices.push(tip);
 
         lineGeometry.computeLineDistances();
-        var lineMaterial = new THREE$1.LineBasicMaterial( { color: this.color } );
-        line = new THREE$1.Line( lineGeometry, lineMaterial );
+        var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
+        line = new THREE.Line( lineGeometry, lineMaterial );
 
         group.add(line);
     }
@@ -55398,9 +57122,10 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
   };
 
   return PoseArray;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -55412,7 +57137,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
     this.topicName = options.topic || '/PoseWithCovariance';
     this.tfClient = options.tfClient;
     this.color = options.color || 0xcc00ff;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
 
     this.sn = null;
 
@@ -55426,14 +57151,14 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 
   PoseWithCovariance.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PoseWithCovariance.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
         ros : this.ros,
         name : this.topicName,
         queue_length : 1,
@@ -55447,14 +57172,14 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
         this.rootObject.remove(this.sn);
     }
 
-    this.options.origin = new THREE$1.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
+    this.options.origin = new THREE.Vector3( message.pose.pose.position.x, message.pose.pose.position.y,
                                              message.pose.pose.position.z);
 
-    var rot = new THREE$1.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
+    var rot = new THREE.Quaternion(message.pose.pose.orientation.x, message.pose.pose.orientation.y,
                                    message.pose.pose.orientation.z, message.pose.pose.orientation.w);
-    this.options.direction = new THREE$1.Vector3(1,0,0);
+    this.options.direction = new THREE.Vector3(1,0,0);
     this.options.direction.applyQuaternion(rot);
-    this.options.material = new THREE$1.MeshBasicMaterial({color: this.color});
+    this.options.material = new THREE.MeshBasicMaterial({color: this.color});
     var arrow = new Arrow(this.options);
 
     this.sn = new SceneNode({
@@ -55467,19 +57192,20 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
   };
 
   return PoseWithCovariance;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
-var Points$1 = /*@__PURE__*/(function (superclass) {
+var Points = /*@__PURE__*/(function (superclass) {
   function Points(options) {
     superclass.call(this);
     options = options || {};
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.max_pts = options.max_pts || 10000;
     this.pointRatio = options.pointRatio || 1;
     this.messageRatio = options.messageRatio || 1;
@@ -55512,9 +57238,9 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
           for(var i=0; i<fields.length; i++) {
               this.fields[fields[i].name] = fields[i];
           }
-          this.geom = new THREE$1.BufferGeometry();
+          this.geom = new THREE.BufferGeometry();
 
-          this.positions = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+          this.positions = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
           this.geom.addAttribute( 'position', this.positions.setDynamic(true) );
 
           if(!this.colorsrc && this.fields.rgb) {
@@ -55523,7 +57249,7 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
           if(this.colorsrc) {
               var field = this.fields[this.colorsrc];
               if (field) {
-                  this.colors = new THREE$1.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
+                  this.colors = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
                   this.geom.addAttribute( 'color', this.colors.setDynamic(true) );
                   var offset = field.offset;
                   this.getColor = [
@@ -55536,7 +57262,7 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
                       function(dv,base,le){return dv.getFloat32(base+offset,le);},
                       function(dv,base,le){return dv.getFloat64(base+offset,le);}
                   ][field.datatype-1];
-                  this.colormap = this.colormap || function(x){return new THREE$1.Color(x);};
+                  this.colormap = this.colormap || function(x){return new THREE.Color(x);};
               } else {
                   console.warn('unavailable field "' + this.colorsrc + '" for coloring.');
               }
@@ -55544,12 +57270,12 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
 
           if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
               if(this.colors && this.material.vertexColors === undefined) {
-                  this.material.vertexColors = THREE$1.VertexColors;
+                  this.material.vertexColors = THREE.VertexColors;
               }
-              this.material = new THREE$1.PointsMaterial(this.material);
+              this.material = new THREE.PointsMaterial(this.material);
           }
 
-          this.object = new THREE$1.Points( this.geom, this.material );
+          this.object = new THREE.Points( this.geom, this.material );
 
           this.sn = new SceneNode({
               frameID : frame,
@@ -55575,9 +57301,10 @@ var Points$1 = /*@__PURE__*/(function (superclass) {
   };
 
   return Points;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -55588,7 +57315,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     this.ros = options.ros;
     this.topicName = options.topic || '/scan';
     this.compression = options.compression || 'cbor';
-    this.points = new Points$1(options);
+    this.points = new Points(options);
     this.rosTopic = undefined;
     this.subscribe();
 
@@ -55600,14 +57327,14 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 
   LaserScan.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   LaserScan.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       compression : this.compression,
@@ -55635,9 +57362,93 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
   };
 
   return LaserScan;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
+ * @author Mathieu Bredif - mathieu.bredif@ign.fr
+ */
+
+var NavSatFix = /*@__PURE__*/(function (superclass) {
+  function NavSatFix(options) {
+  
+    superclass.call(this);
+    options = options || {};
+    this.ros = options.ros;
+    this.topicName = options.topic || '/gps/fix';
+    this.rootObject = options.rootObject || new THREE.Object3D();
+    this.object3d = options.object3d || new THREE.Object3D();
+    var material = options.material || {};
+    this.altitudeNaN = options.altitudeNaN || 0;
+    this.keep = options.keep || 100;
+    this.convert = options.convert || function(lon,lat,alt) { return new THREE.Vector3(lon,lat,alt); };
+    this.count = 0;
+    this.next1 = 0;
+    this.next2 = this.keep;
+
+    this.geom = new THREE.BufferGeometry();
+    this.vertices = new THREE.BufferAttribute(new Float32Array( 6 * this.keep ), 3 );
+    this.geom.addAttribute( 'position',  this.vertices);
+    this.material = material.isMaterial ? material : new THREE.LineBasicMaterial( material );
+    this.line = new THREE.Line( this.geom, this.material );
+    this.rootObject.add(this.object3d);
+    this.rootObject.add(this.line);
+
+    this.rosTopic = undefined;
+    this.subscribe();
+  }
+
+  if ( superclass ) NavSatFix.__proto__ = superclass;
+  NavSatFix.prototype = Object.create( superclass && superclass.prototype );
+  NavSatFix.prototype.constructor = NavSatFix;
+
+  NavSatFix.prototype.unsubscribe = function unsubscribe (){
+    if(this.rosTopic){
+      this.rosTopic.unsubscribe(this.processMessage);
+    }
+  };
+  NavSatFix.prototype.subscribe = function subscribe (){
+    this.unsubscribe();
+
+    // subscribe to the topic
+    this.rosTopic = new ROSLIB.Topic({
+        ros : this.ros,
+        name : this.topicName,
+        queue_length : 1,
+        messageType : 'sensor_msgs/NavSatFix'
+    });
+
+    this.rosTopic.subscribe(this.processMessage.bind(this));
+  };
+  NavSatFix.prototype.processMessage = function processMessage (message){
+    var altitude = isNaN(message.altitude) ? this.altitudeNaN : message.altitude;
+    var p = this.convert(message.longitude, message.latitude, altitude);
+
+    // move the object3d to the gps position
+    this.object3d.position.copy(p);
+    this.object3d.updateMatrixWorld(true);
+
+    // copy the position twice in the circular buffer
+    // the second half replicates the first to allow a single drawRange
+    this.vertices.array[3*this.next1  ] = p.x;
+    this.vertices.array[3*this.next1+1] = p.y;
+    this.vertices.array[3*this.next1+2] = p.z;
+    this.vertices.array[3*this.next2  ] = p.x;
+    this.vertices.array[3*this.next2+1] = p.y;
+    this.vertices.array[3*this.next2+2] = p.z;
+    this.vertices.needsUpdate = true;
+
+    this.next1 = (this.next1+1) % this.keep;
+    this.next2 = this.next1 + this.keep;
+    this.count = Math.min(this.count+1, this.keep);
+    this.geom.setDrawRange(this.next2-this.count, this.count );
+  };
+
+  return NavSatFix;
+}(THREE.Object3D));
+
+/**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -55684,9 +57495,10 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     options = options || {};
     this.ros = options.ros;
     this.topicName = options.topic || '/points';
+    this.throttle_rate = options.throttle_rate || null;
     this.compression = options.compression || 'cbor';
     this.max_pts = options.max_pts || 10000;
-    this.points = new Points$1(options);
+    this.points = new Points(options);
     this.rosTopic = undefined;
     this.buffer = null;
     this.subscribe();
@@ -55698,17 +57510,18 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 
   PointCloud2.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe();
+      this.rosTopic.unsubscribe(this.processMessage);
     }
   };
   PointCloud2.prototype.subscribe = function subscribe (){
     this.unsubscribe();
 
     // subscribe to the topic
-    this.rosTopic = new Topic({
+    this.rosTopic = new ROSLIB.Topic({
       ros : this.ros,
       name : this.topicName,
       messageType : 'sensor_msgs/PointCloud2',
+      throttle_rate : this.throttle_rate,
       queue_length : 1,
       compression: this.compression
     });
@@ -55756,9 +57569,10 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
   };
 
   return PointCloud2;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoon.lee@kakaobrain.com
  */
 var TFAxes = /*@__PURE__*/(function (superclass) {
@@ -55768,7 +57582,7 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
 
     this.frame_id = options.frame_id;
     this.tfClient = options.tfClient;
-    this.rootObject = options.rootObject || new THREE$1.Object3D();
+    this.rootObject = options.rootObject || new THREE.Object3D();
     this.axes = new Axes(
       {
         shaftRadius: options.shaftRadius || 0.025,
@@ -55794,9 +57608,10 @@ var TFAxes = /*@__PURE__*/(function (superclass) {
   TFAxes.prototype.constructor = TFAxes;
 
   return TFAxes;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -55827,7 +57642,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
             var color = visual.material && visual.material.color;
             colorMaterial = makeColorMaterial(color.r, color.g, color.b, color.a);
           }
-          if (visual.geometry.type === URDF_MESH) {
+          if (visual.geometry.type === ROSLIB.URDF_MESH) {
             var uri = visual.geometry.filename;
             // strips package://
             var tmpIndex = uri.indexOf('package://');
@@ -55857,34 +57672,13 @@ var Urdf = /*@__PURE__*/(function (superclass) {
                   tfClient : tfClient,
                   object : mesh
               });
+              sceneNode.name = visual.name;
               this.add(sceneNode);
             } else {
               console.warn('Could not load geometry mesh: '+uri);
             }
           } else {
-            if (!colorMaterial) {
-              colorMaterial = makeColorMaterial(0, 0, 0, 1);
-            }
-            var shapeMesh;
-            // Create a shape
-            switch (visual.geometry.type) {
-              case URDF_BOX:
-                var dimension = visual.geometry.dimension;
-                var cube = new THREE$1.BoxGeometry(dimension.x, dimension.y, dimension.z);
-                shapeMesh = new THREE$1.Mesh(cube, colorMaterial);
-                break;
-              case URDF_CYLINDER:
-                var radius = visual.geometry.radius;
-                var length = visual.geometry.length;
-                var cylinder = new THREE$1.CylinderGeometry(radius, radius, length, 16, 1, false);
-                shapeMesh = new THREE$1.Mesh(cylinder, colorMaterial);
-                shapeMesh.quaternion.setFromAxisAngle(new THREE$1.Vector3(1, 0, 0), Math.PI * 0.5);
-                break;
-              case URDF_SPHERE:
-                var sphere = new THREE$1.SphereGeometry(visual.geometry.radius, 16);
-                shapeMesh = new THREE$1.Mesh(sphere, colorMaterial);
-                break;
-            }
+            var shapeMesh = this.createShapeMesh(visual, options);
             // Create a scene node with the shape
             var scene = new SceneNode({
               frameID: frameID,
@@ -55892,6 +57686,7 @@ var Urdf = /*@__PURE__*/(function (superclass) {
                 tfClient: tfClient,
                 object: shapeMesh
             });
+            scene.name = visual.name;
             this.add(scene);
           }
         }
@@ -55902,6 +57697,35 @@ var Urdf = /*@__PURE__*/(function (superclass) {
   if ( superclass ) Urdf.__proto__ = superclass;
   Urdf.prototype = Object.create( superclass && superclass.prototype );
   Urdf.prototype.constructor = Urdf;
+  Urdf.prototype.createShapeMesh = function createShapeMesh (visual, options) {
+    var colorMaterial = null;
+    if (!colorMaterial) {
+      colorMaterial = makeColorMaterial(0, 0, 0, 1);
+    }
+    var shapeMesh;
+    // Create a shape
+    switch (visual.geometry.type) {
+      case ROSLIB.URDF_BOX:
+        var dimension = visual.geometry.dimension;
+        var cube = new THREE.BoxGeometry(dimension.x, dimension.y, dimension.z);
+        shapeMesh = new THREE.Mesh(cube, colorMaterial);
+        break;
+      case ROSLIB.URDF_CYLINDER:
+        var radius = visual.geometry.radius;
+        var length = visual.geometry.length;
+        var cylinder = new THREE.CylinderGeometry(radius, radius, length, 16, 1, false);
+        shapeMesh = new THREE.Mesh(cylinder, colorMaterial);
+        shapeMesh.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI * 0.5);
+        break;
+      case ROSLIB.URDF_SPHERE:
+        var sphere = new THREE.SphereGeometry(visual.geometry.radius, 16);
+        shapeMesh = new THREE.Mesh(sphere, colorMaterial);
+        break;
+    }
+
+    return shapeMesh;
+  };
+
   Urdf.prototype.unsubscribeTf = function unsubscribeTf () {
     this.children.forEach(function(n) {
       if (typeof n.unsubscribeTf === 'function') { n.unsubscribeTf(); }
@@ -55909,9 +57733,10 @@ var Urdf = /*@__PURE__*/(function (superclass) {
   };
 
   return Urdf;
-}(THREE$1.Object3D));
+}(THREE.Object3D));
 
 /**
+ * @fileOverview
  * @author Jihoon Lee - jihoonlee.in@gmail.com
  * @author Russell Toris - rctoris@wpi.edu
  */
@@ -55923,18 +57748,18 @@ var UrdfClient = function UrdfClient(options) {
   this.param = options.param || 'robot_description';
   this.path = options.path || '/';
   this.tfClient = options.tfClient;
-  this.rootObject = options.rootObject || new THREE$1.Object3D();
+  this.rootObject = options.rootObject || new THREE.Object3D();
   this.tfPrefix = options.tfPrefix || '';
   this.loader = options.loader;
 
   // get the URDF value from ROS
-  var getParam = new Param({
+  var getParam = new ROSLIB.Param({
     ros : ros,
     name : this.param
   });
   getParam.get(function(string) {
     // hand off the XML string to the URDF model
-    var urdfModel = new UrdfModel({
+    var urdfModel = new ROSLIB.UrdfModel({
       string : string
     });
 
@@ -55951,6 +57776,7 @@ var UrdfClient = function UrdfClient(options) {
 };
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -56003,7 +57829,7 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
 
   // Providing a transparent overrideMaterial...
   var originalOverrideMaterial = scene.overrideMaterial;
-  scene.overrideMaterial = new THREE$1.MeshBasicMaterial({
+  scene.overrideMaterial = new THREE.MeshBasicMaterial({
       fog : false,
       opacity : 0.5,
       transparent : true,
@@ -56011,7 +57837,7 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
       depthWrite : false,
       polygonOffset : true,
       polygonOffsetUnits : -1,
-      side : THREE$1.DoubleSide
+      side : THREE.DoubleSide
   });
 
   // And then rendering over the regular scene
@@ -56032,8 +57858,8 @@ Highlighter.prototype.renderHighlights = function renderHighlights (scene, rende
  */
 Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible (scene) {
   scene.traverse(function(currentObject) {
-    if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-         || currentObject instanceof THREE$1.Sprite ) {
+    if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+         || currentObject instanceof THREE.Sprite ) {
       currentObject.previousVisibility = currentObject.visible;
       currentObject.visible = false;
     }
@@ -56048,8 +57874,8 @@ Highlighter.prototype.makeEverythingInvisible = function makeEverythingInvisible
  */
 Highlighter.prototype.makeHighlightedVisible = function makeHighlightedVisible (scene) {
   var makeVisible = function(currentObject) {
-      if ( currentObject instanceof THREE$1.Mesh || currentObject instanceof THREE$1.Line
-           || currentObject instanceof THREE$1.Sprite ) {
+      if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
+           || currentObject instanceof THREE.Sprite ) {
         currentObject.visible = true;
       }
   };
@@ -56076,6 +57902,7 @@ Highlighter.prototype.restoreVisibility = function restoreVisibility (scene) {
 };
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -56137,17 +57964,16 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
     var top = pos_y - rect.top - target.clientTop + target.scrollTop;
     var deviceX = left / target.clientWidth * 2 - 1;
     var deviceY = -top / target.clientHeight * 2 + 1;
-    var vector = new THREE$1.Vector3(deviceX, deviceY, 0.5);
-    vector.unproject(this.camera);
-    // use the THREE raycaster
-    var mouseRaycaster = new THREE$1.Raycaster(this.camera.position.clone(), vector.sub(
-        this.camera.position).normalize());
+    var mousePos = new THREE.Vector2(deviceX, deviceY);
+
+    var mouseRaycaster = new THREE.Raycaster();
     mouseRaycaster.linePrecision = 0.001;
+    mouseRaycaster.setFromCamera(mousePos, this.camera);
     var mouseRay = mouseRaycaster.ray;
 
     // make our 3d mouse event
     var event3D = {
-      mousePos : new THREE$1.Vector2(deviceX, deviceY),
+      mousePos : mousePos,
       mouseRay : mouseRay,
       domEvent : domEvent,
       camera : this.camera,
@@ -56290,9 +58116,10 @@ var MouseHandler = /*@__PURE__*/(function (superclass) {
   };
 
   return MouseHandler;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Xueqiao Xu - xueqiaoxu@gmail.com
  * @author Mr.doob - http://mrdoob.com
@@ -56306,7 +58133,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     options = options || {};
     var scene = options.scene;
     this.camera = options.camera;
-    this.center = new THREE$1.Vector3();
+    this.center = new THREE.Vector3();
     this.userZoom = true;
     this.userZoomSpeed = options.userZoomSpeed || 1.0;
     this.userRotate = true;
@@ -56318,27 +58145,27 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         !!options.displayPanAndZoomFrame;
     this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
     // In ROS, z is pointing upwards
-    this.camera.up = new THREE$1.Vector3(0, 0, 1);
+    this.camera.up = new THREE.Vector3(0, 0, 1);
 
     // internals
     var pixelsPerRound = 1800;
     var touchMoveThreshold = 10;
-    var rotateStart = new THREE$1.Vector2();
-    var rotateEnd = new THREE$1.Vector2();
-    var rotateDelta = new THREE$1.Vector2();
-    var zoomStart = new THREE$1.Vector2();
-    var zoomEnd = new THREE$1.Vector2();
-    var zoomDelta = new THREE$1.Vector2();
-    var moveStartCenter = new THREE$1.Vector3();
-    var moveStartNormal = new THREE$1.Vector3();
-    var moveStartPosition = new THREE$1.Vector3();
-    var moveStartIntersection = new THREE$1.Vector3();
+    var rotateStart = new THREE.Vector2();
+    var rotateEnd = new THREE.Vector2();
+    var rotateDelta = new THREE.Vector2();
+    var zoomStart = new THREE.Vector2();
+    var zoomEnd = new THREE.Vector2();
+    var zoomDelta = new THREE.Vector2();
+    var moveStartCenter = new THREE.Vector3();
+    var moveStartNormal = new THREE.Vector3();
+    var moveStartPosition = new THREE.Vector3();
+    var moveStartIntersection = new THREE.Vector3();
     var touchStartPosition = new Array(2);
     var touchMoveVector = new Array(2);
     this.phiDelta = 0;
     this.thetaDelta = 0;
     this.scale = 1;
-    this.lastPosition = new THREE$1.Vector3();
+    this.lastPosition = new THREE.Vector3();
     // internal states
     var STATE = {
       NONE : -1,
@@ -56379,8 +58206,8 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         case 1:
           state = STATE.MOVE;
 
-          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
-          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
+          moveStartNormal = new THREE.Vector3(0, 0, 1);
+          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
           moveStartNormal.applyMatrix4(rMat);
 
           moveStartCenter = that.center.clone();
@@ -56435,7 +58262,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
           return;
         }
 
-        var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(), intersection
+        var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(), intersection
             .clone());
 
         that.center.addVectors(moveStartCenter.clone(), delta.clone());
@@ -56456,8 +58283,8 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
      */
     function intersectViewPlane(mouseRay, planeOrigin, planeNormal) {
 
-      var vector = new THREE$1.Vector3();
-      var intersection = new THREE$1.Vector3();
+      var vector = new THREE.Vector3();
+      var intersection = new THREE.Vector3();
 
       vector.subVectors(planeOrigin, mouseRay.origin);
       var dot = mouseRay.direction.dot(planeNormal);
@@ -56530,20 +58357,20 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
         case 2:
           state = STATE.NONE;
           /* ready for move */
-          moveStartNormal = new THREE$1.Vector3(0, 0, 1);
-          var rMat = new THREE$1.Matrix4().extractRotation(this.camera.matrix);
+          moveStartNormal = new THREE.Vector3(0, 0, 1);
+          var rMat = new THREE.Matrix4().extractRotation(this.camera.matrix);
           moveStartNormal.applyMatrix4(rMat);
           moveStartCenter = that.center.clone();
           moveStartPosition = that.camera.position.clone();
           moveStartIntersection = intersectViewPlane(event3D.mouseRay,
                                                      moveStartCenter,
                                                      moveStartNormal);
-          touchStartPosition[0] = new THREE$1.Vector2(event.touches[0].pageX,
+          touchStartPosition[0] = new THREE.Vector2(event.touches[0].pageX,
                                                     event.touches[0].pageY);
-          touchStartPosition[1] = new THREE$1.Vector2(event.touches[1].pageX,
+          touchStartPosition[1] = new THREE.Vector2(event.touches[1].pageX,
                                                     event.touches[1].pageY);
-          touchMoveVector[0] = new THREE$1.Vector2(0, 0);
-          touchMoveVector[1] = new THREE$1.Vector2(0, 0);
+          touchMoveVector[0] = new THREE.Vector2(0, 0);
+          touchMoveVector[1] = new THREE.Vector2(0, 0);
           break;
       }
 
@@ -56588,7 +58415,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
             state = STATE.ZOOM;
           }
           if (state === STATE.ZOOM) {
-            var tmpVector = new THREE$1.Vector2();
+            var tmpVector = new THREE.Vector2();
             tmpVector.subVectors(touchStartPosition[0],
                                  touchStartPosition[1]);
             if (touchMoveVector[0].dot(tmpVector) < 0 &&
@@ -56607,7 +58434,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
           if (!intersection) {
             return;
           }
-          var delta = new THREE$1.Vector3().subVectors(moveStartIntersection.clone(),
+          var delta = new THREE.Vector3().subVectors(moveStartIntersection.clone(),
                                                      intersection.clone());
           that.center.addVectors(moveStartCenter.clone(), delta.clone());
           that.camera.position.addVectors(moveStartPosition.clone(), delta.clone());
@@ -56789,9 +58616,10 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
   };
 
   return OrbitControls;
-}(THREE$1.EventDispatcher));
+}(THREE.EventDispatcher));
 
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  * @author Russell Toris - rctoris@wpi.edu
  * @author Jihoon Lee - jihoonlee.in@gmail.com
@@ -56800,6 +58628,7 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
 var Viewer = function Viewer(options) {
   options = options || {};
   var divID = options.divID;
+  var elem = options.elem;
   var width = options.width;
   var height = options.height;
   var background = options.background || '#111111';
@@ -56818,7 +58647,7 @@ var Viewer = function Viewer(options) {
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
-  this.renderer = new THREE$1.WebGLRenderer({
+  this.renderer = new THREE.WebGLRenderer({
     antialias : antialias,
     alpha: true
   });
@@ -56829,10 +58658,10 @@ var Viewer = function Viewer(options) {
   this.renderer.autoClear = false;
 
   // create the global scene
-  this.scene = new THREE$1.Scene();
+  this.scene = new THREE.Scene();
 
   // create the global camera
-  this.camera = new THREE$1.PerspectiveCamera(40, width / height, near, far);
+  this.camera = new THREE.PerspectiveCamera(40, width / height, near, far);
   this.camera.position.x = cameraPosition.x;
   this.camera.position.y = cameraPosition.y;
   this.camera.position.z = cameraPosition.z;
@@ -56846,12 +58675,12 @@ var Viewer = function Viewer(options) {
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
   // lights
-  this.scene.add(new THREE$1.AmbientLight(0x555555));
-  this.directionalLight = new THREE$1.DirectionalLight(0xffffff, intensity);
+  this.scene.add(new THREE.AmbientLight(0x555555));
+  this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
 
   // propagates mouse events to three.js objects
-  this.selectableObjects = new THREE$1.Object3D();
+  this.selectableObjects = new THREE.Group();
   this.scene.add(this.selectableObjects);
   var mouseHandler = new MouseHandler({
     renderer : this.renderer,
@@ -56869,7 +58698,8 @@ var Viewer = function Viewer(options) {
   this.animationRequestId = undefined;
 
   // add the renderer to the page
-  document.getElementById(divID).appendChild(this.renderer.domElement);
+  var node = elem || document.getElementById(divID);
+  node.appendChild(this.renderer.domElement);
 
   // begin the render loop
   this.start();
@@ -56942,4 +58772,4 @@ Viewer.prototype.resize = function resize (width, height) {
   this.renderer.setSize(width, height);
 };
 
-export { MARKER_ARROW, MARKER_CUBE, MARKER_SPHERE, MARKER_CYLINDER, MARKER_LINE_STRIP, MARKER_LINE_LIST, MARKER_CUBE_LIST, MARKER_SPHERE_LIST, MARKER_POINTS, MARKER_TEXT_VIEW_FACING, MARKER_MESH_RESOURCE, MARKER_TRIANGLE_LIST, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_VIEW_FACING, makeColorMaterial, intersectPlane, findClosestPoint, closestAxisPoint, DepthCloud, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, Marker, MarkerArrayClient, MarkerClient, Arrow, Arrow2, Axes, Grid, MeshLoader, MeshResource, TriangleList, OccupancyGrid, OccupancyGridClient, Odometry, Path$1 as Path, Point, Polygon, Pose$1 as Pose, PoseArray, PoseWithCovariance, LaserScan, Points$1 as Points, PointCloud2, TFAxes, Urdf, UrdfClient, Highlighter, MouseHandler, OrbitControls, SceneNode, Viewer };
+export { Arrow, Arrow2, Axes, ColorOcTree, DepthCloud, Grid, Highlighter, INTERACTIVE_MARKER_BUTTON, INTERACTIVE_MARKER_BUTTON_CLICK, INTERACTIVE_MARKER_FIXED, INTERACTIVE_MARKER_INHERIT, INTERACTIVE_MARKER_KEEP_ALIVE, INTERACTIVE_MARKER_MENU, INTERACTIVE_MARKER_MENU_SELECT, INTERACTIVE_MARKER_MOUSE_DOWN, INTERACTIVE_MARKER_MOUSE_UP, INTERACTIVE_MARKER_MOVE_3D, INTERACTIVE_MARKER_MOVE_AXIS, INTERACTIVE_MARKER_MOVE_PLANE, INTERACTIVE_MARKER_MOVE_ROTATE, INTERACTIVE_MARKER_MOVE_ROTATE_3D, INTERACTIVE_MARKER_NONE, INTERACTIVE_MARKER_POSE_UPDATE, INTERACTIVE_MARKER_ROTATE_3D, INTERACTIVE_MARKER_ROTATE_AXIS, INTERACTIVE_MARKER_VIEW_FACING, InteractiveMarker, InteractiveMarkerClient, InteractiveMarkerControl, InteractiveMarkerHandle, InteractiveMarkerMenu, LaserScan, MARKER_ARROW, MARKER_CUBE, MARKER_CUBE_LIST, MARKER_CYLINDER, MARKER_LINE_LIST, MARKER_LINE_STRIP, MARKER_MESH_RESOURCE, MARKER_POINTS, MARKER_SPHERE, MARKER_SPHERE_LIST, MARKER_TEXT_VIEW_FACING, MARKER_TRIANGLE_LIST, Marker, MarkerArrayClient, MarkerClient, MeshLoader, MeshResource, MouseHandler, NavSatFix, OcTree, OcTreeClient, OccupancyGrid, OccupancyGridClient, Odometry, OrbitControls, Path, Point, PointCloud2, Points, Polygon, Pose, PoseArray, PoseWithCovariance, SceneNode, TFAxes, TriangleList, Urdf, UrdfClient, Viewer, closestAxisPoint, findClosestPoint, intersectPlane, makeColorMaterial };

@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 
@@ -78,7 +79,7 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
  */
 ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
   if (this.updateTopic) {
-    this.updateTopic.unsubscribe();
+    this.updateTopic.unsubscribe(this.processUpdate);
   }
   if (this.feedbackTopic) {
     this.feedbackTopic.unadvertise();

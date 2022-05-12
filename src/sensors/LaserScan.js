@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -33,7 +34,7 @@ ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.LaserScan.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

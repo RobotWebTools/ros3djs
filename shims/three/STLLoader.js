@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author aleeper / http://adamleeper.com/
  * @author mrdoob / http://mrdoob.com/
  * @author gero3 / https://github.com/gero3

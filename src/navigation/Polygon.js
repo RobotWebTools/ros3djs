@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  */
 
@@ -34,7 +35,7 @@ ROS3D.Polygon.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Polygon.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David Gossow - dgossow@willowgarage.com
  */
 

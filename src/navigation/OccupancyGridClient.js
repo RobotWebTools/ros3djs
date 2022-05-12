@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Russell Toris - rctoris@wpi.edu
  */
 
@@ -46,7 +47,7 @@ ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 
@@ -69,11 +70,13 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
   // check for an old map
   if (this.currentGrid) {
     // check if it there is a tf client
-    if (this.currentGrid.tfClient) {
+    if (this.tfClient) {
       // grid is of type ROS3D.SceneNode
-      this.currentGrid.unsubscribeTf();
+      this.sceneNode.unsubscribeTf();
+      this.sceneNode.remove(this.currentGrid);
+    } else {
+      this.rootObject.remove(this.currentGrid);
     }
-    this.sceneNode.remove(this.currentGrid);
     this.currentGrid.dispose();
   }
 
@@ -106,6 +109,6 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
 
   // check if we should unsubscribe
   if (!this.continuous) {
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };

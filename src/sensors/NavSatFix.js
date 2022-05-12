@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
 
@@ -50,7 +51,7 @@ ROS3D.NavSatFix.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.NavSatFix.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

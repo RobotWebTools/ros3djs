@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
@@ -74,7 +75,7 @@ ROS3D.PointCloud2.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.PointCloud2.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe();
+    this.rosTopic.unsubscribe(this.processMessage);
   }
 };
 

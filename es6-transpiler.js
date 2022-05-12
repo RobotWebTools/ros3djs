@@ -1,6 +1,8 @@
 const debug = require('debug')
 const path = require('path')
 
+debug.enable('ES6Transpiler:Error')
+
 const colors = {
   GRAY: 0,
   RED: 1,
@@ -18,7 +20,10 @@ const stringifyObjects = (...args) => args
     : arg)
 
 const logError = debug('ES6Transpiler:Error')
-logError.log = (...args) => console.error(...stringifyObjects(...args))
+logError.log = (...args) => {
+  console.error(...stringifyObjects(...args))
+  throw new Error("Execution stopped because of an error, sea above.")
+}
 logError.color = colors.RED
 
 const logWarning = debug('ES6Transpiler:Warning')
@@ -206,15 +211,18 @@ const transpile = {
   // Replace initial ROS3D assignment
   initialROS3DAssignment: [
     // from
-    /var ROS3D = ROS3D \|\| \{\n  REVISION \: '0.18.0'\n\};/m,
+    /var ROS3D = ROS3D \|\| \{\n  REVISION \: '([0-9]+\.[0-9]+\.[0-9]+)'\n\};/m,
     // to
-    `export var REVISION = '0.18.0';`,
+    (match, $1) => {
+      const revision = $1
+      return `export var REVISION = '${revision}';`
+    },
   ],
   // Replace mutations with exported properties
-  exportedProperites: (filepath) => [
+  exportedProperties: (filepath) => [
     // from:
     // ROS3D.MARKER_ARROW = 0;
-    /\nROS3D\.(.*)\s+?=\s+?(.*)/g,
+    /\nROS3D\.(\S*)\s*=\s*(.*)/g,
     // to:
     // export var MARKER_ARROW = 0;
     (match, $1, $2) => {
@@ -268,7 +276,7 @@ const transpile = {
   buildInheritanceIndexViaProto: [
     // from:
     // ROS3D.PoseWithCovariance.prototype.__proto__ = THREE.Object3D.prototype;
-    /ROS3D.(\w+).prototype.__proto__ = (.*).prototype;[\r\n]?/g,
+    /ROS3D\.(\w+)\.prototype\.__proto__ = (.*)\.prototype;[\r\n]?/g,
     // to:
     // set PoseWithCovariance to subclass from THREE.Object3D in inheritance index
     (match, $1, $2) => {
@@ -282,7 +290,7 @@ const transpile = {
   buildInheritanceIndexViaObjectAssign: [
     // from:
     // Object.assign(InteractiveMarker.prototype, THREE.EventDispatcher.prototype);
-    /Object.assign\((\w+).prototype, (.*).prototype\);/g,
+    /Object\.assign\((\w+)\.prototype,\s*(.*)\.prototype\);/g,
     // to:
     // set InteractiveMarker to subclass from THREE.EventDispatcher in inheritance index
     (match, $1, $2) => {
@@ -295,8 +303,8 @@ const transpile = {
   // Refactor methods
   methods: [
     // from:
-    // ROS3D.Arrow2.prototype.dispose = function() { ... };
-    /ROS3D.(\w+).prototype.(\w+) = function|function\s+?(\w+)/g,
+    // ROS3D.Arrow2.prototype.dispose = function () { ... };
+    /ROS3D\.(\w+)\.prototype\.(\w+)\s*=\s*function\s*|function\s+(\w+)/g,
     // to:
     // dispose() { ... };
     (match, $1, $2, $3) => {
@@ -324,10 +332,10 @@ const transpile = {
   constructors: (filepath, state = { foundConstructor: false }) => [
     // from:
     // ROS3D.Arrow2 = function(options) { ... };
-    /ROS3D.(\w+)\s*=\s*function/g,
+    /ROS3D\.(\w+)\s*=\s*function\s*\((.*)\)/g,
     // to:
     // constructor(options) { ... };
-    (match, $1) => {
+    (match, $1, $2) => {
       const isClass = isFileClass(filepath, $1)
       // if (isClass1 !== isClass2) {
       //   logWarning('class mismatch', {
@@ -339,13 +347,14 @@ const transpile = {
       // }
       if (isClass) {
         if (state.foundConstructor) {
-          logError('already found a constructor in this file...', { match, $1 })
+          logError('Already found a constructor in this file...', { match, $1, $2 })
         }
         state.foundConstructor = true
         if (debugRules.logConstructors) {
-          logInfo('found constructor', { match, $1 })
+          logInfo('Found constructor', { match, $1, $2 })
         }
-        return 'constructor'
+        const arguments = $2
+        return `constructor(${arguments})`
       } else {
         return match
       }
@@ -434,7 +443,7 @@ const transpile = {
     // }
     // /.*(\*\/).*|[\r\n]+$(?:[\r\n]+$)+((?![\r\n]+))|.*/gm,
     // /(\/\*\*(?:$|[.\r\n])*\*\/(?:$|[\s\r\n])*constructor\(.*)|[\r\n]+$(?:[\r\n]+$)+((?![\r\n]+))|.*/gm,
-    /((?:\/\*\*(?:(?:\*[^/]|[^*])+?)\*\/)(?:[\s\r\n])*constructor\(.*)|$(?:[\r\n]$)*((?![\r\n]))|.+/gm,
+    /((?:\/\*\*(?:(?:\*[^/]|[^*])+?)\*\/)(?:[\s\r\n])*constructor\s*\(.*)|$(?:[\r\n]$)*((?![\r\n]))|.+/gm,
     // to:
     // export class Arrow2 extends THREE.ArrowHelper {
     //   constructor(options) {
@@ -671,7 +680,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
   const transpileConstructors = transpile.constructors(filepath)
   const transpileSuperCalls = transpile.superCalls(filepath)
   const transpileClasses = transpile.classes(filepath)
-  const transpileExportedProperites= transpile.exportedProperites(filepath)
+  const transpileExportedProperties= transpile.exportedProperties(filepath)
 
   return transpiled
     .replace(...transpileInternalDependencies)
@@ -682,7 +691,7 @@ const transpileToEs6 = function (content, filepath, grunt) {
     .replace(...transpileConstructors)
     .replace(...transpileSuperCalls)
     .replace(...transpileClasses)
-    .replace(...transpileExportedProperites)
+    .replace(...transpileExportedProperties)
 }
 
 // Injects es6 imports based on dependency and export

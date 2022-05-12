@@ -1,4 +1,5 @@
 /**
+ * @fileOverview
  * @author David V. Lu!! - davidvlu@gmail.com
  * @author Mathieu Bredif - mathieu.bredif@ign.fr
  */
