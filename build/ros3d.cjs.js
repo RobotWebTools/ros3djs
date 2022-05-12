@@ -58167,7 +58167,10 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     this.displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ?
         true :
         !!options.displayPanAndZoomFrame;
-    this.lineTypePanAndZoomFrame = options.dashedPanAndZoomFrame || 'full';
+    this.lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
+    this.axesDisplay =(options.axesDisplay === undefined) ?
+        false :
+        !!options.axesDisplay;
     // In ROS, z is pointing upwards
     this.camera.up = new THREE.Vector3(0, 0, 1);
 
@@ -58205,14 +58208,18 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
       headLength : 0.2,
       lineType: this.lineTypePanAndZoomFrame
     });
-    if (this.displayPanAndZoomFrame) {
-      // initially not visible
+    if(this.axesDisplay){
       scene.add(this.axes);
       this.axes.traverse(function(obj) {
-        obj.visible = false;
+        obj.visible = true;
       });
+    }else if (this.displayPanAndZoomFrame) {
+          // initially not visible
+          scene.add(this.axes);
+          this.axes.traverse(function(obj) {
+            obj.visible = false;
+          });
     }
-
     /**
      * Handle the mousedown 3D event.
      *
@@ -58509,16 +58516,18 @@ var OrbitControls = /*@__PURE__*/(function (superclass) {
     this.axes.traverse(function(obj) {
       obj.visible = true;
     });
-    if (this.hideTimeout) {
-      clearTimeout(this.hideTimeout);
-    }
-    this.hideTimeout = setTimeout(function() {
-      that.axes.traverse(function(obj) {
-        obj.visible = false;
-      });
-      that.hideTimeout = false;
-    }, 1000);
-  };
+
+    if(!this.axesDisplay){
+      if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+      }
+      this.hideTimeout = setTimeout(function() {
+        that.axes.traverse(function(obj) {
+          obj.visible = false;
+        });
+        that.hideTimeout = false;
+      }, 1000);
+    }  };
   /**
    * Rotate the camera to the left by the given angle.
    *
@@ -58669,6 +58678,7 @@ var Viewer = function Viewer(options) {
   var cameraZoomSpeed = options.cameraZoomSpeed || 0.5;
   var displayPanAndZoomFrame = (options.displayPanAndZoomFrame === undefined) ? true : !!options.displayPanAndZoomFrame;
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
+  var axesDisplay = (options.axesDisplay === undefined) ? false : !!options.axesDisplay;
 
   // create the canvas to render to
   this.renderer = new THREE.WebGLRenderer({
@@ -58694,7 +58704,8 @@ var Viewer = function Viewer(options) {
     scene : this.scene,
     camera : this.camera,
     displayPanAndZoomFrame : displayPanAndZoomFrame,
-    lineTypePanAndZoomFrame: lineTypePanAndZoomFrame
+    lineTypePanAndZoomFrame : lineTypePanAndZoomFrame,
+    axesDisplay : axesDisplay
   });
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
