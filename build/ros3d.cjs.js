@@ -38100,6 +38100,7 @@ Object.assign( Font.prototype, {
 		//
 
 		if ( size === undefined ) { size = 100; }
+		if ( divisions === undefined ) { divisions = 4; }
 
 		var data = this.data;
 

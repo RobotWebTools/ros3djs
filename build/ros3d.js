@@ -38092,6 +38092,7 @@ var ROS3D = (function (exports, ROSLIB) {
 			//
 
 			if ( size === undefined ) size = 100;
+			if ( divisions === undefined ) divisions = 4;
 
 			var data = this.data;
 
