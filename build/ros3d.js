@@ -38025,7 +38025,9 @@ var ROS3D = (function (exports, ROSLIB) {
 				if ( ! glyph ) return;
 
 				var path = new ShapePath();
-				var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2;
+
+				var pts = [];
+				var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2, laste;
 
 				if ( glyph.o ) {
 
@@ -38064,6 +38066,17 @@ var ROS3D = (function (exports, ROSLIB) {
 
 								path.quadraticCurveTo( cpx1, cpy1, cpx, cpy );
 
+								laste = pts[ pts.length - 1 ];
+
+								if ( laste ) {
+
+									laste.x;
+									laste.y;
+
+									
+
+								}
+
 								break;
 
 							case 'b': // bezierCurveTo
@@ -38076,6 +38089,17 @@ var ROS3D = (function (exports, ROSLIB) {
 								cpy2 = outline[ i ++ ] * scale + offsetY;
 
 								path.bezierCurveTo( cpx1, cpy1, cpx2, cpy2, cpx, cpy );
+
+								laste = pts[ pts.length - 1 ];
+
+								if ( laste ) {
+
+									laste.x;
+									laste.y;
+
+									
+
+								}
 
 								break;
 
@@ -38092,7 +38116,6 @@ var ROS3D = (function (exports, ROSLIB) {
 			//
 
 			if ( size === undefined ) size = 100;
-			if ( divisions === undefined ) divisions = 4;
 
 			var data = this.data;
 

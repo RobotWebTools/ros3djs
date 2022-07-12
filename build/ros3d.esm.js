@@ -38009,7 +38009,9 @@ Object.assign( Font.prototype, {
 			if ( ! glyph ) { return; }
 
 			var path = new ShapePath();
-			var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2;
+
+			var pts = [];
+			var x, y, cpx, cpy, cpx1, cpy1, cpx2, cpy2, laste;
 
 			if ( glyph.o ) {
 
@@ -38048,6 +38050,17 @@ Object.assign( Font.prototype, {
 
 							path.quadraticCurveTo( cpx1, cpy1, cpx, cpy );
 
+							laste = pts[ pts.length - 1 ];
+
+							if ( laste ) {
+
+								laste.x;
+								laste.y;
+
+								
+
+							}
+
 							break;
 
 						case 'b': // bezierCurveTo
@@ -38060,6 +38073,17 @@ Object.assign( Font.prototype, {
 							cpy2 = outline[ i ++ ] * scale + offsetY;
 
 							path.bezierCurveTo( cpx1, cpy1, cpx2, cpy2, cpx, cpy );
+
+							laste = pts[ pts.length - 1 ];
+
+							if ( laste ) {
+
+								laste.x;
+								laste.y;
+
+								
+
+							}
 
 							break;
 
@@ -38076,7 +38100,6 @@ Object.assign( Font.prototype, {
 		//
 
 		if ( size === undefined ) { size = 100; }
-		if ( divisions === undefined ) { divisions = 4; }
 
 		var data = this.data;
 
