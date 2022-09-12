@@ -12,7 +12,7 @@ jobs:
       matrix:
         node_version: [14, 16]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       env:
         TOKEN: "${{ github.event_name == 'push' && endsWith(github.ref, 'develop') && matrix.node_version == 16 && secrets.RWT_BOT_PAT || github.token }}"
       with:
