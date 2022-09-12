@@ -17,7 +17,7 @@ jobs:
         TOKEN: "${{ github.event_name == 'push' && endsWith(github.ref, 'develop') && matrix.node_version == 16 && secrets.RWT_BOT_PAT || github.token }}"
       with:
         token: ${{ env.TOKEN }}
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node_version }}
     - name: Install grunt-cli
