@@ -12,7 +12,7 @@
     "three": "^0.89.0"
   },
   "devDependencies": {
-    "@rollup/plugin-buble": "^0.21.0",
+    "@rollup/plugin-buble": "^1.0.0",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^14.1.0",
     "chai": "^4.3.0",
