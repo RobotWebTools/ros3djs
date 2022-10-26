@@ -23,7 +23,7 @@
     "grunt-execute": "git+https://github.com/gruntjs-updater/grunt-execute.git#peerDep",
     "grunt-jsdoc": "^2.1.0",
     "grunt-karma": "^4.0.0",
-    "grunt-pipe": "git+https://github.com/gruntjs-updater/grunt-pipe.git#peerDep",
+    "grunt-pipe": "git+https://github.com/RobotWebTools/grunt-pipe.git",
     "grunt-shell": "^4.0.0",
     "gruntify-eslint": "^5.0.0",
     "karma": "^6.3.0",
