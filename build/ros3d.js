@@ -59203,6 +59203,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *
 	   *  * divID - the ID of the div to place the viewer in
 	   *  * elem - the elem to place the viewer in (overrides divID if provided)
+	   *  * canvas (optional) - the canvas to render the viewer (overrides divID and elem if provided)
 	   *  * width - the initial width, in pixels, of the canvas
 	   *  * height - the initial height, in pixels, of the canvas
 	   *  * background (optional) - the color to render the background, like '#efefef'
@@ -59216,12 +59217,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *  *                           panning/zooming. Only has effect when
 	   *  *                           displayPanAndZoomFrame is set to true.
 	   */
-	  constructor(options) {
+	   constructor(options) {
 	    options = options || {};
 	    var divID = options.divID;
 	    var elem = options.elem;
-	    var width = options.width;
-	    var height = options.height;
+	    var canvas = options.canvas;
+	    var width = options.width || options.canvas && options.canvas.width;
+	    var height = options.height || options.canvas && options.canvas.height;
 	    var background = options.background || '#111111';
 	    var antialias = options.antialias;
 	    var intensity = options.intensity || 0.66;
@@ -59238,10 +59240,17 @@ var ROS3D = (function (exports, ROSLIB) {
 	    var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
 	    // create the canvas to render to
-	    this.renderer = new THREE.WebGLRenderer({
-	      antialias : antialias,
-	      alpha: true
-	    });
+	    this.renderer = canvas ? 
+	      new THREE.WebGLRenderer({
+	        antialias : antialias,
+	        alpha: true,
+	        canvas: canvas
+	      }) 
+	      : 
+	      new THREE.WebGLRenderer({
+	        antialias : antialias,
+	        alpha: true,
+	      });
 	    this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
 	    this.renderer.sortObjects = false;
 	    this.renderer.setSize(width, height);
@@ -59288,9 +59297,11 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.stopped = true;
 	    this.animationRequestId = undefined;
 
-	    // add the renderer to the page
-	    var node = elem || document.getElementById(divID);
-	    node.appendChild(this.renderer.domElement);
+	    // add the renderer to the page if canvas is not passed into the option
+	    if( !canvas ) {
+	      var node = elem || document.getElementById(divID);
+	      node.appendChild(this.renderer.domElement);
+	    }
 
 	    // begin the render loop
 	    this.start();
