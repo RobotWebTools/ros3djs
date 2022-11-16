@@ -27,13 +27,13 @@
  *  *                           panning/zooming. Only has effect when
  *  *                           displayPanAndZoomFrame is set to true.
  */
- ROS3D.Viewer = function(options) {
+ROS3D.Viewer = function(options) {
   options = options || {};
   var divID = options.divID;
   var elem = options.elem;
   var canvas = options.canvas;
-  var width = options.width || options.canvas && options.canvas.width;
-  var height = options.height || options.canvas && options.canvas.height;
+  var width = options.width;
+  var height = options.height;
   var background = options.background || '#111111';
   var antialias = options.antialias;
   var intensity = options.intensity || 0.66;
@@ -50,17 +50,11 @@
   var lineTypePanAndZoomFrame = options.lineTypePanAndZoomFrame || 'full';
 
   // create the canvas to render to
-  this.renderer = canvas ? 
-    new THREE.WebGLRenderer({
-      antialias : antialias,
-      alpha: true,
-      canvas: canvas
-    }) 
-    : 
-    new THREE.WebGLRenderer({
-      antialias : antialias,
-      alpha: true,
-    });
+  this.renderer = new THREE.WebGLRenderer({
+    antialias : antialias,
+    alpha: true,
+    canvas: canvas
+  });
   this.renderer.setClearColor(parseInt(background.replace('#', '0x'), 16), alpha);
   this.renderer.sortObjects = false;
   this.renderer.setSize(width, height);
@@ -107,8 +101,8 @@
   this.stopped = true;
   this.animationRequestId = undefined;
 
-  // add the renderer to the page if canvas is not passed into the option
-  if( !canvas ) {
+  // add the renderer to the page if canvas is not passed into the options
+  if( canvas === undefined ) {
     var node = elem || document.getElementById(divID);
     node.appendChild(this.renderer.domElement);
   }

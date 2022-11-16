@@ -4,24 +4,6 @@ var assert = chai.assert;
 
 describe('Initialization', function() {
 
-  describe('Viewer', () => {
-    it('initializes correctly with canvas passed in as argument', () => {
-      const WIDTH = 500;
-      const HEIGHT = 300;
-      const canvas = document.createElement('canvas');
-      canvas.width = WIDTH;
-      canvas.height = HEIGHT;
-      const viewer = new ROS3D.Viewer({
-        canvas: canvas,
-      });
-
-      assert.isTrue(viewer.renderer.domElement === canvas);
-      assert.isTrue(viewer.renderer.getSize().width === WIDTH);
-      assert.isTrue(viewer.renderer.getSize().height === HEIGHT);
-    });
-    
-  });
-
   describe('Arrow', function() {
     var arrow = new ROS3D.Arrow();
 
@@ -79,6 +61,26 @@ describe('Initialization', function() {
       assert.isTrue(grid.children.every(isOne));
     });
 
+  });
+
+  describe('Viewer', function() {
+    const WIDTH = 500;
+    const HEIGHT = 300;
+    const canvas = document.createElement('canvas');
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+    const viewer = new ROS3D.Viewer({
+      canvas: canvas,
+      height: HEIGHT,
+      width: WIDTH
+    });
+
+    it('initializes correctly with canvas passed in as argument', () => {
+      assert.isTrue(viewer.renderer.domElement === canvas);
+      assert.isTrue(viewer.renderer.getSize().width === WIDTH);
+      assert.isTrue(viewer.renderer.getSize().height === HEIGHT);
+    });
+    
   });
 
 });
