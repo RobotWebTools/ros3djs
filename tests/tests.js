@@ -75,7 +75,7 @@ describe('Initialization', function() {
       width: WIDTH
     });
 
-    it('initializes correctly with canvas passed in as argument', () => {
+    it('initializes correctly with canvas passed in as argument', function() {
       assert.isTrue(viewer.renderer.domElement === canvas);
       assert.isTrue(viewer.renderer.getSize().width === WIDTH);
       assert.isTrue(viewer.renderer.getSize().height === HEIGHT);
