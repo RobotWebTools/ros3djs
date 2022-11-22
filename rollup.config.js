@@ -37,6 +37,7 @@ export default [
       name: 'ROS3D',
       file: outputFiles.commonModule,
       format: 'cjs',
+      sourcemap: true,
       globals: {
         ...moduleGlobals,
       }
@@ -58,6 +59,7 @@ export default [
       name: 'ROS3D',
       file: outputFiles.esModule,
       format: 'es',
+      sourcemap: true,
       globals: {
         ...moduleGlobals,
       }
@@ -81,6 +83,7 @@ export default [
       name: 'ROS3D',
       file: outputFiles.browserGlobal,
       format: 'iife',
+      sourcemap: true,
       globals: {
         ...browserGlobals,
       },
@@ -103,6 +106,7 @@ export default [
       name: 'ROS3D',
       file: outputFiles.browserGlobalMinified,
       format: 'iife',
+      sourcemap: true,
       globals: {
         ...browserGlobals,
       },
