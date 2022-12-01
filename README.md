@@ -79,7 +79,7 @@ There are a variety of [examples](examples) of the different things that can be 
 There are also some examples of how ros3djs can be used in different environments:
 
 - [Classic html script tag inclusion](examples)
-- [Modular html script tag inclusion](examples/html-import)s
+- [Modular html script tag inclusion](examples/html-import)
 
 ### License
 
