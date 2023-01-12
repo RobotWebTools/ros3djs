@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script src="https://static.robotwebtools.org/threejs/r89/three.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.js"></script>
+<script src="../build/ros3d.js"></script>
+
+<script>
+  /**
+   * Setup all visualization elements when the page is loaded.
+   */
+  function init() {
+    // Connect to ROS.
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+
+    // Create the main viewer.
+    var viewer = new ROS3D.Viewer({
+      divID : 'markers',
+      width : 640,
+      height : 480,
+      antialias : true
+    });
+
+    for (var i = 1; i <= 6; i++) {
+        const geometry = new THREE.BoxGeometry(0.1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({ color: 0x008800 });
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.x = i;
+        viewer.addObject(cube, true);
+    }
+  }
+</script>
+</head>
+
+<body onload="init()">
+  <h1>Simple Marker Example</h1>
+  <p>Run the following commands in the terminal then refresh this page.</p>
+  <ol>
+    <li><tt>roscore</tt></li>
+    <li><tt>rosrun visualization_marker_tutorials basic_shapes</tt></li>
+    <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
+    <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
+  </ol>
+  <div id="markers"></div>
+</body>
+</html>
