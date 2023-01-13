@@ -52124,7 +52124,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      case MARKER_LINE_STRIP:
 	        var lineStripGeom = new THREE.Geometry();
 	        var lineStripMaterial = new THREE.LineBasicMaterial({
-	          size : message.scale.x
+	          linewidth : message.scale.x
 	        });
 
 	        // add the points
@@ -52155,7 +52155,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      case MARKER_LINE_LIST:
 	        var lineListGeom = new THREE.Geometry();
 	        var lineListMaterial = new THREE.LineBasicMaterial({
-	          size : message.scale.x
+	          linewidth : message.scale.x
 	        });
 
 	        // add the points
@@ -52181,7 +52181,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 
 	        // add the line
-	        this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
+	        this.add(new THREE.LineSegments(lineListGeom, lineListMaterial));
 	        break;
 	      case MARKER_CUBE_LIST:
 	        // holds the main object
@@ -52250,7 +52250,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      case MARKER_POINTS:
 	        // for now, use a particle system for the lists
 	        var geometry = new THREE.Geometry();
-	        var material = new THREE.ParticleBasicMaterial({
+	        var material = new THREE.PointsMaterial({
 	          size : message.scale.x
 	        });
 
@@ -52277,7 +52277,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        }
 
 	        // add the particle system
-	        this.add(new THREE.ParticleSystem(geometry, material));
+	        this.add(new THREE.Points(geometry, material));
 	        break;
 	      case MARKER_TEXT_VIEW_FACING:
 	        // only work on non-empty text
