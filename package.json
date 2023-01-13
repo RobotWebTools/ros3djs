@@ -9,7 +9,7 @@
   "dependencies": {
     "eventemitter3": "^5.0.1",
     "roslib": "^1.0.0",
-    "three": "~0.100.0"
+    "three": "~0.113.0"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^1.0.0",
