@@ -408,9 +408,9 @@ ROS3D.OcTreeBase.prototype.buildGeometry = function () {
     opacity: this.opacity
   });
 
-  geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
-  geometry.addAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
-  geometry.addAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+  geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+  geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
 
   geometry.setIndex(indices);
 
