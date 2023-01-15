@@ -86,7 +86,7 @@ ROS3D.Points.prototype.setup = function(frame, point_step, fields)
 
         if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
             if(this.colors && this.material.vertexColors === undefined) {
-                this.material.vertexColors = THREE.VertexColors;
+                this.material.vertexColors = true;
             }
             this.material = new THREE.PointsMaterial(this.material);
         }
