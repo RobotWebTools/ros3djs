@@ -25,6 +25,7 @@ ROS3D.SceneNode = function(options) {
 
   // Do not render this object until we receive a TF update
   this.visible = false;
+  this.layers.disable(0);
 
   // add the model
   this.add(object);
@@ -43,6 +44,7 @@ ROS3D.SceneNode = function(options) {
     // update the world
     this.updatePose(poseTransformed);
     this.visible = true;
+    this.layers.enable(0);
   };
 
   // listen for TF updates

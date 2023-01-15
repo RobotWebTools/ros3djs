@@ -97,6 +97,7 @@ ROS3D.Highlighter.prototype.makeEverythingInvisible = function (scene) {
          || currentObject instanceof THREE.Sprite ) {
       currentObject.previousVisibility = currentObject.visible;
       currentObject.visible = false;
+      currentObject.layers.disable(0); // Invisible
     }
   });
 };
@@ -113,6 +114,7 @@ ROS3D.Highlighter.prototype.makeHighlightedVisible = function (scene) {
       if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
            || currentObject instanceof THREE.Sprite ) {
         currentObject.visible = true;
+        currentObject.layers.enable(0); // Visible
       }
   };
 
@@ -120,6 +122,7 @@ ROS3D.Highlighter.prototype.makeHighlightedVisible = function (scene) {
     var selectedObject = this.hoverObjs[uuid];
     // Make each selected object and all of its children visible
     selectedObject.visible = true;
+    selectedObject.layers.enable(0); // Visible
     selectedObject.traverse(makeVisible);
   }
 };
@@ -134,6 +137,11 @@ ROS3D.Highlighter.prototype.restoreVisibility = function (scene) {
   scene.traverse(function(currentObject) {
     if (currentObject.hasOwnProperty('previousVisibility')) {
       currentObject.visible = currentObject.previousVisibility;
+      if (currentObject.visible) {
+        currentObject.layers.enable(0); // Visible
+      } else {
+        currentObject.layers.disable(0); // Invisible
+      }
     }
   }.bind(this));
 };

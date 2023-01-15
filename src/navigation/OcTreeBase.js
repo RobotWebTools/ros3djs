@@ -403,7 +403,7 @@ ROS3D.OcTreeBase.prototype.buildGeometry = function () {
   const material = new THREE.MeshBasicMaterial({
     color: 'white',
     flatShading: true,
-    vertexColors: THREE.VertexColors,
+    vertexColors: true,
     transparent: this.opacity < 1.0,
     opacity: this.opacity
   });
