@@ -24,13 +24,13 @@ ros3djs depends on:
 
 [EventEmitter2](https://github.com/hij1nx/EventEmitter2). The current supported version is 6.4. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.js)) | ([min](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.min.js))
 
-[three.js](https://github.com/mrdoob/three.js/). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/three.js)) | ([min](https://static.robotwebtools.org/threejs/r89/three.min.js))
+[three.js](https://github.com/mrdoob/three.js/). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.js)) | ([min](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.min.js))
 
-[THREE.ColladaLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/ColladaLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/ColladaLoader.js))
+[THREE.ColladaLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/ColladaLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/threejs/r89/ColladaLoader.js))~ This CDN is gone.
 
-[THREE.STLLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/STLLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/STLLoader.js))
+[THREE.STLLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/STLLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/threejs/r89/STLLoader.js))~ This CDN is gone.
 
-(ROS)ColladaLoader. We support patched version of ColladaLoader to workaround ros-visualization/rviz#1045. This version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/ros3djs/0.18.0/ColladaLoader.js))
+(ROS)ColladaLoader. We support patched version of ColladaLoader to workaround ros-visualization/rviz#1045. This version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/ros3djs/0.18.0/ColladaLoader.js))~ This CDN is gone.
 
 [roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is 1.3.0. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.js)) | ([min](https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js))
 
