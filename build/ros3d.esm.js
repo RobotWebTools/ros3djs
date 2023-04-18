@@ -53227,11 +53227,11 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   return InteractiveMarker;
 }(THREE.Object3D));
 
-var eventemitter2Exports = {};
-var eventemitter2 = {
-  get exports(){ return eventemitter2Exports; },
-  set exports(v){ eventemitter2Exports = v; },
-};
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+var eventemitter2 = {exports: {}};
 
 /*!
  * EventEmitter2
@@ -53240,6 +53240,7 @@ var eventemitter2 = {
  * Copyright (c) 2013 hij1nx
  * Licensed under the MIT license.
  */
+eventemitter2.exports;
 
 (function (module, exports) {
 !function(undefined$1) {
@@ -54864,10 +54865,11 @@ var eventemitter2 = {
 	    // CommonJS
 	    module.exports = EventEmitter;
 	  }
-	}();
-} (eventemitter2));
+	}(); 
+} (eventemitter2, eventemitter2.exports));
 
-var EventEmitter2 = eventemitter2Exports;
+var eventemitter2Exports = eventemitter2.exports;
+var EventEmitter2 = /*@__PURE__*/getDefaultExportFromCjs(eventemitter2Exports);
 
 /**
  * @fileOverview
