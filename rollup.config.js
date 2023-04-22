@@ -46,8 +46,8 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
+      commonjs({ strictRequires: true }),
+      buble({ transforms: { asyncAwait: false, forOf: false } }),
       filesize(),
     ],
   },
@@ -67,8 +67,8 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
+      commonjs({ strictRequires: true }),
+      buble({ transforms: { asyncAwait: false, forOf: false } }),
       filesize(),
     ],
   },
@@ -90,7 +90,7 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
+      commonjs({ strictRequires: true }),
       filesize(),
     ],
   },
@@ -112,7 +112,7 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
+      commonjs({ strictRequires: true }),
       filesize(),
       terser(),
     ],

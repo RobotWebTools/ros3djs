@@ -98,29 +98,31 @@ ROS3D.Marker = function(options) {
       this.add(cylinderMesh);
       break;
     case ROS3D.MARKER_LINE_STRIP:
-      var lineStripGeom = new THREE.Geometry();
+      var lineStripGeom = new THREE.BufferGeometry();
       var lineStripMaterial = new THREE.LineBasicMaterial({
         linewidth : message.scale.x
       });
 
       // add the points
+      var vertices = [];
       var j;
       for ( j = 0; j < message.points.length; j++) {
-        var pt = new THREE.Vector3();
-        pt.x = message.points[j].x;
-        pt.y = message.points[j].y;
-        pt.z = message.points[j].z;
-        lineStripGeom.vertices.push(pt);
+        vertices.push(message.points[j].x);
+        vertices.push(message.points[j].y);
+        vertices.push(message.points[j].z);
       }
+      lineStripGeom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
       // determine the colors for each
       if (message.colors.length === message.points.length) {
         lineStripMaterial.vertexColors = true;
+        var colors = [];
         for ( j = 0; j < message.points.length; j++) {
-          var clr = new THREE.Color();
-          clr.setRGB(message.colors[j].r, message.colors[j].g, message.colors[j].b);
-          lineStripGeom.colors.push(clr);
+          colors.push(message.colors[j].r);
+          colors.push(message.colors[j].g);
+          colors.push(message.colors[j].b);
         }
+        lineStripGeom.setAttribute('colors', new THREE.BufferAttribute(colors, 3));
       } else {
         lineStripMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
       }
@@ -129,29 +131,31 @@ ROS3D.Marker = function(options) {
       this.add(new THREE.Line(lineStripGeom, lineStripMaterial));
       break;
     case ROS3D.MARKER_LINE_LIST:
-      var lineListGeom = new THREE.Geometry();
+      var lineListGeom = new THREE.BufferGeometry();
       var lineListMaterial = new THREE.LineBasicMaterial({
         linewidth : message.scale.x
       });
 
       // add the points
+      var vertices = [];
       var k;
       for ( k = 0; k < message.points.length; k++) {
-        var v = new THREE.Vector3();
-        v.x = message.points[k].x;
-        v.y = message.points[k].y;
-        v.z = message.points[k].z;
-        lineListGeom.vertices.push(v);
+        vertices.push(message.points[k].x);
+        vertices.push(message.points[k].y);
+        vertices.push(message.points[k].z);
       }
+      lineListGeom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
       // determine the colors for each
       if (message.colors.length === message.points.length) {
         lineListMaterial.vertexColors = true;
+        var colors = [];
         for ( k = 0; k < message.points.length; k++) {
-          var c = new THREE.Color();
-          c.setRGB(message.colors[k].r, message.colors[k].g, message.colors[k].b);
-          lineListGeom.colors.push(c);
+          colors.push(message.colors[k].r);
+          colors.push(message.colors[k].g);
+          colors.push(message.colors[k].b);
         }
+        lineStripGeom.setAttribute('colors', new THREE.BufferAttribute(colors, 3));
       } else {
         lineListMaterial.color.setRGB(message.color.r, message.color.g, message.color.b);
       }
@@ -225,29 +229,31 @@ ROS3D.Marker = function(options) {
       break;
     case ROS3D.MARKER_POINTS:
       // for now, use a particle system for the lists
-      var geometry = new THREE.Geometry();
+      var geometry = new THREE.BufferGeometry();
       var material = new THREE.PointsMaterial({
         size : message.scale.x
       });
 
       // add the points
+      var vertices = [];
       var i;
       for ( i = 0; i < message.points.length; i++) {
-        var vertex = new THREE.Vector3();
-        vertex.x = message.points[i].x;
-        vertex.y = message.points[i].y;
-        vertex.z = message.points[i].z;
-        geometry.vertices.push(vertex);
+        vertices.push(message.points[i].x);
+        vertices.push(message.points[i].y);
+        vertices.push(message.points[i].z);
       }
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
       // determine the colors for each
       if (message.colors.length === message.points.length) {
         material.vertexColors = true;
+        var colors = [];
         for ( i = 0; i < message.points.length; i++) {
-          var color = new THREE.Color();
-          color.setRGB(message.colors[i].r, message.colors[i].g, message.colors[i].b);
-          geometry.colors.push(color);
+          colors.push(message.colors[i].r);
+          colors.push(message.colors[i].g);
+          colors.push(message.colors[i].b);
         }
+        geometry.setAttribute('colors', new THREE.BufferAttribute(colors, 3));
       } else {
         material.color.setRGB(message.color.r, message.color.g, message.color.b);
       }
