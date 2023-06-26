@@ -53429,7 +53429,7 @@ var ROS3D = (function (exports, ROSLIB) {
 		    var obj = {};
 		    var key;
 		    var len = keys.length;
-		    var valuesCount = values ? value.length : 0;
+		    var valuesCount = values ? values.length : 0;
 		    for (var i = 0; i < len; i++) {
 		      key = keys[i];
 		      obj[key] = i < valuesCount ? values[i] : undefined$1;
@@ -55209,7 +55209,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      ros : this.ros,
 	      name : topic + '/tunneled/update',
 	      messageType : 'visualization_msgs/InteractiveMarkerUpdate',
-	      compression : 'png'
+	      // compression : 'png'
+		  compression : 'cbor'
 	    });
 	    this.updateTopic.subscribe(this.processUpdate.bind(this));
 
@@ -55217,7 +55218,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      ros : this.ros,
 	      name : topic + '/feedback',
 	      messageType : 'visualization_msgs/InteractiveMarkerFeedback',
-	      compression : 'png'
+	      // compression : 'png'
+		  compression : 'cbor'
 	    });
 	    this.feedbackTopic.advertise();
 
@@ -55392,7 +55394,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.pose = options.pose || new ROSLIB__namespace.Pose();
 
 	    // Do not render this object until we receive a TF update
-	    this.visible = false;
+	    this.visible = true;
 
 	    // add the model
 	    this.add(object);
@@ -55482,7 +55484,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      ros : this.ros,
 	      name : this.topicName,
 	      messageType : 'visualization_msgs/MarkerArray',
-	      compression : 'png'
+	      // compression : 'png'
+		  compression : 'cbor'
 	    });
 	    this.rosTopic.subscribe(this.processMessage.bind(this));
 	  };
@@ -55619,7 +55622,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      ros : this.ros,
 	      name : this.topicName,
 	      messageType : 'visualization_msgs/Marker',
-	      compression : 'png'
+	      compression : 'cbor'
+		  // compression : 'png'
 	    });
 	    this.rosTopic.subscribe(this.processMessage.bind(this));
 	  };

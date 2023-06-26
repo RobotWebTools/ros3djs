@@ -15,7 +15,8 @@
   function init() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
-      url : 'ws://localhost:9090'
+      url : 'ws://localhost:9090',
+      groovyCompatibility: false
     });
 
     // Create the main viewer.
@@ -23,7 +24,7 @@
       divID : 'viewer',
       width : 800,
       height : 600,
-      antialias : true
+      antialias : true,
     });
 
     // Setup a client to listen to TFs.
@@ -32,7 +33,7 @@
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0,
-      fixedFrame : '/camera_link'
+      fixedFrame : 'camera_link'
     });
 
     var cloudClient = new ROS3D.PointCloud2({
