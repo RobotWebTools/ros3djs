@@ -55622,8 +55622,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	      ros : this.ros,
 	      name : this.topicName,
 	      messageType : 'visualization_msgs/Marker',
-	      compression : 'cbor'
-		  // compression : 'png'
+	      // compression : 'png'
+		  compression : 'cbor'
 	    });
 	    this.rosTopic.subscribe(this.processMessage.bind(this));
 	  };

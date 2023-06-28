@@ -33,14 +33,14 @@
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0,
-      fixedFrame : 'camera_link'
+      fixedFrame : 'laser_data_frame'
     });
 
     var cloudClient = new ROS3D.PointCloud2({
         ros: ros,
         tfClient: tfClient,
         rootObject: viewer.scene,
-        topic: '/camera/depth_registered/points',
+        topic: '/os1/points',
         material: { size: 0.05, color: 0xff00ff }
     });
   }

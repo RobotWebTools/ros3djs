@@ -53,7 +53,8 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
     ros : this.ros,
     name : topic + '/tunneled/update',
     messageType : 'visualization_msgs/InteractiveMarkerUpdate',
-    compression : 'png'
+    // compression : 'png'
+    compression : 'cbor'
   });
   this.updateTopic.subscribe(this.processUpdate.bind(this));
 
@@ -61,7 +62,8 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
     ros : this.ros,
     name : topic + '/feedback',
     messageType : 'visualization_msgs/InteractiveMarkerFeedback',
-    compression : 'png'
+    // compression : 'png'
+    compression : 'cbor'
   });
   this.feedbackTopic.advertise();
 

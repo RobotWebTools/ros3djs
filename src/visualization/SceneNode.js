@@ -25,7 +25,7 @@ ROS3D.SceneNode = function(options) {
   this.pose = options.pose || new ROSLIB.Pose();
 
   // Do not render this object until we receive a TF update
-  this.visible = false;
+  this.visible = false; // Si se cambia a true visualiza sin TF update
 
   // add the model
   this.add(object);
@@ -43,7 +43,7 @@ ROS3D.SceneNode = function(options) {
 
     // update the world
     that.updatePose(poseTransformed);
-    that.visible = true;
+    that.visible = true; 
   };
 
   // listen for TF updates
