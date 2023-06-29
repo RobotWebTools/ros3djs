@@ -55394,7 +55394,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.pose = options.pose || new ROSLIB__namespace.Pose();
 
 	    // Do not render this object until we receive a TF update
-	    this.visible = true;
+	    this.visible = false;
 
 	    // add the model
 	    this.add(object);

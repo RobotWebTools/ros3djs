@@ -16,7 +16,7 @@
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
       url : 'ws://localhost:9090',
-      groovyCompatibility: false
+      groovyCompatibility: false,
     });
 
     // Create the main viewer.
@@ -33,7 +33,7 @@
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0,
-      fixedFrame : 'laser_data_frame'
+      fixedFrame : 'base_link'
     });
 
     var cloudClient = new ROS3D.PointCloud2({

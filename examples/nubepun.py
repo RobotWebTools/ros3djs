@@ -10,7 +10,7 @@ import struct
 class PointCloud2Publisher(Node):
     def __init__(self):
         super().__init__('pointcloud2_publisher')
-        self.publisher_ = self.create_publisher(PointCloud2, '/camera/depth_registered/points', 10)
+        self.publisher_ = self.create_publisher(PointCloud2, '/os1/points', 10)
         self.timer_ = self.create_timer(1.0, self.publish_pointcloud)
         self.get_logger().info('PointCloud2 Publisher Node has been started.')
 
@@ -18,7 +18,7 @@ class PointCloud2Publisher(Node):
         # Create the PointCloud2 message
         pointcloud_msg = PointCloud2()
         pointcloud_msg.header = Header()
-        pointcloud_msg.header.frame_id = 'camera_link'
+        pointcloud_msg.header.frame_id = 'laser_data_frame'
 
         # Populate the fields of the PointCloud2 message
         pointcloud_msg.fields.append(PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1))
