@@ -41,13 +41,14 @@ ROS3D.OccupancyGridClient = function(options) {
 
   // subscribe to the topic
   this.rosTopic = undefined;
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
 ROS3D.OccupancyGridClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.OccupancyGridClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 
@@ -63,7 +64,7 @@ ROS3D.OccupancyGridClient.prototype.subscribe = function(){
     compression : this.compression
   });
   this.sceneNode = null;
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
@@ -109,6 +110,6 @@ ROS3D.OccupancyGridClient.prototype.processMessage = function(message){
 
   // check if we should unsubscribe
   if (!this.continuous) {
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };

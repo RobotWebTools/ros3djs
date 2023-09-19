@@ -16,8 +16,6 @@
  */
 ROS3D.InteractiveMarker = function(options) {
   THREE.Object3D.call(this);
-
-  var that = this;
   options = options || {};
   var handle = options.handle;
   this.name = handle.name;
@@ -42,15 +40,15 @@ ROS3D.InteractiveMarker = function(options) {
 
   // add each control message
   handle.controls.forEach(function(controlMessage) {
-    that.add(new ROS3D.InteractiveMarkerControl({
-      parent : that,
+    this.add(new ROS3D.InteractiveMarkerControl({
+      parent : this,
       handle : handle,
       message : controlMessage,
       camera : camera,
       path : path,
       loader : loader
     }));
-  });
+  }.bind(this));
 
   // check for any menus
   if (handle.menuEntries.length > 0) {
@@ -61,8 +59,8 @@ ROS3D.InteractiveMarker = function(options) {
 
     // forward menu select events
     this.menu.addEventListener('menu-select', function(event) {
-      that.dispatchEvent(event);
-    });
+      this.dispatchEvent(event);
+    }.bind(this));
   }
 };
 ROS3D.InteractiveMarker.prototype.__proto__ = THREE.Object3D.prototype;
@@ -352,14 +350,13 @@ ROS3D.InteractiveMarker.prototype.onServerSetPose = function(event) {
  * Free memory of elements in this marker.
  */
 ROS3D.InteractiveMarker.prototype.dispose = function() {
-  var that = this;
   this.children.forEach(function(intMarkerControl) {
     intMarkerControl.children.forEach(function(marker) {
       marker.dispose();
       intMarkerControl.remove(marker);
     });
-    that.remove(intMarkerControl);
-  });
+    this.remove(intMarkerControl);
+  }.bind(this));
 };
 
 Object.assign(ROS3D.InteractiveMarker.prototype, THREE.EventDispatcher.prototype);

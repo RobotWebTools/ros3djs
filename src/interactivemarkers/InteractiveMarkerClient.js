@@ -19,7 +19,6 @@
  *  * menuFontSize (optional) - the menu font size
  */
 ROS3D.InteractiveMarkerClient = function(options) {
-  var that = this;
   options = options || {};
   this.ros = options.ros;
   this.tfClient = options.tfClient;
@@ -33,6 +32,7 @@ ROS3D.InteractiveMarkerClient = function(options) {
   this.interactiveMarkers = {};
   this.updateTopic = null;
   this.feedbackTopic = null;
+  this.processUpdateBound = this.processUpdate.bind(this);
 
   // check for an initial topic
   if (this.topicName) {
@@ -55,7 +55,7 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
     messageType : 'visualization_msgs/InteractiveMarkerUpdate',
     compression : 'png'
   });
-  this.updateTopic.subscribe(this.processUpdate.bind(this));
+  this.updateTopic.subscribe(this.processUpdateBound);
 
   this.feedbackTopic = new ROSLIB.Topic({
     ros : this.ros,
@@ -79,7 +79,7 @@ ROS3D.InteractiveMarkerClient.prototype.subscribe = function(topic) {
  */
 ROS3D.InteractiveMarkerClient.prototype.unsubscribe = function() {
   if (this.updateTopic) {
-    this.updateTopic.unsubscribe(this.processUpdate);
+    this.updateTopic.unsubscribe(this.processUpdateBound);
   }
   if (this.feedbackTopic) {
     this.feedbackTopic.unadvertise();
@@ -116,16 +116,14 @@ ROS3D.InteractiveMarkerClient.prototype.processInit = function(initMessage) {
  * @param initMessage - the interactive marker update message to process
  */
 ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
-  var that = this;
-
   // erase any markers
   message.erases.forEach(function(name) {
-    that.eraseIntMarker(name);
+    this.eraseIntMarker(name);
   });
 
   // updates marker poses
   message.poses.forEach(function(poseMessage) {
-    var marker = that.interactiveMarkers[poseMessage.name];
+    var marker = this.interactiveMarkers[poseMessage.name];
     if (marker) {
       marker.setPoseFromServer(poseMessage.pose);
     }
@@ -134,30 +132,30 @@ ROS3D.InteractiveMarkerClient.prototype.processUpdate = function(message) {
   // add new markers
   message.markers.forEach(function(msg) {
     // get rid of anything with the same name
-    var oldhandle = that.interactiveMarkers[msg.name];
+    var oldhandle = this.interactiveMarkers[msg.name];
     if (oldhandle) {
-      that.eraseIntMarker(oldhandle.name);
+      this.eraseIntMarker(oldhandle.name);
     }
 
     // create the handle
     var handle = new ROS3D.InteractiveMarkerHandle({
       message : msg,
-      feedbackTopic : that.feedbackTopic,
-      tfClient : that.tfClient,
-      menuFontSize : that.menuFontSize
+      feedbackTopic : this.feedbackTopic,
+      tfClient : this.tfClient,
+      menuFontSize : this.menuFontSize
     });
-    that.interactiveMarkers[msg.name] = handle;
+    this.interactiveMarkers[msg.name] = handle;
 
     // create the actual marker
     var intMarker = new ROS3D.InteractiveMarker({
       handle : handle,
-      camera : that.camera,
-      path : that.path,
-      loader : that.loader
+      camera : this.camera,
+      path : this.path,
+      loader : this.loader
     });
     // add it to the scene
     intMarker.name = msg.name;
-    that.rootObject.add(intMarker);
+    this.rootObject.add(intMarker);
 
     // listen for any pose updates from the server
     handle.on('pose', function(pose) {
