@@ -29,6 +29,7 @@ ROS3D.Point = function(options) {
   this.sn = null;
 
   this.rosTopic = undefined;
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
 ROS3D.Point.prototype.__proto__ = THREE.Object3D.prototype;
@@ -36,7 +37,7 @@ ROS3D.Point.prototype.__proto__ = THREE.Object3D.prototype;
 
 ROS3D.Point.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 
@@ -50,7 +51,7 @@ ROS3D.Point.prototype.subscribe = function(){
       queue_length : 1,
       messageType : 'geometry_msgs/PointStamped'
   });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.Point.prototype.processMessage = function(message){

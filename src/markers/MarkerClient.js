@@ -34,13 +34,14 @@ ROS3D.MarkerClient = function(options) {
   this.rosTopic = undefined;
   this.updatedTime = {};
 
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
 ROS3D.MarkerClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.MarkerClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 
@@ -66,7 +67,7 @@ ROS3D.MarkerClient.prototype.subscribe = function(){
     messageType : 'visualization_msgs/Marker',
     compression : 'png'
   });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.MarkerClient.prototype.processMessage = function(message){
