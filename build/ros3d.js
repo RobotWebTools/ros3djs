@@ -46468,11 +46468,9 @@ var ROS3D = (function (exports, ROSLIB) {
 	      this.mesh.position.y = 0;
 	      this.add(this.mesh);
 
-	      var that = this;
-
-	      setInterval(function() {
-	        if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
-	          that.texture.needsUpdate = true;
+	      setInterval(() => {
+	        if (this.isMjpeg || this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+	          this.texture.needsUpdate = true;
 	        }
 	      }, 1000 / 30);
 	    }
@@ -52985,8 +52983,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  constructor(options) {
 	    super();
-
-	    var that = this;
 	    options = options || {};
 	    var handle = options.handle;
 	    this.name = handle.name;
@@ -53011,15 +53007,15 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // add each control message
 	    handle.controls.forEach(function(controlMessage) {
-	      that.add(new InteractiveMarkerControl({
-	        parent : that,
+	      this.add(new InteractiveMarkerControl({
+	        parent : this,
 	        handle : handle,
 	        message : controlMessage,
 	        camera : camera,
 	        path : path,
 	        loader : loader
 	      }));
-	    });
+	    }.bind(this));
 
 	    // check for any menus
 	    if (handle.menuEntries.length > 0) {
@@ -53030,8 +53026,8 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	      // forward menu select events
 	      this.menu.addEventListener('menu-select', function(event) {
-	        that.dispatchEvent(event);
-	      });
+	        this.dispatchEvent(event);
+	      }.bind(this));
 	    }
 	  };
 
@@ -53308,14 +53304,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	   * Free memory of elements in this marker.
 	   */
 	  dispose() {
-	    var that = this;
 	    this.children.forEach(function(intMarkerControl) {
 	      intMarkerControl.children.forEach(function(marker) {
 	        marker.dispose();
 	        intMarkerControl.remove(marker);
 	      });
-	      that.remove(intMarkerControl);
-	    });
+	      this.remove(intMarkerControl);
+	    }.bind(this));
 	  };
 	}
 
@@ -55189,6 +55184,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.interactiveMarkers = {};
 	    this.updateTopic = null;
 	    this.feedbackTopic = null;
+	    this.processUpdateBound = this.processUpdate.bind(this);
 
 	    // check for an initial topic
 	    if (this.topicName) {
@@ -55211,7 +55207,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      messageType : 'visualization_msgs/InteractiveMarkerUpdate',
 	      compression : 'png'
 	    });
-	    this.updateTopic.subscribe(this.processUpdate.bind(this));
+	    this.updateTopic.subscribe(this.processUpdateBound);
 
 	    this.feedbackTopic = new ROSLIB__namespace.Topic({
 	      ros : this.ros,
@@ -55235,7 +55231,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	   */
 	  unsubscribe() {
 	    if (this.updateTopic) {
-	      this.updateTopic.unsubscribe(this.processUpdate);
+	      this.updateTopic.unsubscribe(this.processUpdateBound);
 	    }
 	    if (this.feedbackTopic) {
 	      this.feedbackTopic.unadvertise();
@@ -55272,16 +55268,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	   * @param initMessage - the interactive marker update message to process
 	   */
 	  processUpdate(message) {
-	    var that = this;
-
 	    // erase any markers
 	    message.erases.forEach(function(name) {
-	      that.eraseIntMarker(name);
+	      this.eraseIntMarker(name);
 	    });
 
 	    // updates marker poses
 	    message.poses.forEach(function(poseMessage) {
-	      var marker = that.interactiveMarkers[poseMessage.name];
+	      var marker = this.interactiveMarkers[poseMessage.name];
 	      if (marker) {
 	        marker.setPoseFromServer(poseMessage.pose);
 	      }
@@ -55290,30 +55284,30 @@ var ROS3D = (function (exports, ROSLIB) {
 	    // add new markers
 	    message.markers.forEach(function(msg) {
 	      // get rid of anything with the same name
-	      var oldhandle = that.interactiveMarkers[msg.name];
+	      var oldhandle = this.interactiveMarkers[msg.name];
 	      if (oldhandle) {
-	        that.eraseIntMarker(oldhandle.name);
+	        this.eraseIntMarker(oldhandle.name);
 	      }
 
 	      // create the handle
 	      var handle = new InteractiveMarkerHandle({
 	        message : msg,
-	        feedbackTopic : that.feedbackTopic,
-	        tfClient : that.tfClient,
-	        menuFontSize : that.menuFontSize
+	        feedbackTopic : this.feedbackTopic,
+	        tfClient : this.tfClient,
+	        menuFontSize : this.menuFontSize
 	      });
-	      that.interactiveMarkers[msg.name] = handle;
+	      this.interactiveMarkers[msg.name] = handle;
 
 	      // create the actual marker
 	      var intMarker = new InteractiveMarker({
 	        handle : handle,
-	        camera : that.camera,
-	        path : that.path,
-	        loader : that.loader
+	        camera : this.camera,
+	        path : this.path,
+	        loader : this.loader
 	      });
 	      // add it to the scene
 	      intMarker.name = msg.name;
-	      that.rootObject.add(intMarker);
+	      this.rootObject.add(intMarker);
 
 	      // listen for any pose updates from the server
 	      handle.on('pose', function(pose) {
@@ -55385,7 +55379,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	  constructor(options) {
 	    super();
 	    options = options || {};
-	    var that = this;
 	    this.tfClient = options.tfClient;
 	    this.frameID = options.frameID;
 	    var object = options.object;
@@ -55405,16 +55398,17 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	      // apply the transform
 	      var tf = new ROSLIB__namespace.Transform(msg);
-	      var poseTransformed = new ROSLIB__namespace.Pose(that.pose);
+	      var poseTransformed = new ROSLIB__namespace.Pose(this.pose);
 	      poseTransformed.applyTransform(tf);
 
 	      // update the world
-	      that.updatePose(poseTransformed);
-	      that.visible = true;
+	      this.updatePose(poseTransformed);
+	      this.visible = true;
 	    };
 
 	    // listen for TF updates
-	    this.tfClient.subscribe(this.frameID, this.tfUpdate);
+	    this.tfUpdateBound = this.tfUpdate.bind(this);
+	    this.tfClient.subscribe(this.frameID, this.tfUpdateBound);
 	  };
 
 	  /**
@@ -55430,7 +55424,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	  };
 
 	  unsubscribeTf() {
-	    this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
+	    this.tfClient.unsubscribe(this.frameID, this.tfUpdateBound);
 	  };
 	}
 
@@ -55471,6 +55465,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.markers = {};
 	    this.rosTopic = undefined;
 
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
@@ -55484,7 +55479,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      messageType : 'visualization_msgs/MarkerArray',
 	      compression : 'png'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(arrayMessage){
@@ -55533,7 +55528,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -55590,12 +55585,13 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.rosTopic = undefined;
 	    this.updatedTime = {};
 
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -55621,7 +55617,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      messageType : 'visualization_msgs/Marker',
 	      compression : 'png'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -56065,12 +56061,13 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // subscribe to the topic
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -56086,7 +56083,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      compression : this.compression
 	    });
 	    this.sceneNode = null;
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -56132,7 +56129,7 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // check if we should unsubscribe
 	    if (!this.continuous) {
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 	}
@@ -56904,13 +56901,14 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	    // subscribe to the topic
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe() {
 	    if (this.rosTopic) {
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -56924,7 +56922,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      queue_length: 1,
 	      compression: this.compression
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message) {
@@ -56938,9 +56936,8 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this._processMessagePrivate(message);
 
 	    if (!this.continuous) {
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
-
 	  };
 
 
@@ -56980,7 +56977,6 @@ var ROS3D = (function (exports, ROSLIB) {
 
 	          }
 	        }
-
 
 	        {
 	          newOcTree.buildGeometry();
@@ -57059,13 +57055,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.sns = [];
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57079,7 +57076,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      queue_length : 1,
 	      messageType : 'nav_msgs/Odometry'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57141,13 +57138,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.line = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57161,7 +57159,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        queue_length : 1,
 	        messageType : 'nav_msgs/Path'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57224,13 +57222,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.sn = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57244,7 +57243,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        queue_length : 1,
 	        messageType : 'geometry_msgs/PointStamped'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57300,13 +57299,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.line = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57320,7 +57320,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        queue_length : 1,
 	        messageType : 'geometry_msgs/PolygonStamped'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57388,13 +57388,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.sn = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57408,7 +57409,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        queue_length : 1,
 	        messageType : 'geometry_msgs/PoseStamped'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57470,13 +57471,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.sn = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57490,7 +57492,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	       queue_length : 1,
 	       messageType : 'geometry_msgs/PoseArray'
 	   });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57572,13 +57574,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.sn = null;
 
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57592,7 +57595,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        queue_length : 1,
 	        messageType : 'geometry_msgs/PoseWithCovarianceStamped'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57773,14 +57776,14 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.compression = options.compression || 'cbor';
 	    this.points = new Points(options);
 	    this.rosTopic = undefined;
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
-
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57795,7 +57798,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      queue_length : 1,
 	      messageType : 'sensor_msgs/LaserScan'
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57867,13 +57870,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.rootObject.add(this.line);
 
 	    this.rosTopic = undefined;
+
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -57888,7 +57893,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	        messageType : 'sensor_msgs/NavSatFix'
 	    });
 
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(message){
@@ -57989,13 +57994,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	    this.points = new Points(options);
 	    this.rosTopic = undefined;
 	    this.buffer = null;
+
+	    this.processMessageBound = this.processMessage.bind(this);
 	    this.subscribe();
 	  };
 
 
 	  unsubscribe(){
 	    if(this.rosTopic){
-	      this.rosTopic.unsubscribe(this.processMessage);
+	      this.rosTopic.unsubscribe(this.processMessageBound);
 	    }
 	  };
 
@@ -58011,7 +58018,7 @@ var ROS3D = (function (exports, ROSLIB) {
 	      queue_length : 1,
 	      compression: this.compression
 	    });
-	    this.rosTopic.subscribe(this.processMessage.bind(this));
+	    this.rosTopic.subscribe(this.processMessageBound);
 	  };
 
 	  processMessage(msg){
@@ -58271,7 +58278,6 @@ var ROS3D = (function (exports, ROSLIB) {
 	   *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
 	   */
 	  constructor(options) {
-	    var that = this;
 	    options = options || {};
 	    var ros = options.ros;
 	    this.param = options.param || 'robot_description';
@@ -58293,15 +58299,15 @@ var ROS3D = (function (exports, ROSLIB) {
 	      });
 
 	      // load all models
-	      that.urdf = new Urdf({
+	      this.urdf = new Urdf({
 	        urdfModel : urdfModel,
-	        path : that.path,
-	        tfClient : that.tfClient,
-	        tfPrefix : that.tfPrefix,
-	        loader : that.loader
+	        path : this.path,
+	        tfClient : this.tfClient,
+	        tfPrefix : this.tfPrefix,
+	        loader : this.loader
 	      });
-	      that.rootObject.add(that.urdf);
-	    });
+	      this.rootObject.add(this.urdf);
+	    }.bind(this));
 	  };
 	}
 
