@@ -86,7 +86,7 @@ ROS3D.Highlighter.prototype.renderHighlights = function(scene, renderer, camera)
 
 /**
  * Traverses the given object and makes every object that's a Mesh,
- * Line or Sprite invisible. Also saves the previous visibility state
+ * Line, Sprite or points invisible. Also saves the previous visibility state
  * so we can restore it later.
  *
  * @param scene - the object to traverse
@@ -94,7 +94,7 @@ ROS3D.Highlighter.prototype.renderHighlights = function(scene, renderer, camera)
 ROS3D.Highlighter.prototype.makeEverythingInvisible = function (scene) {
   scene.traverse(function(currentObject) {
     if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
-         || currentObject instanceof THREE.Sprite ) {
+         || currentObject instanceof THREE.Sprite || currentObject instanceof THREE.Points ) {
       currentObject.previousVisibility = currentObject.visible;
       currentObject.visible = false;
     }
@@ -111,7 +111,7 @@ ROS3D.Highlighter.prototype.makeEverythingInvisible = function (scene) {
 ROS3D.Highlighter.prototype.makeHighlightedVisible = function (scene) {
   var makeVisible = function(currentObject) {
       if ( currentObject instanceof THREE.Mesh || currentObject instanceof THREE.Line
-           || currentObject instanceof THREE.Sprite ) {
+           || currentObject instanceof THREE.Sprite || currentObject instanceof THREE.Points ) {
         currentObject.visible = true;
       }
   };
