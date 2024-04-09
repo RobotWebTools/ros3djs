@@ -32,6 +32,7 @@ ROS3D.MarkerArrayClient = function(options) {
   this.markers = {};
   this.rosTopic = undefined;
 
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
 ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
@@ -46,7 +47,7 @@ ROS3D.MarkerArrayClient.prototype.subscribe = function(){
     messageType : 'visualization_msgs/MarkerArray',
     compression : 'png'
   });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
@@ -95,7 +96,7 @@ ROS3D.MarkerArrayClient.prototype.processMessage = function(arrayMessage){
 
 ROS3D.MarkerArrayClient.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 

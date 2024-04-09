@@ -5,11 +5,11 @@
 
 #### 3D Visualization Library for use with the ROS JavaScript Libraries
 
-For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](http://robotwebtools.org/demos.html).
+For full documentation, see [the ROS wiki](http://ros.org/wiki/ros3djs) or check out some [working demos](https://robotwebtools.github.io/demos.html).
 
-[JSDoc](http://robotwebtools.org/ros3djs) can be found on the Robot Web Tools website.
+[JSDoc](https://robotwebtools.github.io/ros3djs) can be found on the Robot Web Tools website.
 
-This project is released as part of the [Robot Web Tools](http://robotwebtools.org/) effort.
+This project is released as part of the [Robot Web Tools](https://robotwebtools.github.io/) effort.
 
 ### Usage
 
@@ -24,13 +24,13 @@ ros3djs depends on:
 
 [EventEmitter2](https://github.com/hij1nx/EventEmitter2). The current supported version is 6.4. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.js)) | ([min](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.min.js))
 
-[three.js](https://github.com/mrdoob/three.js/). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/three.js)) | ([min](https://static.robotwebtools.org/threejs/r89/three.min.js))
+[three.js](https://github.com/mrdoob/three.js/). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.js)) | ([min](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.min.js))
 
-[THREE.ColladaLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/ColladaLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/ColladaLoader.js))
+[THREE.ColladaLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/ColladaLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/threejs/r89/ColladaLoader.js))~ This CDN is gone.
 
-[THREE.STLLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/STLLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/threejs/r89/STLLoader.js))
+[THREE.STLLoader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/STLLoader.js). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/threejs/r89/STLLoader.js))~ This CDN is gone.
 
-(ROS)ColladaLoader. We support patched version of ColladaLoader to workaround ros-visualization/rviz#1045. This version can be found on the Robot Web Tools CDN: ([full](https://static.robotwebtools.org/ros3djs/0.18.0/ColladaLoader.js))
+(ROS)ColladaLoader. We support patched version of ColladaLoader to workaround ros-visualization/rviz#1045. This version can be found on the Robot Web Tools CDN: ~([full](https://static.robotwebtools.org/ros3djs/0.18.0/ColladaLoader.js))~ This CDN is gone.
 
 [roslibjs](https://github.com/RobotWebTools/roslibjs). The current supported version is 1.3.0. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.js)) | ([min](https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js))
 
@@ -60,7 +60,7 @@ To run the build tasks:
  1. `cd /path/to/ros3djs/`
  2. `grunt build`
 
-`grunt build` will concatenate and minimize the files under src and replace ros3d.js and ros3d.min.js in the build directory. It will also run the linter and test cases. This is what [Travis CI](https://travis-ci.org/RobotWebTools/ros3djs) runs when a Pull Request is submitted.
+`grunt build` will concatenate and minimize the files under src and replace ros3d.js and ros3d.min.js in the build directory. It will also run the linter and test cases. This is what [GitHub Actions](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml) runs when a Pull Request is submitted.
 
 `grunt dev` will watch for any changes to any of the src/ files and automatically concatenate and minimize the files. This is ideal for those developing as you should only have to run `grunt dev` once.
 
@@ -79,7 +79,7 @@ There are a variety of [examples](examples) of the different things that can be 
 There are also some examples of how ros3djs can be used in different environments:
 
 - [Classic html script tag inclusion](examples)
-- [Modular html script tag inclusion](examples/html-import)s
+- [Modular html script tag inclusion](examples/html-import)
 
 ### License
 

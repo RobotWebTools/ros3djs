@@ -56,6 +56,7 @@ ROS3D.OcTreeClient = function(options) {
 
   // subscribe to the topic
   this.rosTopic = undefined;
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
 
@@ -63,7 +64,7 @@ ROS3D.OcTreeClient.prototype.__proto__ = EventEmitter2.prototype;
 
 ROS3D.OcTreeClient.prototype.unsubscribe = function () {
   if (this.rosTopic) {
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 
@@ -77,7 +78,7 @@ ROS3D.OcTreeClient.prototype.subscribe = function () {
     queue_length: 1,
     compression: this.compression
   });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.OcTreeClient.prototype.processMessage = function (message) {
@@ -91,9 +92,8 @@ ROS3D.OcTreeClient.prototype.processMessage = function (message) {
   this._processMessagePrivate(message);
 
   if (!this.continuous) {
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
-
 };
 
 
@@ -133,7 +133,6 @@ ROS3D.OcTreeClient.prototype._loadOcTree = function (message) {
 
         }
       }
-
 
       {
         newOcTree.buildGeometry();

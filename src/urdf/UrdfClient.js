@@ -24,7 +24,6 @@
  *   * loader (optional) - the Collada loader to use (e.g., an instance of ROS3D.COLLADA_LOADER)
  */
 ROS3D.UrdfClient = function(options) {
-  var that = this;
   options = options || {};
   var ros = options.ros;
   this.param = options.param || 'robot_description';
@@ -46,13 +45,13 @@ ROS3D.UrdfClient = function(options) {
     });
 
     // load all models
-    that.urdf = new ROS3D.Urdf({
+    this.urdf = new ROS3D.Urdf({
       urdfModel : urdfModel,
-      path : that.path,
-      tfClient : that.tfClient,
-      tfPrefix : that.tfPrefix,
-      loader : that.loader
+      path : this.path,
+      tfClient : this.tfClient,
+      tfPrefix : this.tfPrefix,
+      loader : this.loader
     });
-    that.rootObject.add(that.urdf);
-  });
+    this.rootObject.add(this.urdf);
+  }.bind(this));
 };

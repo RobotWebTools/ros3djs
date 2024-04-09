@@ -12,12 +12,12 @@ jobs:
       matrix:
         node_version: [14, 16]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       env:
         TOKEN: "${{ github.event_name == 'push' && endsWith(github.ref, 'develop') && matrix.node_version == 16 && secrets.RWT_BOT_PAT || github.token }}"
       with:
         token: ${{ env.TOKEN }}
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         cache: npm
         node-version: ${{ matrix.node_version }}
@@ -29,7 +29,7 @@ jobs:
       run: npm run build
     - name: Test
       run: npm test
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       if: ${{ github.event_name == 'push' && endsWith(github.ref, 'develop') && matrix.node_version == 16 }}
       with:
         commit_message: Update Build

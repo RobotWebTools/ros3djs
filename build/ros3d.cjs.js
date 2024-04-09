@@ -46403,6 +46403,8 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
    * Callback called when video metadata is ready
    */
   DepthCloud.prototype.initStreamer = function initStreamer () {
+    var this$1$1 = this;
+
 
     if (this.metaLoaded) {
       this.texture = new THREE.Texture(this.video);
@@ -46469,11 +46471,9 @@ var DepthCloud = /*@__PURE__*/(function (superclass) {
       this.mesh.position.y = 0;
       this.add(this.mesh);
 
-      var that = this;
-
-      setInterval(function() {
-        if (that.isMjpeg || that.video.readyState === that.video.HAVE_ENOUGH_DATA) {
-          that.texture.needsUpdate = true;
+      setInterval(function () {
+        if (this$1$1.isMjpeg || this$1$1.video.readyState === this$1$1.video.HAVE_ENOUGH_DATA) {
+          this$1$1.texture.needsUpdate = true;
         }
       }, 1000 / 30);
     }
@@ -52089,7 +52089,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_LINE_STRIP:
         var lineStripGeom = new THREE.Geometry();
         var lineStripMaterial = new THREE.LineBasicMaterial({
-          size : message.scale.x
+          linewidth : message.scale.x
         });
 
         // add the points
@@ -52120,7 +52120,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_LINE_LIST:
         var lineListGeom = new THREE.Geometry();
         var lineListMaterial = new THREE.LineBasicMaterial({
-          size : message.scale.x
+          linewidth : message.scale.x
         });
 
         // add the points
@@ -52146,7 +52146,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the line
-        this.add(new THREE.Line(lineListGeom, lineListMaterial,THREE.LinePieces));
+        this.add(new THREE.LineSegments(lineListGeom, lineListMaterial));
         break;
       case MARKER_CUBE_LIST:
         // holds the main object
@@ -52215,7 +52215,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
       case MARKER_POINTS:
         // for now, use a particle system for the lists
         var geometry = new THREE.Geometry();
-        var material = new THREE.ParticleBasicMaterial({
+        var material = new THREE.PointsMaterial({
           size : message.scale.x
         });
 
@@ -52242,7 +52242,7 @@ var Marker = /*@__PURE__*/(function (superclass) {
         }
 
         // add the particle system
-        this.add(new THREE.ParticleSystem(geometry, material));
+        this.add(new THREE.Points(geometry, material));
         break;
       case MARKER_TEXT_VIEW_FACING:
         // only work on non-empty text
@@ -52924,8 +52924,6 @@ var InteractiveMarkerMenu = /*@__PURE__*/(function (superclass) {
 var InteractiveMarker = /*@__PURE__*/(function (superclass) {
   function InteractiveMarker(options) {
     superclass.call(this);
-
-    var that = this;
     options = options || {};
     var handle = options.handle;
     this.name = handle.name;
@@ -52950,15 +52948,15 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
 
     // add each control message
     handle.controls.forEach(function(controlMessage) {
-      that.add(new InteractiveMarkerControl({
-        parent : that,
+      this.add(new InteractiveMarkerControl({
+        parent : this,
         handle : handle,
         message : controlMessage,
         camera : camera,
         path : path,
         loader : loader
       }));
-    });
+    }.bind(this));
 
     // check for any menus
     if (handle.menuEntries.length > 0) {
@@ -52969,8 +52967,8 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
 
       // forward menu select events
       this.menu.addEventListener('menu-select', function(event) {
-        that.dispatchEvent(event);
-      });
+        this.dispatchEvent(event);
+      }.bind(this));
     }
   }
 
@@ -53238,18 +53236,21 @@ var InteractiveMarker = /*@__PURE__*/(function (superclass) {
    * Free memory of elements in this marker.
    */
   InteractiveMarker.prototype.dispose = function dispose () {
-    var that = this;
     this.children.forEach(function(intMarkerControl) {
       intMarkerControl.children.forEach(function(marker) {
         marker.dispose();
         intMarkerControl.remove(marker);
       });
-      that.remove(intMarkerControl);
-    });
+      this.remove(intMarkerControl);
+    }.bind(this));
   };
 
   return InteractiveMarker;
 }(THREE.Object3D));
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
 
 var eventemitter2 = {exports: {}};
 
@@ -53260,6 +53261,7 @@ var eventemitter2 = {exports: {}};
  * Copyright (c) 2013 hij1nx
  * Licensed under the MIT license.
  */
+eventemitter2.exports;
 
 (function (module, exports) {
 !function(undefined$1) {
@@ -54884,10 +54886,11 @@ var eventemitter2 = {exports: {}};
 	    // CommonJS
 	    module.exports = EventEmitter;
 	  }
-	}();
-} (eventemitter2));
+	}(); 
+} (eventemitter2, eventemitter2.exports));
 
-var EventEmitter2 = eventemitter2.exports;
+var eventemitter2Exports = eventemitter2.exports;
+var EventEmitter2 = /*@__PURE__*/getDefaultExportFromCjs(eventemitter2Exports);
 
 /**
  * @fileOverview
@@ -55083,6 +55086,7 @@ var InteractiveMarkerClient = function InteractiveMarkerClient(options) {
   this.interactiveMarkers = {};
   this.updateTopic = null;
   this.feedbackTopic = null;
+  this.processUpdateBound = this.processUpdate.bind(this);
 
   // check for an initial topic
   if (this.topicName) {
@@ -55104,7 +55108,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
     messageType : 'visualization_msgs/InteractiveMarkerUpdate',
     compression : 'png'
   });
-  this.updateTopic.subscribe(this.processUpdate.bind(this));
+  this.updateTopic.subscribe(this.processUpdateBound);
 
   this.feedbackTopic = new ROSLIB__namespace.Topic({
     ros : this.ros,
@@ -55127,7 +55131,7 @@ InteractiveMarkerClient.prototype.subscribe = function subscribe (topic) {
  */
 InteractiveMarkerClient.prototype.unsubscribe = function unsubscribe () {
   if (this.updateTopic) {
-    this.updateTopic.unsubscribe(this.processUpdate);
+    this.updateTopic.unsubscribe(this.processUpdateBound);
   }
   if (this.feedbackTopic) {
     this.feedbackTopic.unadvertise();
@@ -55162,16 +55166,14 @@ InteractiveMarkerClient.prototype.processInit = function processInit (initMessag
  * @param initMessage - the interactive marker update message to process
  */
 InteractiveMarkerClient.prototype.processUpdate = function processUpdate (message) {
-  var that = this;
-
   // erase any markers
   message.erases.forEach(function(name) {
-    that.eraseIntMarker(name);
+    this.eraseIntMarker(name);
   });
 
   // updates marker poses
   message.poses.forEach(function(poseMessage) {
-    var marker = that.interactiveMarkers[poseMessage.name];
+    var marker = this.interactiveMarkers[poseMessage.name];
     if (marker) {
       marker.setPoseFromServer(poseMessage.pose);
     }
@@ -55180,30 +55182,30 @@ InteractiveMarkerClient.prototype.processUpdate = function processUpdate (messag
   // add new markers
   message.markers.forEach(function(msg) {
     // get rid of anything with the same name
-    var oldhandle = that.interactiveMarkers[msg.name];
+    var oldhandle = this.interactiveMarkers[msg.name];
     if (oldhandle) {
-      that.eraseIntMarker(oldhandle.name);
+      this.eraseIntMarker(oldhandle.name);
     }
 
     // create the handle
     var handle = new InteractiveMarkerHandle({
       message : msg,
-      feedbackTopic : that.feedbackTopic,
-      tfClient : that.tfClient,
-      menuFontSize : that.menuFontSize
+      feedbackTopic : this.feedbackTopic,
+      tfClient : this.tfClient,
+      menuFontSize : this.menuFontSize
     });
-    that.interactiveMarkers[msg.name] = handle;
+    this.interactiveMarkers[msg.name] = handle;
 
     // create the actual marker
     var intMarker = new InteractiveMarker({
       handle : handle,
-      camera : that.camera,
-      path : that.path,
-      loader : that.loader
+      camera : this.camera,
+      path : this.path,
+      loader : this.loader
     });
     // add it to the scene
     intMarker.name = msg.name;
-    that.rootObject.add(intMarker);
+    this.rootObject.add(intMarker);
 
     // listen for any pose updates from the server
     handle.on('pose', function(pose) {
@@ -55261,7 +55263,6 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
   function SceneNode(options) {
     superclass.call(this);
     options = options || {};
-    var that = this;
     this.tfClient = options.tfClient;
     this.frameID = options.frameID;
     var object = options.object;
@@ -55281,16 +55282,17 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
 
       // apply the transform
       var tf = new ROSLIB__namespace.Transform(msg);
-      var poseTransformed = new ROSLIB__namespace.Pose(that.pose);
+      var poseTransformed = new ROSLIB__namespace.Pose(this.pose);
       poseTransformed.applyTransform(tf);
 
       // update the world
-      that.updatePose(poseTransformed);
-      that.visible = true;
+      this.updatePose(poseTransformed);
+      this.visible = true;
     };
 
     // listen for TF updates
-    this.tfClient.subscribe(this.frameID, this.tfUpdate);
+    this.tfUpdateBound = this.tfUpdate.bind(this);
+    this.tfClient.subscribe(this.frameID, this.tfUpdateBound);
   }
 
   if ( superclass ) SceneNode.__proto__ = superclass;
@@ -55308,7 +55310,7 @@ var SceneNode = /*@__PURE__*/(function (superclass) {
     this.updateMatrixWorld(true);
   };
   SceneNode.prototype.unsubscribeTf = function unsubscribeTf () {
-    this.tfClient.unsubscribe(this.frameID, this.tfUpdate);
+    this.tfClient.unsubscribe(this.frameID, this.tfUpdateBound);
   };
 
   return SceneNode;
@@ -55334,6 +55336,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
     this.markers = {};
     this.rosTopic = undefined;
 
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -55350,7 +55353,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
       messageType : 'visualization_msgs/MarkerArray',
       compression : 'png'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   MarkerArrayClient.prototype.processMessage = function processMessage (arrayMessage){
     arrayMessage.markers.forEach(function(message) {
@@ -55397,7 +55400,7 @@ var MarkerArrayClient = /*@__PURE__*/(function (EventEmitter2) {
   };
   MarkerArrayClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   MarkerArrayClient.prototype.removeMarker = function removeMarker (key) {
@@ -55437,6 +55440,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
     this.rosTopic = undefined;
     this.updatedTime = {};
 
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -55445,7 +55449,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
   MarkerClient.prototype.constructor = MarkerClient;
   MarkerClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   MarkerClient.prototype.checkTime = function checkTime (name){
@@ -55469,7 +55473,7 @@ var MarkerClient = /*@__PURE__*/(function (EventEmitter2) {
       messageType : 'visualization_msgs/Marker',
       compression : 'png'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   MarkerClient.prototype.processMessage = function processMessage (message){
     // remove old marker from Three.Object3D children buffer
@@ -55837,6 +55841,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
 
     // subscribe to the topic
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -55845,7 +55850,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
   OccupancyGridClient.prototype.constructor = OccupancyGridClient;
   OccupancyGridClient.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   OccupancyGridClient.prototype.subscribe = function subscribe (){
@@ -55860,7 +55865,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
       compression : this.compression
     });
     this.sceneNode = null;
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   OccupancyGridClient.prototype.processMessage = function processMessage (message){
     // check for an old map
@@ -55905,7 +55910,7 @@ var OccupancyGridClient = /*@__PURE__*/(function (EventEmitter2) {
 
     // check if we should unsubscribe
     if (!this.continuous) {
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
 
@@ -56605,6 +56610,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
 
     // subscribe to the topic
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -56614,7 +56620,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
 
   OcTreeClient.prototype.unsubscribe = function unsubscribe () {
     if (this.rosTopic) {
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   OcTreeClient.prototype.subscribe = function subscribe () {
@@ -56627,7 +56633,7 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
       queue_length: 1,
       compression: this.compression
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   OcTreeClient.prototype.processMessage = function processMessage (message) {
     // check for an old map
@@ -56640,9 +56646,8 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
     this._processMessagePrivate(message);
 
     if (!this.continuous) {
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
-
   };
 
   OcTreeClient.prototype._loadOcTree = function _loadOcTree (message) {
@@ -56681,7 +56686,6 @@ var OcTreeClient = /*@__PURE__*/(function (EventEmitter2) {
 
           }
         }
-
 
         {
           newOcTree.buildGeometry();
@@ -56743,6 +56747,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
     this.sns = [];
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -56752,7 +56757,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
 
   Odometry.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   Odometry.prototype.subscribe = function subscribe (){
@@ -56765,7 +56770,7 @@ var Odometry = /*@__PURE__*/(function (superclass) {
       queue_length : 1,
       messageType : 'nav_msgs/Odometry'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   Odometry.prototype.processMessage = function processMessage (message){
     if(this.sns.length >= this.keep) {
@@ -56815,6 +56820,7 @@ var Path = /*@__PURE__*/(function (superclass) {
     this.line = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -56824,7 +56830,7 @@ var Path = /*@__PURE__*/(function (superclass) {
 
   Path.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   Path.prototype.subscribe = function subscribe (){
@@ -56837,7 +56843,7 @@ var Path = /*@__PURE__*/(function (superclass) {
         queue_length : 1,
         messageType : 'nav_msgs/Path'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   Path.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -56887,6 +56893,7 @@ var Point = /*@__PURE__*/(function (superclass) {
     this.sn = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -56896,7 +56903,7 @@ var Point = /*@__PURE__*/(function (superclass) {
 
   Point.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   Point.prototype.subscribe = function subscribe (){
@@ -56909,7 +56916,7 @@ var Point = /*@__PURE__*/(function (superclass) {
         queue_length : 1,
         messageType : 'geometry_msgs/PointStamped'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   Point.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -56953,6 +56960,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
     this.line = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -56962,7 +56970,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
 
   Polygon.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   Polygon.prototype.subscribe = function subscribe (){
@@ -56975,7 +56983,7 @@ var Polygon = /*@__PURE__*/(function (superclass) {
         queue_length : 1,
         messageType : 'geometry_msgs/PolygonStamped'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   Polygon.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -57027,6 +57035,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
     this.sn = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -57036,7 +57045,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
 
   Pose.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   Pose.prototype.subscribe = function subscribe (){
@@ -57049,7 +57058,7 @@ var Pose = /*@__PURE__*/(function (superclass) {
         queue_length : 1,
         messageType : 'geometry_msgs/PoseStamped'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   Pose.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -57098,6 +57107,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
     this.sn = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -57107,7 +57117,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
 
   PoseArray.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   PoseArray.prototype.subscribe = function subscribe (){
@@ -57120,7 +57130,7 @@ var PoseArray = /*@__PURE__*/(function (superclass) {
        queue_length : 1,
        messageType : 'geometry_msgs/PoseArray'
    });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   PoseArray.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -57190,6 +57200,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
     this.sn = null;
 
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -57199,7 +57210,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
 
   PoseWithCovariance.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   PoseWithCovariance.prototype.subscribe = function subscribe (){
@@ -57212,7 +57223,7 @@ var PoseWithCovariance = /*@__PURE__*/(function (superclass) {
         queue_length : 1,
         messageType : 'geometry_msgs/PoseWithCovarianceStamped'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   PoseWithCovariance.prototype.processMessage = function processMessage (message){
     if(this.sn!==null){
@@ -57365,8 +57376,8 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
     this.compression = options.compression || 'cbor';
     this.points = new Points(options);
     this.rosTopic = undefined;
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
-
   }
 
   if ( superclass ) LaserScan.__proto__ = superclass;
@@ -57375,7 +57386,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
 
   LaserScan.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   LaserScan.prototype.subscribe = function subscribe (){
@@ -57389,7 +57400,7 @@ var LaserScan = /*@__PURE__*/(function (superclass) {
       queue_length : 1,
       messageType : 'sensor_msgs/LaserScan'
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   LaserScan.prototype.processMessage = function processMessage (message){
     if(!this.points.setup(message.header.frame_id)) {
@@ -57443,6 +57454,8 @@ var NavSatFix = /*@__PURE__*/(function (superclass) {
     this.rootObject.add(this.line);
 
     this.rosTopic = undefined;
+
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -57452,7 +57465,7 @@ var NavSatFix = /*@__PURE__*/(function (superclass) {
 
   NavSatFix.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   NavSatFix.prototype.subscribe = function subscribe (){
@@ -57466,7 +57479,7 @@ var NavSatFix = /*@__PURE__*/(function (superclass) {
         messageType : 'sensor_msgs/NavSatFix'
     });
 
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   NavSatFix.prototype.processMessage = function processMessage (message){
     var altitude = isNaN(message.altitude) ? this.altitudeNaN : message.altitude;
@@ -57549,6 +57562,8 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
     this.points = new Points(options);
     this.rosTopic = undefined;
     this.buffer = null;
+
+    this.processMessageBound = this.processMessage.bind(this);
     this.subscribe();
   }
 
@@ -57558,7 +57573,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
 
   PointCloud2.prototype.unsubscribe = function unsubscribe (){
     if(this.rosTopic){
-      this.rosTopic.unsubscribe(this.processMessage);
+      this.rosTopic.unsubscribe(this.processMessageBound);
     }
   };
   PointCloud2.prototype.subscribe = function subscribe (){
@@ -57573,7 +57588,7 @@ var PointCloud2 = /*@__PURE__*/(function (superclass) {
       queue_length : 1,
       compression: this.compression
     });
-    this.rosTopic.subscribe(this.processMessage.bind(this));
+    this.rosTopic.subscribe(this.processMessageBound);
   };
   PointCloud2.prototype.processMessage = function processMessage (msg){
     if(!this.points.setup(msg.header.frame_id, msg.point_step, msg.fields)) {
@@ -57790,7 +57805,6 @@ var Urdf = /*@__PURE__*/(function (superclass) {
  */
 
 var UrdfClient = function UrdfClient(options) {
-  var that = this;
   options = options || {};
   var ros = options.ros;
   this.param = options.param || 'robot_description';
@@ -57812,15 +57826,15 @@ var UrdfClient = function UrdfClient(options) {
     });
 
     // load all models
-    that.urdf = new Urdf({
+    this.urdf = new Urdf({
       urdfModel : urdfModel,
-      path : that.path,
-      tfClient : that.tfClient,
-      tfPrefix : that.tfPrefix,
-      loader : that.loader
+      path : this.path,
+      tfClient : this.tfClient,
+      tfPrefix : this.tfPrefix,
+      loader : this.loader
     });
-    that.rootObject.add(that.urdf);
-  });
+    this.rootObject.add(this.urdf);
+  }.bind(this));
 };
 
 /**

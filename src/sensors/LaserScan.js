@@ -26,15 +26,15 @@ ROS3D.LaserScan = function(options) {
   this.compression = options.compression || 'cbor';
   this.points = new ROS3D.Points(options);
   this.rosTopic = undefined;
+  this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
-
 };
 ROS3D.LaserScan.prototype.__proto__ = THREE.Object3D.prototype;
 
 
 ROS3D.LaserScan.prototype.unsubscribe = function(){
   if(this.rosTopic){
-    this.rosTopic.unsubscribe(this.processMessage);
+    this.rosTopic.unsubscribe(this.processMessageBound);
   }
 };
 
@@ -49,7 +49,7 @@ ROS3D.LaserScan.prototype.subscribe = function(){
     queue_length : 1,
     messageType : 'sensor_msgs/LaserScan'
   });
-  this.rosTopic.subscribe(this.processMessage.bind(this));
+  this.rosTopic.subscribe(this.processMessageBound);
 };
 
 ROS3D.LaserScan.prototype.processMessage = function(message){
