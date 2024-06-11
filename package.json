@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^1.0.0",
-    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "chai": "^4.3.0",
     "debug": "^4.3.0",
