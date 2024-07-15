@@ -86,5 +86,46 @@
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
   </ol>
   <div id="urdf"></div>
+  <div id="button-container">
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize ROS connection
+      var ros = new ROSLIB.Ros({
+        url : 'ws://localhost:9090'  // Replace with your ROS bridge URL
+      });
+
+      // Define the topic name and message type you want to publish
+      var topicName = '/check_topic';  // Replace with your actual ROS topic name
+      var messageType = 'std_msgs/String';  // Replace with your actual message type
+
+      // Create a publisher
+      var publisher = new ROSLIB.Topic({
+        ros : ros,
+        name : topicName,
+        messageType : messageType
+      });
+
+      // Start Button event listener
+      document.getElementById('startButton').addEventListener('click', function() {
+        var message = new ROSLIB.Message({
+          data: 'Start message'  // Replace with your desired message
+        });
+        publisher.publish(message);
+        console.log('Published: ' + message.data);
+      });
+
+      // Stop Button event listener
+      document.getElementById('stopButton').addEventListener('click', function() {
+        var message = new ROSLIB.Message({
+          data: 'Stop message'  // Replace with your desired message
+        });
+        publisher.publish(message);
+        console.log('Published: ' + message.data);
+      });
+    });
+  </script>
 </body>
 </html>
