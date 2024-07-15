@@ -35,6 +35,7 @@
     // Setup a client to listen to TFs.
     var tfClient = new ROSLIB.TFClient({
       ros : ros,
+      fixedFrame: 'base_link',
       angularThres : 0.01,
       transThres : 0.01,
       rate : 10.0
@@ -44,9 +45,31 @@
     var urdfClient = new ROS3D.UrdfClient({
       ros : ros,
       tfClient : tfClient,
-      path : 'https://raw.githubusercontent.com/PR2/pr2_common/melodic-devel/',
+      path: 'http://localhost:8000/',
+      param : 'robot_description',
       rootObject : viewer.scene,
+      loader : ROS3D.COLLADA_LOADER_2,
     });
+
+    var urdfClient2 = new ROS3D.UrdfClient({
+      ros : ros,
+      tfClient : tfClient,
+      path: 'http://localhost:8000/',
+      param : 'rail_description',
+      rootObject : viewer.scene,
+      loader : ROS3D.COLLADA_LOADER_2,
+    });
+
+    var urdfClient3 = new ROS3D.UrdfClient({
+      ros : ros,
+      tfClient : tfClient,
+      path: 'http://localhost:8000/',
+      param : 'tool_mesh',
+      rootObject : viewer.scene,
+      loader : ROS3D.COLLADA_LOADER_2,
+    });
+
+    console.log(urdfClient);
   }
 </script>
 </head>
@@ -56,9 +79,9 @@
   <p>Run the following commands in the terminal then refresh this page.</p>
   <ol>
     <li><tt>launch ss</tt></li>
-    <li><tt>rosrun robot_state_publisher robot_state_publisher</tt></li>
+<!--    <li><tt>rosrun robot_state_publisher robot_state_publisher</tt></li>-->
     <li><tt>rosparam set use_gui true</tt></li>
-    <li><tt>rosrun joint_state_publisher joint_state_publisher</tt></li>
+<!--    <li><tt>rosrun joint_state_publisher joint_state_publisher</tt></li>-->
     <li><tt>rosrun tf2_web_republisher tf2_web_republisher</tt></li>
     <li><tt>roslaunch rosbridge_server rosbridge_websocket.launch</tt></li>
   </ol>
