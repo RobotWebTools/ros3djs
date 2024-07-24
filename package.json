@@ -12,7 +12,7 @@
     "@babel/preset-env": "^7.25.2",
     "@babel/runtime": "^7.25.0",
     "@rollup/plugin-babel": "^6.0.4",
-    "eventemitter2": "^6.4.0",
+    "eventemitter3": "^5.0.1",
     "roslib": "^1.0.0",
     "three": "^0.167.0"
   },
