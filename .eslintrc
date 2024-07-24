@@ -6,7 +6,7 @@
     "mocha": true
   },
   "globals": {
-    "EventEmitter2": true,
+    "EventEmitter3": true,
     "THREE": true,
     "ROS3D": true,
     "ROSLIB": true,
