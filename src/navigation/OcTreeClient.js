@@ -30,7 +30,7 @@
  */
 
 ROS3D.OcTreeClient = function(options) {
-  EventEmitter2.call(this);
+  EventEmitter3.call(this);
   options = options || {};
   this.ros = options.ros;
   this.topicName = options.topic || '/octomap';
@@ -60,7 +60,7 @@ ROS3D.OcTreeClient = function(options) {
   this.subscribe();
 };
 
-ROS3D.OcTreeClient.prototype.__proto__ = EventEmitter2.prototype;
+ROS3D.OcTreeClient.prototype.__proto__ = EventEmitter3.prototype;
 
 ROS3D.OcTreeClient.prototype.unsubscribe = function () {
   if (this.rosTopic) {

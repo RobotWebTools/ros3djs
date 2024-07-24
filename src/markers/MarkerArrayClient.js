@@ -35,7 +35,7 @@ ROS3D.MarkerArrayClient = function(options) {
   this.processMessageBound = this.processMessage.bind(this);
   this.subscribe();
 };
-ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter2.prototype;
+ROS3D.MarkerArrayClient.prototype.__proto__ = EventEmitter3.prototype;
 
 ROS3D.MarkerArrayClient.prototype.subscribe = function(){
   this.unsubscribe();
