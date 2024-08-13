@@ -59,7 +59,7 @@ ROS3D.Path.prototype.processMessage = function(message){
       this.rootObject.remove(this.sn);
   }
 
-  var lineGeometry = new THREE.Geometry();
+  var lineGeometry = new THREE.BufferGeometry();
   for(var i=0; i<message.poses.length;i++){
       var v3 = new THREE.Vector3( message.poses[i].pose.position.x, message.poses[i].pose.position.y,
                                   message.poses[i].pose.position.z);

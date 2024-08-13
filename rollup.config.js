@@ -1,15 +1,15 @@
 const rollup = require('rollup');
 
-// plugin that transpiles output into commonjs format
+// Plugin that transpiles output into commonjs format
 const commonjs = require('@rollup/plugin-commonjs');
-// plugin that transpiles es6 to es5 for legacy platforms
-const buble = require('@rollup/plugin-buble');
-// plugin that shows output file info
+// Plugin that shows output file info
 const filesize = require('rollup-plugin-filesize');
-/// plugin that resolves node module imports
+// Plugin that resolves node module imports
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
-// plugin that minifies and obfuscates code
+// Plugin that minifies and obfuscates code
 const { terser } = require('rollup-plugin-terser');
+// Plugin that transpiles ES6+ code to ES5
+const babel = require('@rollup/plugin-babel').babel;
 
 const pkg = require('./package.json');
 const input = 'src-esm/index.js';
@@ -46,8 +46,13 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
+      commonjs({ transformMixedEsModules: true }),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**', // only transpile our source code
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
+      }),
       filesize(),
     ],
   },
@@ -67,8 +72,13 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
-      buble(),
+      commonjs({ transformMixedEsModules: true }),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**', // only transpile our source code
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
+      }),
       filesize(),
     ],
   },
@@ -90,7 +100,13 @@ export default [
     ],
     plugins: [
       nodeResolve({ browser: true }),
-      commonjs(),
+      commonjs({ transformMixedEsModules: true }),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**', // only transpile our source code
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
+      }),
       filesize(),
     ],
   },
@@ -113,6 +129,12 @@ export default [
     plugins: [
       nodeResolve({ browser: true }),
       commonjs(),
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**', // only transpile our source code
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-transform-runtime']
+      }),
       filesize(),
       terser(),
     ],

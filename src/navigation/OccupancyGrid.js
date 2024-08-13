@@ -24,7 +24,8 @@ ROS3D.OccupancyGrid = function(options) {
   var origin = info.origin;
   var width = info.width;
   var height = info.height;
-  var geom = new THREE.PlaneBufferGeometry(width, height);
+  var geom = new THREE.PlaneGeometry(width, height);
+
 
   // create the color material
   var imageData = new Uint8Array(width * height * 4);

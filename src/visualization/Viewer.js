@@ -26,7 +26,9 @@
  *  *                           panning/zooming. Only has effect when
  *  *                           displayPanAndZoomFrame is set to true.
  */
+
 ROS3D.Viewer = function(options) {
+  console.log('Here 1');
   options = options || {};
   var divID = options.divID;
   var elem = options.elem;
@@ -79,6 +81,7 @@ ROS3D.Viewer = function(options) {
   this.scene.add(new THREE.AmbientLight(0x555555));
   this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
+  console.log('Here 2');
 
   // propagates mouse events to three.js objects
   this.selectableObjects = new THREE.Group();
@@ -104,6 +107,8 @@ ROS3D.Viewer = function(options) {
 
   // begin the render loop
   this.start();
+  console.log('Here 3');
+
 };
 
 /**
@@ -125,6 +130,7 @@ ROS3D.Viewer.prototype.draw = function(){
 
   // update the controls
   this.cameraControls.update();
+  console.log('Here 5')
 
   // put light to the top-left of the camera
   // BUG: position is a read-only property of DirectionalLight,

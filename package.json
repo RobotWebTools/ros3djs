@@ -7,13 +7,18 @@
   "main": "./build/ros3d.cjs.js",
   "module": "./build/ros3d.esm.js",
   "dependencies": {
-    "eventemitter3": "^5.0.1",
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/preset-env": "^7.25.2",
+    "@babel/runtime": "^7.25.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "eventemitter2": "^6.4.0",
     "roslib": "^1.0.0",
-    "three": "^0.89.0"
+    "three": "^0.167.0"
   },
   "devDependencies": {
     "@rollup/plugin-buble": "^1.0.0",
-    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-commonjs": "^25.0.8",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "chai": "^4.3.0",
     "debug": "^4.3.0",

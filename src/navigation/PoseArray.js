@@ -64,7 +64,7 @@ ROS3D.PoseArray.prototype.processMessage = function(message){
   var line;
 
   for(var i=0;i<message.poses.length;i++){
-      var lineGeometry = new THREE.Geometry();
+      var lineGeometry = new THREE.BufferGeometry();
 
       var v3 = new THREE.Vector3( message.poses[i].position.x, message.poses[i].position.y,
                                   message.poses[i].position.z);
