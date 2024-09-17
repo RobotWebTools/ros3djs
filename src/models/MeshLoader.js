@@ -104,6 +104,10 @@ ROS3D.MeshLoader = {
     'stl': function (meshRes, uri, options) {
       const material = options.material;
       const loader = new STLLoader(options.loader);
+      console.log('Loading stl: ' + uri);
+      console.log(options.material);
+
+
       {
         loader.load(uri,
           function (geometry) {

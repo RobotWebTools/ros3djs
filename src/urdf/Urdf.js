@@ -45,16 +45,15 @@ ROS3D.Urdf = function(options) {
 
           var uri = visual.geometry.filename;
           // strips package://
-          console.log('uri ' +uri)
           var tmpIndex = uri.indexOf('package://');
-          console.log('tmpIndex ' +tmpIndex)
 
           if (tmpIndex !== -1) {
             uri = uri.substr(tmpIndex + ('package://').length);
           }
-          console.log('uri2 ' +uri)
 
           var fileType = uri.substr(-3).toLowerCase();
+          console.log('material ' +colorMaterial)
+          console.log('filetype ' +fileType)
 
           if (ROS3D.MeshLoader.loaders[fileType]) {
             // create the model

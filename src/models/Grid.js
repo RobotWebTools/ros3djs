@@ -18,7 +18,7 @@
 ROS3D.Grid = function(options) {
   options = options || {};
   var num_cells = options.num_cells || 10;
-  var color = options.color || '#cccccc';
+  var color = options.color || '#000000';
   var lineWidth = options.lineWidth || 1;
   var cellSize = options.cellSize || 1;
 

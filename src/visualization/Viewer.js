@@ -28,15 +28,14 @@
  */
 
 ROS3D.Viewer = function(options) {
-  console.log('Here 1');
   options = options || {};
   var divID = options.divID;
   var elem = options.elem;
   var width = options.width;
   var height = options.height;
-  var background = options.background || '#111111';
+  var background = options.background || '#cccccc';
   var antialias = options.antialias;
-  var intensity = options.intensity || 0.66;
+  var intensity = options.intensity || 0.8;
   var near = options.near || 0.01;
   var far = options.far || 1000;
   var alpha = options.alpha || 1.0;
@@ -78,10 +77,9 @@ ROS3D.Viewer = function(options) {
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
   // lights
-  this.scene.add(new THREE.AmbientLight(0x555555));
+  this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
   this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
-  console.log('Here 2');
 
   // propagates mouse events to three.js objects
   this.selectableObjects = new THREE.Group();
@@ -107,8 +105,6 @@ ROS3D.Viewer = function(options) {
 
   // begin the render loop
   this.start();
-  console.log('Here 3');
-
 };
 
 /**
@@ -130,13 +126,12 @@ ROS3D.Viewer.prototype.draw = function(){
 
   // update the controls
   this.cameraControls.update();
-  console.log('Here 5')
 
   // put light to the top-left of the camera
   // BUG: position is a read-only property of DirectionalLight,
   // attempting to assign to it either does nothing or throws an error.
-  //this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-  this.directionalLight.position.normalize();
+  // this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
+  // this.directionalLight.position.normalize();
 
   // set the scene
   this.renderer.clear(true, true, true);
