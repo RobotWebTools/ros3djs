@@ -59,7 +59,7 @@ ROS3D.Polygon.prototype.processMessage = function(message){
       this.rootObject.remove(this.sn);
   }
 
-  var lineGeometry = new THREE.Geometry();
+  var lineGeometry = new THREE.BufferGeometry();
   var v3;
   for(var i=0; i<message.polygon.points.length;i++){
       v3 = new THREE.Vector3( message.polygon.points[i].x, message.polygon.points[i].y,

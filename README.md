@@ -1,3 +1,7 @@
+# update three before usage!
+
+npm install three@latest
+
 # ros3djs
 
 [![CI](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml/badge.svg)](https://github.com/RobotWebTools/ros3djs/actions/workflows/main.yml)

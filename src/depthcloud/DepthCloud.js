@@ -237,7 +237,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
 
   if (this.metaLoaded) {
     this.texture = new THREE.Texture(this.video);
-    this.geometry = new THREE.Geometry();
+    this.geometry = new THREE.BufferGeometry();
 
     for (var i = 0, l = this.width * this.height; i < l; i++) {
 
@@ -295,7 +295,7 @@ ROS3D.DepthCloud.prototype.initStreamer = function() {
       fragmentShader : this.fragment_shader
     });
 
-    this.mesh = new THREE.ParticleSystem(this.geometry, this.material);
+    this.mesh = new THREE.Points(this.geometry, this.material);
     this.mesh.position.x = 0;
     this.mesh.position.y = 0;
     this.add(this.mesh);

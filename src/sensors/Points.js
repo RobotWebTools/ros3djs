@@ -62,31 +62,34 @@ ROS3D.Points.prototype.setup = function(frame, point_step, fields)
         if(!this.colorsrc && this.fields.rgb) {
             this.colorsrc = 'rgb';
         }
-        if(this.colorsrc) {
+        if (this.colorsrc) {
             var field = this.fields[this.colorsrc];
             if (field) {
-                this.colors = new THREE.BufferAttribute( new Float32Array( this.max_pts * 3), 3, false );
-                this.geom.addAttribute( 'color', this.colors.setDynamic(true) );
+                this.colors = new THREE.BufferAttribute(new Float32Array(this.max_pts * 3), 3, false);
+                this.colors.setUsage(THREE.DynamicDrawUsage); // setDynamic(true) is replaced with setUsage
+                this.geom.setAttribute('color', this.colors); // addAttribute is replaced with setAttribute
+
                 var offset = field.offset;
                 this.getColor = [
-                    function(dv,base,le){return dv.getInt8(base+offset,le);},
-                    function(dv,base,le){return dv.getUint8(base+offset,le);},
-                    function(dv,base,le){return dv.getInt16(base+offset,le);},
-                    function(dv,base,le){return dv.getUint16(base+offset,le);},
-                    function(dv,base,le){return dv.getInt32(base+offset,le);},
-                    function(dv,base,le){return dv.getUint32(base+offset,le);},
-                    function(dv,base,le){return dv.getFloat32(base+offset,le);},
-                    function(dv,base,le){return dv.getFloat64(base+offset,le);}
-                ][field.datatype-1];
-                this.colormap = this.colormap || function(x){return new THREE.Color(x);};
+                    function(dv, base, le) { return dv.getInt8(base + offset, le); },
+                    function(dv, base, le) { return dv.getUint8(base + offset, le); },
+                    function(dv, base, le) { return dv.getInt16(base + offset, le); },
+                    function(dv, base, le) { return dv.getUint16(base + offset, le); },
+                    function(dv, base, le) { return dv.getInt32(base + offset, le); },
+                    function(dv, base, le) { return dv.getUint32(base + offset, le); },
+                    function(dv, base, le) { return dv.getFloat32(base + offset, le); },
+                    function(dv, base, le) { return dv.getFloat64(base + offset, le); }
+                ][field.datatype - 1];
+
+                this.colormap = this.colormap || function(x) { return new THREE.Color(x); };
             } else {
                 console.warn('unavailable field "' + this.colorsrc + '" for coloring.');
             }
         }
 
-        if(!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
-            if(this.colors && this.material.vertexColors === undefined) {
-                this.material.vertexColors = THREE.VertexColors;
+        if (!this.material.isMaterial) { // if it is an option, apply defaults and pass it to a PointsMaterial
+            if (this.colors && this.material.vertexColors === undefined) {
+                this.material.vertexColors = true; // THREE.VertexColors is replaced with boolean true
             }
             this.material = new THREE.PointsMaterial(this.material);
         }

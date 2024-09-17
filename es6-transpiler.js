@@ -258,7 +258,7 @@ const transpile = {
   ],
   // Track external dependencies for import injection
   externalDependencies: (filepath) => [
-    /(.*)(THREE|EventEmitter2|ROSLIB|ColladaLoader|OBJLoader|MTLLoader|STLLoader).*/g,
+    /(.*)(THREE|EventEmitter2|ROSLIB|ColladaLoader).*/g,
     (match, $preStuffs, $dep) => {
 
       if (/^\s*(?:\*|\/\/)/.test($preStuffs)) {
@@ -498,7 +498,7 @@ const transpile = {
 
       if (externalDeps && externalDeps.length > 0) {
         // Make sure these come after importing THREE
-        const threeExtensions = ['ColladaLoader', 'MTLLoader', 'OBJLoader', 'STLLoader']
+        const threeExtensions = ['ColladaLoader']
         const threeExtensionsUsed = []
 
         threeExtensions.forEach(ext => {
@@ -527,9 +527,9 @@ const transpile = {
 
           switch (dep) {
             case 'THREE': {
-              const modulePath = 'shims/three/core.js'
+              const modulePath = 'node_modules/three/build/three.module.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
-              importString = `import THREE from '${resolvedPath}';`
+              importString = `import * as THREE from '${resolvedPath}';`
               break;
             }
             case 'ROSLIB': {
@@ -542,24 +542,6 @@ const transpile = {
             }
             case 'ColladaLoader': {
               const modulePath = 'shims/three/ColladaLoader.js'
-              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
-              importString = `import '${resolvedPath}';`
-              break;
-            }
-            case 'MTLLoader': {
-              const modulePath = 'shims/three/MTLLoader.js'
-              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
-              importString = `import '${resolvedPath}';`
-              break;
-            }
-            case 'OBJLoader': {
-              const modulePath = 'shims/three/OBJLoader.js'
-              const resolvedPath = path.relative(path.dirname(filepath), modulePath)
-              importString = `import '${resolvedPath}';`
-              break;
-            }
-            case 'STLLoader': {
-              const modulePath = 'shims/three/STLLoader.js'
               const resolvedPath = path.relative(path.dirname(filepath), modulePath)
               importString = `import '${resolvedPath}';`
               break;

@@ -23,7 +23,7 @@ ROS3D.Urdf = function(options) {
   var tfClient = options.tfClient;
   var tfPrefix = options.tfPrefix || '';
   var loader = options.loader;
-
+  console.log('Path ' +path)
   THREE.Object3D.call(this);
 
   // load all models
@@ -42,13 +42,18 @@ ROS3D.Urdf = function(options) {
           colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
         }
         if (visual.geometry.type === ROSLIB.URDF_MESH) {
+
           var uri = visual.geometry.filename;
           // strips package://
           var tmpIndex = uri.indexOf('package://');
+
           if (tmpIndex !== -1) {
             uri = uri.substr(tmpIndex + ('package://').length);
           }
+
           var fileType = uri.substr(-3).toLowerCase();
+          console.log('material ' +colorMaterial)
+          console.log('filetype ' +fileType)
 
           if (ROS3D.MeshLoader.loaders[fileType]) {
             // create the model

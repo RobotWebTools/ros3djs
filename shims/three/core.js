@@ -1,3 +1,3 @@
-import * as THREE from 'three';
+// import * as THREE from 'three';
 
-export default Object.assign({}, THREE)
+// export default Object.assign({}, THREE)
