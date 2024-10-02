@@ -138,7 +138,7 @@ ROS3D.InteractiveMarkerControl = function(options) {
   var posInv = this.parent.position.clone().multiplyScalar(-1);
   switch (message.orientation_mode) {
     case ROS3D.INTERACTIVE_MARKER_INHERIT:
-      rotInv = this.parent.quaternion.clone().inverse();
+      rotInv = this.parent.quaternion.clone().invert();
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
       break;
@@ -231,7 +231,7 @@ ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld = function (force) {
       that.currentControlOri.normalize();
       break;
     case ROS3D.INTERACTIVE_MARKER_FIXED:
-      that.quaternion.copy(that.parent.quaternion.clone().inverse());
+      that.quaternion.copy(that.parent.quaternion.clone().invert());
       that.updateMatrix();
       that.matrixWorldNeedsUpdate = true;
       ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld.call(that, force);
@@ -247,7 +247,7 @@ ROS3D.InteractiveMarkerControl.prototype.updateMatrixWorld = function (force) {
       ros2Gl.makeRotationFromEuler(rv);
 
       var worldToLocal = new THREE.Matrix4();
-      worldToLocal.getInverse(that.parent.matrixWorld);
+      worldToLocal.copy(that.parent.matrixWorld).invert();
 
       cameraRot.multiplyMatrices(cameraRot, ros2Gl);
       cameraRot.multiplyMatrices(worldToLocal, cameraRot);

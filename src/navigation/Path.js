@@ -66,9 +66,9 @@ ROS3D.Path.prototype.processMessage = function(message){
       lineGeometry.vertices.push(v3);
   }
 
-  lineGeometry.computeLineDistances();
   var lineMaterial = new THREE.LineBasicMaterial( { color: this.color } );
   var line = new THREE.Line( lineGeometry, lineMaterial );
+  // line.computeLineDistances(); // Only needed for LineDashedMaterial
 
   this.sn = new ROS3D.SceneNode({
       frameID : message.header.frame_id,

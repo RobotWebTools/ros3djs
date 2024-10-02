@@ -81,6 +81,7 @@ ROS3D.OrbitControls = function(options) {
     scene.add(this.axes);
     this.axes.traverse(function(obj) {
       obj.visible = false;
+      obj.layers.disable(0); // Invisible
     });
   }
 
@@ -376,6 +377,7 @@ ROS3D.OrbitControls.prototype.showAxes = function() {
 
   this.axes.traverse(function(obj) {
     obj.visible = true;
+    obj.layers.enable(0); // Visible
   });
   if (this.hideTimeout) {
     clearTimeout(this.hideTimeout);
@@ -383,6 +385,7 @@ ROS3D.OrbitControls.prototype.showAxes = function() {
   this.hideTimeout = setTimeout(function() {
     that.axes.traverse(function(obj) {
       obj.visible = false;
+      obj.layers.disable(0); // Invisible
     });
     that.hideTimeout = false;
   }, 1000);
