@@ -22,7 +22,7 @@ Alternatively, you can use the current release via the [JsDelivr](https://www.js
 
 ros3djs depends on:
 
-[EventEmitter2](https://github.com/hij1nx/EventEmitter2). The current supported version is 6.4. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.js)) | ([min](https://cdn.jsdelivr.net/npm/eventemitter2@6.4/lib/eventemitter2.min.js))
+[EventEmitter3](https://github.com/primus/eventemitter3). The current supported version is 5.0. The current supported version can be found on the JsDeliver CDN: ([full](https://cdn.jsdelivr.net/npm/eventemitter3@5.0/dist/eventemitter3.umd.js)) | ([min](https://cdn.jsdelivr.net/npm/eventemitter3@5.0/dist/eventemitter3.umd.js))
 
 [three.js](https://github.com/mrdoob/three.js/). The current supported version is r89. The current supported version can be found on the Robot Web Tools CDN: ([full](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.js)) | ([min](https://cdn.jsdelivr.net/npm/three@0.89.0/build/three.min.js))
 
