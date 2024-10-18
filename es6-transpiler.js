@@ -258,7 +258,7 @@ const transpile = {
   ],
   // Track external dependencies for import injection
   externalDependencies: (filepath) => [
-    /(.*)(THREE|EventEmitter2|ROSLIB|ColladaLoader|OBJLoader|MTLLoader|STLLoader).*/g,
+    /(.*)(THREE|EventEmitter3|ROSLIB|ColladaLoader|OBJLoader|MTLLoader|STLLoader).*/g,
     (match, $preStuffs, $dep) => {
 
       if (/^\s*(?:\*|\/\/)/.test($preStuffs)) {
