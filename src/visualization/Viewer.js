@@ -118,6 +118,7 @@ ROS3D.Viewer.prototype.start = function(){
 /**
  * Renders the associated scene to the viewer.
  */
+
 ROS3D.Viewer.prototype.draw = function(){
   if(this.stopped){
     // Do nothing if stopped
@@ -127,11 +128,9 @@ ROS3D.Viewer.prototype.draw = function(){
   // update the controls
   this.cameraControls.update();
 
-  // put light to the top-left of the camera
-  // BUG: position is a read-only property of DirectionalLight,
-  // attempting to assign to it either does nothing or throws an error.
-  // this.directionalLight.position = this.camera.localToWorld(new THREE.Vector3(-1, 1, 0));
-  // this.directionalLight.position.normalize();
+  // Update the directional light position to follow the camera
+  this.directionalLight.position.copy(this.camera.position);
+  this.directionalLight.position.add(new THREE.Vector3(1, 1, 1));  // Adjust this vector for light offset
 
   // set the scene
   this.renderer.clear(true, true, true);
