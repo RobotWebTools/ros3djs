@@ -77,7 +77,6 @@ ROS3D.Viewer = function(options) {
   this.cameraControls.userZoomSpeed = cameraZoomSpeed;
 
   // lights
-  this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
   this.directionalLight = new THREE.DirectionalLight(0xffffff, intensity);
   this.scene.add(this.directionalLight);
 
