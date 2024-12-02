@@ -30,10 +30,9 @@ ROS3D.MeshLoader = {
 
       const loader = new ColladaLoader(options.loader);
 
-      console.log('Loading collada: ' + uri)
       loader.load(uri, function (collada_mesh) {
         let model = collada_mesh.scene;
-        meshRes.add (model)
+        meshRes.add (model);
         console.log('Done loading collada');
       });
 

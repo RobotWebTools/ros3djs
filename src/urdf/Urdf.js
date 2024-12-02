@@ -23,7 +23,6 @@ ROS3D.Urdf = function(options) {
   var tfClient = options.tfClient;
   var tfPrefix = options.tfPrefix || '';
   var loader = options.loader;
-  console.log('Path ' +path)
   THREE.Object3D.call(this);
 
   // load all models
@@ -39,7 +38,14 @@ ROS3D.Urdf = function(options) {
         var colorMaterial = null;
         if (visual.material && visual.material.color) {
           var color = visual.material && visual.material.color;
-          colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
+          // This replaces the previous simple material setup
+          var colorMaterial = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(color.r, color.g, color.b),
+            roughness: 0.9,  // Higher roughness makes shadows more defined
+            metalness: 0.7,  // Slightly metallic to help with light reflection
+        });
+
+          //colorMaterial = ROS3D.makeColorMaterial(color.r, color.g, color.b, color.a);
         }
         if (visual.geometry.type === ROSLIB.URDF_MESH) {
 
@@ -52,8 +58,6 @@ ROS3D.Urdf = function(options) {
           }
 
           var fileType = uri.substr(-3).toLowerCase();
-          console.log('material ' +colorMaterial)
-          console.log('filetype ' +fileType)
 
           if (ROS3D.MeshLoader.loaders[fileType]) {
             // create the model
@@ -63,6 +67,9 @@ ROS3D.Urdf = function(options) {
               loader : loader,
               material : colorMaterial
             });
+
+            mesh.castShadow = true;        // Enable the mesh to cast shadows
+            mesh.receiveShadow = true;     // Enable the mesh to receive shadows
 
             // check for a scale
             if(link.visuals[i].geometry.scale) {
@@ -101,7 +108,12 @@ ROS3D.Urdf = function(options) {
 ROS3D.Urdf.prototype.createShapeMesh = function(visual, options) {
   var colorMaterial = null;
   if (!colorMaterial) {
-    colorMaterial = ROS3D.makeColorMaterial(0, 0, 0, 1);
+    var colorMaterial = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0, 0, 1),  // Color from URDF
+      metalness: 1.0,    // Full metallic surface
+      roughness: 0.3,    // Shiny surface (low roughness)
+      emissive: new THREE.Color(0, 0, 1), // Optional: emissive for glow
+      });
   }
   var shapeMesh;
   // Create a shape
