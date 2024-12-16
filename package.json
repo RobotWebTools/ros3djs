@@ -14,7 +14,7 @@
   "devDependencies": {
     "@rollup/plugin-buble": "^1.0.0",
     "@rollup/plugin-commonjs": "^28.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "chai": "^4.3.0",
     "debug": "^4.3.0",
     "grunt": "^1.0.0",
