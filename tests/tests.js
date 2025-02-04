@@ -4,7 +4,6 @@ var assert = chai.assert;
 
 describe('Initialization', function() {
 
-
   describe('Arrow', function() {
     var arrow = new ROS3D.Arrow();
 
@@ -82,7 +81,7 @@ describe('Initialization', function() {
     describe('Line Strip', function() {
       var message = {};
       message.type = ROS3D.MARKER_LINE_STRIP;
-      message.color = {r: 0, g: 0, b: 0, a: 1},
+      message.color = {r: 0, g: 0, b: 0, a: 1};
       message.pose = {};
       message.pose.position = {x: 0, y: 0, z: 0};
       message.pose.orientation = {x: 0, y: 0, z: 0, w: 1};
@@ -120,6 +119,25 @@ describe('Initialization', function() {
     describe('Mesh Resource', function() {
     });
     describe('Triangle List', function() {
+    });
+  });
+  
+  describe('Viewer', function() {
+    const WIDTH = 500;
+    const HEIGHT = 300;
+    const canvas = document.createElement('canvas');
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+    const viewer = new ROS3D.Viewer({
+      canvas: canvas,
+      height: HEIGHT,
+      width: WIDTH
+    });
+
+    it('initializes correctly with canvas passed in as argument', function() {
+      assert.isTrue(viewer.renderer.domElement === canvas);
+      assert.isTrue(viewer.renderer.getSize().width === WIDTH);
+      assert.isTrue(viewer.renderer.getSize().height === HEIGHT);
     });
   });
 
