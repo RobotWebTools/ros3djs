@@ -43,7 +43,7 @@ ROS3D.TriangleList = function(options) {
       }
       geometry.faces.push(faceVert);
     }
-    material.vertexColors = THREE.VertexColors;
+    material.vertexColors = true;
   } else if (colors.length === vertices.length / 3) {
     // use per-triangle color
     for (i = 0; i < vertices.length; i += 3) {
@@ -51,7 +51,7 @@ ROS3D.TriangleList = function(options) {
       faceTri.color.setRGB(colors[i / 3].r, colors[i / 3].g, colors[i / 3].b);
       geometry.faces.push(faceTri);
     }
-    material.vertexColors = THREE.FaceColors;
+    material.vertexColors = true;
   } else {
     // use marker color
     for (i = 0; i < vertices.length; i += 3) {

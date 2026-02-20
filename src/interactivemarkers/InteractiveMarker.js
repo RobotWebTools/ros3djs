@@ -212,7 +212,7 @@ ROS3D.InteractiveMarker.prototype.rotateAxis = function(control, origOrientation
 
     // rotates from world to plane coords
     var orientationWorld = this.dragStart.orientationWorld.clone().multiply(orientation);
-    var orientationWorldInv = orientationWorld.clone().inverse();
+    var orientationWorldInv = orientationWorld.clone().invert();
 
     // rotate original and current intersection into local coords
     intersection.sub(rotOrigin);
